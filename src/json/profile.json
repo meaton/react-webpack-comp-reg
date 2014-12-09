@@ -1,18 +1,18 @@
 {
   "@isProfile": "true",
   "Header": {
-    "ID": "clarin.eu:cr1:p_1380106710826",
-    "Name": "teiHeader",
-    "Description": "TEI header. Supplies the descriptive and declarative information making up an electronic title page prefixed to every TEI-conformant text.\nVersion 2.5.0. Last updated on 26th July 2013\nhttp://www.tei-c.org/release/doc/tei-p5-doc/en/html/ref-teiHeader.html"
+    "ID": "clarin.eu:cr1:p_dummy1",
+    "Name": "dummyProfile",
+    "Description": "Test Description."
   },
   "CMD_Component": {
-    "@name": "teiHeader",
-    "@ConceptLink": "http://www.isocat.org/datcat/DC-5423",
+    "@name": "dummyProfile",
+    "@ConceptLink": "http://www.isocat.org/datcat/DC-XXXX",
     "@CardinalityMin": "1",
     "@CardinalityMax": "1",
     "CMD_Element": {
       "@name": "type",
-      "@ConceptLink": "http://www.isocat.org/datcat/DC-5424",
+      "@ConceptLink": "http://www.isocat.org/datcat/DC-XXXX",
       "@ValueScheme": "string",
       "@CardinalityMin": "1",
       "@CardinalityMax": "unbounded",
@@ -21,22 +21,22 @@
     },
     "CMD_Component": [
       {
-        "@ComponentId": "clarin.eu:cr1:c_1379939315561",
-        "@CardinalityMin": "1",
-        "@CardinalityMax": "1"
-      },
-      {
-        "@ComponentId": "clarin.eu:cr1:c_1379939315562",
+        "@ComponentId": "clarin.eu:cr1:c_dummy1",
         "@CardinalityMin": "0",
         "@CardinalityMax": "1"
       },
       {
-        "@ComponentId": "clarin.eu:cr1:c_1379925925653",
+        "@ComponentId": "clarin.eu:cr1:c_dummy2",
         "@CardinalityMin": "0",
         "@CardinalityMax": "1"
       },
       {
-        "@ComponentId": "clarin.eu:cr1:c_1379925925655",
+        "@ComponentId": "clarin.eu:cr1:c_dummy3",
+        "@CardinalityMin": "0",
+        "@CardinalityMax": "1"
+      },
+      {
+        "@ComponentId": "clarin.eu:cr1:c_dummy4",
         "@CardinalityMin": "0",
         "@CardinalityMax": "1"
       }
