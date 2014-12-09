@@ -1,0 +1,13 @@
+{
+  "id": "clarin.eu:cr1:p_1380106710826",
+  "description": "TEI header. Supplies the descriptive and declarative information making up an electronic title page prefixed to every TEI-conformant text.\rVersion 2.5.0. Last updated on 26th July 2013\rhttp://www.tei-c.org/release/doc/tei-p5-doc/en/html/ref-teiHeader.html",
+  "name": "teiHeader",
+  "registrationDate": "2013-12-19T02:33:54+00:00",
+  "creatorName": "DK-CLARIN User",
+  "userId": "160",
+  "domainName": "text_and_corpus_linguistics",
+  "href": "http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1380106710826",
+  "groupName": "TEI CLARIN-DK, v1.0",
+  "commentsCount": "0",
+  "showInEditor": "true"
+}

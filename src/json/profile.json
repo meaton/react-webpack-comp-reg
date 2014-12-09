@@ -1,0 +1,45 @@
+{
+  "@isProfile": "true",
+  "Header": {
+    "ID": "clarin.eu:cr1:p_1380106710826",
+    "Name": "teiHeader",
+    "Description": "TEI header. Supplies the descriptive and declarative information making up an electronic title page prefixed to every TEI-conformant text.\nVersion 2.5.0. Last updated on 26th July 2013\nhttp://www.tei-c.org/release/doc/tei-p5-doc/en/html/ref-teiHeader.html"
+  },
+  "CMD_Component": {
+    "@name": "teiHeader",
+    "@ConceptLink": "http://www.isocat.org/datcat/DC-5423",
+    "@CardinalityMin": "1",
+    "@CardinalityMax": "1",
+    "CMD_Element": {
+      "@name": "type",
+      "@ConceptLink": "http://www.isocat.org/datcat/DC-5424",
+      "@ValueScheme": "string",
+      "@CardinalityMin": "1",
+      "@CardinalityMax": "unbounded",
+      "@DisplayPriority": "1",
+      "@Multilingual": "false"
+    },
+    "CMD_Component": [
+      {
+        "@ComponentId": "clarin.eu:cr1:c_1379939315561",
+        "@CardinalityMin": "1",
+        "@CardinalityMax": "1"
+      },
+      {
+        "@ComponentId": "clarin.eu:cr1:c_1379939315562",
+        "@CardinalityMin": "0",
+        "@CardinalityMax": "1"
+      },
+      {
+        "@ComponentId": "clarin.eu:cr1:c_1379925925653",
+        "@CardinalityMin": "0",
+        "@CardinalityMax": "1"
+      },
+      {
+        "@ComponentId": "clarin.eu:cr1:c_1379925925655",
+        "@CardinalityMin": "0",
+        "@CardinalityMax": "1"
+      }
+    ]
+  }
+}
