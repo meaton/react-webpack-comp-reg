@@ -6,7 +6,7 @@
 
 var React = require('react');
 var Profile = require('./Profile.jsx');
-
+var ActionButton = require('./ActionButton.jsx');
 // Export React so the devtools can find it
 (window !== window.top ? window.top : window).React = React;
 
@@ -19,6 +19,7 @@ var ComponentRegApp = React.createClass({
     return (
       <div className="main">
         <Profile profileId="clarin.eu:cr1:p_1380106710826"/>
+        <ActionButton value="Disable Me!"/>
       </div>
     );
   }

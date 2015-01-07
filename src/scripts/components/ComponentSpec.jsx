@@ -11,17 +11,17 @@ var ComponentSpec = React.createClass({
     return {data:[]};
   },
   componentDidMount: function() {
-    /*$.ajax({
-      url: 'https://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/items/' + this.props.profileId,
+    $.ajax({
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/items/' + this.props.profileId,
       dataType: 'json',
       success: function(data) {
-        this.setState({data: data]});
+        this.setState({data: [data]});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.profileId, status, err.toString());
       }.bind(this)
-    });*/
-    this.setState({data: [require('../../json/registry.json')]});
+    });
+    //this.setState({data: [require('../../json/registry.json')]});
   },
   render: function() {
     console.log(this.state.data);

@@ -19,7 +19,8 @@ module.exports = {
   debug: true,
   devtool: false,
   entry: [
-      'webpack/hot/only-dev-server',
+      'webpack-dev-server/client?http://localhost:8000',
+      'webpack/hot/dev-server',
       './src/scripts/components/main.jsx'
   ],
 
