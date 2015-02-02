@@ -2,11 +2,13 @@
 
 var ComponentRegApp = require('./ComponentRegApp');
 var React = require('react');
-var {DefaultRoute, Route, Routes} = require('react-router');
+var Router = require('react-router');
+var Route = Router.Route;
 
-React.renderComponent((
-  <Routes location="history">
-    <Route path="/" handler={ComponentRegApp}>
-    </Route>
-  </Routes>
-), document.getElementById('content'));
+var routes = (
+    <Route handler={ComponentRegApp} path="/"></Route>
+);
+
+Router.run(routes, Router.HistoryLocation, function(Handler) {
+  React.render(<Handler/>, document.getElementById('content'));
+});

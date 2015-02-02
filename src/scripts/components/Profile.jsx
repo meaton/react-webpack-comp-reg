@@ -36,8 +36,8 @@ var Profile = React.createClass({
     //this.setState({ data: [{ profile: require('../../json/profile.json'), registry: require('../../json/registry.json') }] });
   },
   render: function() {
-    console.log(this.state.profile);
-    console.log(this.state.registry);
+    //console.log(this.state.profile);
+    //console.log(this.state.registry);
     var currentState = this.state;
     var regProfiles = this.state.registry.map(function (registryItem) {
       return currentState.profile.map(function (profileItem) {
@@ -45,7 +45,7 @@ var Profile = React.createClass({
           <div className="profile">
             <ul>
               <li><span>Name:</span>{profileItem.Header.Name}</li>
-              <li><span>Group Name:</span>{registryItem.groupName}</li>
+              <li><span>Group (Name):</span>{registryItem.groupName}</li>
               <li><span>Description:</span>{profileItem.Header.Description}</li>
               <li><span>ConceptLink:</span><a href={profileItem.CMD_Component["@ConceptLink"]}>{profileItem.CMD_Component["@ConceptLink"]}</a></li>
             </ul>
