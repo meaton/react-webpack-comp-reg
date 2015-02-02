@@ -10,8 +10,8 @@
   "mainInput": "main",
   "mainOutput": "main",
   "dependencies": {
-    "react-router": "^0.7.0",
-    "react": "~0.11.2",
+    "react-router": "^0.11.0",
+    "react": "~0.12.x",
     "jquery": "^2.1.1"
   },
   "devDependencies": {
