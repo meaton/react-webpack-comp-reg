@@ -5,6 +5,7 @@
 'use strict';
 
 var React = require('react');
+var Authentication = require('./Authentication.jsx').Authentication;
 var Profile = require('./Profile.jsx');
 var DataTablesGrid = require('./DataTablesGrid.jsx');
 
@@ -14,9 +15,9 @@ var DataTablesGrid = require('./DataTablesGrid.jsx');
 // CSS
 require('../../styles/normalize.css');
 require('../../styles/main.css');
-require('../../styles/griddle.css');
 
 var ComponentRegApp = React.createClass({
+  //mixins: [ Authentication ],
   render: function() {
     return (
       <div className="main">

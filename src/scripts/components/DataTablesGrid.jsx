@@ -68,8 +68,7 @@ var DataTablesGrid = React.createClass({
      var self = this;
 
  	   var x = this.state.data.map(function(d, index){
- 			//return <tr onClick={self.rowClick.bind(null, d.id)} key={d.id} className={(self.state.selectedItem == d.id) ? "selected" : ""}><td>{d.name}</td><td>{d.groupName}</td><td>{d.domainName}</td><td>{d.creatorName}</td><td>{d.description}</td><td>{d.registrationDate}</td><td>{d.commentsCount}</td></tr>
-      return ( <DataTablesRow data={d} key={d.id} multipleSelect={self.state.multipleSelect} onClick={self.rowClick}></DataTablesRow> );
+ 			return ( <DataTablesRow data={d} key={d.id} multipleSelect={self.state.multipleSelect} onClick={self.rowClick}></DataTablesRow> );
      });
 
 		 if(this.state.data.length > 0) return (
