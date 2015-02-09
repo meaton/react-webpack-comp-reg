@@ -19,6 +19,14 @@ var UserSetting = React.createClass({
     }
 });
 
+var NotFound = React.createClass({
+  render: function() {
+    return (
+      <h1>Not Found</h1>
+    );
+  }
+});
+
 var Main = React.createClass({
   getInitialState: function() {
     return {
@@ -46,14 +54,6 @@ var Main = React.createClass({
     );
   }
 });
-
-var NotFound = React.createClass({
-  render: function() {
-    return (
-      <h1>Not Found</h1>
-    );
-  }
-})
 
 var routes = (
     <Route handler={Main} path="/" >

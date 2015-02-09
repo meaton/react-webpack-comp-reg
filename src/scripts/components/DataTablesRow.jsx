@@ -15,7 +15,7 @@ var DataTablesRow = React.createClass({
 
     var target = event.currentTarget;
 
-    var chkVal = (this.props.multipleSelect && this.state.selectedItem != null) ? false : true;
+    var chkVal = (this.props.multiple && this.state.selectedItem != null) ? false : true;
     $(':checkbox[value="' + val + '"]').prop('checked', chkVal);
 
     console.log('row click: ' + val);
@@ -26,7 +26,7 @@ var DataTablesRow = React.createClass({
   shouldComponentUpdate: function(nextProps, nextState) {
     var cbSelect = $(':checkbox[value="' + this.state.selectedItem + '"]');
 
-    if(!this.props.multipleSelect && nextState.selectedItem != this.state.selectedItem) cbSelect.prop('checked', false);
+    if(!this.props.multiple && nextState.selectedItem != this.state.selectedItem) cbSelect.prop('checked', false);
     else if(nextState.selectedItem == null) cbSelect.prop('checked', false);
 
     return true;

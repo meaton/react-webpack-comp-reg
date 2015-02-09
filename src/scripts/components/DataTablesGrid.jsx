@@ -9,22 +9,44 @@ var React = require('react');
 
 var DataTablesGrid = React.createClass({
   getInitialState: function() {
-    return {data:[], multipleSelect: true, selectedItem: null };
+    return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multipleSelect: this.props.multiple, selectedItem: null };
   },
+  loadData: function(nextFilter, nextType) {
+    var type = (nextType != null) ? nextType : this.props.type;
+
+    $.ajax({
+     url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
+     accepts: {
+       json: 'application/json'
+     },
+     data: { unique: new Date().getTime(), registrySpace: (nextFilter != null) ? nextFilter: this.props.filter },
+     dataType: 'json',
+     username: "seaton",
+     password: "compreg",
+     xhrFields: {
+       withCredentials: true
+     },
+     success: function(data) {
+       var _data = data;
+       if(_data != null) {
+          if(_data.hasOwnProperty("componentDescription") && type == "components")
+            _data = data.componentDescription;
+          else if(_data.hasOwnProperty("profileDescription") && type == "profiles")
+            _data = data.profileDescription;
+
+          if(!$.isArray(_data))
+            _data = [_data];
+        }
+
+       this.setState({data: (_data != null) ? _data : [], currentFilter: this.props.filter, currentType: this.props.type, selectedItem: null});
+     }.bind(this),
+     error: function(xhr, status, err) {
+       console.error(status, err.toString());
+     }.bind(this)
+   });
+ },
   componentWillMount: function(){
- 		$.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/components',
-      accepts: {
-        json: 'application/json'
-      },
-      dataType: 'json',
-      success: function(data) {
-        this.setState({data: data.componentDescription});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(status, err.toString());
-      }.bind(this)
-    });
+ 		this.loadData();
  	},
  	componentDidMount: function(){
  		var self = this;
@@ -38,17 +60,31 @@ var DataTablesGrid = React.createClass({
       }
 		});
  	},
+  shouldComponentUpdate: function(nextProps, nextState) {
+    console.log('filter: ' + nextProps.filter);
+    console.log('currentFilter: ' + nextState.currentFilter);
+
+    if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType)
+      return true;
+    else {
+      $('#' + this.getDOMNode().id).dataTable().fnDestroy();
+      this.loadData(nextProps.filter, nextProps.type);
+    }
+
+    return false;
+  },
  	componentDidUpdate: function(){
      console.log('did update');
+     // TODO destroy update on new data
      if(this.state.selectedItem == null)
       $('#' + this.getDOMNode().id).dataTable({
              "scrollY": "600px",
              "scrollCollapse": true,
              "paging": false,
-             "destory": true
+             "destroy": true
       });
  	},
-  rowClick: function(val) {
+  rowClick: function(val, event) {
     //var target = event.target;
     console.log('row click: ' + val);
 
@@ -68,7 +104,9 @@ var DataTablesGrid = React.createClass({
      var self = this;
 
  	   var x = this.state.data.map(function(d, index){
- 			return ( <DataTablesRow data={d} key={d.id} multipleSelect={self.state.multipleSelect} onClick={self.rowClick}></DataTablesRow> );
+ 			return (
+         <DataTablesRow data={d} key={d.id} multiple={self.state.multipleSelect} onClick={self.rowClick}></DataTablesRow>
+      );
      });
 
 		 if(this.state.data.length > 0) return (
