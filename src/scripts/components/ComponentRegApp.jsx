@@ -20,17 +20,20 @@ require('../../styles/main.css');
 var ComponentRegApp = React.createClass({
   //mixins: [ Authentication ],
   getInitialState: function() {
-    return { filter: "published", type: "components" };
+    return { filter: "published", type: "profiles", profileId: null };
   },
   handleSelect: function(sel_registry) {
     this.setState(sel_registry);
+  },
+  showProfile: function(profileId) {
+    this.setState({ profileId: profileId });
   },
   render: function() {
     return (
       <div className="main">
         <SpaceSelector onSelect={this.handleSelect} />
-        <Profile profileId="clarin.eu:cr1:p_1380106710826"/>
-        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={true} />
+        <Profile profileId={this.state.profileId} />
+        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={false} profile={this.showProfile} />
       </div>
     );
   }

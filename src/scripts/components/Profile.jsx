@@ -10,30 +10,44 @@ var Profile = React.createClass({
   getInitialState: function() {
     return {profile:[], registry:[]};
   },
-  componentDidMount: function() {
+  loadProfile: function(newProps) {
+    var profileId = (newProps != null) ? newProps.profileId : this.props.profileId;
     $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + this.props.profileId,
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId,
       dataType: 'json',
       success: function(data) {
         this.setState({profile: [data]});
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.profileId, status, err.toString());
+        console.error(profileId, status, err.toString());
       }.bind(this)
     });
 
     $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/items/' + this.props.profileId,
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/items/' + profileId,
       dataType: 'json',
       success: function(data) {
         this.setState({registry: [data]});
       }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.profileId, status, err.toString());
+        console.error(profileId, status, err.toString());
       }.bind(this)
     });
 
+  },
+  componentDidMount: function() {
+    if(this.props.profileId != null)
+      this.loadProfile();
     //this.setState({ data: [{ profile: require('../../json/profile.json'), registry: require('../../json/registry.json') }] });
+  },
+  componentWillReceiveProps: function(nextProps) {
+    console.log('receiveds props:' + nextProps.profileId);
+    if(nextProps.profileId != null)
+      this.loadProfile(nextProps);
+  },
+  componentDidUpdate: function() {
+    console.log('did update profile: ' + this.props.profileId);
+
   },
   render: function() {
     //console.log(this.state.profile);

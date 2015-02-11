@@ -2,7 +2,9 @@
  * @jsx React.DOM
  */
 
+var React = require('react');
 var Router = require('react-router');
+var Config = require('../config.js');
 
 'use strict';
 
@@ -104,8 +106,8 @@ var shibLoginRequest = function(targetURL, cb) {
   if (targetURL != null) {
     $.ajax({
       url: targetURL,
-      username: "seaton",
-      password: "compreg",
+      username: Config.auth.username,
+      password: Config.auth.password,
       xhrFields: {
         withCredentials: true
       },

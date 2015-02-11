@@ -2,14 +2,15 @@
 
 'use strict';
 
+var React = require('react');
+var Router = require('react-router');
+
+var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
+
 var Authentication = require('./Authentication');
 var { auth, Login, Logout } = Authentication;
 
 var ComponentRegApp = require('./ComponentRegApp');
-
-var React = require('react');
-var Router = require('react-router');
-var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 
 var UserSetting = React.createClass({
     render: function() {

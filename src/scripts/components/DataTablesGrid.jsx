@@ -4,10 +4,18 @@
 
 'use strict';
 
-var DataTablesRow = require('./DataTablesRow.jsx');
 var React = require('react');
+var DataTablesRow = require('./DataTablesRow.jsx');
+var Config = require('../config.js');
+
+//require('../../styles/DataGrid.sass');
 
 var DataTablesGrid = React.createClass({
+  propTypes: {
+    multiple: React.PropTypes.bool,
+    type: React.PropTypes.string,
+    filter: React.PropTypes.string // published / private / group?
+  },
   getInitialState: function() {
     return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multipleSelect: this.props.multiple, selectedItem: null };
   },
@@ -21,8 +29,8 @@ var DataTablesGrid = React.createClass({
      },
      data: { unique: new Date().getTime(), registrySpace: (nextFilter != null) ? nextFilter: this.props.filter },
      dataType: 'json',
-     username: "seaton",
-     password: "compreg",
+     username: Config.auth.username,
+     password: Config.auth.password,
      xhrFields: {
        withCredentials: true
      },
@@ -50,24 +58,27 @@ var DataTablesGrid = React.createClass({
  	},
  	componentDidMount: function(){
  		var self = this;
- 		$('#' + this.getDOMNode().id).dataTable({
-           "scrollY": "600px",
-           "scrollCollapse": true,
-           "paging": false,
-           "destroy": true,
-		  "drawCallback": function(settings) {
-        self.forceUpdate();
-      }
+ 		var table = $('#' + this.getDOMNode().id).DataTable({
+       "autoWidth": false,
+       "scrollY": "600px",
+       "scrollCollapse": true,
+       "paging": false,
+       "destroy": true,
+		   "drawCallback": function(settings) {
+         self.forceUpdate();
+       }
 		});
+
+    //table.column(0).visible(this.state.multipleSelect);
  	},
   shouldComponentUpdate: function(nextProps, nextState) {
     console.log('filter: ' + nextProps.filter);
     console.log('currentFilter: ' + nextState.currentFilter);
 
     if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType)
-      return true;
+      return !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     else {
-      $('#' + this.getDOMNode().id).dataTable().fnDestroy();
+      $('#' + this.getDOMNode().id).DataTable().destroy();
       this.loadData(nextProps.filter, nextProps.type);
     }
 
@@ -75,27 +86,30 @@ var DataTablesGrid = React.createClass({
   },
  	componentDidUpdate: function(){
      console.log('did update');
-     // TODO destroy update on new data
-     if(this.state.selectedItem == null)
-      $('#' + this.getDOMNode().id).dataTable({
-             "scrollY": "600px",
-             "scrollCollapse": true,
-             "paging": false,
-             "destroy": true
+
+     var table = $('#' + this.getDOMNode().id).DataTable({
+         "autoWidth": false,
+         "scrollY": "600px",
+         "scrollCollapse": true,
+         "paging": false,
+         "destroy": true,
       });
+
+     //table.column(0).visible(this.state.multipleSelect);
  	},
-  rowClick: function(val, event) {
+  rowClick: function(val, target) {
     //var target = event.target;
     console.log('row click: ' + val);
-
     var currentItem = this.state.selectedItem;
 
     if(currentItem == null)
-      this.state.selectedItem = val;
+      this.state.selectedItem = target;
     else if(!this.state.multipleSelect) {
       currentItem.setState({selectedItem: null});
-      this.state.selectedItem = val;
+      this.state.selectedItem = target;
     }
+
+    this.props.profile(val);
 
     //this.setState({selectedItem: val});
   },
@@ -109,11 +123,13 @@ var DataTablesGrid = React.createClass({
       );
      });
 
+     var checkboxCol = (this.state.multipleSelect) ? <td/> : null;
+
 		 if(this.state.data.length > 0) return (
 			<table className="table table-striped" id="testtable">
 				<thead>
 					<tr>
-            <td></td>
+            {checkboxCol}
 						<td>Name</td>
 						<td>Group Name</td>
             <td>Domain Name</td>

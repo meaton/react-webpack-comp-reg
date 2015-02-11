@@ -10,8 +10,8 @@ var SpaceSelector = React.createClass({
   getInitialState: function() {
     return { currentSpaceIdx: 0,
              spaces: [
-                { label: "Public - Profiles", registry: { type: "components", filter: "published" } },
-                { label: "Public - Components", registry: { type: "profiles", filter: "published" } },
+                { label: "Public - Profiles", registry: { type: "profiles", filter: "published" } },
+                { label: "Public - Components", registry: { type: "components", filter: "published" } },
                 { label: "Private - Profiles", registry: { type: "profiles", filter: "private" } },
                 { label: "Private - Components", registry: { type: "components", filter: "private" } }
              ]};
