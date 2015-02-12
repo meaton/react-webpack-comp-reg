@@ -14,7 +14,9 @@ var DataTablesGrid = React.createClass({
   propTypes: {
     multiple: React.PropTypes.bool,
     type: React.PropTypes.string,
-    filter: React.PropTypes.string // published / private / group?
+    filter: React.PropTypes.string, // published / private / group?
+    component: React.PropTypes.func,
+    profile: React.PropTypes.func
   },
   getInitialState: function() {
     return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multipleSelect: this.props.multiple, selectedItem: null };
@@ -57,7 +59,7 @@ var DataTablesGrid = React.createClass({
  		this.loadData();
  	},
  	componentDidMount: function(){
- 		var self = this;
+ 		/*var self = this;
  		var table = $('#' + this.getDOMNode().id).DataTable({
        "autoWidth": false,
        "scrollY": "600px",
@@ -67,9 +69,9 @@ var DataTablesGrid = React.createClass({
 		   "drawCallback": function(settings) {
          self.forceUpdate();
        }
-		});
-
-    //table.column(0).visible(this.state.multipleSelect);
+		}).on('search.dt', function(e, settings) {
+      console.log('(mount) search event: ' + e);
+    });*/
  	},
   shouldComponentUpdate: function(nextProps, nextState) {
     console.log('filter: ' + nextProps.filter);
@@ -78,6 +80,7 @@ var DataTablesGrid = React.createClass({
     if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType)
       return !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     else {
+      $('#' + this.getDOMNode().id).hide();
       $('#' + this.getDOMNode().id).DataTable().destroy();
       this.loadData(nextProps.filter, nextProps.type);
     }
@@ -86,7 +89,8 @@ var DataTablesGrid = React.createClass({
   },
  	componentDidUpdate: function(){
      console.log('did update');
-
+     var self = this;
+     $('#' + this.getDOMNode().id).show();
      var table = $('#' + this.getDOMNode().id).DataTable({
          "autoWidth": false,
          "scrollY": "600px",
@@ -95,7 +99,19 @@ var DataTablesGrid = React.createClass({
          "destroy": true,
       });
 
-     //table.column(0).visible(this.state.multipleSelect);
+      table.on('search.dt', function(e, settings) {
+        console.log('search event: ' + e);
+        if(self.state.selectedItem != null) {
+          var row = table.row(self.state.selectedItem.getDOMNode());
+          var data = row.data();
+          console.log('selected row: ' + row.index());
+          var containsSelected = table.$('tr.selected', { "filter": "applied" }).size() > 0;
+          if(!containsSelected) {
+            self.state.selectedItem.setState({selectedItem: null});
+            self.state.selectedItem = null;
+          }
+        }
+      });
  	},
   rowClick: function(val, target) {
     //var target = event.target;
@@ -109,8 +125,10 @@ var DataTablesGrid = React.createClass({
       this.state.selectedItem = target;
     }
 
-    this.props.profile(val);
-
+    if(this.state.currentType == "profiles")
+      this.props.profile(val);
+    else if(this.state.currentType == "components")
+      this.props.component(val);
     //this.setState({selectedItem: val});
   },
  	render: function(){
@@ -119,7 +137,7 @@ var DataTablesGrid = React.createClass({
 
  	   var x = this.state.data.map(function(d, index){
  			return (
-         <DataTablesRow data={d} key={d.id} multiple={self.state.multipleSelect} onClick={self.rowClick}></DataTablesRow>
+         <DataTablesRow data={d} key={d.id} multiple={self.state.multipleSelect} onClick={self.rowClick} className={(index+1 % 2) ? "odd" : "even"} ></DataTablesRow>
       );
      });
 

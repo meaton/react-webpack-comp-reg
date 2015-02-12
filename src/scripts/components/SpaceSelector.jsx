@@ -31,7 +31,7 @@ var SpaceSelector = React.createClass({
       var selectedClass = (self.state.currentSpaceIdx == index) ? "selected" : "";
       return (
         <li className={selectedClass} >
-          <a href="#" onClick={self.spaceSelect.bind(null, index)}>{d.label}</a>
+          <a href="#" onClick={self.spaceSelect.bind(self, index)}>{d.label}</a>
         </li>
       );
     });

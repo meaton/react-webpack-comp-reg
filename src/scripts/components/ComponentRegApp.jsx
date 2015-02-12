@@ -6,7 +6,8 @@
 
 var React = require('react');
 var Authentication = require('./Authentication.jsx').Authentication;
-var Profile = require('./Profile.jsx');
+var Profile = require('./ProfileOverview.jsx');
+var Component = require('./ComponentOverview.jsx');
 var SpaceSelector = require('./SpaceSelector.jsx');
 var DataTablesGrid = require('./DataTablesGrid.jsx');
 
@@ -18,22 +19,28 @@ require('../../styles/normalize.css');
 require('../../styles/main.css');
 
 var ComponentRegApp = React.createClass({
-  //mixins: [ Authentication ],
+  //mixins: [ Authentication, React.addons.LinkedStateMixin ], //TODO: enable linked state mixins to tie state variable (currentSelectedItem) to children component properties
   getInitialState: function() {
-    return { filter: "published", type: "profiles", profileId: null };
+    return { filter: "published", type: "profiles", profileId: null, componentId: null };
   },
   handleSelect: function(sel_registry) {
     this.setState(sel_registry);
   },
   showProfile: function(profileId) {
-    this.setState({ profileId: profileId });
+    this.setState({ profileId: profileId, componentId: null });
+  },
+  showComponent: function(componentId) {
+    this.setState({ componentId: componentId, profileId: null})
   },
   render: function() {
+    var profile = (this.state.profileId) ? <Profile profileId={this.state.profileId} /> : null;
+    var component = (this.state.componentId) ? <Component componentId={this.state.componentId} /> : null;
+
     return (
       <div className="main">
         <SpaceSelector onSelect={this.handleSelect} />
-        <Profile profileId={this.state.profileId} />
-        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={false} profile={this.showProfile} />
+        {profile || component}
+        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={false} profile={this.showProfile} component={this.showComponent} />
       </div>
     );
   }

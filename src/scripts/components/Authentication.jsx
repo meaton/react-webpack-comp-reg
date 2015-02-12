@@ -2,11 +2,11 @@
  * @jsx React.DOM
  */
 
+'use strict';
+
 var React = require('react');
 var Router = require('react-router');
 var Config = require('../config.js');
-
-'use strict';
 
 var Login = React.createClass({
   mixins: [ Router.Navigation ],

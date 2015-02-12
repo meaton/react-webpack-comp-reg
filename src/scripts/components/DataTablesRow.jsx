@@ -35,10 +35,11 @@ var DataTablesRow = React.createClass({
     return true;
   },
   render: function(){
+    //TODO: selection issue with search filtering (listen for search event and determine if any selected items are in filtered results -http://datatables.net/reference/event/search)
     var data = this.state.data;
-    var checkbox = (this.props.multiple) ? <td><input type="checkbox" name="componentCb" value={this.state.data.id} onClick={this.rowClick.bind(null, this.state.data.id)} /></td> : null;
+    var checkbox = (this.props.multiple) ? <td><input type="checkbox" name="componentCb" value={this.state.data.id} onClick={this.rowClick.bind(this, this.state.data.id)} /></td> : null;
     return (
-      <tr onClick={this.rowClick.bind(null, this.state.data.id)} key={this.state.data.id} className={(this.state.selectedItem == data.id) ? "selected" : ""}>
+      <tr onClick={this.rowClick.bind(this, this.state.data.id)} key={this.state.data.id} className={(this.state.selectedItem == data.id) ? "selected " + this.props.className : this.props.className}>
         {checkbox}
         <td>{data.name}</td><td>{data.groupName}</td><td>{data.domainName}</td><td>{data.creatorName}</td><td>{data.description}</td><td>{data.registrationDate}</td><td>{data.commentsCount}</td>
       </tr>
