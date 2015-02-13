@@ -23,7 +23,6 @@ var DataTablesGrid = React.createClass({
   },
   loadData: function(nextFilter, nextType) {
     var type = (nextType != null) ? nextType : this.props.type;
-
     $.ajax({
      url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
      accepts: {
@@ -59,7 +58,8 @@ var DataTablesGrid = React.createClass({
  		this.loadData();
  	},
  	componentDidMount: function(){
- 		/*var self = this;
+ 		// note: data currently loaded after component mount not provided on init
+     /*var self = this;
  		var table = $('#' + this.getDOMNode().id).DataTable({
        "autoWidth": false,
        "scrollY": "600px",
@@ -109,6 +109,7 @@ var DataTablesGrid = React.createClass({
           if(!containsSelected) {
             self.state.selectedItem.setState({selectedItem: null});
             self.state.selectedItem = null;
+            self.props.profile(null);
           }
         }
       });
@@ -163,7 +164,7 @@ var DataTablesGrid = React.createClass({
 			</table>
 		)
     else
-      return <div>empty</div>
+      return <div/>;
  	}
  });
 

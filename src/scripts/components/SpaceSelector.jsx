@@ -17,7 +17,7 @@ var SpaceSelector = React.createClass({
              ]};
   },
   spaceSelect: function(idx, event) {
-    if(this.currentSpaceIdx != idx) {
+    if(this.state.currentSpaceIdx != idx) {
       var registryName = this.state.spaces[idx].registry;
       console.log('changed props: ' + registryName.filter);
 

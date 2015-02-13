@@ -11,16 +11,22 @@ var Config = require('../config.js');
 var Login = React.createClass({
   mixins: [ Router.Navigation ],
   statics: {
-    attemptedTransition: null
+    attemptedTransition: null,
+    authUrl: "http://localhost:8080/ComponentRegistry/rest/authentication"
   },
   getInitialState: function () {
     return {
       error: false
     };
   },
-  handleSubmit: function (event) {
-    event.preventDefault();
-    auth.login("http://localhost:8080/ComponentRegistry/", function (loggedIn) {
+  handleSubmit: function(event) {
+    event.target.method = "post";
+    event.target.action = Login.authUrl + "?redirect=" + "http://" + window.location.host + "/";
+
+    return true;
+  },
+  checkLogin: function (event) {
+    auth.login(function (loggedIn) {
       if (!loggedIn)
         return this.setState({ error: true });
 
@@ -33,11 +39,11 @@ var Login = React.createClass({
       }
     }.bind(this));
   },
-
   render: function () {
     var errors = this.state.error ? <p>Error!</p> : '';
     return (
       <form onSubmit={this.handleSubmit}>
+        <button type="button" onClick={this.checkLogin}>check status</button><br/>
         <button type="submit">login</button>
         {errors}
       </form>
@@ -66,65 +72,70 @@ var Authentication = {
 };
 
 var auth = {
-  login: function (targetURL, cb) {
+  login: function (cb) {
     cb = arguments[arguments.length - 1];
-    if (localStorage.token) {
+    if (localStorage.token && localStorage.displayName) {
       if (cb) cb(true);
-      this.onChange(true);
+      this.onChange(true, localStorage.displayName);
       return;
     }
-    shibLoginRequest(targetURL, function (res) {
+
+    loginRequest(function (res) {
+      console.log('auth:' + res.authenticated);
       if (res.authenticated) {
         localStorage.token = res.token;
+        localStorage.displayName = res.displayName;
         if (cb) cb(true);
-        this.onChange(true);
+        this.onChange(true, res.displayName);
       } else {
         if (cb) cb(false);
         this.onChange(false);
       }
     }.bind(this));
   },
-
+  getDisplayName: function() {
+    return localStorage.displayName;
+  },
   getToken: function () {
     return localStorage.token;
   },
-
   logout: function (cb) {
+    delete localStorage.displayName;
     delete localStorage.token;
     if (cb) cb();
     this.onChange(false);
   },
-
   loggedIn: function () {
     return !!localStorage.token;
   },
-
-  onChange: function () {}
+  onChange: function () {
+    console.log('login change event');
+  }
 };
 
-var shibLoginRequest = function(targetURL, cb) {
-  if (targetURL != null) {
+var loginRequest = function(cb) {
     $.ajax({
-      url: targetURL,
+      url: Login.authUrl,
+      type: 'GET',
       username: Config.auth.username,
       password: Config.auth.password,
       xhrFields: {
         withCredentials: true
       },
-      success: function (){
+      dataType: 'json',
+      success: function (result){
+        console.log('result: ' + result);
         cb({
-          authenticated: true,
+          authenticated: result.authenticated == 'true',
           token: Math.random().toString(36).substring(7),
+          displayName: result.displayName
         });
       },
       error: function() {
         cb({authenticated: false});
       }
     });
-  } else {
-    cb({authenticated: false});
   }
-}
 
 module.exports = {
   auth: auth,

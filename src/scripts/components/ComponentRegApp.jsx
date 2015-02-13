@@ -24,7 +24,7 @@ var ComponentRegApp = React.createClass({
     return { filter: "published", type: "profiles", profileId: null, componentId: null };
   },
   handleSelect: function(sel_registry) {
-    this.setState(sel_registry);
+    this.setState($.extend(sel_registry, { profileId: null, componentId: null }));
   },
   showProfile: function(profileId) {
     this.setState({ profileId: profileId, componentId: null });

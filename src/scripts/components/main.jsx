@@ -31,12 +31,14 @@ var NotFound = React.createClass({
 var Main = React.createClass({
   getInitialState: function() {
     return {
-      loggedIn: auth.loggedIn()
+      loggedIn: auth.loggedIn(),
+      displayName: ''
     };
   },
-  setStateOnAuth: function(loggedIn) {
+  setStateOnAuth: function(loggedIn, displayName) {
     this.setState({
-      loggedIn: loggedIn
+      loggedIn: loggedIn,
+      displayName: displayName
     });
   },
   componentWillMount: function() {
@@ -45,7 +47,7 @@ var Main = React.createClass({
   },
   render: function() {
      var loginOrOut = this.state.loggedIn ?
-       <div className="auth-logged-in">authenticated <Link to="settings">settings</Link> <Link to="logout">logout</Link></div> :
+       <div className="auth-logged-in">{this.state.displayName} <Link to="settings">settings</Link> <Link to="logout">logout</Link></div> :
        <Link to="login">login</Link>;
     return (
       <div>
