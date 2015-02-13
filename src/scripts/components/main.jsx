@@ -11,6 +11,7 @@ var Authentication = require('./Authentication');
 var { auth, Login, Logout } = Authentication;
 
 var ComponentRegApp = require('./ComponentRegApp');
+var PageHeader = require('react-bootstrap/PageHeader');
 
 var UserSetting = React.createClass({
     render: function() {
@@ -27,6 +28,9 @@ var NotFound = React.createClass({
     );
   }
 });
+
+require('../../styles/main.css');
+require('../../styles/normalize.css');
 
 var Main = React.createClass({
   getInitialState: function() {
@@ -51,6 +55,7 @@ var Main = React.createClass({
        <Link to="login">login</Link>;
     return (
       <div>
+        <PageHeader>CMDI Component Registry <small>ReactJS/REST Test</small></PageHeader>
         <div className="auth-login">{loginOrOut}</div>
         <RouteHandler/>
       </div>

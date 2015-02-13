@@ -5,6 +5,7 @@
 'use strict';
 
 var React = require('react');
+
 var DataTablesRow = require('./DataTablesRow.jsx');
 var Config = require('../config.js');
 
@@ -22,7 +23,8 @@ var DataTablesGrid = React.createClass({
     return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multipleSelect: this.props.multiple, selectedItem: null };
   },
   loadData: function(nextFilter, nextType) {
-    var type = (nextType != null) ? nextType : this.props.type;
+    var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
+
     $.ajax({
      url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
      accepts: {
@@ -93,7 +95,7 @@ var DataTablesGrid = React.createClass({
      $('#' + this.getDOMNode().id).show();
      var table = $('#' + this.getDOMNode().id).DataTable({
          "autoWidth": false,
-         "scrollY": "600px",
+         "scrollY": "300px",
          "scrollCollapse": true,
          "paging": false,
          "destroy": true,
@@ -115,8 +117,6 @@ var DataTablesGrid = React.createClass({
       });
  	},
   rowClick: function(val, target) {
-    //var target = event.target;
-    console.log('row click: ' + val);
     var currentItem = this.state.selectedItem;
 
     if(currentItem == null)
@@ -130,6 +130,7 @@ var DataTablesGrid = React.createClass({
       this.props.profile(val);
     else if(this.state.currentType == "components")
       this.props.component(val);
+
     //this.setState({selectedItem: val});
   },
  	render: function(){
@@ -144,7 +145,7 @@ var DataTablesGrid = React.createClass({
 
      var checkboxCol = (this.state.multipleSelect) ? <td/> : null;
 
-		 if(this.state.data.length > 0) return (
+		 return (
 			<table className="table table-striped" id="testtable">
 				<thead>
 					<tr>
@@ -162,9 +163,7 @@ var DataTablesGrid = React.createClass({
 					{x}
 				</tbody>
 			</table>
-		)
-    else
-      return <div/>;
+		);
  	}
  });
 

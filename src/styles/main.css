@@ -5,6 +5,9 @@ html, body {
 }
 
 /* main */
+.auth-login {
+  float: right
+}
 
 .main {
   width: 100%;

@@ -6,19 +6,23 @@
 
 var React = require('react');
 var InfoPanel = require('./InfoPanel.jsx')
-
-//require('../../styles/ComponentOverview.sass');
+var Config = require('../config.js');
 
 var ComponentOverview = React.createClass({
   getInitialState: function() {
-    return { component: null }
+    return { component: null, visible: false }
   },
   loadComponent: function(componentId) {
     $.ajax({
       url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId,
       dataType: 'json',
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
       success: function(data) {
-        this.setState({component: data});
+        this.setState({component: data, visible: true});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(componentId, status, err.toString());
@@ -30,12 +34,15 @@ var ComponentOverview = React.createClass({
       this.loadComponent(this.props.componentId);
   },
   componentWillReceiveProps: function(nextProps) {
-    if(nextProps.componentId != null)
+    if(nextProps.componentId != null) {
       this.loadComponent(nextProps.componentId);
+    } else
+      this.setState({visible: false});
   },
   render: function () {
+    var hideClass = (!this.state.visible) ? "hide" : "show";
     return (
-      <div className="infoPanel_wrapper">
+      <div className={hideClass}>
         <InfoPanel item={this.state.component} />
       </div>
     );
