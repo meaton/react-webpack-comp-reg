@@ -1,6 +1,4 @@
-/**
- * @jsx React.DOM
- */
+/** @jsx React.DOM */
 
 'use strict';
 
@@ -15,6 +13,9 @@ var Panel = require('react-bootstrap/Panel');
 //require('../../styles/InfoPanel.sass');
 
 var InfoPanel = React.createClass({
+  propTypes: {
+    item: React.PropTypes.object
+  },
   getInitialState: function() {
     return { registry: null, currentTabIdx: 0 }
   },

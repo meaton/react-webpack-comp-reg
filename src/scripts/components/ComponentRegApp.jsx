@@ -4,7 +4,7 @@
 
 'use strict';
 
-var React = require('react');
+var React = require('react/addons');
 var Authentication = require('./Authentication.jsx').Authentication;
 var Profile = require('./ProfileOverview.jsx');
 var Component = require('./ComponentOverview.jsx');
@@ -15,12 +15,12 @@ var DataTablesGrid = require('./DataTablesGrid.jsx');
 (window !== window.top ? window.top : window).React = React;
 
 var ComponentRegApp = React.createClass({
+  mixins: [React.addons.LinkedStateMixin],
   //mixins: [ Authentication, React.addons.LinkedStateMixin ], //TODO: enable linked state mixins to tie state variable (currentSelectedItem) to children component properties
   getInitialState: function() {
-    return { filter: "published", type: "profiles", profileId: null, componentId: null };
+    return { filter: "published", type: "profiles", profileId: null, componentId: null, multiSelect: false };
   },
   handleSelect: function(sel_registry) {
-
     this.setState({ type: sel_registry.type.toLowerCase(), filter: sel_registry.filter, profileId: null, componentId: null });
   },
   showProfile: function(profileId) {
@@ -29,11 +29,14 @@ var ComponentRegApp = React.createClass({
   showComponent: function(componentId) {
     this.setState({ componentId: componentId, profileId: null })
   },
+  clearInfo: function() {
+    this.setState({profileId: null, componentId: null})
+  },
   render: function() {
     return (
       <div className="main">
-        <SpaceSelector onSelect={this.handleSelect} />
-        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={false} profile={this.showProfile} component={this.showComponent} />
+        <SpaceSelector onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
+        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
         <Profile profileId={this.state.profileId} />
         <Component componentId={this.state.componentId} />
       </div>

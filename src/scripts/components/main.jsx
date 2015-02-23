@@ -10,24 +10,28 @@ var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 var Authentication = require('./Authentication');
 var { auth, Login, Logout } = Authentication;
 
-var ComponentRegApp = require('./ComponentRegApp');
+var ComponentRegApp = require('./ComponentRegApp.jsx');
 var PageHeader = require('react-bootstrap/PageHeader');
 
-var UserSetting = React.createClass({
+var UserSetting = React.createFactory(React.createElement('h1', {}, "Settings"));
+/*React.createClass({
     render: function() {
       return (
         <h1>Settings</h1>
       );
     }
 });
+*/
 
-var NotFound = React.createClass({
+var NotFound = React.createFactory(React.createElement('h1', {}, "Not Found"));
+/*React.createClass({
   render: function() {
     return (
       <h1>Not Found</h1>
     );
   }
 });
+*/
 
 require('../../styles/main.css');
 require('../../styles/normalize.css');

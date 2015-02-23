@@ -1,6 +1,4 @@
-/**
- * @jsx React.DOM
- */
+/** @jsx React.DOM */
 
 'use strict';
 
@@ -11,6 +9,9 @@ var Config = require('../config.js');
 var InfoPanel = require('./InfoPanel.jsx');
 
 var ProfileOverview = React.createClass({
+  propTypes: {
+    profileId: React.PropTypes.string
+  },
   getInitialState: function() {
     return {profile: null, visible: false};
   },

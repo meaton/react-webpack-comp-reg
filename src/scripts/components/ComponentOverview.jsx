@@ -5,10 +5,15 @@
 'use strict';
 
 var React = require('react');
-var InfoPanel = require('./InfoPanel.jsx')
 var Config = require('../config.js');
 
+/** Bootstrap components */
+var InfoPanel = require('./InfoPanel.jsx');
+
 var ComponentOverview = React.createClass({
+  propTypes: {
+    componentId: React.PropTypes.string
+  },
   getInitialState: function() {
     return { component: null, visible: false }
   },
