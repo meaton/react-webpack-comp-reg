@@ -5,7 +5,7 @@
 'use strict';
 
 var React = require('react/addons');
-var DataTablesRow = React.createFactory(require('./DataTablesRow.jsx'));
+var DataTablesRow = require('./DataTablesRow.jsx');
 var Config = require('../config.js');
 
 //require('../../styles/DataGrid.sass');
