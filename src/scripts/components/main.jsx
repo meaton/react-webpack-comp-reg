@@ -34,8 +34,6 @@ var NotFound = React.createFactory(React.createElement('h1', {}, "Not Found"));
 require('../../styles/main.css');
 require('../../styles/normalize.css');
 
-require('prismjs');
-
 var Main = React.createClass({
   getInitialState: function() {
     return {
