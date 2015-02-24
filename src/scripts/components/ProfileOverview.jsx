@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 'use strict';
 
 var React = require('react');
@@ -13,32 +11,61 @@ var ProfileOverview = React.createClass({
     profileId: React.PropTypes.string
   },
   getInitialState: function() {
-    return {profile: null, visible: false};
+    return {profile: null, profile_xml: null, comments: null, visible: false};
   },
-  loadProfile: function(profileId) {
+  loadProfile: function(profileId, raw_type) {
+    var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
     $.ajax({
       url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId,
-      dataType: 'json',
+      dataType: (raw_type != undefined) ? raw_type : "json",
       username: Config.auth.username,
       password: Config.auth.password,
       xhrFields: {
         withCredentials: true
       },
       success: function(data) {
-        this.setState({profile: data, visible: true});
+        if(raw_type != undefined && raw_type != "json")
+          this.setState({profile_xml: data, visible: true});
+        else
+          this.setState({profile: data, profile_xml: null, comments: this.state.comments, visible: true});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(profileId, status, err.toString());
+      }.bind(this)
+    });
+
+    this.loadComments(profileId);
+  },
+  loadComments: function(profileId) {
+    $.ajax({
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/comments',
+      dataType: "json",
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function(data) {
+          if(data != null)
+            this.setState({comments: data.comment});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(profileId, status, err.toString());
       }.bind(this)
     });
   },
+  loadProfileXml: function() {
+    this.loadProfile(this.props.profileId, "text");
+  },
   componentDidMount: function() {
     if(this.props.profileId != null)
       this.loadProfile(this.props.profileId);
   },
   componentWillReceiveProps: function(nextProps) {
-    if(nextProps.profileId != null)
-      this.loadProfile(nextProps.profileId);
+    if(nextProps.profileId != null && (this.props.profileId != nextProps.profileId)) {
+        this.state.comments = null;
+        this.loadProfile(nextProps.profileId);
+    }
     else this.setState({visible: false});
   },
   render: function() {
@@ -46,7 +73,7 @@ var ProfileOverview = React.createClass({
 
     return (
       <div className={hideClass}>
-        <InfoPanel item={this.state.profile} />
+        <InfoPanel item={this.state.profile} load_data={this.loadProfileXml} xml_data={this.state.profile_xml} comments_data={this.state.comments} />
       </div>
     );
   }
