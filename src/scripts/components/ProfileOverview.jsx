@@ -27,14 +27,15 @@ var ProfileOverview = React.createClass({
         if(raw_type != undefined && raw_type != "json")
           this.setState({profile_xml: data, visible: true});
         else
-          this.setState({profile: data, profile_xml: null, comments: this.state.comments, visible: true});
+          this.setState({profile: data, comments: this.state.comments, visible: true});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(profileId, status, err.toString());
       }.bind(this)
     });
 
-    this.loadComments(profileId);
+    if(this.state.comments == null)
+      this.loadComments(profileId);
   },
   loadComments: function(profileId) {
     $.ajax({
@@ -65,6 +66,8 @@ var ProfileOverview = React.createClass({
     if(nextProps.profileId != null) {
         if(nextProps.profileId != this.props.profileId) {
           this.state.comments = null;
+          this.state.profile_xml = null;
+
           this.loadProfile(nextProps.profileId);
         }
     } else

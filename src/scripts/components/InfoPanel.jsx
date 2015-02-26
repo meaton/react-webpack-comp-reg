@@ -11,8 +11,6 @@ var Panel = require('react-bootstrap/Panel');
 
 //require('../../styles/InfoPanel.sass');
 
-require('prismjs');
-
 var moment = require('moment-timezone');
 
 var InfoPanel = React.createClass({
@@ -22,31 +20,14 @@ var InfoPanel = React.createClass({
     xml_data: React.PropTypes.string // XMLDocument or String
   },
   getInitialState: function() {
-    return { registry: null, xml_data: null, comments_data: [], currentTabIdx: 0 }
-  },
-  getItemData: function(itemId) {
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/items/' + itemId,
-      dataType: 'json',
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
-      success: function(data) {
-        this.setState({registry: data, currentTabIdx: 0});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(itemId, status, err.toString());
-      }.bind(this)
-    });
+    return { xml_data: null, comments_data: [], currentTabIdx: 0 }
   },
   tabSelect: function(index) {
     console.log('tabSelect: ' + index);
     if(index == 1)
       this.props.load_data();
 
-    this.setState({ currentTabIdx: index});
+    this.setState({ currentTabIdx: index });
   },
   componentWillReceiveProps: function(nextProps) {
       if(nextProps.xml_data != null)
@@ -57,9 +38,11 @@ var InfoPanel = React.createClass({
             this.setState({comments_data: nextProps.comments_data});
           else
             this.setState({comments_data: [nextProps.comments_data]})
-
-        this.getItemData(nextProps.item.Header.ID);
       }
+  },
+  componentWillUpdate: function(nextProps, nextState) {
+    if(nextState.currentTabIdx == 1 && nextProps.xml_data == null)
+      this.props.load_data();
   },
   processComments: function() {
     var comments = this.state.comments_data;
@@ -78,18 +61,6 @@ var InfoPanel = React.createClass({
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
   },
-  componentDidUpdate: function() {
-    //if(this.state.xml_data != null)
-      //this.processXmlData(this.refs.xmlcode.getDOMNode())
-  },
-  processXmlData: function(data) {
-    if(Prism != undefined && data != null)
-      Prism.highlightAll();
-      //Prism.highlightElement(data, true);
-      //return Prism.highlight(formatXml(data.substring(55)), Prism.languages.markup); //TODO: issue for large XML string
-
-  //  return null;
-  },
   render: function () {
     console.log('render info');
     var item = this.props.item;
@@ -98,8 +69,8 @@ var InfoPanel = React.createClass({
 
     if(item == null)
       return null;
-    else if(this.state.registry != null)
-      viewer = <ComponentViewer item={this.props.item} registry={this.state.registry} />;
+    else
+      viewer = <ComponentViewer item={this.props.item} />;
 
     return (
       <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile']) ? "profile" : "component"}>
@@ -108,8 +79,7 @@ var InfoPanel = React.createClass({
         </TabPane>
         <TabPane eventKey={1} tab="xml">
             {(this.state.xml_data != null) ?
-            //  <pre><code ref="xmlcode" className="language-markup" dangerouslySetInnerHTML={{__html: formatXml(this.state.xml_data.substring(55))}} /></pre>
-            <pre><code ref="xmlcode" className="language-markup" dangerouslySetInnerHTML={{ __html: formatXml(this.state.xml_data.substring(55)) }} /></pre>
+            <pre><code ref="xmlcode" className="language-markup">{formatXml(this.state.xml_data.substring(55))}</code></pre>
               : "loading.." }
         </TabPane>
         <TabPane eventKey={2} tab={"Comments (" + this.state.comments_data.length + ")"}>
@@ -150,7 +120,7 @@ function formatXml(xml) {
     formatted += padding + node + '\r\n';
     pad += indent;
   }
-  return formatted.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
+  return formatted; //.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
 }
 
 module.exports = InfoPanel;
