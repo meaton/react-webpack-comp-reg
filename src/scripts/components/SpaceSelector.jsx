@@ -44,9 +44,16 @@ var SpaceSelector = React.createClass({
     this.props.multiSelect.requestChange(!this.state.multiSelect);
     this.props.onChange();
   },
+  openViewer: function(evt) {
+    console.log(JSON.stringify(this.props.currentSelection));
+    // transition to new route component/:componentId
+
+  },
   componentWillReceiveProps: function(nextProps) {
     if(this.props.multiSelect.value != nextProps.multiSelect.value)
       this.setState({multiSelect: nextProps.multiSelect.value});
+    if(JSON.stringify(this.props.currentSelection) != JSON.stringify(nextProps.currentSelection))
+      this.forceUpdate();
   },
   componentWillUpdate: function() {
     console.log('is logged in : ' + auth.loggedIn())
@@ -68,7 +75,8 @@ var SpaceSelector = React.createClass({
     return (
       <ButtonGroup className="space_selector">
         {list}
-        <Button bsStyle={(self.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
+        <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
+        <Button bsStyle="primary" disabled={this.state.multiSelect || (this.props.currentSelection.profile == null && this.props.currentSelection.profile == null)} onClick={this.openViewer}>View Selected</Button>
       </ButtonGroup>
     );
   }

@@ -62,11 +62,13 @@ var ProfileOverview = React.createClass({
       this.loadProfile(this.props.profileId);
   },
   componentWillReceiveProps: function(nextProps) {
-    if(nextProps.profileId != null && (this.props.profileId != nextProps.profileId)) {
-        this.state.comments = null;
-        this.loadProfile(nextProps.profileId);
-    }
-    else this.setState({visible: false});
+    if(nextProps.profileId != null) {
+        if(nextProps.profileId != this.props.profileId) {
+          this.state.comments = null;
+          this.loadProfile(nextProps.profileId);
+        }
+    } else
+      this.setState({visible: false});
   },
   render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";

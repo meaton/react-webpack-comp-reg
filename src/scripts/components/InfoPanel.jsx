@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+var ComponentViewer = require('./ComponentViewer.jsx');
 var Config = require('../config.js');
 
 /** Bootstrap components */
@@ -10,7 +11,8 @@ var Panel = require('react-bootstrap/Panel');
 
 //require('../../styles/InfoPanel.sass');
 
-var {PrismCode} = require('react-prism');
+require('prismjs');
+
 var moment = require('moment-timezone');
 
 var InfoPanel = React.createClass({
@@ -76,30 +78,39 @@ var InfoPanel = React.createClass({
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
   },
+  componentDidUpdate: function() {
+    //if(this.state.xml_data != null)
+      //this.processXmlData(this.refs.xmlcode.getDOMNode())
+  },
+  processXmlData: function(data) {
+    if(Prism != undefined && data != null)
+      Prism.highlightAll();
+      //Prism.highlightElement(data, true);
+      //return Prism.highlight(formatXml(data.substring(55)), Prism.languages.markup); //TODO: issue for large XML string
+
+  //  return null;
+  },
   render: function () {
     console.log('render info');
     var item = this.props.item;
     var xmlElement = null;
+    var viewer = null;
 
     if(item == null)
       return null;
-
-    var prismCode = (
-      <PrismCode className="language-xml">{this.state.xml_data}</PrismCode>
-    );
+    else if(this.state.registry != null)
+      viewer = <ComponentViewer item={this.props.item} registry={this.state.registry} />;
 
     return (
       <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile']) ? "profile" : "component"}>
         <TabPane eventKey={0} tab="view">
-          <ul>
-            <li><span>Name:</span>{item.Header.Name}</li>
-            <li><span>Group (Name):</span>{(this.state.registry) ? this.state.registry.groupName : ""}</li>
-            <li><span>Description:</span>{item.Header.Description}</li>
-            <li><span>ConceptLink:</span><a href={item.CMD_Component["@ConceptLink"]}>{item.CMD_Component["@ConceptLink"]}</a></li>
-          </ul>
+          {viewer}
         </TabPane>
         <TabPane eventKey={1} tab="xml">
-            {(this.state.xml_data != null) ? prismCode : "loading.." }
+            {(this.state.xml_data != null) ?
+            //  <pre><code ref="xmlcode" className="language-markup" dangerouslySetInnerHTML={{__html: formatXml(this.state.xml_data.substring(55))}} /></pre>
+            <pre><code ref="xmlcode" className="language-markup" dangerouslySetInnerHTML={{ __html: formatXml(this.state.xml_data.substring(55)) }} /></pre>
+              : "loading.." }
         </TabPane>
         <TabPane eventKey={2} tab={"Comments (" + this.state.comments_data.length + ")"}>
             {this.processComments()}
@@ -108,5 +119,38 @@ var InfoPanel = React.createClass({
     );
   }
 });
+
+/* GIST kurtsson/3f1c8efc0ccd549c9e31 */
+function formatXml(xml) {
+  var formatted = '';
+  var reg = /(>)(<)(\/*)/g;
+  xml = xml.toString().replace(reg, '$1\r\n$2$3');
+  var pad = 0;
+  var nodes = xml.split('\r\n');
+  for(var n in nodes) {
+    var node = nodes[n];
+    var indent = 0;
+    if (node.match(/.+<\/\w[^>]*>$/)) {
+      indent = 0;
+    } else if (node.match(/^<\/\w/)) {
+      if (pad !== 0) {
+        pad -= 1;
+      }
+    } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+      indent = 1;
+    } else {
+      indent = 0;
+    }
+
+    var padding = '';
+    for (var i = 0; i < pad; i++) {
+      padding += '  ';
+    }
+
+    formatted += padding + node + '\r\n';
+    pad += indent;
+  }
+  return formatted.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
+}
 
 module.exports = InfoPanel;

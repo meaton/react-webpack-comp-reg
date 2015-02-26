@@ -228,7 +228,7 @@ var DataTablesGrid = React.createClass({
  	},
   rowClick: function(val, target) {
     var currentItem = this.state.lastSelectedItem;
-    if(currentItem != null && !this.state.multiSelect)
+    if(currentItem != null && currentItem != target && !this.state.multiSelect)
       currentItem.setState({selected: false});
 
     if(this.state.currentType == "profiles")
