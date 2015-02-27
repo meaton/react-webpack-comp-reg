@@ -10,8 +10,9 @@
   "mainInput": "main",
   "mainOutput": "main",
   "dependencies": {
-    "react-bootstrap": "^0.13.0",
+    "react-bootstrap": "^0.15.0",
     "react-router": "^0.11.0",
+    "react-router-bootstrap": "~0.9.0",
     "react": "~0.12.x",
     "moment-timezone": "0.3.0"
   },

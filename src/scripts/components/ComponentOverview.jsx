@@ -1,65 +1,24 @@
 'use strict';
 
 var React = require('react');
-var Config = require('../config.js');
+var ComRegLoader = require('../mixins/Loader');
 
 /** Bootstrap components */
 var InfoPanel = require('./InfoPanel.jsx');
 
 var ComponentOverview = React.createClass({
+  mixins: [ComRegLoader],
   propTypes: {
     componentId: React.PropTypes.string
   },
   getInitialState: function() {
-    return { component: null, component_xml: null, comments: null, visible: false }
-  },
-  loadComponent: function(componentId, raw_type) {
-    var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId,
-      dataType: (raw_type != undefined) ? raw_type : "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
-      success: function(data) {
-        if(raw_type != undefined && raw_type != "json")
-          this.setState({component_xml: data, visible: true});
-        else
-          this.setState({component: data, component_xml: null, visible: true});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(componentId, status, err.toString());
-      }.bind(this)
-    });
-
-    this.loadComments(componentId);
-  },
-  loadComments: function(componentId) {
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId + '/comments',
-      dataType: "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
-      success: function(data) {
-          if(data != null)
-            this.setState({comments: data.comment});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(profileId, status, err.toString());
-      }.bind(this)
-    });
+    return { component: null,
+             component_xml: null,
+             comments: null,
+             visible: false }
   },
   loadComponentXml: function() {
     this.loadComponent(this.props.componentId, "text");
-  },
-  componentDidMount: function() {
-    if(this.props.componentId != null)
-      this.loadComponent(this.props.componentId);
   },
   componentWillReceiveProps: function(nextProps) {
     if(nextProps.componentId && (this.props.componentId != nextProps.componentId)) {
@@ -67,6 +26,10 @@ var ComponentOverview = React.createClass({
       this.loadComponent(nextProps.componentId);
     } else
       this.setState({visible: false});
+  },
+  componentWillUpdate: function(nextProps, nextState) {
+      if(nextState.comments == null && nextState.visible)
+        this.loadComments(this.props.componentId, false);
   },
   render: function () {
     var hideClass = (!this.state.visible) ? "hide" : "show";

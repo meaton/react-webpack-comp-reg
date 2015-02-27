@@ -1,68 +1,29 @@
 'use strict';
 
 var React = require('react');
-var Config = require('../config.js');
+var CompRegLoader = require('../mixins/Loader');
 
 /** Bootstrap components */
 var InfoPanel = require('./InfoPanel.jsx');
 
 var ProfileOverview = React.createClass({
+  mixins: [CompRegLoader],
   propTypes: {
     profileId: React.PropTypes.string
   },
   getInitialState: function() {
-    return {profile: null, profile_xml: null, comments: null, visible: false};
-  },
-  loadProfile: function(profileId, raw_type) {
-    var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId,
-      dataType: (raw_type != undefined) ? raw_type : "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
-      success: function(data) {
-        if(raw_type != undefined && raw_type != "json")
-          this.setState({profile_xml: data, visible: true});
-        else
-          this.setState({profile: data, comments: this.state.comments, visible: true});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(profileId, status, err.toString());
-      }.bind(this)
-    });
-
-    if(this.state.comments == null)
-      this.loadComments(profileId);
-  },
-  loadComments: function(profileId) {
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/comments',
-      dataType: "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
-      success: function(data) {
-          if(data != null)
-            this.setState({comments: data.comment});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(profileId, status, err.toString());
-      }.bind(this)
-    });
+    return {
+      profile: null,
+      profile_xml: null,
+      comments: null,
+      visible: false
+    };
   },
   loadProfileXml: function() {
     this.loadProfile(this.props.profileId, "text");
   },
-  componentDidMount: function() {
-    if(this.props.profileId != null)
-      this.loadProfile(this.props.profileId);
-  },
   componentWillReceiveProps: function(nextProps) {
+    console.log('received profile props');
     if(nextProps.profileId != null) {
         if(nextProps.profileId != this.props.profileId) {
           this.state.comments = null;
@@ -72,6 +33,10 @@ var ProfileOverview = React.createClass({
         }
     } else
       this.setState({visible: false});
+  },
+  componentWillUpdate: function(nextProps, nextState) {
+      if(nextState.comments == null && nextState.visible)
+        this.loadComments(this.props.profileId, true);
   },
   render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";

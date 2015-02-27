@@ -1,13 +1,15 @@
 'use strict';
 
 var React = require('react');
+var {Route} = require('react-router');
 var auth = require('./Authentication').auth;
 
 /** Bootstrap components */
-var ButtonGroup =  require('react-bootstrap/ButtonGroup');
-var DropdownButton = require('react-bootstrap/DropdownButton');
-var MenuItem = require('react-bootstrap/MenuItem');
-var Button = require('react-bootstrap/Button');
+var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
+var DropdownButton = require('react-bootstrap/lib/DropdownButton');
+var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Button = require('react-bootstrap/lib/Button');
+var ButtonLink = require('react-router-bootstrap').ButtonLink;
 
 var SpaceSelector = React.createClass({
   propTypes: {
@@ -32,11 +34,9 @@ var SpaceSelector = React.createClass({
     console.log('mstate: ' + nextState.currentRegIdx);
     if(this.state.currentSpaceIdx != nextState.currentSpaceIdx || this.state.currentRegIndex != nextState.currentRegIdx) {
       var registryName = this.state.spaces[nextState.currentSpaceIdx].registry[nextState.currentRegIdx];
-
       console.log('changed props: ' + registryName.filter);
 
       this.props.onSelect(registryName);
-
       this.setState(nextState);
     }
   },
@@ -61,6 +61,9 @@ var SpaceSelector = React.createClass({
   render: function() {
     var self = this;
 
+    var currentSelect = this.props.currentSelection.profile || this.props.currentSelection.component;
+    console.log('currentSelect: ' + currentSelect);
+
     var list = this.state.spaces.map(function(d, sindex){
       var selectedClass = (self.state.currentSpaceIdx == sindex) ? "active" : "";
       return (
@@ -72,11 +75,25 @@ var SpaceSelector = React.createClass({
       );
     });
 
+    // TODO: cleanup button link
+    var editorLink = null;
+    if(currentSelect != null) {
+      var editorRoute = null;
+      if(this.props.currentSelection.profile != null)
+        editorRoute = "profile";
+      else if(this.props.currentSelection.component != null)
+        editorRoute = "component";
+
+      if(editorRoute != null)
+        editorLink = <ButtonLink to={editorRoute} params={this.props.currentSelection} bsStyle="primary" disabled={this.state.multiSelect || (this.props.currentSelection.profile == null && this.props.currentSelection.component == null)} onClick={this.openViewer}>View Selected</ButtonLink>
+    } else
+      editorLink = <Button bsStyle="primary" disabled={true}>View Selected</Button>
+
     return (
       <ButtonGroup className="space_selector">
         {list}
         <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
-        <Button bsStyle="primary" disabled={this.state.multiSelect || (this.props.currentSelection.profile == null && this.props.currentSelection.profile == null)} onClick={this.openViewer}>View Selected</Button>
+        {editorLink}
       </ButtonGroup>
     );
   }

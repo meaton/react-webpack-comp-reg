@@ -10,7 +10,9 @@ var { auth, Login, Logout } = Authentication;
 
 var ComponentRegApp = require('./ComponentRegApp.jsx');
 var ComponentViewer = require('./ComponentViewer.jsx');
-var PageHeader = require('react-bootstrap/PageHeader');
+var ComponentEditor = require('./ComponentEditor.jsx');
+
+var PageHeader = require('react-bootstrap/lib/PageHeader');
 
 var UserSetting = React.createFactory(React.createElement('h1', {}, "Settings"));
 /*React.createClass({
@@ -72,7 +74,10 @@ var routes = (
       <Route name="login" handler={Login} />
       <Route name="logout" handler={Logout} />
       <Route name="settings" handler={UserSetting} />
-      <Route name="component/:componentId" handler={ComponentViewer} />
+      <Route path="editor" handler={ComponentEditor}>
+        <Route name="component" path="component/:component" handler={ComponentViewer} />
+        <Route name="profile" path="profile/:profile" handler={ComponentViewer} />
+      </Route>
       <DefaultRoute handler={ComponentRegApp} />
     </Route>
 );

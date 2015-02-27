@@ -5,9 +5,9 @@ var ComponentViewer = require('./ComponentViewer.jsx');
 var Config = require('../config.js');
 
 /** Bootstrap components */
-var TabbedArea = require('react-bootstrap/TabbedArea');
-var TabPane = require('react-bootstrap/TabPane');
-var Panel = require('react-bootstrap/Panel');
+var TabbedArea = require('react-bootstrap/lib/TabbedArea');
+var TabPane = require('react-bootstrap/lib/TabPane');
+var Panel = require('react-bootstrap/lib/Panel');
 
 //require('../../styles/InfoPanel.sass');
 
@@ -24,10 +24,12 @@ var InfoPanel = React.createClass({
   },
   tabSelect: function(index) {
     console.log('tabSelect: ' + index);
-    if(index == 1)
-      this.props.load_data();
 
-    this.setState({ currentTabIdx: index });
+    if(index != this.state.currentTabIdx) {
+      if(index == 1)
+        this.props.load_data();
+      this.setState({ currentTabIdx: index });
+    }
   },
   componentWillReceiveProps: function(nextProps) {
       if(nextProps.xml_data != null)
@@ -50,7 +52,7 @@ var InfoPanel = React.createClass({
       return (
         comments.map(function(comment, index) {
           return (
-            <div className="comment">
+            <div key={"comment-" + index} className="comment">
               <span className="comment-name">{comment.userName}</span>
               <span className="comment-date">{ moment(comment.commentDate).format('LLL') }</span>
               <p className="comment-comments">{comment.comments}</p>

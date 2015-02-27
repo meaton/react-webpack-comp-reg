@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Router = require('react-router');
-var Config = require('../config.js');
+var Config = require('../config');
 
 var Login = React.createClass({
   mixins: [ Router.Navigation ],

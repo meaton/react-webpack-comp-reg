@@ -12,7 +12,7 @@ var DataTablesGrid = require('./DataTablesGrid.jsx');
 
 var ComponentRegApp = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
-  //mixins: [ Authentication, React.addons.LinkedStateMixin ], //TODO: enable linked state mixins to tie state variable (currentSelectedItem) to children component properties
+  //mixins: [ Authentication ],
   getInitialState: function() {
     return { filter: "published", type: "profiles", profileId: null, componentId: null, multiSelect: false };
   },
