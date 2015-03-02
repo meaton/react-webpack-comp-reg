@@ -18,7 +18,7 @@ var DataTablesWrapper = React.createClass({
       self.state.redraw = false;
     });
   },
-  updateRows: function() {
+  /*updateRows: function() {
     //TODO: update and draw of row state still not working with filtered results, likely destroy of table req, alt opt implement own search/filter feature in React component
     console.log("child len: " + this.props.children.length);
 
@@ -45,7 +45,7 @@ var DataTablesWrapper = React.createClass({
         } else
           return child;
     }.bind(this));
-  },
+  },*/
   render: function() {
     console.log('render wrapper');
     return (
@@ -63,13 +63,13 @@ var DataTablesWrapper = React.createClass({
           </tr>
         </thead>
         <tbody>
-          {this.updateRows()}
+          {this.props.children}
         </tbody>
       </table>
     );
   }
 });
-
+var updateCount = 0;
 var DataTablesGrid = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
   propTypes: {
@@ -84,6 +84,10 @@ var DataTablesGrid = React.createClass({
   },
   getInitialState: function() {
     return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multiSelect: this.props.multiple.value, lastSelectedItem: null };
+  },
+  clearTable: function() {
+      $('#' + this.getDOMNode().id).hide();
+      $('#' + this.getDOMNode().id).DataTable().destroy();
   },
   loadData: function(nextFilter, nextType) {
     var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
@@ -120,7 +124,8 @@ var DataTablesGrid = React.createClass({
    });
  },
   componentWillMount: function(){
- 		this.loadData();
+ 		 console.log('will mount datagrid');
+     this.loadData();
  	},
  	componentDidMount: function(){
  		// note: data currently loaded after component mount not provided on init
@@ -139,24 +144,28 @@ var DataTablesGrid = React.createClass({
     });*/
  	},
   shouldComponentUpdate: function(nextProps, nextState) {
-    console.log('filter: ' + nextProps.filter);
-    console.log('currentFilter: ' + nextState.currentFilter);
-
+    //console.log('filter: ' + nextProps.filter);
+    //console.log('currentFilter: ' + nextState.currentFilter);
+    //console.log('type: ' + nextProps.type);
+    //console.log('currentType:' + nextState.currentType);
+    //console.log('data count:' + nextState.data.length);
+    //console.log('datatable:' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
     if(this.props.multiple.value != nextState.multiSelect) {
       return true;
-    } else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType)
-      return !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
-    else {
-      $('#' + this.getDOMNode().id).hide();
-      $('#' + this.getDOMNode().id).DataTable().destroy();
-
+    } else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
+      console.log('filters eq:' + (this.state.data.length));
+      var newData = (this.state.data.length == 0 && nextState.data.length > 0);
+      if(newData) this.clearTable();
+      return  newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
+    } else {
+      this.clearTable();
       this.loadData(nextProps.filter, nextProps.type);
+      return false;
     }
-
-    return false;
   },
  	componentDidUpdate: function(){
-     console.log('did update');
+     updateCount++;
+     console.log('did update' + updateCount);
 
      var self = this;
      $('#' + this.refs.wrapper.getDOMNode().id).show();
@@ -247,7 +256,6 @@ var DataTablesGrid = React.createClass({
   },
  	render: function(){
      console.log('render');
-
      var self = this;
  	   var x = this.state.data.map(function(d, index){
  			return (

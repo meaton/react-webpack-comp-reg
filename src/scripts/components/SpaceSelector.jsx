@@ -17,7 +17,7 @@ var SpaceSelector = React.createClass({
     onSelect: React.PropTypes.func,
     multiSelect: React.PropTypes.shape({
       value: React.PropTypes.bool.isRequired,
-      requestChange: React.PropTypes.func.isRequiredđ
+      requestChange: React.PropTypes.func.isRequired
     })
   },
   getInitialState: function() {
@@ -47,7 +47,6 @@ var SpaceSelector = React.createClass({
   openViewer: function(evt) {
     console.log(JSON.stringify(this.props.currentSelection));
     // transition to new route component/:componentId
-
   },
   componentWillReceiveProps: function(nextProps) {
     if(this.props.multiSelect.value != nextProps.multiSelect.value)
