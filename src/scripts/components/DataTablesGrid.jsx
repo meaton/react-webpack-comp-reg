@@ -69,6 +69,7 @@ var DataTablesWrapper = React.createClass({
     );
   }
 });
+
 var updateCount = 0;
 var DataTablesGrid = React.createClass({
   mixins: [React.addons.LinkedStateMixin],
@@ -89,9 +90,8 @@ var DataTablesGrid = React.createClass({
       $('#' + this.getDOMNode().id).hide();
       $('#' + this.getDOMNode().id).DataTable().destroy();
   },
-  loadData: function(nextFilter, nextType) {
+  loadData: function(nextFilter, nextType) { // TODO: Move into Loader mixin
     var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
-
     $.ajax({
      url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
      accepts: {
@@ -119,7 +119,7 @@ var DataTablesGrid = React.createClass({
        this.setState({data: (_data != null) ? _data : [], currentFilter: this.props.filter, currentType: this.props.type, lastSelectedItem: null});
      }.bind(this),
      error: function(xhr, status, err) {
-       console.error(status, err.toString());
+       console.error(status, err);
      }.bind(this)
    });
  },

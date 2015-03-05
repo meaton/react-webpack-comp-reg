@@ -34,13 +34,12 @@ var InfoPanel = React.createClass({
   componentWillReceiveProps: function(nextProps) {
       if(nextProps.xml_data != null)
         this.setState({xml_data: nextProps.xml_data});
-      else if(nextProps.item != null) {
-        if(nextProps.comments_data != null)
-          if($.isArray(nextProps.comments_data))
-            this.setState({comments_data: nextProps.comments_data});
-          else
-            this.setState({comments_data: [nextProps.comments_data]})
-      }
+      
+      if(nextProps.item != null && nextProps.comments_data != null)
+        if($.isArray(nextProps.comments_data))
+          this.setState({comments_data: nextProps.comments_data});
+        else
+          this.setState({comments_data: [nextProps.comments_data]})
   },
   componentWillUpdate: function(nextProps, nextState) {
     if(nextState.currentTabIdx == 1 && nextProps.xml_data == null)
@@ -72,7 +71,9 @@ var InfoPanel = React.createClass({
     if(item == null)
       return null;
     else
-      viewer = <ComponentViewer item={this.props.item} />;
+      viewer = (
+        <ComponentViewer item={this.props.item} />
+      );
 
     return (
       <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile']) ? "profile" : "component"}>

@@ -18,18 +18,26 @@ var ComponentOverview = React.createClass({
              visible: false }
   },
   loadComponentXml: function() {
-    this.loadComponent(this.props.componentId, "text");
+    var self = this;
+    this.loadComponent(this.props.componentId, "text", function(data) {
+      self.setState({component_xml: data, visible: true});
+    });
   },
   componentWillReceiveProps: function(nextProps) {
+    var self = this;
     if(nextProps.componentId && (this.props.componentId != nextProps.componentId)) {
       this.state.comments = null;
-      this.loadComponent(nextProps.componentId);
+      this.state.component_xml = null;
+
+      this.loadComponent(nextProps.componentId, "json", function(data) {
+        self.setState({component: data, visible: true});
+      });
+
+      this.loadComments(nextProps.componentId, false, function(comments) {
+        self.setState({comments: comments});
+      });
     } else
       this.setState({visible: false});
-  },
-  componentWillUpdate: function(nextProps, nextState) {
-      if(nextState.comments == null && nextState.visible)
-        this.loadComments(this.props.componentId, false);
   },
   render: function () {
     var hideClass = (!this.state.visible) ? "hide" : "show";
