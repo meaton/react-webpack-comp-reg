@@ -38,6 +38,32 @@ var LoaderMixin = {
       }.bind(this)
     });
   },
+  getItemName: function(itemId, cb) {
+    var name = null;
+    this.loadRegistryItem(itemId, function(data) {
+      name = data.name;
+    });
+
+    return name;
+  },
+  loadRegistryItem: function(itemId, cb) {
+    $.ajax({
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/items/' + itemId,
+      dataType: "json",
+      username: Config.auth.username,
+      password: Config.auth.password,
+      async: false,
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function(data) {
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(componentId, status, err);
+      }.bind(this)
+    });
+  },
   loadComments: function(componentId, isProfile, cb) {
     var reg_type = (isProfile) ? "profiles" : "components";
     $.ajax({

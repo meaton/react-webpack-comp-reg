@@ -77,17 +77,30 @@ var ComponentViewer = React.createClass({
     );
   },
   printElement: function(elem, index) {
+    var elemAttrs = function(elem) {
+      var lb = React.createElement('br');
+      var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
+      var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1;
+      var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, elem['@ConceptLink']), lb] : null;
+      var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: null;
+      var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
+      return {conceptLink_attr, card_attr, multilingual_attr};
+    };
+
     return (
       <div key={"elem"+index} className="CMDElement">
-        <span>Element: </span>
-        {elem['@name']}  {elem['@ValueScheme']}
+        <span>Element: </span>{elem['@name']} {elem['@ValueScheme']}
+        <div className="elemAttrs">
+          {elemAttrs(elem)}
+        </div>
       </div>
-    )
+    );
   },
   printComponent: function(comp, index) {
     var self = this;
+    var cindex = index;
     var header = comp.Header;
-    var compName = (header != undefined) ? header.Name : comp['@name'];
+    var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
     var isOpen = comp.open;
 
     comp = (header != undefined) ? comp.CMD_Component : comp;
@@ -114,17 +127,23 @@ var ComponentViewer = React.createClass({
       compComps = [compComps];
 
     compComps = (compComps != undefined) ?
-      compComps = compComps.map(function(nestedComp, index) {
+      compComps = compComps.map(function(nestedComp, ncindex) {
         var compId;
-        if(nestedComp.hasOwnProperty("@ComponentId"))
+        if(nestedComp.hasOwnProperty("@ComponentId")) //TODO find cases when ComponentId is missing
           compId = nestedComp["@ComponentId"];
         else if(nestedComp.Header != undefined)
           compId = nestedComp.Header.ID;
         else
           compId = null;
-        console.log('nested comp: ' + nestedComp.compId);
 
-        return (nestedComp.compId != undefined) ? <div>{nestedComp.compId}</div> : <div><span className="nested">Component (level--): </span>{nestedComp['@name']}</div>//<ComponentViewer item={comp} display="false" />;
+        //console.log('nested comp: ' + require('util').inspect(nestedComp));
+        var nameIdValue = (compId != null && !nestedComp.hasOwnProperty('@name')) ? self.getItemName(compId) : nestedComp['@name']; // load name if doesn't exist
+        return (
+          <div>
+            <span className="nested">Component (level++): </span>
+            <a href="#info" onClick={self.toggleComponent.bind(self, cindex, ncindex)}>{nameIdValue}</a>
+          </div>
+        )
     }) : null;
 
     var cx = React.addons.classSet;
@@ -135,7 +154,7 @@ var ComponentViewer = React.createClass({
 
     return (
        <div key={"comp"+index} className="CMDComponent">
-        <span>Component: </span><a href="#info" onClick={this.toggleComponent.bind(this, index)}>{compName}</a>
+        <span>Component: </span><a href="#info" onClick={this.toggleComponent.bind(this, index, null)}>{compName}</a>
         {compProps}
         <div className={classes}>
           <div className="childElements">{compElems}</div>
@@ -144,13 +163,15 @@ var ComponentViewer = React.createClass({
        </div>
      )
   },
-  toggleComponent: function(compIdx) {
+  toggleComponent: function(compIdx, nestedCompIdx, evt) {
     var comp = (this.state.childComponents != null && compIdx <= this.state.childComponents.length && compIdx >= 0) ? this.state.childComponents[compIdx] : null;
-    if(comp != null) {
+    if(comp != null && nestedCompIdx == undefined) {
       //console.log('component click: ' + comp.Header.ID);
       this.state.childComponents[compIdx] = update(this.state.childComponents[compIdx], { open: { $set: !comp.open }});
       this.setState({childComponents: this.state.childComponents});
-    } else
+    } else if(comp != null && nestedCompIdx != null)
+      console.log('nested component click: ' + comp.CMD_Component.CMD_Component[nestedCompIdx]['@ComponentId']);
+    else
       console.log('component not found: ' + compIdx);
   },
   render: function () {
