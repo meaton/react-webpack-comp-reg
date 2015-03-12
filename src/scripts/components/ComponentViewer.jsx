@@ -5,6 +5,8 @@ var Router = require('react-router');
 var update = React.addons.update;
 
 var CompRegLoader = require('../mixins/Loader');
+var CMDComponent = require('./CMDComponent');
+var CMDElement = require('./CMDElement');
 
 require('../../styles/ComponentViewer.sass');
 
@@ -39,9 +41,10 @@ var ComponentViewer = React.createClass({
     if(JSON.stringify(item) != JSON.stringify(newItem))
       this.parseComponent(newItem, nextState);
   },
-  parseComponent: function(item, state) {
+  parseComponent: function(item, state) { //TODO: Handle expansion in further depths
     console.log('parseComponent');
     //console.log('state: ' + JSON.stringify(state));
+
     if(state.childComponents == null && state.childElements == null) {
       var root_Component = item.CMD_Component;
       var childComponents = (!$.isArray(root_Component.CMD_Component) && root_Component.CMD_Component != null) ? [root_Component.CMD_Component] : (root_Component.CMD_Component||[]);
@@ -63,6 +66,7 @@ var ComponentViewer = React.createClass({
           childComponents[i] = update(childComponents[i], {open: {$set: false}})
           console.log('childComponent: ' + JSON.stringify(childComponents[i]));
         }
+
       this.setState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component });
     }
   },
@@ -76,108 +80,9 @@ var ComponentViewer = React.createClass({
       </ul>
     );
   },
-  printElement: function(elem, index) {
-    var elemAttrs = function(elem) {
-      var lb = React.createElement('br');
-      var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
-      var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1;
-      var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, elem['@ConceptLink']), lb] : null;
-      var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: null;
-      var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
-      return {conceptLink_attr, card_attr, multilingual_attr};
-    };
-
-    return (
-      <div key={"elem"+index} className="CMDElement">
-        <span>Element: </span>{elem['@name']} {elem['@ValueScheme']}
-        <div className="elemAttrs">
-          {elemAttrs(elem)}
-        </div>
-      </div>
-    );
-  },
-  printComponent: function(comp, index) {
-    var self = this;
-    var cindex = index;
-    var header = comp.Header;
-    var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
-    var isOpen = comp.open;
-
-    comp = (header != undefined) ? comp.CMD_Component : comp;
-
-    console.log('comp header: ' + JSON.stringify(header));
-    console.log('open: ' + isOpen);
-
-    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
-    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
-
-    var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
-    var compElems = comp.CMD_Element;
-
-    console.log('comp elems: ' + $.isArray(compElems));
-    if(!$.isArray(compElems) && compElems != undefined)
-      compElems = [compElems];
-    compElems = (compElems != undefined) ? compElems.map(function(elem, index) {
-      console.log()
-      return self.printElement(elem, index)
-    }) : null;
-
-    var compComps = comp.CMD_Component;
-    if(!$.isArray(compComps) && compComps != undefined)
-      compComps = [compComps];
-
-    compComps = (compComps != undefined) ?
-      compComps = compComps.map(function(nestedComp, ncindex) {
-        var compId;
-        if(nestedComp.hasOwnProperty("@ComponentId")) //TODO find cases when ComponentId is missing
-          compId = nestedComp["@ComponentId"];
-        else if(nestedComp.Header != undefined)
-          compId = nestedComp.Header.ID;
-        else
-          compId = null;
-
-        //console.log('nested comp: ' + require('util').inspect(nestedComp));
-        var nameIdValue = (compId != null && !nestedComp.hasOwnProperty('@name')) ? self.getItemName(compId) : nestedComp['@name']; // load name if doesn't exist
-        return (
-          <div>
-            <span className="nested">Component (level++): </span>
-            <a href="#info" onClick={self.toggleComponent.bind(self, cindex, ncindex)}>{nameIdValue}</a>
-          </div>
-        )
-    }) : null;
-
-    var cx = React.addons.classSet;
-    var classes = cx({
-      'hide': !isOpen,
-      'componentBody': true
-    });
-
-    return (
-       <div key={"comp"+index} className="CMDComponent">
-        <span>Component: </span><a href="#info" onClick={this.toggleComponent.bind(this, index, null)}>{compName}</a>
-        {compProps}
-        <div className={classes}>
-          <div className="childElements">{compElems}</div>
-          <div className="childComponents">{compComps}</div>
-        </div>
-       </div>
-     )
-  },
-  toggleComponent: function(compIdx, nestedCompIdx, evt) {
-    var comp = (this.state.childComponents != null && compIdx <= this.state.childComponents.length && compIdx >= 0) ? this.state.childComponents[compIdx] : null;
-    if(comp != null && nestedCompIdx == undefined) {
-      //console.log('component click: ' + comp.Header.ID);
-      this.state.childComponents[compIdx] = update(this.state.childComponents[compIdx], { open: { $set: !comp.open }});
-      this.setState({childComponents: this.state.childComponents});
-    } else if(comp != null && nestedCompIdx != null)
-      console.log('nested component click: ' + comp.CMD_Component.CMD_Component[nestedCompIdx]['@ComponentId']);
-    else
-      console.log('component not found: ' + compIdx);
-  },
   render: function () {
     var self = this;
     var item = this.getRootComponent();
-
     //console.log('item: ' + item);
     //console.log('state: ' + JSON.stringify(this.state.profile));
 
@@ -192,7 +97,7 @@ var ComponentViewer = React.createClass({
         childElem_jsx = (
           <div className="childElements">{this.state.childElements.map(
             function(elem, index) {
-              return self.printElement(elem, index);
+              return <CMDElement key={index} elem={elem} viewer={self} />;
             }
           )}
           </div>
@@ -202,8 +107,7 @@ var ComponentViewer = React.createClass({
         childComp_jsx = (
           <div className="childComponents">{this.state.childComponents.map(
             function(comp, index) {
-              //console.log(JSON.stringify(comp));
-              return self.printComponent(comp, index);
+              return <CMDComponent key={index} component={comp} viewer={self} />
             }
           )}
           </div>
