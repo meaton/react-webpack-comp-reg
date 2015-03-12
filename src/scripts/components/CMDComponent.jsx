@@ -11,11 +11,17 @@ var CMDComponent = React.createClass({
     return { component: this.props.component, parentComponent: this.props.parent }
   },
   toggleComponent: function(evt) {
-    this.setState({ component: update(this.state.component, { open: { $set: !this.state.component.open }})});
-    //TODO: if component is not loaded, load data before setting new state change
+    var self = this;
+    if(!this.state.component.hasOwnProperty('open') && this.state.component.hasOwnProperty('@ComponentId'))
+      this.props.viewer.loadComponent(this.state.component["@ComponentId"], "json", function(data) {
+            console.log('data child comp: ' + (data.CMD_Component != null));
+            self.setState({component: update(data, {open: {$set: true}}) });
+        });
+    else
+      this.setState({ component: update(this.state.component, { open: { $set: !this.state.component.open }})});
   },
   render: function () {
-    //console.log('comp: ' + require('util').inspect(comp));
+    console.log('comp inspect: ' + require('util').inspect(this.state.component));
     var self = this;
     var comp = this.state.component;
     var parentComp = this.state.parentComponent;
@@ -31,7 +37,8 @@ var CMDComponent = React.createClass({
     var header = comp.Header;
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
 
-    comp = (header != undefined) ? comp.CMD_Component : comp;
+    if(header != undefined)
+      comp = comp.CMD_Component;
 
     console.log('comp header: ' + JSON.stringify(header));
     console.log('open: ' + this.state.component.open);
