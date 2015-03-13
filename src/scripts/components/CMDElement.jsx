@@ -28,9 +28,10 @@ var CMDElement = React.createClass({
       if(valueScheme != undefined)
         if(valueScheme.pattern != undefined)
           valueScheme = valueScheme.pattern;
-        else
+        else {
+          var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
           valueScheme = (
-            <DropdownButton bsSize="small" title={(valueScheme.enumeration.item.length > 0 && typeof valueScheme.enumeration.item[0] != "string") ? valueScheme.enumeration.item[0]['$'] : valueScheme.enumeration.item[0]}>
+            <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
               {
                 $.map(valueScheme.enumeration.item, function(item, index) {
                   return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
@@ -38,6 +39,7 @@ var CMDElement = React.createClass({
               }
             </DropdownButton>
           );
+        }
     }
     return (
       <div className="CMDElement">
