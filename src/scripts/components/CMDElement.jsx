@@ -11,10 +11,12 @@ var CMDElement = React.createClass({
     var lb = React.createElement('br');
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1;
+    var docu_attr = (elem.hasOwnProperty("@Documentation")) ? elem['@Documentation'] : null;
+    var display_attr = (elem.hasOwnProperty("@DisplayPriority")) ? elem['@DisplayPriority'] : null;
     var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, elem['@ConceptLink']), lb] : null;
-    var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: "Multilingual: false";
+    var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: null;
     var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
-    return {conceptLink_attr, card_attr, multilingual_attr};
+    return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
   render: function () {
     //TODO: Use ValueScheme and display enums
@@ -24,15 +26,18 @@ var CMDElement = React.createClass({
     if(typeof valueScheme != "string") {
       valueScheme = this.props.elem.ValueScheme;
       if(valueScheme != undefined)
-        valueScheme = (
-          <DropdownButton bsSize="small" title={(valueScheme.enumeration.item.length > 0 && typeof valueScheme.enumeration.item[0] != "string") ? valueScheme.enumeration.item[0]['$'] : valueScheme.enumeration.item[0]}>
-            {
-              $.map(valueScheme.enumeration.item, function(item, index) {
-                return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
-              })
-            }
-          </DropdownButton>
-        );
+        if(valueScheme.pattern != undefined)
+          valueScheme = valueScheme.pattern;
+        else
+          valueScheme = (
+            <DropdownButton bsSize="small" title={(valueScheme.enumeration.item.length > 0 && typeof valueScheme.enumeration.item[0] != "string") ? valueScheme.enumeration.item[0]['$'] : valueScheme.enumeration.item[0]}>
+              {
+                $.map(valueScheme.enumeration.item, function(item, index) {
+                  return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
+                })
+              }
+            </DropdownButton>
+          );
     }
     return (
       <div className="CMDElement">
