@@ -37,7 +37,7 @@ var CMDComponent = React.createClass({
     var header = comp.Header;
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
 
-    if(header != undefined)
+    if(header != undefined && comp.CMD_Component != undefined)
       comp = comp.CMD_Component;
 
     console.log('comp header: ' + JSON.stringify(header));
