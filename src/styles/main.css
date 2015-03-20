@@ -22,4 +22,4 @@ html, body {
   background: #eee;
 }
 
-a { color: #666; }
+a { cursor: pointer; color: #666; }
