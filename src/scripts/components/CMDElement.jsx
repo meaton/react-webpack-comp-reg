@@ -13,7 +13,7 @@ var CMDElement = React.createClass({
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1;
     var docu_attr = (elem.hasOwnProperty("@Documentation")) ? [React.createElement("span", { className: "attrElem" }, "Documentation: " + elem['@Documentation']), lb] : null;
     var display_attr = (elem.hasOwnProperty("@DisplayPriority")) ? [React.createElement("span", { className: "attrElem" }, "DisplayPriority: " + elem['@DisplayPriority']), lb] : null;
-    var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, "ConceptLink: ", new React.createElement("a", { href: elem['@ConceptLink'] }, elem['@ConceptLink']) ), lb] : null;
+    var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, "ConceptLink: ", new React.createElement("a", { href: elem['@ConceptLink'], target: "_blank" }, elem['@ConceptLink']) ), lb] : null;
     var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: null;
     var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
@@ -51,17 +51,22 @@ var CMDElement = React.createClass({
     var valueScheme = this.getValueScheme(this.props.elem);
     console.log('rendering element: ' + require('util').inspect(this.props.elem));
 
-    var attrList = (this.props.elem.AttributeList != undefined) ? (
-      <div className="attrList">AttributeList:
-        <div className="attrAttr">
-        {
-          $.map(this.props.elem.AttributeList, function(attr) {
-            return attr.Name + " " + self.getValueScheme(attr);
-          })
-        }
+    var attrList = null;
+    if(this.props.elem.AttributeList != undefined) {
+      var attrSet = ($.isArray(this.props.elem.AttributeList.Attribute)) ? this.props.elem.AttributeList.Attribute : this.props.elem.AttributeList;
+      attrList = (
+        <div className="attrList">AttributeList:
+          <div className="attrAttr">
+          {
+            $.map(attrSet, function(attr) {
+              var attrVal = self.getValueScheme(attr);
+              return React.createElement('div', { className: "attrVal"}, attr.Name + " " , attrVal);
+            })
+          }
+          </div>
         </div>
-      </div>
-    ) : null;
+      );
+    }
 
     return (
       <div className="CMDElement">

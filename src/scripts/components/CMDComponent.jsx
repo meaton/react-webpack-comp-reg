@@ -79,7 +79,7 @@ var CMDComponent = React.createClass({
 
     return (
         <div className="CMDComponent">
-         <span>Component: </span><a href="#info" onClick={this.toggleComponent}>{compName}</a>
+         <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
          <div className="componentProps">{compProps}</div>
          <div className={classes}>
            <div className="childElements">{compElems}</div>
