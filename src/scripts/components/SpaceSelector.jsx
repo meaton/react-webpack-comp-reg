@@ -44,10 +44,6 @@ var SpaceSelector = React.createClass({
     this.props.multiSelect.requestChange(!this.state.multiSelect);
     this.props.onChange();
   },
-  openViewer: function(evt) {
-    console.log(JSON.stringify(this.props.currentSelection));
-    // transition to new route component/:componentId
-  },
   componentWillReceiveProps: function(nextProps) {
     if(this.props.multiSelect.value != nextProps.multiSelect.value)
       this.setState({multiSelect: nextProps.multiSelect.value});
@@ -59,10 +55,6 @@ var SpaceSelector = React.createClass({
   },
   render: function() {
     var self = this;
-
-    var currentSelect = this.props.currentSelection.profile || this.props.currentSelection.component;
-    console.log('currentSelect: ' + currentSelect);
-
     var list = this.state.spaces.map(function(d, sindex){
       var selectedClass = (self.state.currentSpaceIdx == sindex) ? "active" : "";
       return (
@@ -73,27 +65,12 @@ var SpaceSelector = React.createClass({
         </DropdownButton>
       );
     });
-
-    // TODO: cleanup button link
-    var editorLink = null;
-    if(currentSelect != null) {
-      var editorRoute = null;
-      if(this.props.currentSelection.profile != null)
-        editorRoute = "profile";
-      else if(this.props.currentSelection.component != null)
-        editorRoute = "component";
-
-      if(editorRoute != null)
-        editorLink = <ButtonLink to={editorRoute} params={this.props.currentSelection} bsStyle="primary" disabled={this.state.multiSelect || (this.props.currentSelection.profile == null && this.props.currentSelection.component == null)} onClick={this.openViewer}>View Selected</ButtonLink>
-    } else
-      editorLink = <Button bsStyle="primary" disabled={true}>View Selected</Button>
-
     return (
+      <div>
       <ButtonGroup className="space_selector">
         {list}
         <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
-        {editorLink}
-      </ButtonGroup>
+      </ButtonGroup></div>
     );
   }
 });

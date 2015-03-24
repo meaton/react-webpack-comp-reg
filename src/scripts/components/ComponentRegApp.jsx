@@ -6,12 +6,14 @@ var Profile = require('./ProfileOverview.jsx');
 var Component = require('./ComponentOverview.jsx');
 var SpaceSelector = require('./SpaceSelector.jsx');
 var DataTablesGrid = require('./DataTablesGrid.jsx');
+var DataTablesBtnGroup = require('./BtnMenuGroup.jsx');
+var btnMenuGroup = require('../mixins/BtnGroupEvents');
 
 // Export React so the devtools can find it
 (window !== window.top ? window.top : window).React = React;
 
 var ComponentRegApp = React.createClass({
-  mixins: [React.addons.LinkedStateMixin],
+  mixins: [btnMenuGroup, React.addons.LinkedStateMixin],
   //mixins: [ Authentication ],
   getInitialState: function() {
     return { filter: "published", type: "profiles", profileId: null, componentId: null, multiSelect: false };
@@ -31,7 +33,8 @@ var ComponentRegApp = React.createClass({
   render: function() {
     return (
       <div className="main">
-        <SpaceSelector onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} currentSelection={{profile: this.state.profileId, component: this.state.componentId}} />
+        <SpaceSelector onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
+        <DataTablesBtnGroup { ... this.getBtnGroupProps() } />
         <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
         <Profile profileId={this.state.profileId} />
         <Component componentId={this.state.componentId} />

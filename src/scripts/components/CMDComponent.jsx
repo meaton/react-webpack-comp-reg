@@ -8,7 +8,7 @@ var update = React.addons.update;
 
 var CMDComponent = React.createClass({
   getInitialState: function() {
-    return { component: this.props.component, parentComponent: this.props.parent }
+    return { component: this.props.component, parentComponent: this.props.parent, editMode: (this.props.editMode != undefined) ? this.props.editMode : false }
   },
   toggleComponent: function(evt) {
     var self = this;
@@ -40,11 +40,17 @@ var CMDComponent = React.createClass({
     if(header != undefined && comp.CMD_Component != undefined)
       comp = comp.CMD_Component;
 
+    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
+    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
+
+    if(this.state.editMode)
+      return (
+        <div>ComponentId: {compName} Cardinality: {minC + " - " + maxC}</div>
+      );
+
     console.log('comp header: ' + JSON.stringify(header));
     console.log('open: ' + this.state.component.open);
 
-    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
-    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
     var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
 
     var compElems = comp.CMD_Element;
@@ -55,7 +61,7 @@ var CMDComponent = React.createClass({
 
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
-        return <CMDElement key={index} elem={elem} />
+        return <CMDElement key={index} elem={elem} editMode={self.state.editMode} />
       });
 
     var compComps = comp.CMD_Component;
@@ -65,7 +71,7 @@ var CMDComponent = React.createClass({
 
     if(compComps != undefined)
       compComps = compComps.map(function(nestedComp, ncindex) {
-        return <CMDComponent key={ncindex} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} />
+        return <CMDComponent key={ncindex} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} />
       });
 
     var cx = React.addons.classSet;
@@ -76,6 +82,8 @@ var CMDComponent = React.createClass({
 
     if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
       compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
+
+    //TODO: incl component attributes (root level, other)
 
     return (
         <div className="CMDComponent">

@@ -7,6 +7,9 @@ var MenuItem = require('react-bootstrap/lib/MenuItem');
 //require('../../styles/CMDElement.sass');
 
 var CMDElement = React.createClass({
+  getInitialState: function() {
+    return { editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
+  },
   elemAttrs: function(elem) {
     var lb = React.createElement('br');
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
@@ -49,8 +52,16 @@ var CMDElement = React.createClass({
   render: function () {
     var self = this;
     var valueScheme = this.getValueScheme(this.props.elem);
-    console.log('rendering element: ' + require('util').inspect(this.props.elem));
 
+    console.log('rendering element: ' + require('util').inspect(this.props.elem));
+    if(this.state.editMode) {
+      var displayPr = (this.props.elem['@DisplayPriority']) ? " Display priority: " + this.props.elem['@DisplayPriority'] : "";
+      var cardMaxMin = " Cardinality: " + this.props.elem['@CardinalityMin'] + " - " + this.props.elem['@CardinalityMax'];
+      var valSch = (typeof valueScheme == "string") ? valueScheme : "";
+      return (
+        <div>Element: {"Name: " + this.props.elem['@name'] + " Type: " + valSch + cardMaxMin + displayPr}</div>
+      );
+    }
     var attrList = null;
     if(this.props.elem.AttributeList != undefined) {
       var attrSet = ($.isArray(this.props.elem.AttributeList.Attribute)) ? this.props.elem.AttributeList.Attribute : this.props.elem.AttributeList;

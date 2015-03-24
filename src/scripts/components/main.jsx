@@ -14,25 +14,27 @@ var ComponentEditor = require('./ComponentEditor.jsx');
 
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 
-var UserSetting = React.createFactory(React.createElement('h1', {}, "Settings"));
-/*React.createClass({
+var UserSettings = React.createClass({
     render: function() {
       return (
         <h1>Settings</h1>
       );
     }
 });
-*/
 
-var NotFound = React.createFactory(React.createElement('h1', {}, "Not Found"));
-/*React.createClass({
+var NotFound = React.createClass({
   render: function() {
     return (
       <h1>Not Found</h1>
     );
   }
 });
-*/
+
+var Import = React.createClass({
+  render: function() {
+    return <h1>Importer</h1>
+  }
+});
 
 require('../../styles/main.css');
 require('../../styles/normalize.css');
@@ -73,10 +75,12 @@ var routes = (
       <NotFoundRoute handler={NotFound}/>
       <Route name="login" handler={Login} />
       <Route name="logout" handler={Logout} />
-      <Route name="settings" handler={UserSetting} />
+      <Route name="settings" handler={UserSettings} />
+      <Route name="import" handler={Import} />
       <Route path="editor" handler={ComponentEditor}>
         <Route name="component" path="component/:component" handler={ComponentViewer} />
         <Route name="profile" path="profile/:profile" handler={ComponentViewer} />
+        <Route name="newComponent" path="new" handler={ComponentViewer} />
       </Route>
       <DefaultRoute handler={ComponentRegApp} />
     </Route>

@@ -21,5 +21,12 @@ html, body {
   padding-left: 20px;
   background: #eee;
 }
+.space_selector {
+  margin-bottom: 20px
+}
+
+.space_selector.btn-group, .actionMenu.btn-group {
+  padding-left: 20px;
+}
 
 a { cursor: pointer; color: #666; }
