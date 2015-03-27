@@ -82,6 +82,117 @@ var LoaderMixin = {
       }.bind(this)
     });
   },
+  saveProfile: function(profileId, publish, cb) {
+    var actionType = (publish) ? "publish" : "update";
+    var registry = this.state.registry;
+    var data = this.state.profile;
+
+    var fd = new FormData();
+    fd.append('profileId', profileId);
+    fd.append('name', data.Header.Name);
+    fd.append('description', data.Header.Description);
+    fd.append('group', registry.groupName);
+    fd.append('domainName', registry.domainName);
+    fd.append('data', new Blob([ JSON.stringify(data.CMD_Component) ], { type: "application/json" }));
+
+    /* CORS issue using XHR natively
+    var createCORSRequest = function(method, url) {
+      var xhr = new XMLHttpRequest();
+      if ("withCredentials" in xhr) {
+
+        // Check if the XMLHttpRequest object has a "withCredentials" property.
+        // "withCredentials" only exists on XMLHTTPRequest2 objects.
+        xhr.open(method, url, true);
+
+      } else if (typeof XDomainRequest != "undefined") {
+
+        // Otherwise, check if XDomainRequest.
+        // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+
+      } else {
+
+        // Otherwise, CORS is not supported by the browser.
+        xhr = null;
+
+      }
+      return xhr;
+    }
+
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType;
+    var xhr = createCORSRequest('POST', url);
+    if (!xhr) {
+      throw new Error('CORS not supported');
+    }
+    xhr.withCredentials = true;
+    xhr.setRequestHeader(
+      'Authorization','Basic ' + btoa(Config.auth.username + ':' + Config.auth.password)
+    );
+
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState == 4) {
+        if(xhr.status == 200) console.log('returned');
+      } else console.log('error: ' + xhr.responseText);
+    };
+
+    xhr.send(fd);
+    */
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType,
+        data: fd,
+        mimeType: 'multipart/form-data',
+        username: Config.auth.username,
+        password: Config.auth.password,
+        async: false,
+        xhrFields: {
+          withCredentials: true
+        },
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          if(cb) cb(data);
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(componentId, status, err);
+        }.bind(this)
+      });
+  },
+  saveComponent: function(componentId, publish, cb) {
+    var actionType = (publish) ? "publish" : "update";
+    var registry = this.state.registry;
+    var data = this.state.component;
+
+    var fd = new FormData();
+    fd.append('componentId', componentId);
+    fd.append('name', data.Header.Name);
+    fd.append('description', data.Header.Description);
+    fd.append('group', registry.groupName);
+    fd.append('domainName', registry.domainName);
+    fd.append('data', new Blob([ JSON.stringify(data.CMD_Component) ], { type: "application/json" }));
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId + '/' + actionType,
+      data: fd,
+      mimeType: 'multipart/form-data',
+      username: Config.auth.username,
+      password: Config.auth.password,
+      async: false,
+      xhrFields: {
+        withCredentials: true
+      },
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(componentId, status, err);
+      }.bind(this)
+    });
+  },
   componentWillMount: function() {
     console.log('Loader mount');
   },

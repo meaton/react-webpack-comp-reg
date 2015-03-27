@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react/addons');
+var LinkedStateMixin = require('../../../node_modules/react-catalyst/src/catalyst/LinkedStateMixin.js');
+
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
@@ -17,41 +19,41 @@ var EditorBtnGroup = require('./BtnMenuGroup');
 require('../../styles/ComponentViewer.sass');
 
 var ComponentViewer = React.createClass({
-  mixins: [Router.State, btnGroup, CompRegLoader],
+  mixins: [LinkedStateMixin, Router.State, btnGroup, CompRegLoader],
   getInitialState: function() {
-    return { registry: null, profile: null, component: null,
-             childElements: null, childComponents: null,
-             editMode: (this.props.editMode != undefined) ? this.props.editMode : true
+    return { registry: null, // valueLink
+             profile: null,
+             component: null,
+             childElements: null,
+             childComponents: null,
+             editMode: (this.props.editMode != undefined) ?
+                this.props.editMode :
+                true
     };
   },
   getDefaultProps: function() {
     return { domains: require('../domains.js') };
   },
-  getRootComponent: function(props, state) {
-    if(props == undefined) props = this.props;
-    if(state == undefined) state = this.state;
-    return (props.item != undefined && props.item != null) ? props.item : (state.profile || state.component);
-  },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
     this.props.componentId = this.getParams().component;
-
-    if(this.props.item != null)
-      this.parseComponent(this.props.item, this.state);
   },
   componentWillReceiveProps: function(nextProps) {
-    this.state.childElements = null;
-    this.state.childComponents = null;
+    console.log('will receive props');
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('will update viewer');
-    console.log('item props: ' + nextProps.item);
+    var item = this.state.profile||this.state.component;
+    var newItem = nextState.profile||nextState.component;
 
-    var item = this.getRootComponent();
-    var newItem = this.getRootComponent(nextProps, nextState);
+    console.log('new item props: ' + newItem);
 
-    if(JSON.stringify(item) != JSON.stringify(newItem))
+    if(JSON.stringify(item) != JSON.stringify(newItem)) {
+      nextState.childElements = null;
+      nextState.childComponents = null;
+
       this.parseComponent(newItem, nextState);
+    }
   },
   componentDidMount: function() {
     var self = this;
@@ -59,14 +61,23 @@ var ComponentViewer = React.createClass({
 
     console.log('viewer mounted: ' + id);
     console.log('editmode: ' + this.state.editMode);
+
+    if(this.props.item != null)
+      if(this.props.item['@isProfile'])
+        this.setState({profile: this.props.item});
+      else
+        this.setState({component: this.props.item});
+
     if(this.state.editMode)
       this.loadRegistryItem(id, function(regItem) {
-        self.setState({registry: regItem})
+        console.log("regItem:" + JSON.stringify(regItem));
+        self.setState({registry: regItem});
       });
   },
-  parseComponent: function(item, state) { //TODO: Handle expansion in further depths
+  parseComponent: function(item, state) {
     console.log('parseComponent');
-    //console.log('state: ' + JSON.stringify(state));
+    console.log('state: ' + JSON.stringify(state));
+
     if(state.childComponents == null && state.childElements == null) {
       var root_Component = item.CMD_Component;
       var childComponents = (!$.isArray(root_Component.CMD_Component) && root_Component.CMD_Component != null) ? [root_Component.CMD_Component] : (root_Component.CMD_Component||[]);
@@ -97,19 +108,49 @@ var ComponentViewer = React.createClass({
       <Button>Search in concept registry...</Button>
     )
   },
-  changeComponentType: function(evt) {
-    console.log("component type: " + evt.target);
-    this.getRootComponent()['@isProfile'] = evt.target.defaultValue;
-    this.forceUpdate();
+  getLinkStateCompTypeStr: function() {
+    if(this.state.profile != null)
+      return "profile";
+    else if(this.state.component != null)
+      return "component";
   },
   printProperties: function(item) {
     var self = this;
     var root_Component = item.CMD_Component;
+
     if(this.state.editMode) { //TODO: incl edit button menubar
       var registry = this.state.registry;
       var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
-      var groupName= (registry != null) ? registry.groupName : "";
-      var domainVal = (registry != null) ? registry.domainName : "";
+
+      console.log('has isProfile prop: ' + item.hasOwnProperty("@isProfile"));
+      console.log('isProfile: ' + isProfile);
+
+      var isProfileLink = this.linkState(this.getLinkStateCompTypeStr() + '.@isProfile');
+      var handleIsProfileChange = function(e) {
+        console.log('linked state change: ' + e.target.value);
+        isProfileLink.requestChange(e.target.value);
+      };
+
+      var headerNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Name');
+      var componentNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.CMD_Component.@name');
+      var handleNameChange = function(e) {
+        console.log('name change: ' + e.target.value);
+
+        headerNameLink.requestChange(e.target.value);
+        componentNameLink.requestChange(e.target.value);
+      }
+
+      var groupNameInput = (registry != null) ? <Input type="text" ref="rootComponentGroupName" label="Group Name" valueLink={this.linkState('registry.groupName')} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+                                         : null;
+      var domainNameInput = (registry != null) ? (
+        <Input type="select" ref="rootComponentDomain" label="Domain" valueLink={this.linkState('registry.domainName')} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+          <option value="">Select a domain...</option>
+          {this.props.domains.map(function(domain) {
+            return <option value={domain.data}>{domain.label}</option>
+          })}
+        </Input> )
+        : null;
+
       var attrSet = (root_Component && root_Component.AttributeList != undefined && $.isArray(root_Component.AttributeList.Attribute)) ? root_Component.AttributeList.Attribute : root_Component.AttributeList;
       var attrList = (
         <div className="attrList">AttributeList:
@@ -135,18 +176,13 @@ var ComponentViewer = React.createClass({
         <form ref="editComponentForm" name="editComponent">
         <div className="form-horizontal form-group">
         <div className="form-group">
-          <Input type="radio" name="isProfile" label="Profile" value={true} checked={(isProfile) ? "checked" : ""} onClick={this.changeComponentType} wrapperClassName="col-xs-offset-1 col-xs-1" />
-          <Input type="radio" name="isProfile" label="Component" value={false} checked={(!isProfile) ? "checked" : ""} onClick={this.changeComponentType} wrapperClassName="col-xs-offset-1 col-xs-1" />
+          <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfileLink} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+          <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={(!isProfile) ? "checked" : ""} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
         </div>
-        <Input type="text" ref="rootComponentName" label="Name" defaultValue={item.Header.Name} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="text" ref="rootComponentGroupName" label="Group Name" defaultValue={groupName} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={item.Header.Description} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="select" ref="rootComponentDomain" label="Domain" defaultValue={domainVal} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
-            <option value="">Select a domain...</option>
-            {this.props.domains.map(function(domain) {
-              return <option value={domain.data}>{domain.label}</option>
-            })}
-          </Input>
+        <Input type="text" ref="rootComponentName" label="Name" defaultValue={headerNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          {groupNameInput}
+          <Input type="textarea" ref="rootComponentDesc" label="Description" valueLink={this.linkState(this.getLinkStateCompTypeStr() + '.Header.Description')} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          {domainNameInput}
           <Input type="text" label="ConceptLink" value={root_Component["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn.call()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
           {attrList}
         </div>
@@ -165,9 +201,9 @@ var ComponentViewer = React.createClass({
   },
   printRootComponent: function(rootComponent) {
     // Component hierarcy: expanded or non-expanded (@ComponentId)
-
     var self = this, editMode = this.state.editMode, childElem_jsx = null, childComp_jsx = null;
     var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup mode="editor" { ...this.getBtnGroupProps() } /> : null;
+
     if(this.state.childElements != null)
       childElem_jsx = (
         <div className="childElements">{this.state.childElements.map(
@@ -199,9 +235,7 @@ var ComponentViewer = React.createClass({
   },
   render: function () {
     var self = this;
-    var item = this.getRootComponent();
-    //console.log('item: ' + item);
-    //console.log('state: ' + JSON.stringify(this.state.profile));
+    var item = this.state.profile||this.state.component;
 
     if(item == null)
       return (

@@ -15,7 +15,17 @@ var BtnGroupMixin = {
   },
   saveAction: function(evt) {
     console.log('save clicked: ' + evt.target);
-    console.log('ref: ' + this.refs.editComponentForm);
+    console.log('registry: ' + JSON.stringify(this.state.registry));
+    console.log('item: ' + JSON.stringify(this.state.profile||this.state.component));
+
+    if(this.state.profile != null && this.saveProfile != undefined)
+      this.saveProfile(this.state.profile.Header.ID, false, function(data) {
+        console.log('returned 200 POST: ' + data);
+      });
+    else if(this.state.component != null && this.saveProfile != undefined)
+      this.saveComponent(this.state.component.Header.ID, false, function(data) {
+        console.log('return 200 POST: ' + data);
+      });
   },
   saveNewAction: function(evt) {
     console.log('save new clicked: ' + evt.target);
