@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
-var LinkedStateMixin = require('../../../node_modules/react-catalyst/src/catalyst/LinkedStateMixin.js');
+var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
@@ -34,12 +34,26 @@ var ComponentViewer = React.createClass({
   getDefaultProps: function() {
     return { domains: require('../domains.js') };
   },
+  setItemPropToState: function(item) {
+    if(item != null)
+      if(item['@isProfile'])
+        this.setState({profile: item});
+      else
+        this.setState({component: item});
+  },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
     this.props.componentId = this.getParams().component;
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('will receive props');
+
+    if(this.props.editMode != nextProps.editMode)
+      this.setState({editMode: nextProps.editMode});
+
+    if(JSON.stringify(this.props.item) != JSON.stringify(nextProps.item))
+      this.setItemPropToState(nextProps.item);
+
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('will update viewer');
@@ -62,11 +76,7 @@ var ComponentViewer = React.createClass({
     console.log('viewer mounted: ' + id);
     console.log('editmode: ' + this.state.editMode);
 
-    if(this.props.item != null)
-      if(this.props.item['@isProfile'])
-        this.setState({profile: this.props.item});
-      else
-        this.setState({component: this.props.item});
+    this.setItemPropToState(this.props.item);
 
     if(this.state.editMode)
       this.loadRegistryItem(id, function(regItem) {
