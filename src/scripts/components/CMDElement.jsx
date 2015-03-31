@@ -1,8 +1,7 @@
 'use strict';
 
 var React = require('react');
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
-var MenuItem = require('react-bootstrap/lib/MenuItem');
+var CMDAttribute = require('./CMDAttribute');
 
 //require('../../styles/CMDElement.sass');
 
@@ -21,37 +20,9 @@ var CMDElement = React.createClass({
     var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
-  getValueScheme: function(obj) {
-    var valueScheme = obj['@ValueScheme'];
-    console.log(typeof valueScheme);
-
-    if(typeof valueScheme != "string") {
-      valueScheme = obj.ValueScheme;
-
-      if(valueScheme != undefined) {
-        if(valueScheme.pattern != undefined) // attr or elem
-          valueScheme = valueScheme.pattern;
-        else { // elem
-          var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
-          valueScheme = (
-            <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
-              {
-                $.map(enumItems, function(item, index) {
-                  return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
-                })
-              }
-            </DropdownButton>
-          );
-        }
-      } else if(obj.Type != undefined) // attr
-          return obj.Type;
-    }
-
-    return valueScheme;
-  },
   render: function () {
     var self = this;
-    var valueScheme = this.getValueScheme(this.props.elem);
+    var valueScheme = this.props.viewer.getValueScheme(this.props.elem);
 
     console.log('rendering element: ' + require('util').inspect(this.props.elem));
     if(this.state.editMode) {
@@ -62,19 +33,17 @@ var CMDElement = React.createClass({
         <div>Element: {"Name: " + this.props.elem['@name'] + " Type: " + valSch + cardMaxMin + displayPr}</div>
       );
     }
+
     var attrList = null;
     if(this.props.elem.AttributeList != undefined) {
       var attrSet = ($.isArray(this.props.elem.AttributeList.Attribute)) ? this.props.elem.AttributeList.Attribute : this.props.elem.AttributeList;
       attrList = (
         <div className="attrList">AttributeList:
-          <div className="attrAttr">
           {
             $.map(attrSet, function(attr) {
-              var attrVal = self.getValueScheme(attr);
-              return React.createElement('div', { className: "attrVal"}, attr.Name + " " , attrVal);
+              return <CMDAttribute attr={attr} getValue={self.props.viewer.getValueScheme}/>;
             })
           }
-          </div>
         </div>
       );
     }

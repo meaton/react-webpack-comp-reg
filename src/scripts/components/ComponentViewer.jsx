@@ -5,6 +5,8 @@ var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
+var DropdownButton = require('react-bootstrap/lib/DropdownButton');
+var MenuItem = require('react-bootstrap/lib/MenuItem');
 
 var Router = require('react-router');
 var update = React.addons.update;
@@ -14,6 +16,8 @@ var btnGroup = require('../mixins/BtnGroupEvents');
 
 var CMDComponent = require('./CMDComponent');
 var CMDElement = require('./CMDElement');
+var CMDAttribute = require('./CMDAttribute');
+
 var EditorBtnGroup = require('./BtnMenuGroup');
 
 require('../../styles/ComponentViewer.sass');
@@ -21,7 +25,7 @@ require('../../styles/ComponentViewer.sass');
 var ComponentViewer = React.createClass({
   mixins: [LinkedStateMixin, Router.State, btnGroup, CompRegLoader],
   getInitialState: function() {
-    return { registry: null, // valueLink
+    return { registry: null,
              profile: null,
              component: null,
              childElements: null,
@@ -37,9 +41,9 @@ var ComponentViewer = React.createClass({
   setItemPropToState: function(item) {
     if(item != null)
       if(item['@isProfile'])
-        this.setState({profile: item});
+        this.setState({profile: item, childElements: null, childComponents: null});
       else
-        this.setState({component: item});
+        this.setState({component: item, childElements: null, childComponents: null});
   },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
@@ -57,17 +61,12 @@ var ComponentViewer = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('will update viewer');
-    var item = this.state.profile||this.state.component;
+    //var item = this.state.profile||this.state.component;
     var newItem = nextState.profile||nextState.component;
-
     console.log('new item props: ' + newItem);
 
-    if(JSON.stringify(item) != JSON.stringify(newItem)) {
-      nextState.childElements = null;
-      nextState.childComponents = null;
-
+    if(newItem != null && nextState.childComponents == null && nextState.childElements == null)
       this.parseComponent(newItem, nextState);
-    }
   },
   componentDidMount: function() {
     var self = this;
@@ -78,45 +77,81 @@ var ComponentViewer = React.createClass({
 
     this.setItemPropToState(this.props.item);
 
-    if(this.state.editMode)
+    if(this.state.editMode && this.state.registry == null)
       this.loadRegistryItem(id, function(regItem) {
         console.log("regItem:" + JSON.stringify(regItem));
         self.setState({registry: regItem});
       });
   },
+  shouldComponentUpdate: function(nextProps, nextState) {
+    console.log('update: ' + JSON.stringify(nextState.registry));
+    return (!nextState.editMode || nextState.registry != null);
+  },
   parseComponent: function(item, state) {
     console.log('parseComponent');
-    console.log('state: ' + JSON.stringify(state));
+    //console.log('state: ' + JSON.stringify(state));
+    var rootComponent = item.CMD_Component;
 
-    if(state.childComponents == null && state.childElements == null) {
-      var root_Component = item.CMD_Component;
-      var childComponents = (!$.isArray(root_Component.CMD_Component) && root_Component.CMD_Component != null) ? [root_Component.CMD_Component] : (root_Component.CMD_Component||[]);
-      var childElements = (!$.isArray(root_Component.CMD_Element) && root_Component.CMD_Element != null) ? [root_Component.CMD_Element] : (root_Component.CMD_Element||[]);
+    var childComponents = (!$.isArray(rootComponent.CMD_Component) && rootComponent.CMD_Component != null) ? [rootComponent.CMD_Component] : (rootComponent.CMD_Component||[]);
+    var childElements = (!$.isArray(rootComponent.CMD_Element) && rootComponent.CMD_Element != null) ? [rootComponent.CMD_Element] : (rootComponent.CMD_Element||[]);
 
-      console.log('child item components: ' + childComponents.length);
-      console.log('child item elements: ' + childElements.length);
+    console.log('child item components: ' + childComponents.length);
+    console.log('child item elements: ' + childElements.length);
 
-      if(childElements.length == 1)
-        console.log('first item element: ' + childElements[0]['@name']);
+    if(childElements.length >= 1)
+      console.log('first item element: ' + childElements[0]['@name']);
 
-      for(var i=0; i < childComponents.length; i++)
-        if(childComponents[i].hasOwnProperty("@ComponentId"))
-          this.loadComponent(childComponents[i]["@ComponentId"], "json", function(data) {
-              console.log('data child comp: ' + (data.CMD_Component != null));
-              childComponents[i] = update(data, {open: {$set: false}});
-          });
-        else {
-          childComponents[i] = update(childComponents[i], {open: {$set: false}})
-          console.log('childComponent: ' + JSON.stringify(childComponents[i]));
-        }
+    for(var i=0; i < childComponents.length; i++)
+      if(childComponents[i].hasOwnProperty("@ComponentId") && state.profile != null)
+        this.loadComponent(childComponents[i]["@ComponentId"], "json", function(data) {
+            console.log('data child comp: ' + (data.CMD_Component != null));
+            childComponents[i] = update(data, {open: {$set: false}});
+        });
+      else {
+        childComponents[i] = update(childComponents[i], {open: {$set: false}})
+        console.log('childComponent: ' + JSON.stringify(childComponents[i]));
+      }
 
-      this.setState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component });
-    }
+    this.replaceState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
   },
   conceptRegistryBtn: function() {
     return (
       <Button>Search in concept registry...</Button>
     )
+  },
+  getValueScheme: function(obj) {
+    var valueScheme = obj['@ValueScheme'];
+    console.log(typeof valueScheme);
+
+    if(typeof valueScheme != "string") {
+      valueScheme = obj.ValueScheme;
+
+      if(valueScheme != undefined) {
+        if(valueScheme.pattern != undefined) // attr or elem
+          valueScheme = valueScheme.pattern;
+        else { // elem
+          var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
+          valueScheme = (this.state.editMode) ? (
+            <Input type="select" label="Type" buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+              {$.map(enumItems, function(item) {
+                return <option>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
+              })}
+            </Input>
+          ) : (
+            <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
+              {
+                $.map(enumItems, function(item, index) {
+                  return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
+                })
+              }
+            </DropdownButton>
+          );
+        }
+      } else if(obj.Type != undefined) // attr
+          return obj.Type;
+    }
+
+    return valueScheme;
   },
   getLinkStateCompTypeStr: function() {
     if(this.state.profile != null)
@@ -126,10 +161,9 @@ var ComponentViewer = React.createClass({
   },
   printProperties: function(item) {
     var self = this;
-    var root_Component = item.CMD_Component;
+    var rootComponent = item.CMD_Component;
 
     if(this.state.editMode) { //TODO: incl edit button menubar
-      var registry = this.state.registry;
       var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
 
       console.log('has isProfile prop: ' + item.hasOwnProperty("@isProfile"));
@@ -148,12 +182,27 @@ var ComponentViewer = React.createClass({
 
         headerNameLink.requestChange(e.target.value);
         componentNameLink.requestChange(e.target.value);
-      }
+      };
 
-      var groupNameInput = (registry != null) ? <Input type="text" ref="rootComponentGroupName" label="Group Name" valueLink={this.linkState('registry.groupName')} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+      var headerDescLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Description');
+      var handleChange = function(link, e) {
+        link.requestChange(e.target.value);
+      };
+
+      var domainLink = this.linkState('registry.domainName');
+      var groupNameLink = this.linkState('registry.groupName');
+      var handleRegistryChange = function(link, e) {
+        if(self.state.registry != null)
+          link.requestChange(e.target.value);
+        else
+          console.error('Registry data empty: ' + self.state.registry);
+      };
+
+      var groupNameInput = (this.state.registry != null) ?
+        <Input type="text" ref="rootComponentGroupName" label="Group Name" defaultValue={groupNameLink.value} onChange={handleRegistryChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
                                          : null;
-      var domainNameInput = (registry != null) ? (
-        <Input type="select" ref="rootComponentDomain" label="Domain" valueLink={this.linkState('registry.domainName')} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+      var domainNameInput = (this.state.registry != null) ? (
+        <Input type="select" ref="rootComponentDomain" label="Domain" defaultValue={domainLink.value} onChange={handleRegistryChange.bind(this, domainLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
           <option value="">Select a domain...</option>
           {this.props.domains.map(function(domain) {
             return <option value={domain.data}>{domain.label}</option>
@@ -161,45 +210,22 @@ var ComponentViewer = React.createClass({
         </Input> )
         : null;
 
-      var attrSet = (root_Component && root_Component.AttributeList != undefined && $.isArray(root_Component.AttributeList.Attribute)) ? root_Component.AttributeList.Attribute : root_Component.AttributeList;
-      var attrList = (
-        <div className="attrList">AttributeList:
-          <div className="attrAttr">
-          {
-            (attrSet)
-            ? $.map(attrSet, function(attr, index) {
-              return (
-                <div key={index} className="attrForm">
-                  <Input type="text" label="Name" defaultValue={attr.Name} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-                  <Input type="text" label="Type" value={attr.Type} labelClassName="col-xs-1" wrapperClassName="col-xs-2" buttonAfter={<Button>Edit...</Button>} />
-                  <Input type="text" label="ConceptLink" value={(attr.ConceptLink != undefined) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={self.conceptRegistryBtn()} />
-                </div>
-              );
-            })
-            : <span>No Attributes</span>
-          }
-          </div>
-          <a onClick={this.addAttr}>+attribute</a>
-        </div>
-      );
       return (
-        <form ref="editComponentForm" name="editComponent">
-        <div className="form-horizontal form-group">
-        <div className="form-group">
-          <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfileLink} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-          <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={(!isProfile) ? "checked" : ""} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-        </div>
-        <Input type="text" ref="rootComponentName" label="Name" defaultValue={headerNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
+          <div className="form-group">
+            <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+          </div>
+          <Input type="text" ref="rootComponentName" label="Name" defaultValue={headerNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {groupNameInput}
-          <Input type="textarea" ref="rootComponentDesc" label="Description" valueLink={this.linkState(this.getLinkStateCompTypeStr() + '.Header.Description')} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={handleChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {domainNameInput}
-          <Input type="text" label="ConceptLink" value={root_Component["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn.call()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
-          {attrList}
-        </div>
+          <Input type="text" label="ConceptLink" value={rootComponent["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn.call()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
         </form>
       );
+
     } else {
-      var conceptLink = (root_Component && root_Component["@ConceptLink"] != null) ? <li><span>ConceptLink:</span> <a href={root_Component["@ConceptLink"]}>{root_Component["@ConceptLink"]}</a></li> : null;
+      var conceptLink = (rootComponent && rootComponent["@ConceptLink"] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent["@ConceptLink"]}>{rootComponent["@ConceptLink"]}</a></li> : null;
       return (
         <ul>
           <li><span>Name:</span> <b>{item.Header.Name}</b></li>
@@ -209,13 +235,37 @@ var ComponentViewer = React.createClass({
       );
     }
   },
-  printRootComponent: function(rootComponent) {
+  printRootComponent: function(item) {
     // Component hierarcy: expanded or non-expanded (@ComponentId)
-    var self = this, editMode = this.state.editMode, childElem_jsx = null, childComp_jsx = null;
+    var self = this,
+    rootComponent = item.CMD_Component,
+    editMode = this.state.editMode,
+    attrList = null,
+    childElem = null,
+    childComp = null;
+
     var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup mode="editor" { ...this.getBtnGroupProps() } /> : null;
 
+    var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
+    var addAttrLink = (editMode) ? <a onClick={this.addAttr}>+attribute</a> : null;
+    if(attrSet != undefined)
+      attrList = (
+        <div className="attrList">AttributeList:
+          {
+            (attrSet)
+            ? $.map(attrSet, function(attr, index) {
+              return (
+                <CMDAttribute attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn.call()} editMode={editMode} />
+              );
+            })
+            : <span>No Attributes</span>
+          }
+          {addAttrLink}
+        </div>
+      );
+
     if(this.state.childElements != null)
-      childElem_jsx = (
+      childElem = (
         <div className="childElements">{this.state.childElements.map(
           function(elem, index) {
             return <CMDElement key={index} elem={elem} viewer={self} editMode={editMode} />;
@@ -225,10 +275,10 @@ var ComponentViewer = React.createClass({
       );
 
     if(this.state.childComponents != null)
-      childComp_jsx = (
+      childComp = (
         <div className="childComponents">{this.state.childComponents.map(
           function(comp, index) {
-            return <CMDComponent key={index} component={comp} viewer={self} editMode={editMode} />
+            return <CMDComponent key={index} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} />
           }
         )}
         </div>
@@ -237,9 +287,12 @@ var ComponentViewer = React.createClass({
     return (
     <div className="ComponentViewer">
       {editBtnGroup}
-      <div className="rootProperties">{this.printProperties(rootComponent)}</div>
-      {childElem_jsx}
-      {childComp_jsx}
+      <div className="rootProperties">
+        {this.printProperties(item)}
+      </div>
+      {attrList}
+      {childElem}
+      {childComp}
     </div>
     );
   },

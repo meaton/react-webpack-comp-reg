@@ -61,7 +61,7 @@ var CMDComponent = React.createClass({
 
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
-        return <CMDElement key={index} elem={elem} editMode={self.state.editMode} />
+        return <CMDElement key={index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} />
       });
 
     var compComps = comp.CMD_Component;

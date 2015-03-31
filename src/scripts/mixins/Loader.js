@@ -57,6 +57,7 @@ var LoaderMixin = {
         withCredentials: true
       },
       success: function(data) {
+        console.log('return 200 registry item: ' + data != null);
         if(cb) cb(data);
       }.bind(this),
       error: function(xhr, status, err) {
@@ -138,6 +139,7 @@ var LoaderMixin = {
 
     xhr.send(fd);
     */
+
     $.ajax({
         type: 'POST',
         url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType,
