@@ -10,7 +10,9 @@ var BtnGroupMixin = {
       cancelEdit: this.cancelAction,
       profile: this.state.profileId||this.state.profile,
       component: this.state.componentId||this.state.component,
-      multiSelect: this.state.multiSelect
+      multiSelect: this.state.multiSelect,
+      privateSelect: (this.state.filter == "private"),
+      newActive: (this.isActive != undefined) ? this.isActive("newProfile") || this.isActive("newComponent") : false
     };
   },
   saveAction: function(evt) {
@@ -21,6 +23,7 @@ var BtnGroupMixin = {
       this.saveProfile(this.state.profile.Header.ID, false, function(data) {
         console.log('returned 200 POST: ' + data);
         //TODO: check errors, display messages inline or show alert
+
       });
     else if(this.state.component != null && this.saveProfile != undefined)
       this.saveComponent(this.state.component.Header.ID, false, function(data) {

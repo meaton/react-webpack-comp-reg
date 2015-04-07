@@ -79,8 +79,10 @@ var routes = (
       <Route name="import" handler={Import} />
       <Route path="editor" handler={ComponentEditor}>
         <Route name="component" path="component/:component" handler={ComponentViewer} />
+        <Route name="newComponent" path="component/:component/new" handler={ComponentViewer} />
         <Route name="profile" path="profile/:profile" handler={ComponentViewer} />
-        <Route name="newComponent" path="new" handler={ComponentViewer} />
+        <Route name="newProfile" path="profile/:profile/new" handler={ComponentViewer} />
+        <Route name="newEditor" path="new" handler={ComponentViewer} />
       </Route>
       <DefaultRoute handler={ComponentRegApp} />
     </Route>
