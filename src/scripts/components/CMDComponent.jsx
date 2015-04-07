@@ -15,13 +15,36 @@ var CMDComponent = React.createClass({
     if(!this.state.component.hasOwnProperty('open') && this.state.component.hasOwnProperty('@ComponentId'))
       this.props.viewer.loadComponent(this.state.component["@ComponentId"], "json", function(data) {
             console.log('data child comp: ' + (data.CMD_Component != null));
-            self.setState({component: update(data, {open: {$set: true}}) });
+            var newComponent = update(data, {open: {$set: true}})
+            self.setState({component: newComponent });
         });
-    else
+    else {
       this.setState({ component: update(this.state.component, { open: { $set: !this.state.component.open }})});
+    }
+  },
+  componentDidMount: function() {
+    var component = this.state.component;
+
+    if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
+      component.CMD_Element = [component.CMD_Element];
+    }
+
+    if(component.CMD_Component != undefined && !$.isArray(component.CMD_Component)) {
+      if(component.Header == undefined)
+        component.CMD_Component = [component.CMD_Component];
+      else if(component.CMD_Component.CMD_Element != undefined && !$.isArray(component.CMD_Component.CMD_Element))
+          component.CMD_Component.CMD_Element = [component.CMD_Component.CMD_Element];
+    }
+
+    if(component.AttributeList != undefined && !$.isArray(component.AttributeList.Attribute)) {
+      component.AttributeList.Attribute = [component.AttributeList.Attribute];
+    } else if($.isArray(component.AttributeList))
+      component.AttributeList.Attribute = component.AttributeList;
+      
+    console.log('mounted component: ' + JSON.stringify(component));
   },
   render: function () {
-    console.log('comp inspect: ' + require('util').inspect(this.state.component));
+    console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
     var self = this;
     var comp = this.state.component;
     var parentComp = this.state.parentComponent;
@@ -40,13 +63,11 @@ var CMDComponent = React.createClass({
     if(header != undefined && comp.CMD_Component != undefined)
       comp = comp.CMD_Component;
 
+    if($.isArray(comp) && comp.length == 1)
+      comp = comp[0];
+
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
-
-    if(this.state.editMode)
-      return (
-        <div>ComponentId: {compName} Cardinality: {minC + " - " + maxC}</div>
-      );
 
     console.log('comp header: ' + JSON.stringify(header));
     console.log('open: ' + this.state.component.open);
@@ -54,13 +75,17 @@ var CMDComponent = React.createClass({
     var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
 
     var compElems = comp.CMD_Element;
+
     console.log('comp elems: ' + $.isArray(compElems));
 
     if(!$.isArray(compElems) && compElems != undefined)
       compElems = [compElems];
 
+    console.log('comp elems: ' + $.isArray(compElems));
+
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
+        console.log('found elem (' + index + '): ' + elem);
         return <CMDElement key={index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} />
       });
 
@@ -71,6 +96,7 @@ var CMDComponent = React.createClass({
 
     if(compComps != undefined)
       compComps = compComps.map(function(nestedComp, ncindex) {
+        console.log('found component (' + ncindex + '): ' + nestedComp);
         return <CMDComponent key={ncindex} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} />
       });
 
@@ -80,21 +106,36 @@ var CMDComponent = React.createClass({
       'componentBody': true
     });
 
+    var editClasses = cx({
+      'hide-field': this.state.editMode,
+      'componentBody': true
+    })
+
+    //TODO: review name replace
     if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
       compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
 
-    //TODO: incl component attributes (root level, other)
-
-    return (
-        <div className="CMDComponent">
-         <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
-         <div className="componentProps">{compProps}</div>
-         <div className={classes}>
-           <div className="childElements">{compElems}</div>
-           <div className="childComponents">{compComps}</div>
-         </div>
+    if(this.state.editMode)
+      return (
+        <div className="CMDComponent edit-mode">
+          <span>ComponentId: {compName} Cardinality: {minC + " - " + maxC}</span>
+          <div className={editClasses}>
+            <div className="childElements">{compElems}</div>
+            <div className="childComponents">{compComps}</div>
+          </div>
         </div>
       );
+    else
+      return (
+          <div className="CMDComponent">
+           <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
+           <div className="componentProps">{compProps}</div>
+           <div className={classes}>
+             <div className="childElements">{compElems}</div>
+             <div className="childComponents">{compComps}</div>
+           </div>
+          </div>
+        );
   }
 });
 

@@ -14,6 +14,15 @@ var CMDAttribute = React.createClass({
   getInitialState: function() {
     return { editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
+  componentDidMount: function() {
+    var attr = this.props.attr;
+    
+    if(attr.ValueScheme != undefined)
+      var enumVal = attr.ValueScheme.enumeration;
+      if(enumVal != undefined && enumVal.item != undefined && !$.isArray(enumVal.item))
+        enumVal.item = [enumVal.item];
+
+  },
   render: function () {
     var attr = this.props.attr;
     var attr_val = this.props.getValue(attr);

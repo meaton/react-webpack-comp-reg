@@ -47,17 +47,13 @@ var Component_Module_Factory = function () {
             type: 'element',
             name: 'CMD_Element',
             collection: true,
-            elementName: {
-              localPart: 'CMD_Element'
-            },
+            elementName: 'CMD_Element',
             typeInfo: '.CMDElementType'
           }, {
             type: 'element',
             name: 'CMD_Component',
             collection: true,
-            elementName: {
-              localPart: 'CMD_Component'
-            },
+            elementName: 'CMD_Component',
             typeInfo: '.CMDComponentType'
           }, {
             name: '@name',
@@ -108,25 +104,20 @@ var Component_Module_Factory = function () {
       }, {
         localName: 'EnumerationType',
         propertyInfos: [{
+            type: 'element',
             name: 'item',
             collection: true,
-            elementTypeInfos: [{
-                elementName: {
-                  localPart: 'item'
-                },
-                typeInfo: '.ItemType'
-              }, {
-                elementName: {
-                  localPart: 'appinfo'
-                }
-              }],
-            type: 'elements'
+            elementName: {
+              localPart: 'item'
+            },
+            typeInfo: '.ItemType'
           }]
       }, {
         localName: 'ItemType',
         propertyInfos: [{
             name: '$',
-            type: 'value'
+            type: 'value',
+            typeInfo: 'String'
           }, {
             name: '@ConceptLink',
             attributeName: {
@@ -217,9 +208,7 @@ var Component_Module_Factory = function () {
             typeInfo: '.CMDComponentSpec.Header'
           }, {
             name: 'CMD_Component',
-            elementName: {
-              localPart: 'CMD_Component'
-            },
+            elementName: 'CMD_Component',
             typeInfo: '.CMDComponentType'
           }, {
             name: '@isProfile',

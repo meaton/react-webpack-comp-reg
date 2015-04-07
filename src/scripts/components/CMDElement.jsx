@@ -7,7 +7,7 @@ var CMDAttribute = require('./CMDAttribute');
 
 var CMDElement = React.createClass({
   getInitialState: function() {
-    return { editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
+    return { elem: this.props.elem, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
   elemAttrs: function(elem) {
     var lb = React.createElement('br');
@@ -20,23 +20,39 @@ var CMDElement = React.createClass({
     var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
+  componentDidMount: function() {
+    var elem = this.state.elem;
+
+    if(elem.AttributeList != undefined && !$.isArray(elem.AttributeList.Attribute)) {
+      elem.AttributeList.Attribute = [elem.AttributeList.Attribute];
+    }
+
+    console.log('mounted element: ' + JSON.stringify(elem));
+  },
   render: function () {
     var self = this;
-    var valueScheme = this.props.viewer.getValueScheme(this.props.elem);
+    var elem = this.state.elem;
 
-    console.log('rendering element: ' + require('util').inspect(this.props.elem));
+    var valueScheme = this.props.viewer.getValueScheme(elem);
+
+    console.log('rendering element: ' + require('util').inspect(elem));
+
     if(this.state.editMode) {
-      var displayPr = (this.props.elem['@DisplayPriority']) ? " Display priority: " + this.props.elem['@DisplayPriority'] : "";
-      var cardMaxMin = " Cardinality: " + this.props.elem['@CardinalityMin'] + " - " + this.props.elem['@CardinalityMax'];
+      var displayPr = (elem['@DisplayPriority']) ? " Display priority: " + elem['@DisplayPriority'] : "";
+      var cardMaxMin = " Cardinality: "
+      cardMaxMin += (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
+      cardMaxMin += " - ";
+      cardMaxMin += (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
+
       var valSch = (typeof valueScheme == "string") ? valueScheme : "";
       return (
-        <div>Element: {"Name: " + this.props.elem['@name'] + " Type: " + valSch + cardMaxMin + displayPr}</div>
+        <div>Element: {"Name: " + elem['@name'] + " Type: " + valSch + cardMaxMin + displayPr}</div>
       );
     }
 
     var attrList = null;
-    if(this.props.elem.AttributeList != undefined) {
-      var attrSet = ($.isArray(this.props.elem.AttributeList.Attribute)) ? this.props.elem.AttributeList.Attribute : this.props.elem.AttributeList;
+    if(elem.AttributeList != undefined) {
+      var attrSet = ($.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
       attrList = (
         <div className="attrList">AttributeList:
           {
@@ -51,9 +67,9 @@ var CMDElement = React.createClass({
     return (
       <div className="CMDElement">
         <span>Element: </span>
-        <b>{this.props.elem['@name']}</b> { valueScheme }
+        <b>{elem['@name']}</b> { valueScheme }
         <div className="elemAttrs">
-          {this.elemAttrs(this.props.elem)}
+          {this.elemAttrs(elem)}
         </div>
         {attrList}
       </div>

@@ -1,4 +1,10 @@
 var Config = require('../config');
+var Jsonix = require('jsonix').Jsonix;
+var clone = require('clone');
+var CMD = require('../../mappings/Component').Component;
+var context = new Jsonix.Context([CMD]);
+var marshaller = context.createMarshaller();
+
 var LoaderMixin = {
   loadProfile: function(profileId, raw_type, cb) {
     var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
@@ -86,7 +92,32 @@ var LoaderMixin = {
   saveProfile: function(profileId, publish, cb) {
     var actionType = (publish) ? "publish" : "update";
     var registry = this.state.registry;
-    var data = this.state.profile;
+    var data = clone(this.state.profile);
+
+    console.log('child components: ' + $.isArray(this.state.childComponents));
+    console.log('child elements: ' + $.isArray(this.state.childElements));
+
+    data.CMD_Component.CMD_Component = this.state.childComponents.map(function(comp, index) {
+        var newComp = comp;
+        var componentId = null;
+
+        if(comp.Header != undefined) {
+          newComp = comp.CMD_Component;
+          componentId = comp.Header.ID;
+        } else {
+          componentId = comp['@ComponentId'];
+        }
+
+        return { '@ComponentId': componentId, '@CardinalityMin': newComp['@CardinalityMin'], '@CardinalityMax': newComp['@CardinalityMax'] };
+
+    });
+
+    data.CMD_Component.CMD_Element = this.state.childElements;
+
+    //console.log('data: ' + JSON.stringify(data));
+
+    var cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
+    console.log('cmd schema: ' + cmd_schema_xml);
 
     var fd = new FormData();
     fd.append('profileId', profileId);
@@ -94,7 +125,8 @@ var LoaderMixin = {
     fd.append('description', data.Header.Description);
     fd.append('group', registry.groupName);
     fd.append('domainName', registry.domainName);
-    fd.append('data', new Blob([ JSON.stringify(data.CMD_Component) ], { type: "application/json" }));
+    fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
+
 
     /* CORS issue using XHR natively
     var createCORSRequest = function(method, url) {
@@ -140,6 +172,7 @@ var LoaderMixin = {
     xhr.send(fd);
     */
 
+
     $.ajax({
         type: 'POST',
         url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType,
@@ -164,7 +197,42 @@ var LoaderMixin = {
   saveComponent: function(componentId, publish, cb) {
     var actionType = (publish) ? "publish" : "update";
     var registry = this.state.registry;
-    var data = this.state.component;
+    var data = clone(this.state.component);
+
+    console.log('child components: ' + $.isArray(this.state.childComponents));
+    console.log('child elements: ' + $.isArray(this.state.childElements));
+
+    data.CMD_Component.CMD_Component = this.state.childComponents.map(function(comp, index) {
+        var newComp = comp;
+        var componentId = null;
+
+        if(comp.Header != undefined) {
+          newComp = comp.CMD_Component;
+          componentId = comp.Header.ID;
+        } else {
+          componentId = comp['@ComponentId'];
+        }
+
+        return { '@ComponentId': componentId, '@CardinalityMin': newComp['@CardinalityMin'], '@CardinalityMax': newComp['@CardinalityMax'] };
+
+    });
+
+    data.CMD_Component.CMD_Element = this.state.childElements;
+
+    console.log('data: ' + JSON.stringify(data));
+
+    /*this.state.childComponents.each(function(comp) {
+      if(!$.isArray(comp.AttributeList.Attribute)) comp.AttributeList = { name: { localPart: 'Attribute'}, value: [comp.AttributeList.Attribute] };
+      if($.isArray(comp.CMD_Element)) comp.CMD_Element = [comp.CMD_Element];
+      if($.isArray(comp.CMD_Component)) comp.CMD_Component = [comp.CMD_Component];
+    });
+
+    this.state.childElements.each(function(elem) {
+      if(!$.isArray(elem.AttributeList.Attribute)) elem.AttributeList = { name: { localPart: 'Attribute'}, value: [elem.AttributeList.Attribute] };
+    });*/
+
+    var cmd_schema_xml = marshaller.marshalString({ name: { localPart: "CMD_ComponentSpec" }, value: data });
+    console.log('cmd schema: ' + cmd_schema_xml);
 
     var fd = new FormData();
     fd.append('componentId', componentId);
@@ -172,7 +240,7 @@ var LoaderMixin = {
     fd.append('description', data.Header.Description);
     fd.append('group', registry.groupName);
     fd.append('domainName', registry.domainName);
-    fd.append('data', new Blob([ JSON.stringify(data.CMD_Component) ], { type: "application/json" }));
+    fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
     $.ajax({
       type: 'POST',

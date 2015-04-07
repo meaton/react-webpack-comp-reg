@@ -39,11 +39,12 @@ var ComponentViewer = React.createClass({
     return { domains: require('../domains.js') };
   },
   setItemPropToState: function(item) {
-    if(item != null)
+    if(item != null) {
       if(item['@isProfile'])
         this.setState({profile: item, childElements: null, childComponents: null});
       else
         this.setState({component: item, childElements: null, childComponents: null});
+    }
   },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
@@ -65,8 +66,12 @@ var ComponentViewer = React.createClass({
     var newItem = nextState.profile||nextState.component;
     console.log('new item props: ' + newItem);
 
-    if(newItem != null && nextState.childComponents == null && nextState.childElements == null)
+    if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
+      if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
+        newItem.CMD_Component.AttributeList.Attribute = [newItem.CMD_Component.AttributeList.Attribute];
+
       this.parseComponent(newItem, nextState);
+    }
   },
   componentDidMount: function() {
     var self = this;
