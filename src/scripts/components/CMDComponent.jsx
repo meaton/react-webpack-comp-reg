@@ -21,7 +21,7 @@ var CMDComponent = React.createClass({
        this.state.component.hasOwnProperty('@ComponentId'))
       this.props.viewer.loadComponent(this.state.component["@ComponentId"], "json", function(data) { //TODO: use common load child Component spec fn callback as in viewer
             console.log('data child comp: ' + (data.CMD_Component != null));
-            data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (self.state.component.hasOwnProperty("@CardinalityMin")) ? self.state.component["@CardinalityMin"] : null, '@CardinalityMax': (self.state.component.hasOwnProperty("@CardinalityMax")) ? self.state.component["@CardinalityMax"] : null}})
+            data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (self.state.component.hasOwnProperty("@CardinalityMin")) ? self.state.component["@CardinalityMin"] : 1, '@CardinalityMax': (self.state.component.hasOwnProperty("@CardinalityMax")) ? self.state.component["@CardinalityMax"] : 1}})
 
             var newComponent = update(data, {open: {$set: true}})
             self.setState({component: newComponent });

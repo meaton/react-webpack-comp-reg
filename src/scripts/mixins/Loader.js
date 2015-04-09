@@ -108,6 +108,7 @@ var LoaderMixin = {
           componentId = comp['@ComponentId'];
         }
 
+        //TODO: Handle inline child Components
         return { '@ComponentId': componentId,
                  '@CardinalityMin': newComp['@CardinalityMin'],
                  '@CardinalityMax': newComp['@CardinalityMax'] };
@@ -115,7 +116,7 @@ var LoaderMixin = {
 
     data.CMD_Component.CMD_Element = this.state.childElements;
 
-    //console.log('data: ' + JSON.stringify(data));
+    console.log('data: ' + JSON.stringify(data));
 
     var cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
     console.log('cmd schema: ' + cmd_schema_xml);
@@ -127,7 +128,6 @@ var LoaderMixin = {
     fd.append('group', registry.groupName);
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
-
 
     /* CORS issue using XHR natively
     var createCORSRequest = function(method, url) {
@@ -214,7 +214,9 @@ var LoaderMixin = {
           componentId = comp['@ComponentId'];
         }
 
+        //TODO: Handle inline child Components
         return { '@ComponentId': componentId,
+                 '@ConceptLink': newComp['@ConceptLink'],
                  '@CardinalityMin': newComp['@CardinalityMin'],
                  '@CardinalityMax': newComp['@CardinalityMax'] };
     });
@@ -222,16 +224,6 @@ var LoaderMixin = {
     data.CMD_Component.CMD_Element = this.state.childElements;
 
     console.log('data: ' + JSON.stringify(data));
-
-    /*this.state.childComponents.each(function(comp) {
-      if(!$.isArray(comp.AttributeList.Attribute)) comp.AttributeList = { name: { localPart: 'Attribute'}, value: [comp.AttributeList.Attribute] };
-      if($.isArray(comp.CMD_Element)) comp.CMD_Element = [comp.CMD_Element];
-      if($.isArray(comp.CMD_Component)) comp.CMD_Component = [comp.CMD_Component];
-    });
-
-    this.state.childElements.each(function(elem) {
-      if(!$.isArray(elem.AttributeList.Attribute)) elem.AttributeList = { name: { localPart: 'Attribute'}, value: [elem.AttributeList.Attribute] };
-    });*/
 
     var cmd_schema_xml = marshaller.marshalString({ name: { localPart: "CMD_ComponentSpec" }, value: data });
     console.log('cmd schema: ' + cmd_schema_xml);

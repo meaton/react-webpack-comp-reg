@@ -118,7 +118,7 @@ var ComponentViewer = React.createClass({
       if(childComponents[i].hasOwnProperty("@ComponentId") && state.profile != null)
         this.loadComponent(childComponents[i]["@ComponentId"], "json", function(data) {
             console.log('data child comp: ' + (data.CMD_Component != null));
-            data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (childComponents[i].hasOwnProperty("@CardinalityMin")) ? childComponents[i]["@CardinalityMin"] : null, '@CardinalityMax': (childComponents[i].hasOwnProperty("@CardinalityMax")) ? childComponents[i]["@CardinalityMax"] : null}})
+            data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (childComponents[i].hasOwnProperty("@CardinalityMin")) ? childComponents[i]["@CardinalityMin"] : 1, '@CardinalityMax': (childComponents[i].hasOwnProperty("@CardinalityMax")) ? childComponents[i]["@CardinalityMax"] : 1}})
             childComponents[i] = update(data, {open: {$set: false}});
         });
       else {
