@@ -46,6 +46,14 @@ var ComponentViewer = React.createClass({
         this.setState({component: item, childElements: null, childComponents: null});
     }
   },
+  updateComponentSettings: function(index, newMin, newMax) {
+    console.log('comp update: ' + index);
+    var childComponents = this.state.childComponents;
+    childComponents[index]['@CardinalityMin'] = newMin;
+    childComponents[index]['@CardinalityMax'] = newMax;
+
+    this.setState({childComponents: childComponents});
+  },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
     this.props.componentId = this.getParams().component;
@@ -58,11 +66,10 @@ var ComponentViewer = React.createClass({
 
     if(JSON.stringify(this.props.item) != JSON.stringify(nextProps.item))
       this.setItemPropToState(nextProps.item);
-
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('will update viewer');
-    //var item = this.state.profile||this.state.component;
+
     var newItem = nextState.profile||nextState.component;
     console.log('new item props: ' + newItem);
 
@@ -90,13 +97,14 @@ var ComponentViewer = React.createClass({
   },
   shouldComponentUpdate: function(nextProps, nextState) {
     console.log('update: ' + JSON.stringify(nextState.registry));
+
     return (!nextState.editMode || nextState.registry != null);
   },
   parseComponent: function(item, state) {
     console.log('parseComponent');
     //console.log('state: ' + JSON.stringify(state));
-    var rootComponent = item.CMD_Component;
 
+    var rootComponent = item.CMD_Component;
     var childComponents = (!$.isArray(rootComponent.CMD_Component) && rootComponent.CMD_Component != null) ? [rootComponent.CMD_Component] : (rootComponent.CMD_Component||[]);
     var childElements = (!$.isArray(rootComponent.CMD_Element) && rootComponent.CMD_Element != null) ? [rootComponent.CMD_Element] : (rootComponent.CMD_Element||[]);
 
@@ -110,6 +118,7 @@ var ComponentViewer = React.createClass({
       if(childComponents[i].hasOwnProperty("@ComponentId") && state.profile != null)
         this.loadComponent(childComponents[i]["@ComponentId"], "json", function(data) {
             console.log('data child comp: ' + (data.CMD_Component != null));
+            data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (childComponents[i].hasOwnProperty("@CardinalityMin")) ? childComponents[i]["@CardinalityMin"] : null, '@CardinalityMax': (childComponents[i].hasOwnProperty("@CardinalityMax")) ? childComponents[i]["@CardinalityMax"] : null}})
             childComponents[i] = update(data, {open: {$set: false}});
         });
       else {
@@ -152,6 +161,7 @@ var ComponentViewer = React.createClass({
             </DropdownButton>
           );
         }
+
       } else if(obj.Type != undefined) // attr
           return obj.Type;
     }
@@ -168,12 +178,13 @@ var ComponentViewer = React.createClass({
     var self = this;
     var rootComponent = item.CMD_Component;
 
-    if(this.state.editMode) { //TODO: incl edit button menubar
+    if(this.state.editMode) {
       var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
 
       console.log('has isProfile prop: ' + item.hasOwnProperty("@isProfile"));
       console.log('isProfile: ' + isProfile);
 
+      // Linked state to data model
       var isProfileLink = this.linkState(this.getLinkStateCompTypeStr() + '.@isProfile');
       var handleIsProfileChange = function(e) {
         console.log('linked state change: ' + e.target.value);
@@ -203,6 +214,7 @@ var ComponentViewer = React.createClass({
           console.error('Registry data empty: ' + self.state.registry);
       };
 
+      // Registry Input fields
       var groupNameInput = (this.state.registry != null) ?
         <Input type="text" ref="rootComponentGroupName" label="Group Name" defaultValue={groupNameLink.value} onChange={handleRegistryChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
                                          : null;
@@ -215,6 +227,7 @@ var ComponentViewer = React.createClass({
         </Input> )
         : null;
 
+      // Edit properties form
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
           <div className="form-group">
@@ -230,6 +243,7 @@ var ComponentViewer = React.createClass({
       );
 
     } else {
+      // Display properties
       var conceptLink = (rootComponent && rootComponent["@ConceptLink"] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent["@ConceptLink"]}>{rootComponent["@ConceptLink"]}</a></li> : null;
       return (
         <ul>
@@ -253,6 +267,7 @@ var ComponentViewer = React.createClass({
 
     var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
     var addAttrLink = (editMode) ? <a onClick={this.addAttr}>+attribute</a> : null;
+
     if(attrSet != undefined)
       attrList = (
         <div className="attrList">AttributeList:
@@ -260,7 +275,7 @@ var ComponentViewer = React.createClass({
             (attrSet)
             ? $.map(attrSet, function(attr, index) {
               return (
-                <CMDAttribute attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn.call()} editMode={editMode} />
+                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn.call()} editMode={editMode} />
               );
             })
             : <span>No Attributes</span>
@@ -271,9 +286,9 @@ var ComponentViewer = React.createClass({
 
     if(this.state.childElements != null)
       childElem = (
-        <div className="childElements">{this.state.childElements.map(
+        <div ref="elements" className="childElements">{this.state.childElements.map(
           function(elem, index) {
-            return <CMDElement key={index} elem={elem} viewer={self} editMode={editMode} />;
+            return <CMDElement key={'elem_' + index} elem={elem} viewer={self} editMode={editMode} />;
           }
         )}
         </div>
@@ -281,24 +296,28 @@ var ComponentViewer = React.createClass({
 
     if(this.state.childComponents != null)
       childComp = (
-        <div className="childComponents">{this.state.childComponents.map(
+        // TODO component key should be comp Id
+        <div ref="components" className="childComponents">{this.state.childComponents.map(
           function(comp, index) {
-            return <CMDComponent key={index} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} />
+            return <CMDComponent key={comp['@ComponentId']} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onUpdate={self.updateComponentSettings.bind(self, index)} />
           }
         )}
         </div>
       );
 
     return (
-    <div className="ComponentViewer">
-      {editBtnGroup}
-      <div className="rootProperties">
-        {this.printProperties(item)}
+      <div className="ComponentViewer">
+        {editBtnGroup}
+        <div className="rootProperties">
+          {this.printProperties(item)}
+        </div>
+        {attrList}
+        <div className="controlLinks">
+          <a onClick={this.closeAll}>Collapse all</a> <a onClick={this.openAll}>Expand all</a>
+        </div>
+        {childElem}
+        {childComp}
       </div>
-      {attrList}
-      {childElem}
-      {childComp}
-    </div>
     );
   },
   render: function () {
@@ -310,7 +329,7 @@ var ComponentViewer = React.createClass({
         <div className="ComponentViewer loading" />
       );
     else
-        return this.printRootComponent(item);
+      return this.printRootComponent(item);
   }
 });
 

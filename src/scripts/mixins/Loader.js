@@ -108,8 +108,9 @@ var LoaderMixin = {
           componentId = comp['@ComponentId'];
         }
 
-        return { '@ComponentId': componentId, '@CardinalityMin': newComp['@CardinalityMin'], '@CardinalityMax': newComp['@CardinalityMax'] };
-
+        return { '@ComponentId': componentId,
+                 '@CardinalityMin': newComp['@CardinalityMin'],
+                 '@CardinalityMax': newComp['@CardinalityMax'] };
     });
 
     data.CMD_Component.CMD_Element = this.state.childElements;
@@ -213,8 +214,9 @@ var LoaderMixin = {
           componentId = comp['@ComponentId'];
         }
 
-        return { '@ComponentId': componentId, '@CardinalityMin': newComp['@CardinalityMin'], '@CardinalityMax': newComp['@CardinalityMax'] };
-
+        return { '@ComponentId': componentId,
+                 '@CardinalityMin': newComp['@CardinalityMin'],
+                 '@CardinalityMax': newComp['@CardinalityMax'] };
     });
 
     data.CMD_Component.CMD_Element = this.state.childElements;
