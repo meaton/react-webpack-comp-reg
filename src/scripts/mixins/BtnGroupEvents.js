@@ -16,20 +16,27 @@ var BtnGroupMixin = {
     };
   },
   saveAction: function(evt) {
+    var self = this;
     console.log('save clicked: ' + evt.target);
     console.log('registry: ' + JSON.stringify(this.state.registry));
     //console.log('item: ' + JSON.stringify(this.state.profile||this.state.component));
-    
+
     if(this.state.profile != null && this.saveProfile != undefined)
       this.saveProfile(this.state.profile.Header.ID, false, function(data) {
-        console.log('returned 200 POST: ' + data);
-        //TODO: check errors, display messages inline or show alert
-
+        console.log('returned 200 POST: ' + JSON.stringify(data));
+        // check errors, display messages inline or show alert
+        if(data != null)
+          if(data.errors != undefined) self.showErrors(data.errors);
+          else self.transitionTo('/'); // return route if no errors
       });
     else if(this.state.component != null && this.saveProfile != undefined)
       this.saveComponent(this.state.component.Header.ID, false, function(data) {
-        console.log('return 200 POST: ' + data);
-        //TODO: check errors, display messages inline or show alert
+        console.log('return 200 POST: ' + JSON.stringify(data));
+
+        // check errors, display messages inline or show alert
+        if(data != null)
+          if(data.errors != undefined) self.showErrors(data.errors);
+          else self.transitionTo('/'); // return route if no errors
       });
   },
   saveNewAction: function(evt) {

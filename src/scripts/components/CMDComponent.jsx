@@ -14,23 +14,47 @@ var CMDComponent = React.createClass({
     return { component: this.props.component, parentComponent: this.props.parent, editMode: (this.props.editMode != undefined) ? this.props.editMode : false }
   },
   toggleComponent: function(evt) {
-    var self = this;
     console.log('toggle component: ' + JSON.stringify(this.state.component));
 
     if((!this.state.component.hasOwnProperty('open') || !this.state.component.open) &&
        this.state.component.hasOwnProperty('@ComponentId'))
-      this.props.viewer.loadComponent(this.state.component["@ComponentId"], "json", function(data) { //TODO: use common load child Component spec fn callback as in viewer
-            console.log('data child comp: ' + (data.CMD_Component != null));
-            data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (self.state.component.hasOwnProperty("@CardinalityMin")) ? self.state.component["@CardinalityMin"] : 1, '@CardinalityMax': (self.state.component.hasOwnProperty("@CardinalityMax")) ? self.state.component["@CardinalityMax"] : 1}})
-
-            var newComponent = update(data, {open: {$set: true}})
-            self.setState({component: newComponent });
-        });
+      this.loadComponentData();
     else {
       this.setState({ component: update(this.state.component, { open: { $set: !this.state.component.open }})});
     }
   },
+  loadComponentData: function() {
+    var self = this;
+    var comp = this.state.component;
+
+    this.props.viewer.loadComponent(this.state.component["@ComponentId"], "json", function(data) { //TODO: use common load child Component spec fn callback as in viewer
+          console.log('data child comp: ' + (data.CMD_Component != null));
+          data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (comp.hasOwnProperty("@CardinalityMin")) ? comp["@CardinalityMin"] : 1, '@CardinalityMax': (comp.hasOwnProperty("@CardinalityMax")) ? comp["@CardinalityMax"] : 1}})
+
+          var newComponent = update(data, {open: {$set: true}})
+          self.setState({component: newComponent });
+      });
+  },
+  componentWillReceiveProps: function(nextProps) {
+    console.log('component will received new props');
+    var currentComponent = this.state.component;
+    console.log('component: ' + JSON.stringify(nextProps.component));
+
+    if(currentComponent.open != nextProps.component.open) {
+      currentComponent = update(currentComponent, { open: { $set: nextProps.component.open }});
+      this.setState({ component: currentComponent });
+    }
+  },
+  componentWillMount: function() {
+    console.log('component will mount');
+    var comp = this.state.component;
+    if(!comp.hasOwnProperty("@ComponentId") && comp.Header != undefined)
+      comp = comp.CMD_Component;
+    if(!comp.hasOwnProperty("@CardinalityMin")) comp['@CardinalityMin'] = 1;
+    if(!comp.hasOwnProperty("@CardinalityMax")) comp['@CardinalityMax'] = 1;
+  },
   componentDidMount: function() {
+    console.log('component did mount');
     var component = this.state.component;
 
     if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
@@ -56,6 +80,7 @@ var CMDComponent = React.createClass({
   },
   render: function () {
     console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
+
     var self = this;
     var comp = this.state.component;
     var parentComp = this.state.parentComponent;
@@ -134,8 +159,8 @@ var CMDComponent = React.createClass({
       var maxComponentLink = null;
 
       if(this.state.component.open) {
-        minComponentLink = this.linkState('component.CMD_Component.@CardinalityMin');
-        maxComponentLink = this.linkState('component.CMD_Component.@CardinalityMax');
+        minComponentLink = (this.state.component.Header != undefined && comp.hasOwnProperty("@CardinalityMin")) ? this.linkState('component.CMD_Component.@CardinalityMin') : null;
+        maxComponentLink = (this.state.component.Header != undefined && comp.hasOwnProperty("@CardinalityMax")) ? this.linkState('component.CMD_Component.@CardinalityMax') : null;
       } else {
           cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
       }

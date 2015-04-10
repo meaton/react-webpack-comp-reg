@@ -7,8 +7,9 @@ var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Alert = require('react-bootstrap/lib/Alert');
 
-var Router = require('react-router');
+var Router = require('react-router'); // TODO migration to Router context
 var update = React.addons.update;
 
 var CompRegLoader = require('../mixins/Loader');
@@ -23,7 +24,8 @@ var EditorBtnGroup = require('./BtnMenuGroup');
 require('../../styles/ComponentViewer.sass');
 
 var ComponentViewer = React.createClass({
-  mixins: [LinkedStateMixin, Router.State, btnGroup, CompRegLoader],
+  // TODO: static fns willTransitionTo/From
+  mixins: [LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader],
   getInitialState: function() {
     return { registry: null,
              profile: null,
@@ -32,7 +34,8 @@ var ComponentViewer = React.createClass({
              childComponents: null,
              editMode: (this.props.editMode != undefined) ?
                 this.props.editMode :
-                true
+                true,
+             errors: null
     };
   },
   getDefaultProps: function() {
@@ -53,6 +56,16 @@ var ComponentViewer = React.createClass({
     childComponents[index]['@CardinalityMax'] = newMax;
 
     this.setState({childComponents: childComponents});
+  },
+  showErrors: function(errors) {
+    this.setState({errors: errors});
+  },
+  openCloseAll: function(bool, e) {
+    var childComponents = this.state.childComponents.map(function(comp) {
+      return update(comp, { open: { $set: bool }});
+    });
+
+    this.setState({ childComponents: childComponents });
   },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
@@ -115,14 +128,14 @@ var ComponentViewer = React.createClass({
       console.log('first item element: ' + childElements[0]['@name']);
 
     for(var i=0; i < childComponents.length; i++)
-      if(childComponents[i].hasOwnProperty("@ComponentId") && state.profile != null)
+      if(childComponents[i].hasOwnProperty("@ComponentId"))
         this.loadComponent(childComponents[i]["@ComponentId"], "json", function(data) {
             console.log('data child comp: ' + (data.CMD_Component != null));
             data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (childComponents[i].hasOwnProperty("@CardinalityMin")) ? childComponents[i]["@CardinalityMin"] : 1, '@CardinalityMax': (childComponents[i].hasOwnProperty("@CardinalityMax")) ? childComponents[i]["@CardinalityMax"] : 1}})
-            childComponents[i] = update(data, {open: {$set: false}});
+            childComponents[i] = update(data, {open: {$set: state.editMode}});
         });
       else {
-        childComponents[i] = update(childComponents[i], {open: {$set: false}})
+        childComponents[i] = update(childComponents[i], {open: {$set: state.editMode}})
         console.log('childComponent: ' + JSON.stringify(childComponents[i]));
       }
 
@@ -261,10 +274,13 @@ var ComponentViewer = React.createClass({
     editMode = this.state.editMode,
     attrList = null,
     childElem = null,
-    childComp = null;
+    childComp = null,
+    errors = null;
 
     var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup mode="editor" { ...this.getBtnGroupProps() } /> : null;
-
+    var controlLinks = (this.state.editMode) ? ( <div className="controlLinks">
+      <a onClick={this.openCloseAll.bind(this, false)}>Collapse all</a> <a onClick={this.openCloseAll.bind(this, true)}>Expand all</a>
+    </div> ) : null;
     var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
     var addAttrLink = (editMode) ? <a onClick={this.addAttr}>+attribute</a> : null;
 
@@ -296,7 +312,7 @@ var ComponentViewer = React.createClass({
 
     if(this.state.childComponents != null)
       childComp = (
-        // TODO component key should be comp Id
+        // TODO component key should be comp Id (handle also for inline comp)
         <div ref="components" className="childComponents">{this.state.childComponents.map(
           function(comp, index) {
             return <CMDComponent key={comp['@ComponentId']} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onUpdate={self.updateComponentSettings.bind(self, index)} />
@@ -305,16 +321,22 @@ var ComponentViewer = React.createClass({
         </div>
       );
 
+    if(this.state.errors != null) {
+        console.log('Render errors: ' + JSON.stringify(this.state.errors));
+        errors = ( <Alert bsStyle="danger"><h4>Errors found:</h4>
+                      { $.map(this.state.errors, function(error) { return <li>{error}</li> }) }
+                   </Alert> );
+    }
+
     return (
       <div className="ComponentViewer">
         {editBtnGroup}
+        {errors}
         <div className="rootProperties">
           {this.printProperties(item)}
         </div>
         {attrList}
-        <div className="controlLinks">
-          <a onClick={this.closeAll}>Collapse all</a> <a onClick={this.openAll}>Expand all</a>
-        </div>
+        {controlLinks}
         {childElem}
         {childComp}
       </div>
