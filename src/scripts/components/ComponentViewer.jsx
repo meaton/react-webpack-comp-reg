@@ -135,7 +135,8 @@ var ComponentViewer = React.createClass({
             childComponents[i] = update(data, {open: {$set: state.editMode}});
         });
       else {
-        childComponents[i] = update(childComponents[i], {open: {$set: state.editMode}})
+        var isInlineComponent = (childComponents[i].Header == undefined);
+        childComponents[i] = update(childComponents[i], {open: {$set: state.editMode || isInlineComponent}})
         console.log('childComponent: ' + JSON.stringify(childComponents[i]));
       }
 

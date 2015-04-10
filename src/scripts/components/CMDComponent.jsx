@@ -183,6 +183,7 @@ var CMDComponent = React.createClass({
         }
       };
 
+      //TODO Add viewer display for components and show form fields for nested children of inline-components 
       return (
         <div className="CMDComponent edit-mode">
           <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}

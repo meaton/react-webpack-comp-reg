@@ -89,33 +89,42 @@ var LoaderMixin = {
       }.bind(this)
     });
   },
-  saveProfile: function(profileId, publish, cb) {
-    var actionType = (publish) ? "publish" : "update";
-    var registry = this.state.registry;
-    var data = clone(this.state.profile);
+  handlePostData: function(data, childElems, childComps) {
+    var self = this;
+    var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
 
-    console.log('child components: ' + $.isArray(this.state.childComponents));
-    console.log('child elements: ' + $.isArray(this.state.childElements));
-
-    data.CMD_Component.CMD_Component = this.state.childComponents.map(function(comp, index) {
+    rootComponent.CMD_Component = childComps.map(function(comp, index) {
         var newComp = comp;
         var componentId = null;
 
         if(comp.Header != undefined) {
           newComp = comp.CMD_Component;
           componentId = comp.Header.ID;
-        } else {
+        } else if(comp.hasOwnProperty("@ComponentId")) {
           componentId = comp['@ComponentId'];
         }
 
         //TODO: Handle inline child Components
-        return { '@ComponentId': componentId,
+        if(componentId != null)
+          return { '@ComponentId': componentId,
                  '@CardinalityMin': newComp['@CardinalityMin'],
                  '@CardinalityMax': newComp['@CardinalityMax'] };
+        else
+          return self.handlePostData(newComp, newComp.CMD_Element, newComp.CMD_Component);
     });
 
-    data.CMD_Component.CMD_Element = this.state.childElements;
+    rootComponent.CMD_Element = childElems;
 
+    return data;
+  },
+  saveProfile: function(profileId, publish, cb) {
+    var actionType = (publish) ? "publish" : "update";
+    var registry = this.state.registry;
+
+    console.log('child components: ' + $.isArray(this.state.childComponents));
+    console.log('child elements: ' + $.isArray(this.state.childElements));
+
+    var data = this.handlePostData(clone(this.state.profile), this.state.childElements, this.state.childComponents);
     console.log('data: ' + JSON.stringify(data));
 
     var cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
@@ -173,7 +182,6 @@ var LoaderMixin = {
     xhr.send(fd);
     */
 
-
     $.ajax({
         type: 'POST',
         url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType,
@@ -199,31 +207,11 @@ var LoaderMixin = {
   saveComponent: function(componentId, publish, cb) {
     var actionType = (publish) ? "publish" : "update";
     var registry = this.state.registry;
-    var data = clone(this.state.component);
 
     console.log('child components: ' + $.isArray(this.state.childComponents));
     console.log('child elements: ' + $.isArray(this.state.childElements));
 
-    data.CMD_Component.CMD_Component = this.state.childComponents.map(function(comp, index) {
-        var newComp = comp;
-        var componentId = null;
-
-        if(comp.Header != undefined) {
-          newComp = comp.CMD_Component;
-          componentId = comp.Header.ID;
-        } else {
-          componentId = comp['@ComponentId'];
-        }
-
-        //TODO: Handle inline child Components
-        return { '@ComponentId': componentId,
-                 '@ConceptLink': newComp['@ConceptLink'],
-                 '@CardinalityMin': newComp['@CardinalityMin'],
-                 '@CardinalityMax': newComp['@CardinalityMax'] };
-    });
-
-    data.CMD_Component.CMD_Element = this.state.childElements;
-
+    var data = this.handlePostData(clone(this.state.component), this.state.childElements, this.state.childComponents);
     console.log('data: ' + JSON.stringify(data));
 
     var cmd_schema_xml = marshaller.marshalString({ name: { localPart: "CMD_ComponentSpec" }, value: data });
@@ -258,6 +246,7 @@ var LoaderMixin = {
         console.error(componentId, status, err);
       }.bind(this)
     });
+
   },
   componentWillMount: function() {
     console.log('Loader mount');
