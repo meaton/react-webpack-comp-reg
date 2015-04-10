@@ -117,7 +117,7 @@ var LoaderMixin = {
 
     return data;
   },
-  saveProfile: function(profileId, publish, cb) {
+  saveProfile: function(profileId, update, publish, cb) {
     var actionType = (publish) ? "publish" : "update";
     var registry = this.state.registry;
 
@@ -182,9 +182,12 @@ var LoaderMixin = {
     xhr.send(fd);
     */
 
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/profiles';
+    if(update) url += '/' + profileId + '/' + actionType;
+
     $.ajax({
         type: 'POST',
-        url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType,
+        url: url,
         data: fd,
         mimeType: 'multipart/form-data',
         username: Config.auth.username,
@@ -204,7 +207,7 @@ var LoaderMixin = {
         }.bind(this)
       });
   },
-  saveComponent: function(componentId, publish, cb) {
+  saveComponent: function(componentId, update, publish, cb) {
     var actionType = (publish) ? "publish" : "update";
     var registry = this.state.registry;
 
@@ -225,9 +228,12 @@ var LoaderMixin = {
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
+
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/components';
+    if(update) url += '/' + componentId + '/' + actionType;
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId + '/' + actionType,
+      url: url,
       data: fd,
       mimeType: 'multipart/form-data',
       username: Config.auth.username,

@@ -62,8 +62,8 @@ var BtnMenuGroup = React.createClass({
       case "editor":
         return (
           <ButtonGroup className="actionMenu">
-            <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp} disabled={this.props.newActive}>Save</Button>
-            <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.props.saveNewComp}>Save new</Button>
+            <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
+            <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp.bind(this, false)}>Save new</Button>
             <Button onClick={this.props.publishComp} disabled={this.props.newActive}>Publish</Button>
             <ButtonLink to="/">Cancel</ButtonLink>
           </ButtonGroup>

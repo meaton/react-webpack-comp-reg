@@ -15,14 +15,26 @@ var BtnGroupMixin = {
       newActive: (this.isActive != undefined) ? this.isActive("newProfile") || this.isActive("newComponent") : false
     };
   },
-  saveAction: function(evt) {
+  saveAction: function(update, evt) {
     var self = this;
+    if(update == undefined) update = true;
+
     console.log('save clicked: ' + evt.target);
     console.log('registry: ' + JSON.stringify(this.state.registry));
     //console.log('item: ' + JSON.stringify(this.state.profile||this.state.component));
 
+    this.postFormAction(update, false);
+  },
+  publishAction: function(evt) {
+    console.log('publish clicked: ' + evt.target);
+    console.log('ref: ' + this.refs.editComponentForm);
+
+    this.postFormAction(true, true);
+  },
+  postFormAction: function(update, publish) {
+    var self = this;
     if(this.state.profile != null && this.saveProfile != undefined)
-      this.saveProfile(this.state.profile.Header.ID, false, function(data) {
+      this.saveProfile(this.state.profile.Header.ID, update, publish, function(data) {
         console.log('returned 200 POST: ' + JSON.stringify(data));
         // check errors, display messages inline or show alert
         if(data != null)
@@ -30,7 +42,7 @@ var BtnGroupMixin = {
           else self.transitionTo('/'); // return route if no errors
       });
     else if(this.state.component != null && this.saveProfile != undefined)
-      this.saveComponent(this.state.component.Header.ID, false, function(data) {
+      this.saveComponent(this.state.component.Header.ID, update, publish, function(data) {
         console.log('return 200 POST: ' + JSON.stringify(data));
 
         // check errors, display messages inline or show alert
@@ -38,20 +50,6 @@ var BtnGroupMixin = {
           if(data.errors != undefined) self.showErrors(data.errors);
           else self.transitionTo('/'); // return route if no errors
       });
-  },
-  saveNewAction: function(evt) {
-    console.log('save new clicked: ' + evt.target);
-    console.log('ref: ' + this.refs.editComponentForm);
-  },
-  editAction: function(evt) {
-    console.log('edit clicked: ' + evt.target);
-  },
-  publishAction: function(evt) {
-    console.log('publish clicked: ' + evt.target);
-    console.log('ref: ' + this.refs.editComponentForm);
-  },
-  cancelAction: function(evt) {
-    console.log('cancel clicked: ' + evt.target);
   },
   createNewAction: function(evt) {
     console.log('create new clicked: ' + evt.target);
