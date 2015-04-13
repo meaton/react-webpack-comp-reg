@@ -207,7 +207,7 @@ var ComponentViewer = React.createClass({
 
       var headerNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Name');
       var componentNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.CMD_Component.@name');
-      var handleNameChange = function(e) {
+      var handleNameChange = function(e) { // change to instance fn
         console.log('name change: ' + e.target.value);
 
         headerNameLink.requestChange(e.target.value);
@@ -215,13 +215,13 @@ var ComponentViewer = React.createClass({
       };
 
       var headerDescLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Description');
-      var handleChange = function(link, e) {
+      var handleChange = function(link, e) { // change to instance fn
         link.requestChange(e.target.value);
       };
 
       var domainLink = this.linkState('registry.domainName');
       var groupNameLink = this.linkState('registry.groupName');
-      var handleRegistryChange = function(link, e) {
+      var handleRegistryChange = function(link, e) { //change to instance fn
         if(self.state.registry != null)
           link.requestChange(e.target.value);
         else

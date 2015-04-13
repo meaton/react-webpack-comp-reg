@@ -2,11 +2,50 @@
 
 var React = require('react/addons');
 var Router = require('react-router');
-var Button = require('react-bootstrap/lib/Button');
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
+//Bootstrap components
+var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+var Modal = require('react-bootstrap/lib/Modal');
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 
-//TODO: ReactLink (router) Button
+var PublishModal = React.createClass({
+      mixins: [OverlayMixin],
+      getInitialState() {
+        return {
+          isModalOpen: false
+        };
+      },
+      onConfirm: function(evt) {
+        this.toggleModal();
+        this.props.publish(evt);
+      },
+      toggleModal: function() {
+        this.setState({
+          isModalOpen: !this.state.isModalOpen
+        });
+      },
+      render() {
+        return <Button disabled={this.props.newActive} onClick={this.toggleModal}>Publish</Button>
+      },
+      renderOverlay() {
+        if(!this.state.isModalOpen) {
+          return <span/>;
+        }
+
+        return (
+          <Modal bsStyle="primary" title="Publish" animation={false}>
+            <div className="publish-modal-body">
+              <p>If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing.</p>
+              <div className="publish-modal-footer">
+                <Button bsStyle="primary" onClick={this.onConfirm}>OK</Button>
+                <Button onClick={this.toggleModal}>Cancel</Button>
+              </div>
+            </div>
+          </Modal>
+        );
+      }
+  });
 
 var BtnMenuGroup = React.createClass({
   mixins: [ Router.State ],
@@ -64,7 +103,7 @@ var BtnMenuGroup = React.createClass({
           <ButtonGroup className="actionMenu">
             <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
             <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp.bind(this, false)}>Save new</Button>
-            <Button onClick={this.props.publishComp} disabled={this.props.newActive}>Publish</Button>
+            <PublishModal newActive={this.props.newActive} publish={this.props.publishComp} />
             <ButtonLink to="/">Cancel</ButtonLink>
           </ButtonGroup>
         );
