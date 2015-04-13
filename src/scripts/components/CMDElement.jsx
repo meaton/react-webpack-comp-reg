@@ -56,8 +56,8 @@ var CMDElement = React.createClass({
       attrList = (
         <div className="attrList">AttributeList:
           {
-            $.map(attrSet, function(attr) {
-              return <CMDAttribute attr={attr} getValue={self.props.viewer.getValueScheme}/>;
+            $.map(attrSet, function(attr, index) {
+              return <CMDAttribute key={"attr_elem_" + index} attr={attr} getValue={self.props.viewer.getValueScheme}/>;
             })
           }
         </div>

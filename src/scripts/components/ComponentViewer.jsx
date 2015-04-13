@@ -161,8 +161,8 @@ var ComponentViewer = React.createClass({
           var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
           valueScheme = (this.state.editMode) ? (
             <Input type="select" label="Type" buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
-              {$.map(enumItems, function(item) {
-                return <option>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
+              {$.map(enumItems, function(item, index) {
+                return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
               })}
             </Input>
           ) : (
@@ -181,6 +181,21 @@ var ComponentViewer = React.createClass({
     }
 
     return valueScheme;
+  },
+  handleInputChange: function(link, e) {
+    if(link != undefined || link != null)
+      link.requestChange(e.target.value);
+    else
+      console.log('Linked state variable is undefined: ' + e.target);
+  },
+  handleRegistryInputChange: function(link, e) {
+    if(link != undefined && link != null)
+      if(this.state.registry != null)
+        link.requestChange(e.target.value);
+      else
+        console.error('Registry data is empty: ' + this.state.registry);
+    else
+      console.log('Linked state variable is undefined: ' + e.target);
   },
   getLinkStateCompTypeStr: function() {
     if(this.state.profile != null)
@@ -215,28 +230,18 @@ var ComponentViewer = React.createClass({
       };
 
       var headerDescLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Description');
-      var handleChange = function(link, e) { // change to instance fn
-        link.requestChange(e.target.value);
-      };
-
       var domainLink = this.linkState('registry.domainName');
       var groupNameLink = this.linkState('registry.groupName');
-      var handleRegistryChange = function(link, e) { //change to instance fn
-        if(self.state.registry != null)
-          link.requestChange(e.target.value);
-        else
-          console.error('Registry data empty: ' + self.state.registry);
-      };
 
       // Registry Input fields
       var groupNameInput = (this.state.registry != null) ?
-        <Input type="text" ref="rootComponentGroupName" label="Group Name" defaultValue={groupNameLink.value} onChange={handleRegistryChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <Input type="text" ref="rootComponentGroupName" label="Group Name" defaultValue={groupNameLink.value} onChange={this.handleRegistryInputChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
                                          : null;
       var domainNameInput = (this.state.registry != null) ? (
-        <Input type="select" ref="rootComponentDomain" label="Domain" defaultValue={domainLink.value} onChange={handleRegistryChange.bind(this, domainLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+        <Input type="select" ref="rootComponentDomain" label="Domain" defaultValue={domainLink.value} onChange={this.handleRegistryInputChange.bind(this, domainLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
           <option value="">Select a domain...</option>
-          {this.props.domains.map(function(domain) {
-            return <option value={domain.data}>{domain.label}</option>
+          {this.props.domains.map(function(domain, index) {
+            return <option key={index} value={domain.data}>{domain.label}</option>
           })}
         </Input> )
         : null;
@@ -250,9 +255,9 @@ var ComponentViewer = React.createClass({
           </div>
           <Input type="text" ref="rootComponentName" label="Name" defaultValue={headerNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {groupNameInput}
-          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={handleChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={this.handleInputChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {domainNameInput}
-          <Input type="text" label="ConceptLink" value={rootComponent["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn.call()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+          <Input type="text" label="ConceptLink" value={rootComponent["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
         </form>
       );
 
@@ -292,7 +297,7 @@ var ComponentViewer = React.createClass({
             (attrSet)
             ? $.map(attrSet, function(attr, index) {
               return (
-                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn.call()} editMode={editMode} />
+                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} />
               );
             })
             : <span>No Attributes</span>
@@ -313,9 +318,14 @@ var ComponentViewer = React.createClass({
 
     if(this.state.childComponents != null)
       childComp = (
-        // TODO component key should be comp Id (handle also for inline comp)
+        // component key should be comp Id (handle also for inline comp)
         <div ref="components" className="childComponents">{this.state.childComponents.map(
           function(comp, index) {
+            var compId;
+            if(comp.hasOwnProperty("@ComponentId")) compId = comp['@ComponentId'];
+            else if(comp.Header != undefined) compId = comp.Header.ID;
+            else compId = "inline_" + index;
+
             return <CMDComponent key={comp['@ComponentId']} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onUpdate={self.updateComponentSettings.bind(self, index)} />
           }
         )}

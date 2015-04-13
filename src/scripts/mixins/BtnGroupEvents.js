@@ -2,12 +2,10 @@ var BtnGroupMixin = {
   getBtnGroupProps: function() {
     return {
       newComp: this.createNewAction,
-      editComp: this.editAction,
       importNew: this.importNewAction,
       saveComp: this.saveAction,
-      saveNewComp: this.saveNewAction,
+      deleteComp: this.deleteAction,
       publishComp: this.publishAction,
-      cancelEdit: this.cancelAction,
       profile: this.state.profileId||this.state.profile,
       component: this.state.componentId||this.state.component,
       multiSelect: this.state.multiSelect,
@@ -15,11 +13,23 @@ var BtnGroupMixin = {
       newActive: (this.isActive != undefined) ? this.isActive("newProfile") || this.isActive("newComponent") : false
     };
   },
-  saveAction: function(update, evt) {
+  deleteAction: function() {
+    //TODO: - Handle for multiple select
+    //      - Expect a response from REST?
+    //      - Display notice warning temp post-deletion
+    //      - Remove nodes selected for delete on confirm/200 OK resp.
+    if(this.state.profileId != null && this.refs.profile != undefined && this.refs.profile.deleteItem != undefined)
+      this.refs.profile.deleteItem("profiles", this.state.profileId, function(resp) {
+      });
+    else if(this.state.componentId != null && this.refs.component != undefined && this.refs.component.deleteItem != undefined)
+      this.refs.component.deleteItem("components", this.state.componentId, function(resp) {
+      });
+  },
+  saveAction: function(update) {
     var self = this;
     if(update == undefined) update = true;
 
-    console.log('save clicked: ' + evt.target);
+    console.log('save clicked');
     console.log('registry: ' + JSON.stringify(this.state.registry));
     //console.log('item: ' + JSON.stringify(this.state.profile||this.state.component));
 
@@ -41,7 +51,7 @@ var BtnGroupMixin = {
           if(data.errors != undefined) self.showErrors(data.errors);
           else self.transitionTo('/'); // return route if no errors
       });
-    else if(this.state.component != null && this.saveProfile != undefined)
+    else if(this.state.component != null && this.saveComponent != undefined)
       this.saveComponent(this.state.component.Header.ID, update, publish, function(data) {
         console.log('return 200 POST: ' + JSON.stringify(data));
 
@@ -51,10 +61,10 @@ var BtnGroupMixin = {
           else self.transitionTo('/'); // return route if no errors
       });
   },
-  createNewAction: function(evt) {
+  createNewAction: function(evt) { //TODO
     console.log('create new clicked: ' + evt.target);
   },
-  importNewAction: function(evt) {
+  importNewAction: function(evt) { //TODO
     console.log('import new clicked: ' + evt.target);
   }
 };

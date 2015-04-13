@@ -9,16 +9,19 @@ var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var Modal = require('react-bootstrap/lib/Modal');
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 
-var PublishModal = React.createClass({
+var ButtonModal = React.createClass({
       mixins: [OverlayMixin],
-      getInitialState() {
+      getInitialState: function() {
         return {
           isModalOpen: false
         };
       },
+      getDefaultProps: function() {
+        return { disabled: false };
+      },
       onConfirm: function(evt) {
         this.toggleModal();
-        this.props.publish(evt);
+        this.props.action(evt);
       },
       toggleModal: function() {
         this.setState({
@@ -26,18 +29,19 @@ var PublishModal = React.createClass({
         });
       },
       render() {
-        return <Button disabled={this.props.newActive} onClick={this.toggleModal}>Publish</Button>
+        return <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
       },
       renderOverlay() {
         if(!this.state.isModalOpen) {
           return <span/>;
         }
 
+        var desc = (typeof this.props.desc == "string") ? ( <p className="modal-desc">{this.props.desc}</p> ) : this.props.desc;
         return (
-          <Modal bsStyle="primary" title="Publish" animation={false}>
-            <div className="publish-modal-body">
-              <p>If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing.</p>
-              <div className="publish-modal-footer">
+          <Modal bsStyle="primary" title={this.props.title} animation={false} backdrop={true} onRequestHide={this.toggleModal}>
+            <div className="modal-body">
+              {desc}
+              <div className="modal-footer">
                 <Button bsStyle="primary" onClick={this.onConfirm}>OK</Button>
                 <Button onClick={this.toggleModal}>Cancel</Button>
               </div>
@@ -50,9 +54,7 @@ var PublishModal = React.createClass({
 var BtnMenuGroup = React.createClass({
   mixins: [ Router.State ],
   propTypes: {
-    mode: React.PropTypes.string,
-    profile: React.PropTypes.string,
-    component: React.PropTypes.string
+    mode: React.PropTypes.string
   },
   getDefaultProps: function() {
     return {
@@ -60,6 +62,9 @@ var BtnMenuGroup = React.createClass({
       profile: null,
       component: null
     };
+  },
+  saveComp: function(isNew) {
+    this.props.saveComp(isNew);
   },
   render: function () {
     var selectedId = this.props.selectedId;
@@ -96,14 +101,21 @@ var BtnMenuGroup = React.createClass({
               <ButtonLink to="newEditor">Create new</ButtonLink>
               {editorLink}
               <ButtonLink to="import">Import</ButtonLink>
+              <ButtonModal {...this.props} action={this.props.deleteComp} disabled={isPublished}
+                btnLabel="Delete"
+                title="Delete items"
+                desc={<div className="modal-desc">You will delete the following item(s):<br/>This cannot be undone.</div>} />
             </ButtonGroup>
         );
       case "editor":
         return (
           <ButtonGroup className="actionMenu">
-            <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
-            <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.props.saveComp.bind(this, false)}>Save new</Button>
-            <PublishModal newActive={this.props.newActive} publish={this.props.publishComp} />
+            <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
+            <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, false)}>Save new</Button>
+            <ButtonModal {...this.props} action={this.props.publishComp} disabled={this.props.newActive}
+              btnLabel="Publish"
+              title="Publish"
+              desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
             <ButtonLink to="/">Cancel</ButtonLink>
           </ButtonGroup>
         );

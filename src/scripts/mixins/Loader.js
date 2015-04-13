@@ -32,7 +32,7 @@ var LoaderMixin = {
       dataType: (raw_type != undefined) ? raw_type : "json",
       username: Config.auth.username,
       password: Config.auth.password,
-      async: false,
+      async: false, //TODO: sync is dep
       xhrFields: {
         withCredentials: true
       },
@@ -104,7 +104,6 @@ var LoaderMixin = {
           componentId = comp['@ComponentId'];
         }
 
-        //TODO: Handle inline child Components
         if(componentId != null)
           return { '@ComponentId': componentId,
                  '@CardinalityMin': newComp['@CardinalityMin'],
@@ -192,7 +191,6 @@ var LoaderMixin = {
         mimeType: 'multipart/form-data',
         username: Config.auth.username,
         password: Config.auth.password,
-        async: false,
         xhrFields: {
           withCredentials: true
         },
@@ -228,7 +226,6 @@ var LoaderMixin = {
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
-
     var url = 'http://localhost:8080/ComponentRegistry/rest/registry/components';
     if(update) url += '/' + componentId + '/' + actionType;
     $.ajax({
@@ -238,7 +235,6 @@ var LoaderMixin = {
       mimeType: 'multipart/form-data',
       username: Config.auth.username,
       password: Config.auth.password,
-      async: false,
       xhrFields: {
         withCredentials: true
       },
@@ -252,7 +248,26 @@ var LoaderMixin = {
         console.error(componentId, status, err);
       }.bind(this)
     });
-
+  },
+  deleteItem: function(type, itemId, cb) {
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId;
+    $.ajax({
+      type: 'POST', //TODO test DELETE method type
+      url: url,
+      data: { method: 'DELETE' },
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function(data) {
+        console.log('return delete action: ' + data);
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(itemId, status, err);
+      }.bind(this)
+    });
   },
   componentWillMount: function() {
     console.log('Loader mount');

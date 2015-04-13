@@ -123,7 +123,7 @@ var CMDComponent = React.createClass({
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
         console.log('found elem (' + index + '): ' + elem);
-        return <CMDElement key={index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} />
+        return <CMDElement key={"comp_elem_" + index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} />
       });
 
     var compComps = comp.CMD_Component;
@@ -134,7 +134,7 @@ var CMDComponent = React.createClass({
     if(compComps != undefined)
       compComps = compComps.map(function(nestedComp, ncindex) {
         console.log('found component (' + ncindex + '): ' + nestedComp);
-        return <CMDComponent key={ncindex} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} />
+        return <CMDComponent key={"comp_comp_" + ncindex} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} />
       });
 
     var cx = React.addons.classSet;
@@ -183,7 +183,7 @@ var CMDComponent = React.createClass({
         }
       };
 
-      //TODO Add viewer display for components and show form fields for nested children of inline-components 
+      //TODO Add viewer display for components and show form fields for nested children of inline-components
       return (
         <div className="CMDComponent edit-mode">
           <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
@@ -192,13 +192,13 @@ var CMDComponent = React.createClass({
               <Input type="select" label="Min Occurrences" defaultValue={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMinChange}>
                 <option value="unbounded">unbounded</option>
                 {$.map($(Array(10)), function(item, index) {
-                  return <option value={index}>{index}</option>
+                  return <option key={index} value={index}>{index}</option>
                 })}
               </Input>
               <Input type="select" label="Max Occurrences" defaultValue={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}>
                 <option value="unbounded">unbounded</option>
                 {$.map($(Array(10)), function(item, index) {
-                  return <option value={index}>{index}</option>
+                  return <option key={index} value={index}>{index}</option>
                 })}
               </Input>
             </form>
