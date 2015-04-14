@@ -49,11 +49,19 @@ var ComponentViewer = React.createClass({
         this.setState({component: item, childElements: null, childComponents: null});
     }
   },
+  updateInlineComponent: function(index, newComponent) {
+    var childComponents = this.state.childComponents;
+
+    if(newComponent != null)
+      childComponents[index] = newComponent;
+
+    this.setState({childComponents: childComponents});
+  },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index);
     var childComponents = this.state.childComponents;
-    childComponents[index]['@CardinalityMin'] = newMin;
-    childComponents[index]['@CardinalityMax'] = newMax;
+    if(newMin != null) childComponents[index]['@CardinalityMin'] = newMin;
+    if(newMax != null) childComponents[index]['@CardinalityMax'] = newMax;
 
     this.setState({childComponents: childComponents});
   },
@@ -113,9 +121,12 @@ var ComponentViewer = React.createClass({
 
     return (!nextState.editMode || nextState.registry != null);
   },
+  addNewComponent: function(evt) {
+    var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
+    this.setState({ childComponents: components });
+  },
   parseComponent: function(item, state) {
     console.log('parseComponent');
-    //console.log('state: ' + JSON.stringify(state));
 
     var rootComponent = item.CMD_Component;
     var childComponents = (!$.isArray(rootComponent.CMD_Component) && rootComponent.CMD_Component != null) ? [rootComponent.CMD_Component] : (rootComponent.CMD_Component||[]);
@@ -136,7 +147,7 @@ var ComponentViewer = React.createClass({
         });
       else {
         var isInlineComponent = (childComponents[i].Header == undefined);
-        childComponents[i] = update(childComponents[i], {open: {$set: state.editMode || isInlineComponent}})
+        childComponents[i] = update(childComponents[i], {open: {$set: (state.editMode || isInlineComponent)}})
         console.log('childComponent: ' + JSON.stringify(childComponents[i]));
       }
 
@@ -222,7 +233,7 @@ var ComponentViewer = React.createClass({
 
       var headerNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Name');
       var componentNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.CMD_Component.@name');
-      var handleNameChange = function(e) { // change to instance fn
+      var handleNameChange = function(e) {
         console.log('name change: ' + e.target.value);
 
         headerNameLink.requestChange(e.target.value);
@@ -306,6 +317,7 @@ var ComponentViewer = React.createClass({
         </div>
       );
 
+    var cmdAddElementSpecLink = (this.state.editMode) ? <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div> : null;
     if(this.state.childElements != null)
       childElem = (
         <div ref="elements" className="childElements">{this.state.childElements.map(
@@ -313,12 +325,14 @@ var ComponentViewer = React.createClass({
             return <CMDElement key={'elem_' + index} elem={elem} viewer={self} editMode={editMode} />;
           }
         )}
+          {cmdAddElementSpecLink}
         </div>
       );
 
+    var cmdAddComponentSpecLink = (this.state.editMode) ? <div className="addComponent"><a onClick={self.addNewComponent}>+Component</a></div> : null;
     if(this.state.childComponents != null)
       childComp = (
-        // component key should be comp Id (handle also for inline comp)
+        // component key should be comp Id (except for inline comps)
         <div ref="components" className="childComponents">{this.state.childComponents.map(
           function(comp, index) {
             var compId;
@@ -326,9 +340,10 @@ var ComponentViewer = React.createClass({
             else if(comp.Header != undefined) compId = comp.Header.ID;
             else compId = "inline_" + index;
 
-            return <CMDComponent key={comp['@ComponentId']} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onUpdate={self.updateComponentSettings.bind(self, index)} />
+            return <CMDComponent key={comp['@ComponentId']} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} />
           }
         )}
+          {cmdAddComponentSpecLink}
         </div>
       );
 

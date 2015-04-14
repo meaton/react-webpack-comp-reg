@@ -93,7 +93,7 @@ var LoaderMixin = {
     var self = this;
     var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
 
-    rootComponent.CMD_Component = childComps.map(function(comp, index) {
+    rootComponent.CMD_Component = (childComps != undefined || childComps != null) ? childComps.map(function(comp, index) {
         var newComp = comp;
         var componentId = null;
 
@@ -110,7 +110,7 @@ var LoaderMixin = {
                  '@CardinalityMax': newComp['@CardinalityMax'] };
         else
           return self.handlePostData(newComp, newComp.CMD_Element, newComp.CMD_Component);
-    });
+    }) : undefined;
 
     rootComponent.CMD_Element = childElems;
 
@@ -133,7 +133,7 @@ var LoaderMixin = {
     fd.append('profileId', profileId);
     fd.append('name', data.Header.Name);
     fd.append('description', data.Header.Description);
-    fd.append('group', registry.groupName);
+    fd.append('group', (registry.groupName != undefined || registry.groupName != null) ? registry.groupName : "");
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
@@ -252,9 +252,9 @@ var LoaderMixin = {
   deleteItem: function(type, itemId, cb) {
     var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId;
     $.ajax({
-      type: 'POST', //TODO test DELETE method type
+      type: 'DELETE', // 'POST' /* Note testing locally with CORS enable DELETE method in init-config accepted methods */
       url: url,
-      data: { method: 'DELETE' },
+      //data: { method: 'DELETE' }, // used for POST method of deletion
       username: Config.auth.username,
       password: Config.auth.password,
       xhrFields: {
