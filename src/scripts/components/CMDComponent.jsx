@@ -6,7 +6,7 @@ var CMDElement = require('./CMDElement');
 var Input = require('react-bootstrap/lib/Input');
 var update = React.addons.update;
 
-//require('../../styles/CMDComponent.sass');
+require('../../styles/CMDComponent.sass');
 
 var CMDComponent = React.createClass({
   mixins: [LinkedStateMixin],
