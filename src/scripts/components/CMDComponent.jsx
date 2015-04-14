@@ -171,14 +171,20 @@ var CMDComponent = React.createClass({
       });
 
     var cx = React.addons.classSet;
-    var classes = cx({
-      'hide': !this.state.component.open,
-      'componentBody': true
+    var viewClasses = cx({
+      'componentBody': true,
+      'hide': !this.state.component.open
     });
 
     var editClasses = cx({
-      'hide-field': !this.state.component.open && this.state.editMode,
-      'componentBody': true
+      'componentBody': true,
+      'hide-field': !this.state.component.open && this.state.editMode
+    });
+
+    var componentClasses = cx({
+      'CMDComponent': true,
+      'edit-mode': this.state.editMode,
+      'open': this.state.component.open
     });
 
     //TODO: review name replace
@@ -245,7 +251,7 @@ var CMDComponent = React.createClass({
         ): null;
 
       return (
-        <div className="CMDComponent edit-mode">
+        <div className={componentClasses}>
           <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
           <div className={editClasses}>
             <form className="form-horizontal form-group" name={"componentForm_" + compId}>
@@ -269,10 +275,10 @@ var CMDComponent = React.createClass({
       );
     } else {
       return (
-        <div className="CMDComponent">
+        <div className={componentClasses}>
           <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
           <div className="componentProps">{compProps}</div>
-          <div className={classes}>
+          <div className={viewClasses}>
             <div className="childElements">{compElems}</div>
             <div className="childComponents">{compComps}</div>
           </div>
