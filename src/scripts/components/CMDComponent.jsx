@@ -65,7 +65,7 @@ var CMDComponent = React.createClass({
     var component = this.state.component;
     console.log('component props: ' + JSON.stringify(nextProps.component));
 
-    if(this.props.component.open != nextProps.component.open) { // open/close all
+    if(this.state.component.open != nextProps.component.open) { // open/close all
       component = update(component, { open: { $set: nextProps.component.open }});
       this.setState({ component: component });
     }
