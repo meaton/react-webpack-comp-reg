@@ -15,13 +15,12 @@ var CMDComponent = React.createClass({
   },
   toggleComponent: function(evt) {
     console.log('toggle component: ' + JSON.stringify(this.state.component));
-
     if((!this.state.component.hasOwnProperty('open') || !this.state.component.open) &&
        this.state.component.hasOwnProperty('@ComponentId'))
        this.loadComponentData();
     else {
-      var isOpen = (this.state.component.hasOwnProperty('open')) ? this.state.component.open : true;
-      this.setState({ component: update(this.state.component, { open: { $set: !isOpen }}) });
+      var isOpen = (this.state.component.hasOwnProperty('open')) ? !this.state.component.open : true;
+      this.setState({ component: update(this.state.component, { open: { $set: isOpen }}) });
     }
   },
   addNewComponent: function(evt) {
@@ -107,7 +106,6 @@ var CMDComponent = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('component will update: ' + require('util').inspect(nextState.component));
-
     if(this.state.editMode && this.state.isInline && this.state.component.open)
           if(JSON.stringify(nextProps.component) != JSON.stringify(nextState.component)) {
             this.props.onInlineUpdate(nextState.component);
@@ -115,12 +113,11 @@ var CMDComponent = React.createClass({
   },
   render: function () {
     console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
-
     var self = this;
     var comp = this.state.component;
     var compId;
 
-    if(comp.hasOwnProperty("@ComponentId")) //TODO find cases when ComponentId is missing
+    if(comp.hasOwnProperty("@ComponentId"))
       compId = comp["@ComponentId"];
     else if(comp.Header != undefined)
       compId = comp.Header.ID;
@@ -136,7 +133,6 @@ var CMDComponent = React.createClass({
     if($.isArray(comp) && comp.length == 1)
       comp = comp[0];
 
-    //TODO: For viewer work on data load and display of cardinality props
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
@@ -218,6 +214,7 @@ var CMDComponent = React.createClass({
         );
         //TODO move common viewer bind methods to mixin
       }
+
       var handleOccMinChange = function(e) {
           console.log('comp change: ' + e.target);
           if(minComponentLink != null) {

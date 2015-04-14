@@ -69,11 +69,15 @@ var ComponentViewer = React.createClass({
     this.setState({errors: errors});
   },
   openCloseAll: function(bool, e) {
+    var childElements = this.state.childElements.map(function(elem) {
+        return update(elem, { open: { $set: bool }});
+    });
+
     var childComponents = this.state.childComponents.map(function(comp) {
       return update(comp, { open: { $set: bool }});
     });
 
-    this.setState({ childComponents: childComponents });
+    this.setState({ childComponents: childComponents, childElements: childElements });
   },
   componentWillMount: function() {
     this.props.profileId = this.getParams().profile;
@@ -317,7 +321,7 @@ var ComponentViewer = React.createClass({
         </div>
       );
 
-    var cmdAddElementSpecLink = (this.state.editMode) ? <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div> : null;
+    var cmdAddElementSpecLink = (this.state.editMode) ? <div className="addElement controlLinks"><a onClick={this.addNewElement}>+Element</a></div> : null;
     if(this.state.childElements != null)
       childElem = (
         <div ref="elements" className="childElements">{this.state.childElements.map(
@@ -329,7 +333,7 @@ var ComponentViewer = React.createClass({
         </div>
       );
 
-    var cmdAddComponentSpecLink = (this.state.editMode) ? <div className="addComponent"><a onClick={self.addNewComponent}>+Component</a></div> : null;
+    var cmdAddComponentSpecLink = (this.state.editMode) ? <div className="addComponent controlLinks"><a onClick={self.addNewComponent}>+Component</a></div> : null;
     if(this.state.childComponents != null)
       childComp = (
         // component key should be comp Id (except for inline comps)

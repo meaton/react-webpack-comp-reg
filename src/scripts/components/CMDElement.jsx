@@ -3,11 +3,22 @@
 var React = require('react');
 var CMDAttribute = require('./CMDAttribute');
 
-//require('../../styles/CMDElement.sass');
+var Input = require('react-bootstrap/lib/Input');
+var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
+
+var update = React.addons.update;
+
+require('../../styles/CMDElement.sass');
 
 var CMDElement = React.createClass({
+  mixins: [LinkedStateMixin],
   getInitialState: function() {
     return { elem: this.props.elem, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
+  },
+  toggleElement: function(evt) {
+    console.log('toggle elem: ' + JSON.stringify(this.state.elem));
+    var isOpen = (this.state.elem.hasOwnProperty('open')) ? !this.state.elem.open : true;
+    this.setState({ elem: update(this.state.elem, { open: { $set: isOpen }}) });
   },
   elemAttrs: function(elem) {
     var lb = React.createElement('br');
@@ -20,12 +31,25 @@ var CMDElement = React.createClass({
     var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
+  componentWillReceiveProps: function(nextProps) {
+    console.log('elem will received new props');
+    var elem = this.state.elem;
+    console.log('elem props: ' + JSON.stringify(nextProps.elem));
+    console.log('elem props: ' + this.props.elem.open);
+
+    if(this.state.elem.open != nextProps.elem.open) { // open/close all
+      elem = update(elem, { open: { $set: nextProps.elem.open }});
+      this.setState({ elem: elem });
+    }
+  },
   componentDidMount: function() {
     var elem = this.state.elem;
 
     if(elem.AttributeList != undefined && !$.isArray(elem.AttributeList.Attribute)) {
       elem.AttributeList.Attribute = [elem.AttributeList.Attribute];
     }
+
+    this.setState({ elem: update(elem, { open: { $set: true }}) });
 
     console.log('mounted element: ' + JSON.stringify(elem));
   },
@@ -38,16 +62,84 @@ var CMDElement = React.createClass({
     console.log('rendering element: ' + require('util').inspect(elem));
 
     if(this.state.editMode) {
-      var displayPr = (elem['@DisplayPriority']) ? " Display priority: " + elem['@DisplayPriority'] : "";
-      var cardMaxMin = " Cardinality: "
-      cardMaxMin += (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
-      cardMaxMin += " - ";
-      cardMaxMin += (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
+      var minComponentLink = null;
+      var maxComponentLink = null;
 
-      var valSch = (typeof valueScheme == "string") ? valueScheme : "";
-      return (
-        <div>Element: {"Name: " + elem['@name'] + " Type: " + valSch + cardMaxMin + displayPr}</div>
-      );
+      var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
+      var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
+      var cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
+
+      var cx = React.addons.classSet;
+      var elementClasses = cx({
+        'CMDElement': true,
+        'edit-mode': this.state.editMode,
+        'open': this.state.elem.open
+      });
+
+      if(this.state.elem.open) {
+        var nameLink = this.linkState('elem.@name'); //TODO bind conceptLink
+
+        minComponentLink = this.linkState('elem.@CardinalityMin');
+        maxComponentLink = this.linkState('elem.@CardinalityMax');
+
+        var handleOccMinChange = function(e) {
+            console.log('comp change: ' + e.target);
+            if(minComponentLink != null) {
+              minComponentLink.requestChange(e.target.value);
+
+              if(self.props.onUpdate)
+                self.props.onUpdate(e.target.value, null);
+            }
+        };
+
+        var handleOccMaxChange = function(e) {
+          console.log('comp change: ' + e.target);
+          if(maxComponentLink != null) {
+            maxComponentLink.requestChange(e.target.value);
+
+            if(self.props.onUpdate)
+              self.props.onUpdate(null, e.target.value);
+          }
+        };
+
+        // elem props
+        //TODO add documentation, display priority, type and multilingual opt
+        //TODO bind updates to parent
+        var elemProps = (
+          <div className="elementProps">
+            <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            <Input type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+          </div>
+        );
+
+        return (
+          <div className={elementClasses}>
+            <span>Element: <a className="elementLink" onClick={this.toggleElement}>{this.state.elem['@name']}</a></span> {cardOpt}
+            <form className="form-horizontal form-group">
+              {elemProps}
+              <Input type="select" label="Min Occurrences" defaultValue={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMinChange}>
+                <option value="unbounded">unbounded</option>
+                {$.map($(Array(10)), function(item, index) {
+                  return <option key={index} value={index}>{index}</option>
+                })}
+              </Input>
+              <Input type="select" label="Max Occurrences" defaultValue={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}>
+                <option value="unbounded">unbounded</option>
+                {$.map($(Array(10)), function(item, index) {
+                  return <option key={index} value={index}>{index}</option>
+                })}
+              </Input>
+            </form>
+          </div>
+        );
+      } else {
+        var displayPr = (elem['@DisplayPriority']) ? " Display priority: " + elem['@DisplayPriority'] : "";
+        var valSch = (typeof valueScheme == "string") ? valueScheme : "";
+
+        return (
+          <div className={elementClasses}>Element: <a onClick={this.toggleElement}>{elem['@name']}</a> Type: {valSch} {cardOpt} {displayPr}</div>
+        );
+      }
     }
 
     var attrList = null;
