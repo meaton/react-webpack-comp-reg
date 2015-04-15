@@ -44,7 +44,7 @@ var ComponentViewer = React.createClass({
   },
   setItemPropToState: function(item) {
     if(item != null) {
-      if(item['@isProfile'])
+      if(item['@isProfile'] == "true")
         this.setState({profile: item, childElements: null, childComponents: null});
       else
         this.setState({component: item, childElements: null, childComponents: null});
@@ -114,15 +114,20 @@ var ComponentViewer = React.createClass({
       this.parseComponent(newItem, nextState);
     }
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function(prevProps, prevState) {
     var item = this.state.component || this.state.profile;
-    if(item.Header.Name != item.CMD_Component['@name'])
-      if(item['@isProfile'])
-        this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}) });
-      else
-        this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}) });
-    //var headerNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Name');
-    //headerNameLink.requestChange(e.target.value);
+    var prevItem = prevState.component || prevState.profile;
+
+    console.log('component did update: ' + JSON.stringify(prevItem));
+
+    if(item != null && prevItem != null && item.Header != undefined)
+      if((item.Header.Name != item.CMD_Component['@name']) ||
+        (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])) )
+
+        if(item['@isProfile'] == "true")
+          this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), component: null });
+        else
+          this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
   },
   componentDidMount: function() {
     var self = this;
