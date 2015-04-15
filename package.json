@@ -16,7 +16,9 @@
     "react": "~0.12.x",
     "moment-timezone": "0.3.0",
     "jsonix": "^2.1.4",
-    "clone": "^1.0.2"
+    "clone": "^1.0.2",
+    "immutable": "^3.7.2",
+    "react-immutable-render-mixin": "^0.8.1"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
