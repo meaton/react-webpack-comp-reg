@@ -2,6 +2,8 @@
 
 var React = require('react/addons');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
 var CMDElement = require('./CMDElement');
 var Input = require('react-bootstrap/lib/Input');
 var update = React.addons.update;
@@ -9,7 +11,7 @@ var update = React.addons.update;
 require('../../styles/CMDComponent.sass');
 
 var CMDComponent = React.createClass({
-  mixins: [LinkedStateMixin],
+  mixins: [LinkedStateMixin, ImmutableRenderMixin],
   getInitialState: function() {
     return { component: this.props.component, editMode: (this.props.editMode != undefined) ? this.props.editMode : false, isInline: false }
   },
@@ -24,18 +26,22 @@ var CMDComponent = React.createClass({
     }
   },
   addNewComponent: function(evt) {
+    console.log('new Component');
     var component = this.state.component;
-    if(component.CMD_Component == undefined) component.CMD_Component = [];
-    component.CMD_Component = update(component.CMD_Component, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
 
-    this.setState({ component: component });
+    if(component.CMD_Component == undefined) component.CMD_Component = [];
+    var updatedComponent = update(component, { $merge: { CMD_Component: update(component.CMD_Component, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] }) }});
+
+    this.setState({ component: updatedComponent });
   },
   addNewElement: function(evt) {
+    console.log('new Element');
     var component = this.state.component;
-    if(component.CMD_Element == undefined) component.CMD_Element = [];
-    component.CMD_Element = update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
 
-    this.setState({ component: component });
+    if(component.CMD_Element == undefined) component.CMD_Element = [];
+
+    var updatedComponent = update(component, { $merge: { CMD_Element: update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] }) }});
+    this.setState({ component: updatedComponent });
   },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index);
@@ -199,8 +205,8 @@ var CMDComponent = React.createClass({
     //TODO: review name replace
     if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
       compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
-    else if(comp.hasOwnProperty("@name") && comp['@name'] === "")
-      compName = "[missing name]";
+    else if(comp.hasOwnProperty("@name"))
+      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
     if(this.state.editMode) {
       var cardOpt = null;

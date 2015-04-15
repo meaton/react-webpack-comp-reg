@@ -5,13 +5,14 @@ var CMDAttribute = require('./CMDAttribute');
 
 var Input = require('react-bootstrap/lib/Input');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 var update = React.addons.update;
 
 require('../../styles/CMDElement.sass');
 
 var CMDElement = React.createClass({
-  mixins: [LinkedStateMixin],
+  mixins: [LinkedStateMixin, ImmutableRenderMixin],
   getInitialState: function() {
     return { elem: this.props.elem, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
@@ -81,6 +82,7 @@ var CMDElement = React.createClass({
         'open': this.state.elem.open
       });
 
+      var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
       if(this.state.elem.open) {
         var nameLink = this.linkState('elem.@name');
         //TODO bind conceptLink
@@ -127,7 +129,7 @@ var CMDElement = React.createClass({
 
         return (
           <div className={elementClasses}>
-            <span>Element: <a className="elementLink" onClick={this.toggleElement}>{this.state.elem['@name']}</a></span> {cardOpt}
+            <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
             <form className="form-horizontal form-group">
               {elemProps}
               <Input type="select" label="Min Occurrences" defaultValue={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMinChange}>
@@ -150,7 +152,7 @@ var CMDElement = React.createClass({
         var valSch = (typeof valueScheme == "string") ? valueScheme : "";
 
         return (
-          <div className={elementClasses}>Element: <a onClick={this.toggleElement}>{elem['@name']}</a> Type: {valSch} {cardOpt} {displayPr}</div>
+          <div className={elementClasses}>Element: <a onClick={this.toggleElement}>{elemName}</a> Type: {valSch} {cardOpt} {displayPr}</div>
         );
       }
     }

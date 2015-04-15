@@ -2,6 +2,7 @@
 
 var React = require('react/addons');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
@@ -25,7 +26,7 @@ require('../../styles/ComponentViewer.sass');
 
 var ComponentViewer = React.createClass({
   // TODO: static fns willTransitionTo/From
-  mixins: [LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader],
+  mixins: [LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader, ImmutableRenderMixin],
   getInitialState: function() {
     return { registry: null,
              profile: null,
@@ -70,6 +71,7 @@ var ComponentViewer = React.createClass({
     var childElements = this.state.childElements;
     if(JSON.stringify(newElement) != JSON.stringify(childElements[index]))
       childElements[index] = newElement;
+
     this.setState({childElements: childElements});
   },
   showErrors: function(errors) {
@@ -127,11 +129,11 @@ var ComponentViewer = React.createClass({
         self.setState({registry: regItem});
       });
   },
-  shouldComponentUpdate: function(nextProps, nextState) {
+  /*shouldComponentUpdate: function(nextProps, nextState) {
     console.log('update: ' + JSON.stringify(nextState.registry));
 
     return (!nextState.editMode || nextState.registry != null);
-  },
+  },*/
   addNewComponent: function(evt) {
     var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
     this.setState({ childComponents: components });

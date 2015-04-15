@@ -1,12 +1,15 @@
 'use strict';
 
 var React = require('react/addons');
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
 //require('../../styles/CMDAttribute.sass');
 
 var CMDAttribute = React.createClass({
+  mixins: [ImmutableRenderMixin],
   /* propTypes */
   setDefaultProps: {
     conceptRegistryBtn: null
@@ -16,7 +19,7 @@ var CMDAttribute = React.createClass({
   },
   componentDidMount: function() {
     var attr = this.props.attr;
-    
+
     if(attr.ValueScheme != undefined)
       var enumVal = attr.ValueScheme.enumeration;
       if(enumVal != undefined && enumVal.item != undefined && !$.isArray(enumVal.item))
