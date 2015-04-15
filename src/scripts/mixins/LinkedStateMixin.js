@@ -1,3 +1,4 @@
+var clone = require('clone');
 
 function getIn(object, path) {
   var stack = path.split('.');
@@ -18,7 +19,7 @@ function updateIn(object, path, value) {
 
 function setPartialState(component, path, value) {
   component.setState(
-    updateIn(component.state, path, value));
+    updateIn(clone(component.state), path, value));
 }
 
 exports.linkState = function(path) {

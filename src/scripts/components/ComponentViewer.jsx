@@ -28,7 +28,7 @@ var ComponentViewer = React.createClass({
   // TODO: static fns willTransitionTo/From
   mixins: [LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader, ImmutableRenderMixin],
   getInitialState: function() {
-    return { registry: null,
+    return { registry: { domainName: '', groupName: '' },
              profile: null,
              component: null,
              childElements: null,
@@ -105,7 +105,7 @@ var ComponentViewer = React.createClass({
     console.log('will update viewer');
 
     var newItem = nextState.profile||nextState.component;
-    console.log('new item props: ' + newItem);
+    console.log('new item props: ' + JSON.stringify(newItem));
 
     if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
       if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
@@ -114,6 +114,16 @@ var ComponentViewer = React.createClass({
       this.parseComponent(newItem, nextState);
     }
   },
+  componentDidUpdate: function() {
+    var item = this.state.component || this.state.profile;
+    if(item.Header.Name != item.CMD_Component['@name'])
+      if(item['@isProfile'])
+        this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}) });
+      else
+        this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}) });
+    //var headerNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Name');
+    //headerNameLink.requestChange(e.target.value);
+  },
   componentDidMount: function() {
     var self = this;
     var id = this.props.profileId||this.props.componentId;
@@ -121,13 +131,19 @@ var ComponentViewer = React.createClass({
     console.log('viewer mounted: ' + id);
     console.log('editmode: ' + this.state.editMode);
 
-    this.setItemPropToState(this.props.item);
+    if(this.props.item != undefined || this.props.item != null)
+      this.setItemPropToState(this.props.item);
 
-    if(this.state.editMode && this.state.registry == null)
-      this.loadRegistryItem(id, function(regItem) {
-        console.log("regItem:" + JSON.stringify(regItem));
-        self.setState({registry: regItem});
-      });
+    if(this.state.editMode)
+      if(id != undefined && id != null)
+        this.loadRegistryItem(id, function(regItem) {
+          console.log("regItem:" + JSON.stringify(regItem));
+          self.setState({registry: regItem});
+        });
+      else if(this.isActive('newEditor')) {
+        console.log('Setting up new component...');
+        this.setItemPropToState({ '@isProfile': "true", Header: { Name: "", Description: "" }, CMD_Component: { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1" } });
+      }
   },
   /*shouldComponentUpdate: function(nextProps, nextState) {
     console.log('update: ' + JSON.stringify(nextState.registry));
@@ -211,7 +227,7 @@ var ComponentViewer = React.createClass({
     return (!this.state.editMode) ? valueScheme : <Input type="text" label="Type" value={valueScheme} buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2"/>;
   },
   handleInputChange: function(link, e) {
-    if(link != undefined || link != null)
+    if(link != undefined && link != null)
       link.requestChange(e.target.value);
     else
       console.log('Linked state variable is undefined: ' + e.target);
@@ -248,12 +264,9 @@ var ComponentViewer = React.createClass({
         isProfileLink.requestChange(e.target.value);
       };
 
-      var headerNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Name');
       var componentNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.CMD_Component.@name');
       var handleNameChange = function(e) {
         console.log('name change: ' + e.target.value);
-
-        headerNameLink.requestChange(e.target.value);
         componentNameLink.requestChange(e.target.value);
       };
 
@@ -281,7 +294,7 @@ var ComponentViewer = React.createClass({
             <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
             <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
           </div>
-          <Input type="text" ref="rootComponentName" label="Name" defaultValue={headerNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="text" ref="rootComponentName" label="Name" defaultValue={componentNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {groupNameInput}
           <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={this.handleInputChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {domainNameInput}

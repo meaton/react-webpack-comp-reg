@@ -67,7 +67,7 @@ var CMDElement = React.createClass({
     var elem = this.state.elem;
 
     var valueScheme = this.props.viewer.getValueScheme(elem);
-
+    
     console.log('rendering element: ' + require('util').inspect(elem));
 
     if(this.state.editMode) {
@@ -83,50 +83,51 @@ var CMDElement = React.createClass({
       });
 
       var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
-      if(this.state.elem.open) {
-        var nameLink = this.linkState('elem.@name');
-        //TODO bind conceptLink
-        var minComponentLink = this.linkState('elem.@CardinalityMin');
-        var maxComponentLink = this.linkState('elem.@CardinalityMax');
-        var docuLink = this.linkState('elem.@Documentation');
-        var displayPriorityLink = this.linkState('elem.@DisplayPriority');
-        var multiLink = this.linkState('elem.@Multilingual');
+      var nameLink = this.linkState('elem.@name');
 
-        var handleOccMinChange = function(e) {
-            console.log('comp change: ' + e.target);
-            if(minComponentLink != null) {
-              minComponentLink.requestChange(e.target.value);
-            }
-        };
+      //TODO bind conceptLink
+      var minComponentLink = this.linkState('elem.@CardinalityMin');
+      var maxComponentLink = this.linkState('elem.@CardinalityMax');
+      var docuLink = this.linkState('elem.@Documentation');
+      var displayPriorityLink = this.linkState('elem.@DisplayPriority');
+      var multiLink = this.linkState('elem.@Multilingual');
 
-        var handleOccMaxChange = function(e) {
+      var handleOccMinChange = function(e) {
           console.log('comp change: ' + e.target);
-          if(maxComponentLink != null) {
-            maxComponentLink.requestChange(e.target.value);
+          if(minComponentLink != null) {
+            minComponentLink.requestChange(e.target.value);
           }
-        };
+      };
 
-        var handleMultiChange = function(e) {
-          console.log('multi change: ' + (e.target.checked));
-          if(multiLink != null)
-            multiLink.requestChange((e.target.checked) ? 'true' : 'false');
+      var handleOccMaxChange = function(e) {
+        console.log('comp change: ' + e.target);
+        if(maxComponentLink != null) {
+          maxComponentLink.requestChange(e.target.value);
         }
+      };
 
-        var valueScheme = this.props.viewer.getValueScheme(this.state.elem);
+      var handleMultiChange = function(e) {
+        console.log('multi change: ' + (e.target.checked));
+        if(multiLink != null)
+          multiLink.requestChange((e.target.checked) ? 'true' : 'false');
+      }
 
-        // elem props
-        //TODO bind updates to parent
-        var elemProps = (
-          <div className="elementProps">
-            <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
-            <Input type="text" label="Documentation" defaultValue={this.state.elem['@Documentation']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, docuLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input type="number" label="DisplayPriority" min={0} max={10} step={1} defaultValue={(this.state.elem.hasOwnProperty('@DisplayPriority')) ? this.state.elem['@DisplayPriority'] : 0} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, displayPriorityLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            {valueScheme}
-            <Input type="checkbox" label="Multilingual" defaultChecked={(this.state.elem.hasOwnProperty('@Multilingual')) ? this.state.elem['@Multilingual'] == "true" : false} onChange={handleMultiChange} wrapperClassName="col-xs-2 col-xs-offset-1" />
-          </div>
-        );
+      var valueScheme = this.props.viewer.getValueScheme(this.state.elem);
 
+      // elem props
+      //TODO bind updates to parent
+      var elemProps = (
+        <div className="elementProps">
+          <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+          <Input type="text" label="Documentation" defaultValue={this.state.elem['@Documentation']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, docuLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="number" label="DisplayPriority" min={0} max={10} step={1} defaultValue={(this.state.elem.hasOwnProperty('@DisplayPriority')) ? this.state.elem['@DisplayPriority'] : 0} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, displayPriorityLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          {valueScheme}
+          <Input type="checkbox" label="Multilingual" defaultChecked={(this.state.elem.hasOwnProperty('@Multilingual')) ? this.state.elem['@Multilingual'] == "true" : false} onChange={handleMultiChange} wrapperClassName="col-xs-2 col-xs-offset-1" />
+        </div>
+      );
+
+      if(this.state.elem.open) {
         return (
           <div className={elementClasses}>
             <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
@@ -152,7 +153,7 @@ var CMDElement = React.createClass({
         var valSch = (typeof valueScheme == "string") ? valueScheme : "";
 
         return (
-          <div className={elementClasses}>Element: <a onClick={this.toggleElement}>{elemName}</a> Type: {valSch} {cardOpt} {displayPr}</div>
+          <div className={elementClasses}>Element: <a onClick={this.toggleElement} className="elementLink">{elemName}</a> Type: {valSch} {cardOpt} {displayPr}</div>
         );
       }
     }
