@@ -65,6 +65,13 @@ var ComponentViewer = React.createClass({
 
     this.setState({childComponents: childComponents});
   },
+  updateElement: function(index, newElement) {
+    console.log('elem update: ' + index);
+    var childElements = this.state.childElements;
+    if(JSON.stringify(newElement) != JSON.stringify(childElements[index]))
+      childElements[index] = newElement;
+    this.setState({childElements: childElements});
+  },
   showErrors: function(errors) {
     this.setState({errors: errors});
   },
@@ -129,6 +136,10 @@ var ComponentViewer = React.createClass({
     var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
     this.setState({ childComponents: components });
   },
+  addNewElement: function(evt) {
+    var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
+    this.setState({ childElements: elements });
+  },
   parseComponent: function(item, state) {
     console.log('parseComponent');
 
@@ -174,7 +185,7 @@ var ComponentViewer = React.createClass({
           valueScheme = valueScheme.pattern;
         else { // elem
           var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
-          valueScheme = (this.state.editMode) ? (
+          return (this.state.editMode) ? (
             <Input type="select" label="Type" buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
               {$.map(enumItems, function(item, index) {
                 return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
@@ -192,10 +203,10 @@ var ComponentViewer = React.createClass({
         }
 
       } else if(obj.Type != undefined) // attr
-          return obj.Type;
+          valueScheme = obj.Type;
     }
 
-    return valueScheme;
+    return (!this.state.editMode) ? valueScheme : <Input type="text" label="Type" value={valueScheme} buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2"/>;
   },
   handleInputChange: function(link, e) {
     if(link != undefined || link != null)
@@ -326,7 +337,7 @@ var ComponentViewer = React.createClass({
       childElem = (
         <div ref="elements" className="childElements">{this.state.childElements.map(
           function(elem, index) {
-            return <CMDElement key={'elem_' + index} elem={elem} viewer={self} editMode={editMode} />;
+            return <CMDElement key={'elem_' + index} elem={elem} viewer={self} editMode={editMode} onUpdate={self.updateElement.bind(self, index)}/>;
           }
         )}
           {cmdAddElementSpecLink}

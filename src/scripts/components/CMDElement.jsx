@@ -37,7 +37,7 @@ var CMDElement = React.createClass({
     console.log('elem props: ' + JSON.stringify(nextProps.elem));
     console.log('elem props: ' + this.props.elem.open);
 
-    if(this.state.elem.open != nextProps.elem.open) { // open/close all
+    if(nextProps.elem.hasOwnProperty('open') && (this.state.elem.open != nextProps.elem.open)) { // open/close all
       elem = update(elem, { open: { $set: nextProps.elem.open }});
       this.setState({ elem: elem });
     }
@@ -53,6 +53,14 @@ var CMDElement = React.createClass({
 
     console.log('mounted element: ' + JSON.stringify(elem));
   },
+  componentWillUpdate: function(nextProps, nextState) {
+    console.log('element will update');
+    console.log(JSON.stringify(this.props.elem));
+    console.log(JSON.stringify(nextState.elem));
+
+    if(JSON.stringify(this.props.elem) != JSON.stringify(nextState.elem))
+      this.props.onUpdate(nextState.elem);
+  },
   render: function () {
     var self = this;
     var elem = this.state.elem;
@@ -62,9 +70,6 @@ var CMDElement = React.createClass({
     console.log('rendering element: ' + require('util').inspect(elem));
 
     if(this.state.editMode) {
-      var minComponentLink = null;
-      var maxComponentLink = null;
-
       var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
       var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
       var cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
@@ -77,18 +82,18 @@ var CMDElement = React.createClass({
       });
 
       if(this.state.elem.open) {
-        var nameLink = this.linkState('elem.@name'); //TODO bind conceptLink
-
-        minComponentLink = this.linkState('elem.@CardinalityMin');
-        maxComponentLink = this.linkState('elem.@CardinalityMax');
+        var nameLink = this.linkState('elem.@name');
+        //TODO bind conceptLink
+        var minComponentLink = this.linkState('elem.@CardinalityMin');
+        var maxComponentLink = this.linkState('elem.@CardinalityMax');
+        var docuLink = this.linkState('elem.@Documentation');
+        var displayPriorityLink = this.linkState('elem.@DisplayPriority');
+        var multiLink = this.linkState('elem.@Multilingual');
 
         var handleOccMinChange = function(e) {
             console.log('comp change: ' + e.target);
             if(minComponentLink != null) {
               minComponentLink.requestChange(e.target.value);
-
-              if(self.props.onUpdate)
-                self.props.onUpdate(e.target.value, null);
             }
         };
 
@@ -96,19 +101,27 @@ var CMDElement = React.createClass({
           console.log('comp change: ' + e.target);
           if(maxComponentLink != null) {
             maxComponentLink.requestChange(e.target.value);
-
-            if(self.props.onUpdate)
-              self.props.onUpdate(null, e.target.value);
           }
         };
 
+        var handleMultiChange = function(e) {
+          console.log('multi change: ' + (e.target.checked));
+          if(multiLink != null)
+            multiLink.requestChange((e.target.checked) ? 'true' : 'false');
+        }
+
+        var valueScheme = this.props.viewer.getValueScheme(this.state.elem);
+
         // elem props
-        //TODO add documentation, display priority, type and multilingual opt
         //TODO bind updates to parent
         var elemProps = (
           <div className="elementProps">
             <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
             <Input type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+            <Input type="text" label="Documentation" defaultValue={this.state.elem['@Documentation']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, docuLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            <Input type="number" label="DisplayPriority" min={0} max={10} step={1} defaultValue={(this.state.elem.hasOwnProperty('@DisplayPriority')) ? this.state.elem['@DisplayPriority'] : 0} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, displayPriorityLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            {valueScheme}
+            <Input type="checkbox" label="Multilingual" defaultChecked={(this.state.elem.hasOwnProperty('@Multilingual')) ? this.state.elem['@Multilingual'] == "true" : false} onChange={handleMultiChange} wrapperClassName="col-xs-2 col-xs-offset-1" />
           </div>
         );
 

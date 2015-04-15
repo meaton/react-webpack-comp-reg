@@ -30,6 +30,13 @@ var CMDComponent = React.createClass({
 
     this.setState({ component: component });
   },
+  addNewElement: function(evt) {
+    var component = this.state.component;
+    if(component.CMD_Element == undefined) component.CMD_Element = [];
+    component.CMD_Element = update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
+
+    this.setState({ component: component });
+  },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index);
     var component = this.state.component;
@@ -48,6 +55,12 @@ var CMDComponent = React.createClass({
       this.linkState('component.CMD_Component.' + index);
     linkChild.requestChange(newComponent);
   },
+  updateElement: function(index, newElement) {
+    var linkChild = (this.state.component.Header != undefined) ?
+      this.linkState('component.CMD_Component.CMD_Element.' + index) :
+      this.linkState('component.CMD_Element.' + index);
+    linkChild.requestChange(newElement);
+  },
   loadComponentData: function() {
     var self = this;
     var comp = this.state.component;
@@ -65,7 +78,7 @@ var CMDComponent = React.createClass({
     var component = this.state.component;
     console.log('component props: ' + JSON.stringify(nextProps.component));
 
-    if(this.state.component.open != nextProps.component.open) { // open/close all
+    if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
       component = update(component, { open: { $set: nextProps.component.open }});
       this.setState({ component: component });
     }
@@ -152,7 +165,7 @@ var CMDComponent = React.createClass({
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
         console.log('found elem (' + index + '): ' + elem);
-        return <CMDElement key={"comp_elem_" + index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} />
+        return <CMDElement key={"comp_elem_" + index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} onUpdate={self.updateElement.bind(self, index)} />
       });
 
     var compComps = comp.CMD_Component;
