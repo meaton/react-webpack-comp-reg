@@ -120,14 +120,14 @@ var ComponentViewer = React.createClass({
 
     console.log('component did update: ' + JSON.stringify(prevItem));
 
-    if(item != null && prevItem != null && item.Header != undefined)
+    if(item != null && prevItem != null && item.Header != undefined) {
       if((item.Header.Name != item.CMD_Component['@name']) ||
-        (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])) )
-
+        (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])) ) //TODO handle isProfile change for non-new resource
         if(item['@isProfile'] == "true")
           this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), component: null });
         else
           this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
+    }
   },
   componentDidMount: function() {
     var self = this;
@@ -329,7 +329,7 @@ var ComponentViewer = React.createClass({
     childComp = null,
     errors = null;
 
-    var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup mode="editor" { ...this.getBtnGroupProps() } /> : null;
+    var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup ref="editorBtnGroup" mode="editor" { ...this.getBtnGroupProps() } /> : null;
     var controlLinks = (this.state.editMode) ? ( <div className="controlLinks">
       <a onClick={this.openCloseAll.bind(this, false)}>Collapse all</a> <a onClick={this.openCloseAll.bind(this, true)}>Expand all</a>
     </div> ) : null;

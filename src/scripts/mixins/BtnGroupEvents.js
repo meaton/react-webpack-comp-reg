@@ -10,7 +10,11 @@ var BtnGroupMixin = {
       component: this.state.componentId||this.state.component,
       multiSelect: this.state.multiSelect,
       privateSelect: (this.state.filter == "private"),
-      newActive: (this.isActive != undefined) ? this.isActive("newProfile") || this.isActive("newComponent") || this.isActive("newEditor") : false
+      newActive: (this.isActive != undefined) ?
+        this.isActive("newProfile") || this.isActive("newComponent") || this.isActive("newEditor") ||
+        (this.isActive('component') && this.state.component == null) ||
+        (this.isActive('profile') && this.state.profile == null)
+        : false
     };
   },
   deleteAction: function() {
