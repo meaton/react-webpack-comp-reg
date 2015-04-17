@@ -35,7 +35,7 @@ var ComponentRegApp = React.createClass({
       <div className="main">
         <SpaceSelector onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
         <DataTablesBtnGroup { ...this.getBtnGroupProps() } />
-        <DataTablesGrid type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
+        <DataTablesGrid ref="grid" type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
         <Profile ref="profile" profileId={this.state.profileId} />
         <Component ref="component" componentId={this.state.componentId} />
       </div>

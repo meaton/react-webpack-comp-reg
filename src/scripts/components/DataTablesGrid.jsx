@@ -90,6 +90,17 @@ var DataTablesGrid = React.createClass({
       $('#' + this.getDOMNode().id).hide();
       $('#' + this.getDOMNode().id).DataTable().destroy();
   },
+  removeSelected: function() {
+    var newData = null;
+    if(this.state.data != null && this.state.lastSelectedItem != null) {
+      console.log('Removing selected item: ' + this.state.lastSelectedItem.state.data.id);
+      //newData = React.addons.update(this.state.data, { $unshift: [this.state.lastSelectedItem.state.data]});
+      //this.setState({ data: newData, lastSelectedItem: null });
+      this.props.profile(null);
+      this.clearTable();
+      this.loadData(this.state.currentFilter, this.state.currentType);
+    }
+  },
   loadData: function(nextFilter, nextType) { // TODO: Move into Loader mixin
     var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
     $.ajax({
@@ -116,7 +127,7 @@ var DataTablesGrid = React.createClass({
             _data = [_data];
         }
 
-       this.setState({data: (_data != null) ? _data : [], currentFilter: this.props.filter, currentType: this.props.type, lastSelectedItem: null});
+       this.setState({data: (_data != null) ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
      }.bind(this),
      error: function(xhr, status, err) {
        console.error(status, err);
@@ -144,12 +155,14 @@ var DataTablesGrid = React.createClass({
     });*/
  	},
   shouldComponentUpdate: function(nextProps, nextState) {
-    //console.log('filter: ' + nextProps.filter);
-    //console.log('currentFilter: ' + nextState.currentFilter);
+    console.log('filter: ' + nextProps.filter);
+    console.log('currentFilter: ' + nextState.currentFilter);
+
     //console.log('type: ' + nextProps.type);
     //console.log('currentType:' + nextState.currentType);
     //console.log('data count:' + nextState.data.length);
     //console.log('datatable:' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
+
     if(this.props.multiple.value != nextState.multiSelect) {
       return true;
     } else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
@@ -159,6 +172,7 @@ var DataTablesGrid = React.createClass({
       return  newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
       this.clearTable();
+
       this.loadData(nextProps.filter, nextProps.type);
       return false;
     }
