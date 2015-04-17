@@ -59,12 +59,26 @@ var ComponentViewer = React.createClass({
     this.setState({childComponents: childComponents});
   },
   updateComponentSettings: function(index, newMin, newMax) {
-    console.log('comp update: ' + index);
+    console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
     var childComponents = this.state.childComponents;
-    if(newMin != null) childComponents[index]['@CardinalityMin'] = newMin;
-    if(newMax != null) childComponents[index]['@CardinalityMax'] = newMax;
+    console.log('child to update: ' + JSON.stringify(childComponents[index]));
+
+    if(newMin != null)
+      this.setChildComponentProperty(childComponents[index], '@CardinalityMin', newMin);
+    if(newMax != null)
+      this.setChildComponentProperty(childComponents[index], '@CardinalityMax', newMax);
 
     this.setState({childComponents: childComponents});
+  },
+  setChildComponentProperty : function(childComp, prop, newValue) {
+    if(childComp == null)
+      return;
+
+    if(childComp.hasOwnProperty('prop'))
+      childComp[prop] = newValue;
+    if(childComp.Header != undefined && childComp.CMD_Component != undefined)
+      if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
+        childComp.CMD_Component[prop] = newValue;
   },
   updateElement: function(index, newElement) {
     console.log('elem update: ' + index);

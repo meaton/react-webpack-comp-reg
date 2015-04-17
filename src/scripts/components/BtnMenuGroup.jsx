@@ -104,7 +104,7 @@ var BtnMenuGroup = React.createClass({
               <ButtonModal {...this.props} action={this.props.deleteComp} disabled={isPublished}
                 btnLabel="Delete"
                 title="Delete items"
-                desc={<div className="modal-desc">You will delete the following item(s):<br/>This cannot be undone.</div>} />
+                desc={<div className="modal-desc">You will delete the following item(s): <br/>{this.props.profile || this.props.component}<p><br/>This cannot be undone.</p></div>} />
             </ButtonGroup>
         );
       case "editor":

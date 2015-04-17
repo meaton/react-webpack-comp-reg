@@ -97,7 +97,7 @@ var LoaderMixin = {
         var newComp = comp;
         var componentId = null;
 
-        if(comp.Header != undefined) {
+        if(comp.Header != undefined && comp.CMD_Component != undefined && !$.isArray(comp.CMD_Component)) {
           newComp = comp.CMD_Component;
           componentId = comp.Header.ID;
         } else if(comp.hasOwnProperty("@ComponentId")) {
