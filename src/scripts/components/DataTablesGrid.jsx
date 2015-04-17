@@ -136,7 +136,7 @@ var DataTablesGrid = React.createClass({
  },
   componentWillMount: function(){
  		 console.log('will mount datagrid');
-     this.loadData();
+     if(!this.isMounted()) this.loadData();
  	},
  	componentDidMount: function(){
  		// note: data currently loaded after component mount not provided on init
