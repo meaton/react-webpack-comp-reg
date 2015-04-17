@@ -22,11 +22,16 @@ var BtnGroupMixin = {
     //      - Expect a response from REST?
     //      - Display notice warning temp post-deletion
     //      - Remove nodes selected for delete on confirm/200 OK resp.
+    var self = this;
     if(this.state.profileId != null && this.refs.profile != undefined && this.refs.profile.deleteItem != undefined)
       this.refs.profile.deleteItem("profiles", this.state.profileId, function(resp) {
+        console.log('delete response: ' + resp);
+        self.refs.grid.removeSelected();
       });
     else if(this.state.componentId != null && this.refs.component != undefined && this.refs.component.deleteItem != undefined)
       this.refs.component.deleteItem("components", this.state.componentId, function(resp) {
+        console.log('delete response: ' + resp);
+        self.refs.grid.removeSelected();
       });
   },
   saveAction: function(update) {
