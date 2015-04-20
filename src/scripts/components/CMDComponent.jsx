@@ -5,6 +5,7 @@ var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 var CMDElement = require('./CMDElement');
+var CMDAttribute = require('./CMDAttribute');
 var Input = require('react-bootstrap/lib/Input');
 var update = React.addons.update;
 
@@ -202,11 +203,32 @@ var CMDComponent = React.createClass({
       'open': this.state.component.open
     });
 
-    //TODO: review name replace
+    //TODO review name replace
     if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
       compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
     else if(comp.hasOwnProperty("@name"))
       compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
+
+    //TODO move to mixin
+    var attrList = null;
+    var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
+    var addAttrLink = (this.state.editMode) ? <a onClick={this.addAttr}>+attribute</a> : null;
+
+    if(attrSet != undefined)
+      attrList = (
+        <div className="attrList">AttributeList:
+          {
+            (attrSet)
+            ? $.map(attrSet, function(attr, index) {
+              return (
+                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} />
+              );
+            })
+            : <span>No Attributes</span>
+          }
+          {addAttrLink}
+        </div>
+      );
 
     if(this.state.editMode) {
       var cardOpt = null;
@@ -257,6 +279,7 @@ var CMDComponent = React.createClass({
       var cmdInlineBody = (this.state.isInline) ?
         (
           <div className="inline-body">
+            {attrList}
             <div className="childElements">{compElems}
               <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
             </div>
@@ -295,6 +318,7 @@ var CMDComponent = React.createClass({
           <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
           <div className="componentProps">{compProps}</div>
           <div className={viewClasses}>
+            {attrList}
             <div className="childElements">{compElems}</div>
             <div className="childComponents">{compComps}</div>
           </div>

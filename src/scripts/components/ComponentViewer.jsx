@@ -80,6 +80,18 @@ var ComponentViewer = React.createClass({
       if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
         childComp.CMD_Component[prop] = newValue;
   },
+  updateAttribute: function(index, newAttr) {
+    console.log('attr update: ' + index);
+    var item = this.state.component || this.state.profile;
+    var attrSet = item.CMD_Component.AttributeList.Attribute;
+    attrSet[index] = newAttr;
+
+    if(this.state.profile != null)
+      this.setState({ profile: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
+    else if(this.state.component != null)
+      this.setState({ component: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
+
+  },
   updateElement: function(index, newElement) {
     console.log('elem update: ' + index);
     var childElements = this.state.childElements;
@@ -176,6 +188,23 @@ var ComponentViewer = React.createClass({
   addNewElement: function(evt) {
     var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
     this.setState({ childElements: elements });
+  },
+  addNewAttribute: function(component, evt) {
+    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
+    var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
+
+    if(attrList != undefined && !$.isArray(attrList))
+      attrList = [attrList];
+
+    console.log('attrList: ' + attrList);
+    var item = (attrList == undefined) ? update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) : update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+
+    console.log('new item after attr add: ' + JSON.stringify(item));
+    if(this.state.profile != null)
+      this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
+    else if(this.state.component != null)
+      this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
+    //else
   },
   parseComponent: function(item, state) {
     console.log('parseComponent');
@@ -347,17 +376,18 @@ var ComponentViewer = React.createClass({
     var controlLinks = (this.state.editMode) ? ( <div className="controlLinks">
       <a onClick={this.openCloseAll.bind(this, false)}>Collapse all</a> <a onClick={this.openCloseAll.bind(this, true)}>Expand all</a>
     </div> ) : null;
-    var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
-    var addAttrLink = (editMode) ? <a onClick={this.addAttr}>+attribute</a> : null;
 
-    if(attrSet != undefined)
+    var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
+    var addAttrLink = (editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, rootComponent)}>+Attribute</a></div> : null;
+
+    if(attrSet != undefined || this.state.editMode)
       attrList = (
         <div className="attrList">AttributeList:
           {
             (attrSet)
             ? $.map(attrSet, function(attr, index) {
               return (
-                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} />
+                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} />
               );
             })
             : <span>No Attributes</span>
