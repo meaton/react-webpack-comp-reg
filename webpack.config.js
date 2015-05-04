@@ -72,6 +72,6 @@ var config = {
 };
 
 //config.addVender('google-code-prettify', bower_dir + '/google-code-prettify/bin/prettify.min.js');
-config.addVender('prismjs', bower_dir + '/prismjs/prism.min.js');
+//config.addVender('prismjs', bower_dir + '/prismjs/prism.min.js');
 
 module.exports = config;
