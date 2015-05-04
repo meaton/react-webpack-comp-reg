@@ -8,11 +8,12 @@ var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
 var Input = require('react-bootstrap/lib/Input');
 var update = React.addons.update;
+var md5 = require('spark-md5');
 
 require('../../styles/CMDComponent.sass');
 
 var CMDComponent = React.createClass({
-  mixins: [LinkedStateMixin, ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, LinkedStateMixin],
   getInitialState: function() {
     return { component: this.props.component, editMode: (this.props.editMode != undefined) ? this.props.editMode : false, isInline: false }
   },
@@ -60,6 +61,7 @@ var CMDComponent = React.createClass({
     var linkChild = (this.state.component.Header != undefined) ?
       this.linkState('component.CMD_Component.CMD_Component.' + index) :
       this.linkState('component.CMD_Component.' + index);
+
     linkChild.requestChange(newComponent);
   },
   updateElement: function(index, newElement) {
@@ -67,6 +69,44 @@ var CMDComponent = React.createClass({
       this.linkState('component.CMD_Component.CMD_Element.' + index) :
       this.linkState('component.CMD_Element.' + index);
     linkChild.requestChange(newElement);
+  },
+  moveComponentHandler: function(direction) {
+    if(direction == "up")
+      this.props.moveUp();
+    else if(direction == "down")
+      this.props.moveDown();
+  },
+  moveComponent: function(index, newPos) {
+    console.log('moving index: ' + index + ' to ' + newPos);
+
+    var comp = this.state.component;
+    var comps = (comp.Header != undefined) ? comp.CMD_Component.CMD_Component : comp.CMD_Component;
+
+    var compToMove = comps[index];
+
+    if(newPos >= 0 && newPos < comps.length) {
+      comps = update(comps, { $splice: [[index, 1]]});
+      comps = update(comps, { $splice: [[newPos, 0, compToMove]] });
+
+      var newComp = (comp.Header != undefined) ?  update(comp, { CMD_Component: { $set: { CMD_Component: comps }} }) :
+        update(comp, { $merge: { CMD_Component: comps } });
+
+      this.setState({component: newComp});
+    }
+  },
+  removeComponentHandler: function(evt) {
+    if(this.props.onRemove != undefined)
+      this.props.onRemove();
+  },
+  removeComponent: function(index, evt) {
+    if(index != undefined && index != null) {
+      console.log(this.state.component);
+
+      var newComp = (this.state.component.Header != undefined) ?  update(this.state.component, { CMD_Component: { CMD_Component: { $splice: [[index, 1]] } }}) :
+        update(this.state.component, { CMD_Component: { $splice: [[index, 1]] } });
+
+      this.setState({component: newComp});
+    }
   },
   loadComponentData: function() {
     var self = this;
@@ -127,9 +167,9 @@ var CMDComponent = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
     console.log('component will update: ' + require('util').inspect(nextState.component));
     if(this.state.editMode && this.state.isInline && this.state.component.open)
-          if(JSON.stringify(nextProps.component) != JSON.stringify(nextState.component)) {
-            this.props.onInlineUpdate(nextState.component);
-          }
+      if(JSON.stringify(nextProps.component) != JSON.stringify(nextState.component)) {
+        this.props.onInlineUpdate(nextState.component);
+      }
   },
   render: function () {
     console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
@@ -175,6 +215,12 @@ var CMDComponent = React.createClass({
         return <CMDElement key={"comp_elem_" + index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} onUpdate={self.updateElement.bind(self, index)} />
       });
 
+    //TODO review name replace
+    if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
+      compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
+    else if(comp.hasOwnProperty("@name"))
+      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
+
     var compComps = comp.CMD_Component;
 
     if(!$.isArray(compComps) && compComps != undefined)
@@ -183,7 +229,20 @@ var CMDComponent = React.createClass({
     if(compComps != undefined)
       compComps = compComps.map(function(nestedComp, ncindex) {
         console.log('found component (' + ncindex + '): ' + nestedComp);
-        return <CMDComponent key={"comp_comp_" + ncindex} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} onInlineUpdate={self.updateInlineComponent.bind(self, ncindex)} onUpdate={self.updateComponentSettings.bind(self, ncindex)} />
+
+        var compId;
+        if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
+        else if(nestedComp.Header != undefined) compId = nestedComp.Header.ID;
+        else if(nestedComp.inlineId != undefined) compId = nestedComp.inlineId;
+        //else if(self.state.component.inlineId != undefined) compId = "inline_" + self.state.component.inlineId + Math.floor(Math.random()*1000);
+        else compId = "inline_" + md5.hash("inline_" + ncindex + Math.floor(Math.random()*1000));
+
+        if(compId.startsWith("inline"))
+          nestedComp.inlineId = compId;
+
+        console.log('compId: ' + compId);
+
+        return <CMDComponent key={compId} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} onInlineUpdate={self.updateInlineComponent.bind(self, ncindex)} onUpdate={self.updateComponentSettings.bind(self, ncindex)} onRemove={self.removeComponent.bind(self, ncindex)} moveUp={self.moveComponent.bind(self, ncindex, ncindex-1)} moveDown={self.moveComponent.bind(self, ncindex, ncindex+1)} />
       });
 
     var cx = React.addons.classSet;
@@ -202,12 +261,6 @@ var CMDComponent = React.createClass({
       'edit-mode': this.state.editMode,
       'open': this.state.component.open
     });
-
-    //TODO review name replace
-    if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
-      compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
-    else if(comp.hasOwnProperty("@name"))
-      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
     //TODO move to mixin
     var attrList = null;
@@ -291,6 +344,7 @@ var CMDComponent = React.createClass({
 
       return (
         <div className={componentClasses}>
+          <div className="controlLinks"><a onClick={this.removeComponentHandler}>click to remove</a> <a onClick={this.moveComponentHandler.bind(this, "up")}>move up</a> <a onClick={this.moveComponentHandler.bind(this, "down")}>move down</a></div>
           <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
           <div className={editClasses}>
             <form className="form-horizontal form-group" name={"componentForm_" + compId}>

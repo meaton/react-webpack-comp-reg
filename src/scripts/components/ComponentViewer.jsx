@@ -1,8 +1,12 @@
 'use strict';
 
 var React = require('react/addons');
+
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
+var ee = require('events').EventEmitter;
+var registryEvents = new ee();
 
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
@@ -22,7 +26,17 @@ var CMDAttribute = require('./CMDAttribute');
 
 var EditorBtnGroup = require('./BtnMenuGroup');
 
+var md5 = require('spark-md5');
+
 require('../../styles/ComponentViewer.sass');
+
+//TODO: replace with Cursor React-component to received global events
+registryEvents.on('loadingChange', function(progress) {
+  if(progress)
+    $('body').addClass('progress');
+  else
+    $('body').removeClass('progress');
+});
 
 var ComponentViewer = React.createClass({
   // TODO: static fns willTransitionTo/From
@@ -70,6 +84,31 @@ var ComponentViewer = React.createClass({
 
     this.setState({childComponents: childComponents});
   },
+  moveComponent: function(index, newPos) {
+    console.log('moving index: ' + index + ' to ' + newPos);
+    var comps = this.state.childComponents;
+    var compToMove = comps[index];
+
+    if(newPos >= 0 && newPos < comps.length) {
+      comps = update(comps, { $splice: [[index, 1]]});
+      comps = update(comps, { $splice: [[newPos, 0, compToMove]] });
+
+      this.setState({childComponents: comps});
+    }
+  },
+  removeComponent: function(index, evt) {
+    console.log('remove index: ' + index);
+
+    var comps = this.state.childComponents;
+    console.log(comps[index].Header);
+    comps = update(comps, { $splice: [[index, 1]] });
+
+    this.setState({childComponents: comps});
+
+    console.log('comps.length: ' + comps.length);
+
+    //var newComp = update(this.state.component || this.state.profile, { CMD_Component: { $splice: [[index, 1]] } });
+  },
   setChildComponentProperty : function(childComp, prop, newValue) {
     if(childComp == null)
       return;
@@ -79,6 +118,9 @@ var ComponentViewer = React.createClass({
     if(childComp.Header != undefined && childComp.CMD_Component != undefined)
       if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
         childComp.CMD_Component[prop] = newValue;
+  },
+  setLoading: function(isLoading) {
+     registryEvents.emit('loadingChange', isLoading);
   },
   updateAttribute: function(index, newAttr) {
     console.log('attr update: ' + index);
@@ -115,6 +157,8 @@ var ComponentViewer = React.createClass({
     this.setState({ childComponents: childComponents, childElements: childElements });
   },
   componentWillMount: function() {
+    this.setLoading(true);
+
     this.props.profileId = this.getParams().profile;
     this.props.componentId = this.getParams().component;
   },
@@ -129,6 +173,7 @@ var ComponentViewer = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('will update viewer');
+    this.setLoading(true);
 
     var newItem = nextState.profile||nextState.component;
     console.log('new item props: ' + JSON.stringify(newItem));
@@ -154,6 +199,8 @@ var ComponentViewer = React.createClass({
         else
           this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
     }
+
+    this.setLoading(false);
   },
   componentDidMount: function() {
     var self = this;
@@ -175,6 +222,8 @@ var ComponentViewer = React.createClass({
         console.log('Setting up new component...');
         this.setItemPropToState({ '@isProfile': "true", Header: { Name: "", Description: "" }, CMD_Component: { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1" } });
       }
+
+    this.setLoading(false);
   },
   /*shouldComponentUpdate: function(nextProps, nextState) {
     console.log('update: ' + JSON.stringify(nextState.registry));
@@ -197,14 +246,16 @@ var ComponentViewer = React.createClass({
       attrList = [attrList];
 
     console.log('attrList: ' + attrList);
+
     var item = (attrList == undefined) ? update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) : update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
 
     console.log('new item after attr add: ' + JSON.stringify(item));
+
     if(this.state.profile != null)
       this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
     else if(this.state.component != null)
       this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
-    //else
+    //else Error?
   },
   parseComponent: function(item, state) {
     console.log('parseComponent');
@@ -417,9 +468,9 @@ var ComponentViewer = React.createClass({
             var compId;
             if(comp.hasOwnProperty("@ComponentId")) compId = comp['@ComponentId'];
             else if(comp.Header != undefined) compId = comp.Header.ID;
-            else compId = "inline_" + index;
+            else compId = "inline_" + md5.hash("inline_" + comp['@name'] + index);
 
-            return <CMDComponent key={comp['@ComponentId']} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} />
+            return <CMDComponent key={compId} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} onRemove={self.removeComponent.bind(self, index)} moveUp={self.moveComponent.bind(self, index, index-1)} moveDown={self.moveComponent.bind(self, index, index+1)} />
           }
         )}
           {cmdAddComponentSpecLink}
@@ -444,6 +495,7 @@ var ComponentViewer = React.createClass({
         {controlLinks}
         {childElem}
         {childComp}
+        {controlLinks}
       </div>
     );
   },
