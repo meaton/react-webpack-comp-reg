@@ -46,9 +46,9 @@ var CMDAttribute = React.createClass({
       return (
         <div className="attrAttr attrForm">
           <form name="attrForm" className="form-horizontal form-group">
-          <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateHandler} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          {attr_val}
-          <Input type="text" label="ConceptLink" value={(attr.ConceptLink != undefined) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={this.props.conceptRegistryBtn} />
+            <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateHandler} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            {attr_val}
+            <Input type="text" label="ConceptLink" value={(attr.ConceptLink != undefined) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={this.props.conceptRegistryBtn} />
           </form>
         </div>
       );

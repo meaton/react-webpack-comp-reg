@@ -30,11 +30,12 @@ var CMDElement = React.createClass({
     var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, "ConceptLink: ", new React.createElement("a", { href: elem['@ConceptLink'], target: "_blank" }, elem['@ConceptLink']) ), lb] : null;
     var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: null;
     var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
+
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('elem will received new props');
     var elem = this.state.elem;
+    console.log('elem will received new props');
     console.log('elem props: ' + JSON.stringify(nextProps.elem));
     console.log('elem props: ' + this.props.elem.open);
 
@@ -62,13 +63,56 @@ var CMDElement = React.createClass({
     if(JSON.stringify(this.props.elem) != JSON.stringify(nextState.elem))
       this.props.onUpdate(nextState.elem);
   },
+  updateAttribute: function(index, newAttr) {
+    console.log('attr update: ' + index);
+    var elem = this.state.elem;
+    var attrSet = ($.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+
+    if($.isArray(elem.AttributeList.Attribute))
+      attrSet[index] = newAttr;
+    else
+      attrSet = [newAttr];
+
+    if(elem != null)
+      this.setState({ elem: update(elem, { AttributeList: { $set: { Attribute: attrSet } } }) });
+  },
+  addNewAttribute: function(elem) {
+    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
+    var attrList = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+
+    if(attrList != undefined && !$.isArray(attrList))
+      attrList = [attrList];
+
+    console.log('attrList: ' + attrList);
+
+    var elem = (attrList == undefined) ? update(elem, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) : update(elem, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+
+    console.log('new item after attr add: ' + JSON.stringify(elem));
+
+    if(this.state.elem != null)
+      this.setState({ elem: elem });
+  },
   render: function () {
     var self = this;
     var elem = this.state.elem;
+    var attrList = null;
 
     var valueScheme = this.props.viewer.getValueScheme(elem);
-    
+
     console.log('rendering element: ' + require('util').inspect(elem));
+
+    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+    if(elem.AttributeList != undefined || this.state.editMode) {
+      attrList = (
+        <div className="attrList">AttributeList:
+          {
+            (attrSet) ?
+            $.map(attrSet, function(attr, index) {
+              return <CMDAttribute key={"attr_elem_" + index} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} />;
+            }) : <span>No Attributes</span>
+          }
+        </div>);
+    }
 
     if(this.state.editMode) {
       var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
@@ -128,6 +172,16 @@ var CMDElement = React.createClass({
       );
 
       if(this.state.elem.open) {
+        var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.state.elem)}>+Attribute</a></div> : null;
+        var integerOpts = $.map($(Array(10)), function(item, index) {
+          return <option key={index} value={index}>{index}</option>
+        });
+        var maxOccSelect = (this.state.elem.hasOwnProperty('@Multilingual') && this.state.elem['@Multilingual'] == "true") ?
+        (<Input type="select" label="Max Occurrences" value={maxC} disabled={true} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}><option value="unbounded">unbounded</option>
+        {integerOpts}</Input>) :
+        (<Input type="select" label="Max Occurrences" defaultValue={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}><option value="unbounded">unbounded</option>
+        {integerOpts}</Input>);
+
         return (
           <div className={elementClasses}>
             <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
@@ -139,13 +193,10 @@ var CMDElement = React.createClass({
                   return <option key={index} value={index}>{index}</option>
                 })}
               </Input>
-              <Input type="select" label="Max Occurrences" defaultValue={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}>
-                <option value="unbounded">unbounded</option>
-                {$.map($(Array(10)), function(item, index) {
-                  return <option key={index} value={index}>{index}</option>
-                })}
-              </Input>
+              {maxOccSelect}
             </form>
+            {attrList}
+            {addAttrLink}
           </div>
         );
       } else {
@@ -156,32 +207,18 @@ var CMDElement = React.createClass({
           <div className={elementClasses}>Element: <a onClick={this.toggleElement} className="elementLink">{elemName}</a> Type: {valSch} {cardOpt} {displayPr}</div>
         );
       }
-    }
-
-    var attrList = null;
-    if(elem.AttributeList != undefined) {
-      var attrSet = ($.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-      attrList = (
-        <div className="attrList">AttributeList:
-          {
-            $.map(attrSet, function(attr, index) {
-              return <CMDAttribute key={"attr_elem_" + index} attr={attr} getValue={self.props.viewer.getValueScheme}/>;
-            })
-          }
+    } else {
+      return (
+        <div className="CMDElement">
+          <span>Element: </span>
+          <b>{elem['@name']}</b> { valueScheme }
+          <div className="elemAttrs">
+            {this.elemAttrs(elem)}
+          </div>
+          {attrList}
         </div>
-      );
+        );
     }
-
-    return (
-      <div className="CMDElement">
-        <span>Element: </span>
-        <b>{elem['@name']}</b> { valueScheme }
-        <div className="elemAttrs">
-          {this.elemAttrs(elem)}
-        </div>
-        {attrList}
-      </div>
-      );
   }
 });
 
