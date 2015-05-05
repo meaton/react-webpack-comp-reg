@@ -274,7 +274,7 @@ var CMDComponent = React.createClass({
     var attrList = (
       <div className="attrList">AttributeList:
         {
-          (attrSet)
+          (attrSet != undefined && attrSet.length > 0)
           ? $.map(attrSet, function(attr, index) {
             var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
             attr.attrId = attrId;

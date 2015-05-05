@@ -404,7 +404,7 @@ var ComponentViewer = React.createClass({
       attrList = (
         <div className="attrList">AttributeList:
           {
-            (attrSet)
+            (attrSet != undefined && attrSet.length > 0)
             ? $.map(attrSet, function(attr, index) {
               var attrId = (attr.attrId != undefined) ? attr.attrId : "root_attr_" + md5.hash("root_attr_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
