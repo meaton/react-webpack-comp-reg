@@ -201,37 +201,30 @@ var ComponentViewer = React.createClass({
 
     this.setLoading(false);
   },
-  /*shouldComponentUpdate: function(nextProps, nextState) {
-    console.log('update: ' + JSON.stringify(nextState.registry));
+  addNewAttribute: function(component, evt) {
+    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
 
-    return (!nextState.editMode || nextState.registry != null);
-  },*/
-  addNewComponent: function(evt) {
-    var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
-    this.setState({ childComponents: components });
+    var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
+    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
+
+    console.log('attrList: ' + attrList);
+    var item = (attrList == undefined) ?
+      update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
+      update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+
+    console.log('new item after attr add: ' + JSON.stringify(item));
+    if(this.state.profile != null)
+      this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
+    else if(this.state.component != null)
+      this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
   },
   addNewElement: function(evt) {
     var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
     this.setState({ childElements: elements });
   },
-  addNewAttribute: function(component, evt) {
-    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
-    var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
-
-    if(attrList != undefined && !$.isArray(attrList))
-      attrList = [attrList];
-
-    console.log('attrList: ' + attrList);
-
-    var item = (attrList == undefined) ? update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) : update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
-
-    console.log('new item after attr add: ' + JSON.stringify(item));
-
-    if(this.state.profile != null)
-      this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
-    else if(this.state.component != null)
-      this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
-    //else Error?
+  addNewComponent: function(evt) {
+    var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
+    this.setState({ childComponents: components });
   },
   parseComponent: function(item, state) {
     console.log('parseComponent');
@@ -413,7 +406,7 @@ var ComponentViewer = React.createClass({
           {
             (attrSet)
             ? $.map(attrSet, function(attr, index) {
-              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_" + md5.hash("attr_" + index + "_" + Math.floor(Math.random()*1000));
+              var attrId = (attr.attrId != undefined) ? attr.attrId : "root_attr_" + md5.hash("root_attr_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
               return (
                 <CMDAttribute key={attrId} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
@@ -458,10 +451,10 @@ var ComponentViewer = React.createClass({
       );
 
     if(this.state.errors != null) {
-        console.log('Render errors: ' + JSON.stringify(this.state.errors));
-        errors = ( <Alert bsStyle="danger"><h4>Errors found:</h4>
-                      { $.map(this.state.errors, function(error) { return <li>{error}</li> }) }
-                   </Alert> );
+      console.log('Render errors: ' + JSON.stringify(this.state.errors));
+      errors = ( <Alert bsStyle="danger"><h4>Errors found:</h4>
+                    { $.map(this.state.errors, function(error) { return <li>{error}</li> }) }
+                 </Alert> );
     }
 
     return (

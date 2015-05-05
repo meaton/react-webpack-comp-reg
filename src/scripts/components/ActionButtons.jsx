@@ -1,11 +1,12 @@
 'use strict';
 
 var React = require('react/addons');
+
 //require('../../styles/ActionButtons.sass');
 
 var ActionButtons = React.createClass({
   propTypes: {
-    target: React.PropTypes.any.isRequired,
+    target: React.PropTypes.any.isRequired, // TODO replace with instanceOf check
     moveEnabled: React.PropTypes.bool
   },
   getDefaultProps: function() {

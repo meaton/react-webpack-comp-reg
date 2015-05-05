@@ -1,12 +1,14 @@
 'use strict';
 
 var React = require('react');
-var CMDAttribute = require('./CMDAttribute');
 
-var Input = require('react-bootstrap/lib/Input');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
+
+var CMDAttribute = require('./CMDAttribute');
+var Input = require('react-bootstrap/lib/Input');
+
 var update = React.addons.update;
 var md5 = require('spark-md5');
 
@@ -47,14 +49,13 @@ var CMDElement = React.createClass({
   },
   componentDidMount: function() {
     var elem = this.state.elem;
-
     if(elem.AttributeList != undefined && !$.isArray(elem.AttributeList.Attribute)) {
       elem.AttributeList.Attribute = [elem.AttributeList.Attribute];
     }
 
-    this.setState({ elem: update(elem, { open: { $set: true }}) });
-
     console.log('mounted element: ' + JSON.stringify(elem));
+
+    this.setState({ elem: update(elem, { open: { $set: true }}) });
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('element will update');
@@ -77,19 +78,20 @@ var CMDElement = React.createClass({
     if(elem != null)
       this.setState({ elem: update(elem, { AttributeList: { $set: { Attribute: attrSet } } }) });
   },
-  addNewAttribute: function(elem) {
+  addNewAttribute: function(evt) {
     var newAttrObj = { Name: "", Type: "string" }; //TODO check format
-    var attrList = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
 
+    var elem = this.state.elem;
+    var attrList = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
     if(attrList != undefined && !$.isArray(attrList))
       attrList = [attrList];
 
     console.log('attrList: ' + attrList);
-
-    var elem = (attrList == undefined) ? update(elem, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) : update(elem, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+    var elem = (attrList == undefined) ?
+      update(elem, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
+      update(elem, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
 
     console.log('new item after attr add: ' + JSON.stringify(elem));
-
     if(this.state.elem != null)
       this.setState({ elem: elem });
   },
@@ -97,12 +99,10 @@ var CMDElement = React.createClass({
     var self = this;
     var elem = this.state.elem;
     var attrList = null;
-
     var valueScheme = this.props.viewer.getValueScheme(elem);
     var actionButtons = this.getActionButtons();
 
     console.log('rendering element: ' + require('util').inspect(elem));
-
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
     if(elem.AttributeList != undefined || this.state.editMode) {
       attrList = (
@@ -110,7 +110,9 @@ var CMDElement = React.createClass({
           {
             (attrSet) ?
             $.map(attrSet, function(attr, index) {
-              return <CMDAttribute key={"attr_elem_" + index} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} />;
+              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
+              attr.attrId = attrId;
+              return <CMDAttribute key={attrId} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
             }) : <span>No Attributes</span>
           }
         </div>);
@@ -174,7 +176,7 @@ var CMDElement = React.createClass({
       );
 
       if(this.state.elem.open) {
-        var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.state.elem)}>+Attribute</a></div> : null;
+        var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
         var integerOpts = $.map($(Array(10)), function(item, index) {
           return <option key={index} value={index}>{index}</option>
         });

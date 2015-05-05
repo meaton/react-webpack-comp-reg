@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
@@ -12,26 +13,22 @@ var Button = require('react-bootstrap/lib/Button');
 
 var CMDAttribute = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
-  /* propTypes */
-  setDefaultProps: {
-    conceptRegistryBtn: null
+  getDefaultProps: function() {
+    return { conceptRegistryBtn: null }
   },
   getInitialState: function() {
     return { attr: this.props.attr, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
   componentDidMount: function() {
     var attr = this.state.attr;
-
     if(attr.ValueScheme != undefined)
       var enumVal = attr.ValueScheme.enumeration;
       if(enumVal != undefined && enumVal.item != undefined && !$.isArray(enumVal.item))
         enumVal.item = [enumVal.item];
-
   },
   componentDidUpdate: function(prevProps, prevState) {
     console.log('attr prev state: ' + JSON.stringify(prevState.attr));
     console.log('attr curr state: ' + JSON.stringify(this.state.attr));
-
     if(JSON.stringify(prevState.attr) != JSON.stringify(this.state.attr))
       if(this.props.onUpdate)
         this.props.onUpdate(this.state.attr);

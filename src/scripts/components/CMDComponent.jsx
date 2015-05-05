@@ -1,13 +1,16 @@
 'use strict';
 
 var React = require('react/addons');
+
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
 
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
+
 var Input = require('react-bootstrap/lib/Input');
+
 var update = React.addons.update;
 var md5 = require('spark-md5');
 
@@ -28,49 +31,6 @@ var CMDComponent = React.createClass({
       this.setState({ component: update(this.state.component, { open: { $set: isOpen }}) });
     }
   },
-  addNewComponent: function(evt) {
-    console.log('new Component');
-    var component = this.state.component;
-
-    if(component.CMD_Component == undefined) component.CMD_Component = [];
-    var updatedComponent = update(component, { $merge: { CMD_Component: update(component.CMD_Component, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] }) }});
-
-    this.setState({ component: updatedComponent });
-  },
-  addNewElement: function(evt) {
-    console.log('new Element');
-    var component = this.state.component;
-
-    if(component.CMD_Element == undefined) component.CMD_Element = [];
-
-    var updatedComponent = update(component, { $merge: { CMD_Element: update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] }) }});
-    this.setState({ component: updatedComponent });
-  },
-  updateComponentSettings: function(index, newMin, newMax) {
-    console.log('comp update: ' + index);
-    var component = this.state.component;
-    var child = (component.Header != undefined) ? component.CMD_Component.CMD_Component[index] : component.CMD_Component[index];
-
-    if(newMin != null) child['@CardinalityMin'] = newMin;
-    if(newMax != null) child['@CardinalityMax'] = newMax;
-
-    var linkChild = this.linkState('component.' + index);
-    linkChild.requestChange(child);
-  },
-  updateInlineComponent: function(index, newComponent) {
-    console.log('update nested component: ' + require('util').inspect(newComponent));
-    var linkChild = (this.state.component.Header != undefined) ?
-      this.linkState('component.CMD_Component.CMD_Component.' + index) :
-      this.linkState('component.CMD_Component.' + index);
-
-    linkChild.requestChange(newComponent);
-  },
-  updateElement: function(index, newElement) {
-    var linkChild = (this.state.component.Header != undefined) ?
-      this.linkState('component.CMD_Component.CMD_Element.' + index) :
-      this.linkState('component.CMD_Element.' + index);
-    linkChild.requestChange(newElement);
-  },
   loadComponentData: function() {
     var self = this;
     var comp = this.state.component;
@@ -82,6 +42,87 @@ var CMDComponent = React.createClass({
           var newComponent = update(data, {open: {$set: true}})
           self.setState({component: newComponent });
       });
+  },
+  addNewAttribute: function(evt) {
+    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
+
+    var comp = this.state.component;
+    if(comp != null)
+      if(comp.Header != undefined)
+        comp = comp.CMD_Component;
+
+    var attrList = comp.AttributeList;
+    if(attrList != undefined && $.isArray(attrList.Attribute)) attrList = attrList.Attribute;
+    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
+
+    console.log('attrList: ' + attrList);
+    var item = (attrList == undefined) ?
+      update(comp, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
+      update(comp, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+
+    console.log('new item after attr add: ' + JSON.stringify(item));
+    if(this.state.component != null)
+      if(this.state.component.Header != undefined)
+        this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
+      else
+        this.setState({ component: item });
+  },
+  addNewElement: function(evt) {
+    console.log('new Element');
+    var component = this.state.component;
+    if(component.CMD_Element == undefined) component.CMD_Element = [];
+
+    var updatedComponent = update(component, { $merge: { CMD_Element: update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] }) }});
+
+    this.setState({ component: updatedComponent });
+  },
+  addNewComponent: function(evt) {
+    console.log('new Component');
+    var component = this.state.component;
+
+    if(component.CMD_Component == undefined) component.CMD_Component = [];
+    var updatedComponent = update(component, { $merge: { CMD_Component: update(component.CMD_Component, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] }) }});
+
+    this.setState({ component: updatedComponent });
+  },
+  updateAttribute: function(index, newAttr) {
+    console.log('attr update: ' + index);
+    var item = this.state.component;
+    if(item != null && this.state.isInline) {
+      var attrSet = item.AttributeList;
+      if(attrSet != undefined && attrSet.Attribute != undefined) attrSet = attrSet.Attribute;
+      if(!$.isArray(attrSet)) attrSet = [attrSet];
+      attrSet[index] = newAttr;
+
+      this.setState({ component: update(item, { AttributeList: { $set: { Attribute: attrSet } }}) });
+    }
+  },
+  updateElement: function(index, newElement) {
+    var linkChild = (this.state.component.Header != undefined) ?
+      this.linkState('component.CMD_Component.CMD_Element.' + index) :
+      this.linkState('component.CMD_Element.' + index);
+
+    linkChild.requestChange(newElement);
+  },
+  updateComponentSettings: function(index, newMin, newMax) {
+    console.log('comp update: ' + index);
+    var component = this.state.component;
+    var child = (component.Header != undefined) ? component.CMD_Component.CMD_Component[index] : component.CMD_Component[index];
+
+    if(newMin != null) child['@CardinalityMin'] = newMin;
+    if(newMax != null) child['@CardinalityMax'] = newMax;
+
+    var linkChild = this.linkState('component.' + index);
+
+    linkChild.requestChange(child);
+  },
+  updateInlineComponent: function(index, newComponent) {
+    console.log('update nested component: ' + require('util').inspect(newComponent));
+    var linkChild = (this.state.component.Header != undefined) ?
+      this.linkState('component.CMD_Component.CMD_Component.' + index) :
+      this.linkState('component.CMD_Component.' + index);
+
+    linkChild.requestChange(newComponent);
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('component will received new props');
@@ -139,8 +180,8 @@ var CMDComponent = React.createClass({
     var self = this;
     var comp = this.state.component;
     var actionButtons = this.getActionButtons();
-    var compId;
 
+    var compId;
     if(comp.hasOwnProperty("@ComponentId"))
       compId = comp["@ComponentId"];
     else if(comp.Header != undefined)
@@ -227,28 +268,25 @@ var CMDComponent = React.createClass({
       'open': this.state.component.open
     });
 
-    //TODO move to mixin
-    var attrList = null;
     var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
-    var addAttrLink = (this.state.editMode) ? <a onClick={this.addAttr}>+attribute</a> : null;
+    var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
 
-    if(attrSet != undefined)
-      attrList = (
-        <div className="attrList">AttributeList:
-          {
-            (attrSet)
-            ? $.map(attrSet, function(attr, index) {
-              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_" + md5.hash("attr_" + index + "_" + Math.floor(Math.random()*1000));
-              attr.attrId = attrId;
-              return (
-                <CMDAttribute key={attrId} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onRemove={self.removeAttribute.bind(self, index)} />
-              );
-            })
-            : <span>No Attributes</span>
-          }
-          {addAttrLink}
-        </div>
-      );
+    var attrList = (
+      <div className="attrList">AttributeList:
+        {
+          (attrSet)
+          ? $.map(attrSet, function(attr, index) {
+            var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
+            attr.attrId = attrId;
+            return (
+              <CMDAttribute key={attrId} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
+            );
+          })
+          : <span>No Attributes</span>
+        }
+        {addAttrLink}
+      </div>
+    );
 
     if(this.state.editMode) {
       var cardOpt = null;
