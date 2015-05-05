@@ -19,20 +19,20 @@ var ActionButtonsMixin = {
       if(!$.isArray(attrSet)) attrSet = [attrSet];
       attrSet = this.removeItem(attrSet, index);
 
+      var newAttrList = (attrSet.length > 0) ? { Attribute: { $set: attrSet }} : { $set: undefined };
       if(this.state.profile != null) {
-        var newProfile = update(stateObj, { CMD_Component: { AttributeList: { Attribute: { $set: attrSet }}}});
-        this.setState({profile: newProfile})
+        var newProfile = update(stateObj, { CMD_Component: { AttributeList: newAttrList } });
+        this.setState({ profile: newProfile })
       } else if(this.state.component != null) {
         var newComponent;
         if(stateObj.Header != undefined)
-            newComponent = update(stateObj, { CMD_Component: { AttributeList: { Attribute: { $set: attrSet }}}});
+            newComponent = update(stateObj, { CMD_Component: { AttributeList: newAttrList }});
         else
-          newComponent = update(stateObj, { AttributeList: { Attribute: { $set: attrSet }}});
-
-        this.setState({component: newComponent});
+          newComponent = update(stateObj, { AttributeList: newAttrList });
+        this.setState({ component: newComponent });
       } else if(this.state.elem != null) {
-        var newElem = update(stateObj, { AttributeList: { Attribute: { $set: attrSet }}});
-        this.setState({elem: newElem});
+        var newElem = update(stateObj, { AttributeList: newAttrList });
+        this.setState({ elem: newElem });
       }
     }
   },
