@@ -3,6 +3,7 @@
 var React = require('react/addons');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
 
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
@@ -13,7 +14,7 @@ var md5 = require('spark-md5');
 require('../../styles/CMDComponent.sass');
 
 var CMDComponent = React.createClass({
-  mixins: [ImmutableRenderMixin, LinkedStateMixin],
+  mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {
     return { component: this.props.component, editMode: (this.props.editMode != undefined) ? this.props.editMode : false, isInline: false }
   },
@@ -69,44 +70,6 @@ var CMDComponent = React.createClass({
       this.linkState('component.CMD_Component.CMD_Element.' + index) :
       this.linkState('component.CMD_Element.' + index);
     linkChild.requestChange(newElement);
-  },
-  moveComponentHandler: function(direction) {
-    if(direction == "up")
-      this.props.moveUp();
-    else if(direction == "down")
-      this.props.moveDown();
-  },
-  moveComponent: function(index, newPos) {
-    console.log('moving index: ' + index + ' to ' + newPos);
-
-    var comp = this.state.component;
-    var comps = (comp.Header != undefined) ? comp.CMD_Component.CMD_Component : comp.CMD_Component;
-
-    var compToMove = comps[index];
-
-    if(newPos >= 0 && newPos < comps.length) {
-      comps = update(comps, { $splice: [[index, 1]]});
-      comps = update(comps, { $splice: [[newPos, 0, compToMove]] });
-
-      var newComp = (comp.Header != undefined) ?  update(comp, { CMD_Component: { $set: { CMD_Component: comps }} }) :
-        update(comp, { $merge: { CMD_Component: comps } });
-
-      this.setState({component: newComp});
-    }
-  },
-  removeComponentHandler: function(evt) {
-    if(this.props.onRemove != undefined)
-      this.props.onRemove();
-  },
-  removeComponent: function(index, evt) {
-    if(index != undefined && index != null) {
-      console.log(this.state.component);
-
-      var newComp = (this.state.component.Header != undefined) ?  update(this.state.component, { CMD_Component: { CMD_Component: { $splice: [[index, 1]] } }}) :
-        update(this.state.component, { CMD_Component: { $splice: [[index, 1]] } });
-
-      this.setState({component: newComp});
-    }
   },
   loadComponentData: function() {
     var self = this;
@@ -175,6 +138,7 @@ var CMDComponent = React.createClass({
     console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
     var self = this;
     var comp = this.state.component;
+    var actionButtons = this.getActionButtons();
     var compId;
 
     if(comp.hasOwnProperty("@ComponentId"))
@@ -212,7 +176,9 @@ var CMDComponent = React.createClass({
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
         console.log('found elem (' + index + '): ' + elem);
-        return <CMDElement key={"comp_elem_" + index} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} onUpdate={self.updateElement.bind(self, index)} />
+        var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
+        elem.elemId = elemId;
+        return <CMDElement key={elemId} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} onUpdate={self.updateElement.bind(self, index)} onRemove={self.removeElement.bind(self, index)} moveUp={self.moveElement.bind(self, index, index-1)} moveDown={self.moveElement.bind(self, index, index+1)} />
       });
 
     //TODO review name replace
@@ -234,8 +200,7 @@ var CMDComponent = React.createClass({
         if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
         else if(nestedComp.Header != undefined) compId = nestedComp.Header.ID;
         else if(nestedComp.inlineId != undefined) compId = nestedComp.inlineId;
-        //else if(self.state.component.inlineId != undefined) compId = "inline_" + self.state.component.inlineId + Math.floor(Math.random()*1000);
-        else compId = "inline_" + md5.hash("inline_" + ncindex + Math.floor(Math.random()*1000));
+        else compId = "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
 
         if(compId.startsWith("inline"))
           nestedComp.inlineId = compId;
@@ -273,8 +238,10 @@ var CMDComponent = React.createClass({
           {
             (attrSet)
             ? $.map(attrSet, function(attr, index) {
+              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_" + md5.hash("attr_" + index + "_" + Math.floor(Math.random()*1000));
+              attr.attrId = attrId;
               return (
-                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} />
+                <CMDAttribute key={attrId} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onRemove={self.removeAttribute.bind(self, index)} />
               );
             })
             : <span>No Attributes</span>
@@ -344,7 +311,7 @@ var CMDComponent = React.createClass({
 
       return (
         <div className={componentClasses}>
-          <div className="controlLinks"><a onClick={this.removeComponentHandler}>click to remove</a> <a onClick={this.moveComponentHandler.bind(this, "up")}>move up</a> <a onClick={this.moveComponentHandler.bind(this, "down")}>move down</a></div>
+          {actionButtons}
           <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
           <div className={editClasses}>
             <form className="form-horizontal form-group" name={"componentForm_" + compId}>

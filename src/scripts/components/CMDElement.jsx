@@ -6,13 +6,14 @@ var CMDAttribute = require('./CMDAttribute');
 var Input = require('react-bootstrap/lib/Input');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
 var update = React.addons.update;
+var md5 = require('spark-md5');
 
 require('../../styles/CMDElement.sass');
 
 var CMDElement = React.createClass({
-  mixins: [LinkedStateMixin, ImmutableRenderMixin],
+  mixins: [LinkedStateMixin, ImmutableRenderMixin, ActionButtonsMixin],
   getInitialState: function() {
     return { elem: this.props.elem, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
@@ -98,6 +99,7 @@ var CMDElement = React.createClass({
     var attrList = null;
 
     var valueScheme = this.props.viewer.getValueScheme(elem);
+    var actionButtons = this.getActionButtons();
 
     console.log('rendering element: ' + require('util').inspect(elem));
 
@@ -184,6 +186,7 @@ var CMDElement = React.createClass({
 
         return (
           <div className={elementClasses}>
+             {actionButtons}
             <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
             <form className="form-horizontal form-group">
               {elemProps}
@@ -204,7 +207,10 @@ var CMDElement = React.createClass({
         var valSch = (typeof valueScheme == "string") ? valueScheme : "";
 
         return (
-          <div className={elementClasses}>Element: <a onClick={this.toggleElement} className="elementLink">{elemName}</a> Type: {valSch} {cardOpt} {displayPr}</div>
+          <div className={elementClasses}>
+            {actionButtons}
+            <span>Element: </span><a onClick={this.toggleElement} className="elementLink">{elemName}</a> Type: {valSch} {cardOpt} {displayPr}
+          </div>
         );
       }
     } else {

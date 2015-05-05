@@ -3,6 +3,7 @@
 var React = require('react/addons');
 
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 var ee = require('events').EventEmitter;
@@ -40,7 +41,7 @@ registryEvents.on('loadingChange', function(progress) {
 
 var ComponentViewer = React.createClass({
   // TODO: static fns willTransitionTo/From
-  mixins: [LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader, ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader, ActionButtonsMixin],
   getInitialState: function() {
     return { registry: { domainName: '', groupName: '' },
              profile: null,
@@ -83,31 +84,6 @@ var ComponentViewer = React.createClass({
       this.setChildComponentProperty(childComponents[index], '@CardinalityMax', newMax);
 
     this.setState({childComponents: childComponents});
-  },
-  moveComponent: function(index, newPos) {
-    console.log('moving index: ' + index + ' to ' + newPos);
-    var comps = this.state.childComponents;
-    var compToMove = comps[index];
-
-    if(newPos >= 0 && newPos < comps.length) {
-      comps = update(comps, { $splice: [[index, 1]]});
-      comps = update(comps, { $splice: [[newPos, 0, compToMove]] });
-
-      this.setState({childComponents: comps});
-    }
-  },
-  removeComponent: function(index, evt) {
-    console.log('remove index: ' + index);
-
-    var comps = this.state.childComponents;
-    console.log(comps[index].Header);
-    comps = update(comps, { $splice: [[index, 1]] });
-
-    this.setState({childComponents: comps});
-
-    console.log('comps.length: ' + comps.length);
-
-    //var newComp = update(this.state.component || this.state.profile, { CMD_Component: { $splice: [[index, 1]] } });
   },
   setChildComponentProperty : function(childComp, prop, newValue) {
     if(childComp == null)
@@ -437,8 +413,10 @@ var ComponentViewer = React.createClass({
           {
             (attrSet)
             ? $.map(attrSet, function(attr, index) {
+              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_" + md5.hash("attr_" + index + "_" + Math.floor(Math.random()*1000));
+              attr.attrId = attrId;
               return (
-                <CMDAttribute key={'attr_' + index} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} />
+                <CMDAttribute key={attrId} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
               );
             })
             : <span>No Attributes</span>
@@ -452,7 +430,9 @@ var ComponentViewer = React.createClass({
       childElem = (
         <div ref="elements" className="childElements">{this.state.childElements.map(
           function(elem, index) {
-            return <CMDElement key={'elem_' + index} elem={elem} viewer={self} editMode={editMode} onUpdate={self.updateElement.bind(self, index)}/>;
+            var elemId = (elem.elemId != undefined) ? elem.elemId : "elem_" + md5.hash("elem_" + elem['@name'] + index);
+            elem.elemId = elemId;
+            return <CMDElement key={elemId} elem={elem} viewer={self} editMode={editMode} onUpdate={self.updateElement.bind(self, index)} onRemove={self.removeElement.bind(self, index)} moveUp={self.moveElement.bind(self, index, index-1)} moveDown={self.moveElement.bind(self, index, index+1)} />;
           }
         )}
           {cmdAddElementSpecLink}
