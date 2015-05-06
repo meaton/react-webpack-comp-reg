@@ -172,7 +172,7 @@ var CMDComponent = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
     console.log('component will update: ' + require('util').inspect(nextState.component));
     if(this.state.editMode && this.state.isInline && this.state.component.open)
-      if(JSON.stringify(nextProps.component) != JSON.stringify(nextState.component)) {
+      if(JSON.stringify(this.state.component) != JSON.stringify(nextState.component)) {
         this.props.onInlineUpdate(nextState.component);
       }
   },

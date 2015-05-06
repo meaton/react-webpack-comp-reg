@@ -94,12 +94,10 @@ var ActionButtonsMixin = {
   moveNestedComponent: function(index, newPos) {
     if(this.state.component != null) {
       var comp = this.state.component;
-      var comps = (comp.Header != undefined) ? comp.CMD_Component.CMD_Component : comp.CMD_Component;
-      comps = this.moveItem(comps, index, newPos);
-
-      var newComp = (comp.Header != undefined) ?  update(comp, { CMD_Component: { $set: { CMD_Component: comps }} }) :
-          update(comp, { CMD_Component: { $set: comps } });
-      this.setState({component: newComp});
+      if(comp.Header == undefined && $.isArray(comp.CMD_Component) && comp.CMD_Component.length > 1) { // only switching children of inline-component when array length > 2
+        var comps = this.moveItem(comp.CMD_Component, index, newPos);
+        this.setState({component: update(comp, { CMD_Component: { $set: comps } })});
+      }
     }
   },
   removeNestedComponent: function(index) {
@@ -116,6 +114,7 @@ var ActionButtonsMixin = {
       itemCol = this.removeItem(itemCol, index);
       itemCol = update(itemCol, { $splice: [[newPos, 0, itemToMove]] });
     }
+
     return itemCol;
   },
   removeItem: function(itemCol, index) {
