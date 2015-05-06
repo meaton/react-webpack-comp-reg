@@ -180,7 +180,7 @@ var CMDElement = React.createClass({
         var integerOpts = $.map($(Array(10)), function(item, index) {
           return <option key={index} value={index}>{index}</option>
         });
-        var maxOccSelect = (this.state.elem.hasOwnProperty('@Multilingual') && this.state.elem['@Multilingual'] == "true") ?
+        var maxOccSelect = (this.state.elem.hasOwnProperty('@Multilingual') && this.state.elem['@Multilingual'] == "true" && maxC == "unbounded") ?
         (<Input type="select" label="Max Occurrences" value={maxC} disabled={true} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}><option value="unbounded">unbounded</option>
         {integerOpts}</Input>) :
         (<Input type="select" label="Max Occurrences" defaultValue={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMaxChange}><option value="unbounded">unbounded</option>

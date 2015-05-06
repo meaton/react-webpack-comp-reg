@@ -65,13 +65,58 @@ var ComponentViewer = React.createClass({
         this.setState({component: item, childElements: null, childComponents: null});
     }
   },
+
+  addNewAttribute: function(component, evt) {
+    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
+
+    var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
+    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
+
+    console.log('attrList: ' + attrList);
+    var item = (attrList == undefined) ?
+      update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
+      update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+
+    console.log('new item after attr add: ' + JSON.stringify(item));
+    if(this.state.profile != null)
+      this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
+    else if(this.state.component != null)
+      this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
+  },
+  addNewElement: function(evt) {
+    var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
+    this.setState({ childElements: elements });
+  },
+  addNewComponent: function(evt) {
+    var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
+    this.setState({ childComponents: components });
+  },
+  updateAttribute: function(index, newAttr) {
+    console.log('attr update: ' + index);
+    var item = this.state.component || this.state.profile;
+    var attrSet = item.CMD_Component.AttributeList.Attribute;
+    attrSet[index] = newAttr;
+
+    if(this.state.profile != null)
+      this.setState({ profile: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
+    else if(this.state.component != null)
+      this.setState({ component: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
+  },
+  updateElement: function(index, newElement) {
+    console.log('elem update: ' + index);
+    var childElements = this.state.childElements;
+    if((newElement.elemId == childElements[index].elemId) && (JSON.stringify(newElement) != JSON.stringify(childElements[index]))) {
+      childElements[index] = newElement;
+      this.setState({childElements: childElements});
+    }
+  },
   updateInlineComponent: function(index, newComponent) {
+    console.log('inline update: ' + index);
     var childComponents = this.state.childComponents;
-
-    if(newComponent != null)
+    if(newComponent != null && (newComponent.inlineId == childComponents.inlineId)) {
       childComponents[index] = newComponent;
-
-    this.setState({childComponents: childComponents});
+      this.setState({childComponents: childComponents});
+    }
   },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
@@ -97,26 +142,6 @@ var ComponentViewer = React.createClass({
   },
   setLoading: function(isLoading) {
      registryEvents.emit('loadingChange', isLoading);
-  },
-  updateAttribute: function(index, newAttr) {
-    console.log('attr update: ' + index);
-    var item = this.state.component || this.state.profile;
-    var attrSet = item.CMD_Component.AttributeList.Attribute;
-    attrSet[index] = newAttr;
-
-    if(this.state.profile != null)
-      this.setState({ profile: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
-    else if(this.state.component != null)
-      this.setState({ component: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
-
-  },
-  updateElement: function(index, newElement) {
-    console.log('elem update: ' + index);
-    var childElements = this.state.childElements;
-    if(JSON.stringify(newElement) != JSON.stringify(childElements[index]))
-      childElements[index] = newElement;
-
-    this.setState({childElements: childElements});
   },
   showErrors: function(errors) {
     this.setState({errors: errors});
@@ -200,31 +225,6 @@ var ComponentViewer = React.createClass({
       }
 
     this.setLoading(false);
-  },
-  addNewAttribute: function(component, evt) {
-    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
-
-    var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
-    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
-
-    console.log('attrList: ' + attrList);
-    var item = (attrList == undefined) ?
-      update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
-      update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
-
-    console.log('new item after attr add: ' + JSON.stringify(item));
-    if(this.state.profile != null)
-      this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
-    else if(this.state.component != null)
-      this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
-  },
-  addNewElement: function(evt) {
-    var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
-    this.setState({ childElements: elements });
-  },
-  addNewComponent: function(evt) {
-    var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
-    this.setState({ childComponents: components });
   },
   parseComponent: function(item, state) {
     console.log('parseComponent');

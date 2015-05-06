@@ -61,7 +61,7 @@ var ActionButtonsMixin = {
       elems = this.moveItem(elems, index, newPos);
 
       var newComp = (comp.Header != undefined) ?  update(elem, { CMD_Component: { $set: { CMD_Element: elems }} }) :
-          update(comp, { $merge: { CMD_Element: elems } });
+          update(comp, { CMD_Element: { $set: elems } });
       this.setState({component: newComp});
     }
   },
@@ -98,7 +98,7 @@ var ActionButtonsMixin = {
       comps = this.moveItem(comps, index, newPos);
 
       var newComp = (comp.Header != undefined) ?  update(comp, { CMD_Component: { $set: { CMD_Component: comps }} }) :
-          update(comp, { $merge: { CMD_Component: comps } });
+          update(comp, { CMD_Component: { $set: comps } });
       this.setState({component: newComp});
     }
   },
