@@ -105,18 +105,22 @@ var ComponentViewer = React.createClass({
   updateElement: function(index, newElement) {
     console.log('elem update: ' + index);
     var childElements = this.state.childElements;
-    if((newElement.elemId == childElements[index].elemId) && (JSON.stringify(newElement) != JSON.stringify(childElements[index]))) {
-      childElements[index] = newElement;
-      this.setState({childElements: childElements});
-    }
+    if(index >= 0 && index < childElements.length)
+      if((newElement.elemId == childElements[index].elemId) &&
+         (JSON.stringify(newElement) != JSON.stringify(childElements[index]))) {
+        childElements[index] = newElement;
+        this.setState({childElements: childElements});
+      }
   },
   updateInlineComponent: function(index, newComponent) {
     console.log('inline update: ' + index);
     var childComponents = this.state.childComponents;
-    if(newComponent != null && (newComponent.inlineId == childComponents.inlineId)) {
-      childComponents[index] = newComponent;
-      this.setState({childComponents: childComponents});
-    }
+    if(index >= 0 && index < childComponents.length)
+      if((newComponent != null) &&
+         (newComponent.inlineId == childComponents[index].inlineId)) {
+        childComponents[index] = newComponent;
+        this.setState({childComponents: childComponents});
+      }
   },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);

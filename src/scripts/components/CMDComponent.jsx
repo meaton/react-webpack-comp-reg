@@ -97,7 +97,7 @@ var CMDComponent = React.createClass({
       this.setState({ component: update(item, { AttributeList: { $set: { Attribute: attrSet } }}) });
     }
   },
-  updateElement: function(index, newElement) {
+  updateElement: function(index, newElement) { // TODO check update state after reordering
     var linkChild = (this.state.component.Header != undefined) ?
       this.linkState('component.CMD_Component.CMD_Element.' + index) :
       this.linkState('component.CMD_Element.' + index);
@@ -118,6 +118,7 @@ var CMDComponent = React.createClass({
   },
   updateInlineComponent: function(index, newComponent) {
     console.log('update nested component: ' + require('util').inspect(newComponent));
+
     var linkChild = (this.state.component.Header != undefined) ?
       this.linkState('component.CMD_Component.CMD_Component.' + index) :
       this.linkState('component.CMD_Component.' + index);
