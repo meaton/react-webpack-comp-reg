@@ -14,6 +14,7 @@ var Button = require('react-bootstrap/lib/Button');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Alert = require('react-bootstrap/lib/Alert');
+var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 
 var Router = require('react-router'); // TODO migration to Router context
 var update = React.addons.update;
@@ -26,6 +27,7 @@ var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
 
 var EditorBtnGroup = require('./BtnMenuGroup');
+var EditorDialog = require('./EditorDialog');
 
 var md5 = require('spark-md5');
 
@@ -41,7 +43,10 @@ registryEvents.on('loadingChange', function(progress) {
 
 var ComponentViewer = React.createClass({
   // TODO: static fns willTransitionTo/From
-  mixins: [ImmutableRenderMixin, LinkedStateMixin, Router.State, Router.Navigation, btnGroup, CompRegLoader, ActionButtonsMixin],
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+  mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, Router.Navigation, Router.State],
   getInitialState: function() {
     return { registry: { domainName: '', groupName: '' },
              profile: null,
@@ -55,7 +60,9 @@ var ComponentViewer = React.createClass({
     };
   },
   getDefaultProps: function() {
-    return { domains: require('../domains.js') };
+    return {
+      domains: require('../domains.js')
+    };
   },
   setItemPropToState: function(item) {
     if(item != null) {
@@ -164,8 +171,8 @@ var ComponentViewer = React.createClass({
   componentWillMount: function() {
     this.setLoading(true);
 
-    this.props.profileId = this.getParams().profile;
-    this.props.componentId = this.getParams().component;
+    //this.props.profileId = this.getParams().profile;
+    //this.props.componentId = this.getParams().component;
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('will receive props');
@@ -209,7 +216,7 @@ var ComponentViewer = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    var id = this.props.profileId||this.props.componentId;
+    var id = this.getParams().component||this.getParams.profile;
 
     console.log('viewer mounted: ' + id);
     console.log('editmode: ' + this.state.editMode);
@@ -258,13 +265,39 @@ var ComponentViewer = React.createClass({
 
     this.replaceState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
   },
-  conceptRegistryBtn: function() {
+  conceptRegistryBtn: function(container) {
+    if(container == undefined) container = this;
     return (
-      <Button>Search in concept registry...</Button>
-    )
+      <EditorDialog type="ConceptRegistry" buttonLabel="Search in concept registry..." container={container} />
+    );
   },
-  getValueScheme: function(obj) {
+  updateConceptLink: function(newValue) {
+    console.log('update concept link - root component/profile: ' + newValue);
+    if(this.state.component != null)
+      this.setState({ component: (this.state.component.Header != undefined) ?
+        update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
+        update(this.state.component, { '@ConceptLink': { $set: newValue } })
+      });
+    else if(this.state.profile != null)
+      this.setState({ profile: update(this.state.profile, { 'CMD_Component:': { '@ConceptLink': { $set: newValue } }}) });
+  },
+  updateValueScheme: function(target, prop, newValue) {
+    console.log('update value scheme:' + evt.currentTarget);
+    var props = "@ValueScheme";
+
+    if(target != undefined) {
+      return true;
+    }
+  },
+  getValueScheme: function(obj, container, target) {
+    if(container == undefined) container = this;
+    if(target == undefined) target = container;
+
     var valueScheme = obj['@ValueScheme'];
+    var typeTrigger = (
+      <EditorDialog type="Type" buttonLabel="Edit..." container={container} target={target} />
+    );
+
     console.log(typeof valueScheme);
 
     if(typeof valueScheme != "string") {
@@ -276,7 +309,7 @@ var ComponentViewer = React.createClass({
         else { // elem
           var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
           return (this.state.editMode) ? (
-            <Input type="select" label="Type" buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+            <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)}>
               {$.map(enumItems, function(item, index) {
                 return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
               })}
@@ -296,7 +329,7 @@ var ComponentViewer = React.createClass({
           valueScheme = obj.Type;
     }
 
-    return (!this.state.editMode) ? valueScheme : <Input type="text" label="Type" value={valueScheme} buttonAfter={<Button>Edit...</Button>} labelClassName="col-xs-1" wrapperClassName="col-xs-2"/>;
+    return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} />;
   },
   handleInputChange: function(link, e) {
     if(link != undefined && link != null)
@@ -370,7 +403,7 @@ var ComponentViewer = React.createClass({
           {groupNameInput}
           <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={this.handleInputChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {domainNameInput}
-          <Input type="text" label="ConceptLink" value={rootComponent["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={rootComponent["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
         </form>
       );
 
@@ -413,7 +446,7 @@ var ComponentViewer = React.createClass({
               var attrId = (attr.attrId != undefined) ? attr.attrId : "root_attr_" + md5.hash("root_attr_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
               return (
-                <CMDAttribute key={attrId} attr={attr} getValue={self.getValueScheme} conceptRegistryBtn={self.conceptRegistryBtn()} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
+                <CMDAttribute key={attrId} attr={attr} value={self.getValueScheme(attr, self)} conceptRegistryBtn={self.conceptRegistryBtn(self)} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
               );
             })
             : <span>No Attributes</span>

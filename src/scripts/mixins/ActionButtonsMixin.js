@@ -38,7 +38,7 @@ var ActionButtonsMixin = {
   },
   moveElement: function(index, newPos) {
     console.log('moving elem: ' + index + ' to ' + newPos);
-    if(this._currentElement.type.displayName == "ComponentViewer" && this.state.childElements != null) {
+    if(this.constructor.displayName == "ComponentViewer" && this.state.childElements != null) {
       var elems = this.moveItem(this.state.childElements, index, newPos);
       this.setState({childElements: elems});
     } else {
@@ -47,7 +47,7 @@ var ActionButtonsMixin = {
   },
   removeElement: function(index) {
     console.log('remove elem: ' + index);
-    if(this._currentElement.type.displayName == "ComponentViewer" && this.state.childElements != null) {
+    if(this.constructor.displayName == "ComponentViewer" && this.state.childElements != null) {
       var elems = this.removeItem(this.state.childElements, index);
       this.setState({childElements: elems});
     } else {
@@ -75,7 +75,7 @@ var ActionButtonsMixin = {
   },
   moveComponent: function(index, newPos) {
     console.log('moving comp: ' + index + ' to ' + newPos);
-    if(this._currentElement.type.displayName == "ComponentViewer" && this.state.childComponents != null) {
+    if(this.constructor.displayName == "ComponentViewer" && this.state.childComponents != null) {
       var comps = this.moveItem(this.state.childComponents, index, newPos);
       this.setState({childComponents: comps});
     } else {
@@ -84,7 +84,7 @@ var ActionButtonsMixin = {
   },
   removeComponent: function(index) {
     console.log('remove comp: ' + index);
-    if(this._currentElement.type.displayName == "ComponentViewer" && this.state.childComponents != null) {
+    if(this.constructor.displayName == "ComponentViewer" && this.state.childComponents != null) {
       var comps = this.removeItem(this.state.childComponents, index);
       this.setState({childComponents: comps});
     } else {

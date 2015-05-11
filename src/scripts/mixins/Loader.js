@@ -275,12 +275,12 @@ var LoaderMixin = {
   componentDidMount: function() {
     console.log('Loader did mount');
     var self = this;
-    if(this.props.profileId != undefined && this.props.profileId != null)
-      this.loadProfile(this.props.profileId, "json", function(data) {
+    if(this.context.router != undefined && this.getParams().profile != undefined)
+      this.loadProfile(this.getParams().profile, "json", function(data) {
           self.setState({profile: data, visible: true});
       });
-    else if(this.props.componentId != undefined && this.props.componentId != null)
-      this.loadComponent(this.props.componentId, "json", function(data) {
+    else if(this.context.router != undefined && this.getParams().component != undefined)
+      this.loadComponent(this.getParams().component, "json", function(data) {
           self.setState({component: data, visible: true});
       });
   },

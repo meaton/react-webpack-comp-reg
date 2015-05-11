@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react');
+var React = require('react/addons');
 
 var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -10,6 +10,7 @@ var CMDAttribute = require('./CMDAttribute');
 var Input = require('react-bootstrap/lib/Input');
 
 var update = React.addons.update;
+var classNames = require('classnames');
 var md5 = require('spark-md5');
 
 require('../../styles/CMDElement.sass');
@@ -95,11 +96,14 @@ var CMDElement = React.createClass({
     if(this.state.elem != null)
       this.setState({ elem: elem });
   },
+  updateConceptLink: function(newValue) {
+    this.setState({ elem: update(this.state.elem, { '@ConceptLink': { $set: newValue } }) });
+  },
   render: function () {
     var self = this;
     var elem = this.state.elem;
     var attrList = null;
-    var valueScheme = this.props.viewer.getValueScheme(elem);
+    var valueScheme = this.props.viewer.getValueScheme(elem, this);
     var actionButtons = this.getActionButtons();
 
     console.log('rendering element: ' + require('util').inspect(elem));
@@ -112,7 +116,7 @@ var CMDElement = React.createClass({
             $.map(attrSet, function(attr, index) {
               var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
-              return <CMDAttribute key={attrId} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
+              return <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme(attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn(self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
             }) : <span>No Attributes</span>
           }
         </div>);
@@ -123,13 +127,8 @@ var CMDElement = React.createClass({
       var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
       var cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
 
-      var cx = React.addons.classSet;
-      var elementClasses = cx({
-        'CMDElement': true,
-        'edit-mode': this.state.editMode,
-        'open': this.state.elem.open
-      });
-
+      // classNames
+      var elementClasses = classNames('CMDElement', { 'edit-mode': this.state.editMode, 'open': this.state.elem.open });
       var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
       var nameLink = this.linkState('elem.@name');
 
@@ -160,14 +159,14 @@ var CMDElement = React.createClass({
           multiLink.requestChange((e.target.checked) ? 'true' : 'false');
       }
 
-      var valueScheme = this.props.viewer.getValueScheme(this.state.elem);
+      var valueScheme = this.props.viewer.getValueScheme(this.state.elem, this);
 
       // elem props
       //TODO bind updates to parent
       var elemProps = (
         <div className="elementProps">
           <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
           <Input type="text" label="Documentation" defaultValue={this.state.elem['@Documentation']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, docuLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input type="number" label="DisplayPriority" min={0} max={10} step={1} defaultValue={(this.state.elem.hasOwnProperty('@DisplayPriority')) ? this.state.elem['@DisplayPriority'] : 0} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, displayPriorityLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {valueScheme}

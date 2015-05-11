@@ -9,13 +9,12 @@ var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
+var update = React.addons.update;
+
 //require('../../styles/CMDAttribute.sass');
 
 var CMDAttribute = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
-  getDefaultProps: function() {
-    return { conceptRegistryBtn: null }
-  },
   getInitialState: function() {
     return { attr: this.props.attr, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
@@ -33,12 +32,16 @@ var CMDAttribute = React.createClass({
       if(this.props.onUpdate)
         this.props.onUpdate(this.state.attr);
   },
-  updateHandler: function(e) {
+  updateName: function(e) {
     this.linkState('attr.Name').requestChange(e.target.value);
+  },
+  updateConceptLink: function(newValue) {
+    this.linkState('attr.ConceptLink').requestChange(newValue);
   },
   render: function () {
     var attr = this.state.attr;
-    var attr_val = this.props.getValue(attr);
+    var attr_val = this.props.value;
+    var conceptRegistryBtn = this.props.conceptRegistryBtn;
     var actionButtons = this.getActionButtons(false);
 
     if(this.state.editMode)
@@ -46,9 +49,9 @@ var CMDAttribute = React.createClass({
         <div className="attrAttr attrForm">
           {actionButtons}
           <form name="attrForm" className="form-horizontal form-group">
-            <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateHandler} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateName} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(attr.ConceptLink != undefined) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={conceptRegistryBtn} onChange={this.updateConceptLink} />
             {attr_val}
-            <Input type="text" label="ConceptLink" value={(attr.ConceptLink != undefined) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={this.props.conceptRegistryBtn} />
           </form>
         </div>
       );

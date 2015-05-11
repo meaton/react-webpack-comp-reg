@@ -12,6 +12,7 @@ var CMDAttribute = require('./CMDAttribute');
 var Input = require('react-bootstrap/lib/Input');
 
 var update = React.addons.update;
+var classNames = require('classnames');
 var md5 = require('spark-md5');
 
 require('../../styles/CMDComponent.sass');
@@ -124,6 +125,9 @@ var CMDComponent = React.createClass({
       this.linkState('component.CMD_Component.' + index);
 
     linkChild.requestChange(newComponent);
+  },
+  updateConceptLink: function(newValue) {
+    this.setState({ component: update(this.state.component, { '@ConceptLink': { $set: newValue } }) });
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('component will received new props');
@@ -252,22 +256,10 @@ var CMDComponent = React.createClass({
         return <CMDComponent key={compId} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} onInlineUpdate={self.updateInlineComponent.bind(self, ncindex)} onUpdate={self.updateComponentSettings.bind(self, ncindex)} onRemove={self.removeComponent.bind(self, ncindex)} moveUp={self.moveComponent.bind(self, ncindex, ncindex-1)} moveDown={self.moveComponent.bind(self, ncindex, ncindex+1)} />
       });
 
-    var cx = React.addons.classSet;
-    var viewClasses = cx({
-      'componentBody': true,
-      'hide': !this.state.component.open
-    });
-
-    var editClasses = cx({
-      'componentBody': true,
-      'hide-field': !this.state.component.open && this.state.editMode
-    });
-
-    var componentClasses = cx({
-      'CMDComponent': true,
-      'edit-mode': this.state.editMode,
-      'open': this.state.component.open
-    });
+    // classNames
+    var viewClasses = classNames('componentBody', { 'hide': !this.state.component.open });
+    var editClasses = classNames('componentBody', { 'hide-field': !this.state.component.open && this.state.editMode });
+    var componentClasses = classNames('CMDComponent', { 'edit-mode': this.state.editMode, 'open': this.state.component.open });
 
     var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
     var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
@@ -280,7 +272,7 @@ var CMDComponent = React.createClass({
             var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
             attr.attrId = attrId;
             return (
-              <CMDAttribute key={attrId} attr={attr} getValue={self.props.viewer.getValueScheme} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn()} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
+              <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme(attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn(self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
             );
           })
           : <span>No Attributes</span>
@@ -309,7 +301,7 @@ var CMDComponent = React.createClass({
         componentProps = (
           <div>
             <Input type="text" label="Name" defaultValue={this.state.component['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input type="text" label="ConceptLink" value={this.state.component['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn()} labelClassName="col-xs-1" wrapperClassName="col-xs-3" />
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={this.state.component['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
           </div>
         );
         //TODO move common viewer bind methods to mixin

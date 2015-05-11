@@ -10,7 +10,7 @@ var webpack = require('webpack');
 var bower_dir = __dirname + '/bower_components';
 
 var config = {
-  addVender: function(name, path) {
+  addVendor: function(name, path) {
     this.resolve.alias[name] = path;
     this.module.noParse.push(new RegExp(path));
   },
@@ -25,7 +25,7 @@ var config = {
   devtool: false,
   entry: [
       'webpack-dev-server/client?http://localhost:8000',
-      'webpack/hot/dev-server',
+      'webpack/hot/only-dev-server',
       './src/scripts/components/main.jsx'
   ],
 
@@ -71,7 +71,7 @@ var config = {
 
 };
 
-//config.addVender('google-code-prettify', bower_dir + '/google-code-prettify/bin/prettify.min.js');
-//config.addVender('prismjs', bower_dir + '/prismjs/prism.min.js');
+//config.addVendor('google-code-prettify', bower_dir + '/google-code-prettify/bin/prettify.min.js');
+//config.addVendor('prismjs', bower_dir + '/prismjs/prism.min.js');
 
 module.exports = config;

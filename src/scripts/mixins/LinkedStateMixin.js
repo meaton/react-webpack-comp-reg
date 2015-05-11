@@ -1,3 +1,4 @@
+//TODO replace with Omniscient.js
 var clone = require('clone');
 
 function getIn(object, path) {

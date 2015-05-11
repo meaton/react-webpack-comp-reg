@@ -31,6 +31,7 @@ var ComponentRegApp = React.createClass({
     this.setState({profileId: null, componentId: null})
   },
   render: function() {
+    //TODO insert draggable bar and have dragEvents change grid and viewer CSS style dimensons
     return (
       <div className="main">
         <SpaceSelector onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />

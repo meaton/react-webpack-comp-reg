@@ -188,7 +188,7 @@ var DataTablesGrid = React.createClass({
          "scrollY": "300px",
          "scrollCollapse": true,
          "paging": false,
-         "destroy": true,
+         "destroy": true
        });
 
       table.on('search.dt', function(e, settings) {

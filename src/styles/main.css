@@ -1,5 +1,4 @@
 /* Stiziles */
-
 html, body {
   background: #fff;
 }
@@ -30,3 +29,15 @@ html, body {
 }
 
 a { cursor: pointer; color: #999; }
+
+html.progress, body.progress * {
+  cursor: wait !important;
+}
+
+.react-draggable .modal-header, .cursor {
+  cursor: move;
+}
+
+.modal-open {
+  overflow: visible;
+}
