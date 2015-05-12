@@ -22,7 +22,8 @@
     "spark-md5": "0.0.5",
     "react-dnd": "^0.9.8",
     "react-draggable": "^0.6.0",
-    "classnames": "^2.1.1"
+    "classnames": "^2.1.1",
+    "reactabular": "^0.5.2"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

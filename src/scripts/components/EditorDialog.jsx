@@ -13,6 +13,9 @@ var Button = require('react-bootstrap/lib/Button');
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
 var TabPane = require('react-bootstrap/lib/TabPane');
 
+var Table = require('reactabular').Table;
+var classNames = require('classnames');
+
 require('../../styles/EditorDialog.sass');
 
 var EditorDialog = React.createClass({
@@ -59,7 +62,8 @@ var TypeModal = React.createClass({
     this.close();
   },
   setControlVocab: function(evt) {
-    this.props.target.refs.typeInput.props.onChange("enumeration", { item: [{ '$': "EnumTest", "@ConceptLink": "", "@AppInfo": ""}] });
+    if(this.state.value.enumeration != undefined && $.isArray(this.state.value.enumeration.item))
+      this.props.target.refs.typeInput.props.onChange("enumeration", this.state.value.enumeration);
     this.close();
   },
   close: function(evt) {
@@ -84,11 +88,81 @@ var TypeModal = React.createClass({
           this.setState({ contextItem: contextItem, value: existingValue, currentTabIdx: 2 });
       } else
         this.setState({ contextItem: contextItem, value: existingValue });
-
     }
+  },
+  addConceptLink: function(rowIndex) {
+    //TODO open concept link dialog on top of type dialog
+    console.log('open concept link dialog: ' + rowIndex);
+  },
+  addNewRow: function() {
+    console.log('add new row test');
+    var val = this.state.value;
+    if(val.enumeration == undefined)
+      if(typeof val === "string" || val.pattern != undefined)
+        val = { enumeration: "" };
 
+    if(val.enumeration.item != undefined)
+      this.setState({ value: update(val, { enumeration: { item: { $push: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}}) });
+    else
+      this.setState({ value: update(val, { enumeration: { $set: { item: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}}) });
+  },
+  removeRow: function(rowIndex) {
+    console.log('remove row: ' + rowIndex);
+    this.setState({ value: update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1]] }}}) });
   },
   render: function() {
+    var self = this;
+    var tableClasses = classNames('table', 'table-stripped', 'table-condensed');
+
+    var cells = require('reactabular').cells;
+    var editors = require('reactabular').editors;
+    var editable = cells.edit.bind(this, 'editedCell', function(value, celldata, rowIndex, property) {
+        console.log('row data update: ' + value, celldata, rowIndex, property);
+        var newData = celldata[rowIndex];
+        newData[property] = value;
+        var newValue = update(self.state.value, { enumeration: { item: { $splice: [[rowIndex, 1, newData]] }} });
+        self.setState({ value: newValue });
+    });
+
+    var vocabData = (this.state.value.hasOwnProperty('enumeration')) ? this.state.value.enumeration.item : [];
+    var vocabCols = [
+      {
+        property: '$',
+        header: 'Value',
+        cell: [
+          editable({editor: editors.input()})
+        ]
+      }, {
+        property: '@AppInfo',
+        header: 'Description',
+        cell: [
+          editable({editor: editors.input()})
+        ]
+      }, {
+        property: '@ConceptLink',
+        header: 'Concept link',
+        cell: function(value, data, rowIndex) {
+          return {
+            value: (value) ? value : (<span><a className="addConceptLink" onClick={self.addConceptLink.bind(self, rowIndex)}>add link</a></span>),
+            props: {
+              onClick: self.addConceptLink.bind(self, rowIndex)
+            }
+          };
+        }
+      },
+      {
+        cell: function(value, data, rowIndex, property) {
+          return {
+              value: (
+                <span>
+                  <span onClick={self.removeRow.bind(self, rowIndex)} style={{cursor: 'pointer'}}>&#10007;</span>
+                </span>
+              )
+          };
+        }
+      }
+    ];
+
     return (
       <Modal id="myModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>
@@ -101,7 +175,19 @@ var TypeModal = React.createClass({
               </Input>
             </TabPane>
             <TabPane eventKey={1} tab="Controlled vocabulary">
-              <Button onClick={this.setControlVocab}>Test Vocab</Button>
+              <Table columns={vocabCols} data={vocabData} className={tableClasses}>
+                <tfoot>
+                  <tr>
+                      <td className="table-row-clickable" onClick={this.addNewRow}>
+                          Click here to add new row.
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                  </tr>
+                </tfoot>
+              </Table>
+              <Button onClick={this.setControlVocab}>Use Controlled Vocabulary</Button>
             </TabPane>
             <TabPane eventKey={2} tab="Pattern">
               <Input ref="patternInput" type="text" defaultValue={(this.state.contextItem.hasOwnProperty('ValueScheme') && this.state.contextItem.ValueScheme.pattern != undefined) ? this.state.value.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
