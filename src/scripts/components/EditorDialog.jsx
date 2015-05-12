@@ -110,6 +110,28 @@ var TypeModal = React.createClass({
     console.log('remove row: ' + rowIndex);
     this.setState({ value: update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1]] }}}) });
   },
+  handleTableScroll: function() {
+    var tableBody = $('#myModal .table tbody');
+    var tableHead = $('#myModal .table thead th');
+    var scrollbarWidth = tableBody.innerWidth() - tableBody.prop('scrollWidth');
+    if(tableBody.innerWidth() > tableBody.prop('scrollWidth')) {
+      tableHead.each(function(index, elem) {
+        var elemWidth = $(elem).width();
+        if(index < 3 && !$(elem).attr('style'))
+          $(elem).width(elemWidth - (scrollbarWidth / 3));
+      });
+    } else {
+      tableHead.each(function(index, elem) {
+        $(elem).css("width", "");
+      });
+    }
+  },
+  componentDidMount: function() {
+    this.handleTableScroll();
+  },
+  componentDidUpdate: function() {
+    this.handleTableScroll();
+  },
   render: function() {
     var self = this;
     var tableClasses = classNames('table', 'table-stripped', 'table-condensed');
@@ -187,7 +209,7 @@ var TypeModal = React.createClass({
                   </tr>
                 </tfoot>
               </Table>
-              <Button onClick={this.setControlVocab}>Use Controlled Vocabulary</Button>
+              <div className="modal-inline"><Button onClick={this.setControlVocab}>Use Controlled Vocabulary</Button></div>
             </TabPane>
             <TabPane eventKey={2} tab="Pattern">
               <Input ref="patternInput" type="text" defaultValue={(this.state.contextItem.hasOwnProperty('ValueScheme') && this.state.contextItem.ValueScheme.pattern != undefined) ? this.state.value.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />

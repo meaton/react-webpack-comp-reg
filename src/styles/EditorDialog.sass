@@ -1,8 +1,11 @@
 .EditorDialog {
-  border: 1px dashed #f00
+  border: 1px dashed #f00;
 }
 .modal-body {
   padding: 0;
+}
+.modal-body nav {
+  margin-top: 3px;
 }
 .modal-desc {
   padding: 15px
@@ -17,10 +20,31 @@
 .modal, .modal-backdrop {
   position: absolute;
 }
+.tab-content {
+  padding: 5px;
+}
 .registry-dialog .modal-body, .type-dialog .modal-body {
   min-height: 170px;
 }
-
 .type-dialog .table tfoot .table-row-clickable {
   cursor: pointer;
+}
+.type-dialog .table thead tr, .type-dialog .table tbody, .type-dialog .table tfoot {
+  display: block;
+}
+.type-dialog .table tbody {
+  height: 120px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.type-dialog .table th, .type-dialog .table td {
+  width: 189px;
+}
+.type-dialog .table th:last-child, .type-dialog .table td:last-child {
+  width: 25px;
+}
+.modal-inline {
+  text-align: right;
+  padding-right: 10px;
+  padding-bottom: 10px;
 }
