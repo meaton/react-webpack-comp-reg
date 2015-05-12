@@ -127,7 +127,11 @@ var CMDComponent = React.createClass({
     linkChild.requestChange(newComponent);
   },
   updateConceptLink: function(newValue) {
-    this.setState({ component: update(this.state.component, { '@ConceptLink': { $set: newValue } }) });
+    if(this.state.component != null)
+      this.setState({ component: (this.state.component.Header != undefined) ?
+        update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
+        update(this.state.component, { $merge: {  '@ConceptLink': newValue } })
+      });
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('component will received new props');
@@ -176,7 +180,7 @@ var CMDComponent = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
     console.log('component will update: ' + require('util').inspect(nextState.component));
     if(this.state.editMode && this.state.isInline && this.state.component.open)
-      if(JSON.stringify(this.state.component) != JSON.stringify(nextState.component)) {
+      if(JSON.stringify(this.state.component) != JSON.stringify(nextState.component)) { // TODO required with ImmutableRenderMixin?
         this.props.onInlineUpdate(nextState.component);
       }
   },
@@ -272,7 +276,7 @@ var CMDComponent = React.createClass({
             var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
             attr.attrId = attrId;
             return (
-              <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme(attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn(self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
+              <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
             );
           })
           : <span>No Attributes</span>

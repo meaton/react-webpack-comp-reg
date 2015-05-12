@@ -27,7 +27,10 @@ var TypeModal = React.createClass({
       basic_type: 'string',
       pattern: null,
       vocab: null,
-      currentTabIdx: 0
+      currentTabIdx: 0,
+      changedTab: false,
+      contextItem: null,
+      value: null
     }
   },
   getDefaultProps: function() {
@@ -37,17 +40,53 @@ var TypeModal = React.createClass({
   },
   tabSelect: function(index) {
     console.log('tabSelect: ' + index);
-    this.setState({ currentTabIdx: index });
+    this.setState({ currentTabIdx: index, changedTab: true });
   },
   setSimpleType: function(evt) {
-    this.props.target.refs.typeInput.props.onChange("@ValueScheme", this.refs.simpleTypeInput.getValue());
+    var target = this.props.target;
+    var typeInput = target.refs.typeInput;
+    var simpleVal = this.refs.simpleTypeInput.getValue();
+
+    if(target.state.attr != undefined)
+      typeInput.props.onChange("Type", simpleVal);
+    else if(target.state.elem != undefined)
+      typeInput.props.onChange("@ValueScheme", simpleVal);
+
+    this.close();
   },
   setPattern: function(evt) {
     this.props.target.refs.typeInput.props.onChange("pattern", this.refs.patternInput.getValue());
+    this.close();
   },
-  cancel: function(evt) {
-    evt.stopPropagation();
+  setControlVocab: function(evt) {
+    this.props.target.refs.typeInput.props.onChange("enumeration", { item: [{ '$': "EnumTest", "@ConceptLink": "", "@AppInfo": ""}] });
+    this.close();
+  },
+  close: function(evt) {
     this.props.onRequestHide();
+  },
+  componentWillMount: function() {
+    var contextItem = null;
+    var state = this.props.target.state;
+    if(state.attr != undefined)
+      contextItem = state.attr;
+    else if(state.elem != undefined)
+      contextItem = state.elem;
+
+    if(contextItem != null) {
+      var existingValue = (contextItem.hasOwnProperty('@ValueScheme') || contextItem.hasOwnProperty('Type')) ?
+                            contextItem['@ValueScheme']||contextItem['Type'] :
+                            contextItem['ValueScheme'];
+      if(contextItem.ValueScheme != undefined) {
+        if(contextItem['ValueScheme'].enumeration != undefined)
+          this.setState({ contextItem: contextItem, value: existingValue, currentTabIdx: 1 });
+        else if(contextItem['ValueScheme'].pattern != undefined)
+          this.setState({ contextItem: contextItem, value: existingValue, currentTabIdx: 2 });
+      } else
+        this.setState({ contextItem: contextItem, value: existingValue });
+
+    }
+
   },
   render: function() {
     return (
@@ -55,21 +94,22 @@ var TypeModal = React.createClass({
         <div className='modal-body'>
           <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <TabPane eventKey={0} tab="Type">
-              <Input ref="simpleTypeInput" label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
-              {$.map(['boolean', 'decimal', 'float'], function(type, index) {
+              <Input ref="simpleTypeInput" defaultValue={(this.state.contextItem.hasOwnProperty('@ValueScheme') || this.state.contextItem.hasOwnProperty('Type')) ? this.state.value : "string"} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
+              {$.map(['boolean', 'decimal', 'float', 'int', 'string', 'anyURI', 'date', 'gDay', 'gMonth', 'gYear', 'time', 'dateTime'], function(type, index) {
                 return <option key={index}>{type}</option>
               })}
               </Input>
             </TabPane>
             <TabPane eventKey={1} tab="Controlled vocabulary">
+              <Button onClick={this.setControlVocab}>Test Vocab</Button>
             </TabPane>
             <TabPane eventKey={2} tab="Pattern">
-              <Input type="text" defaultValue="" label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
+              <Input ref="patternInput" type="text" defaultValue={(this.state.contextItem.hasOwnProperty('ValueScheme') && this.state.contextItem.ValueScheme.pattern != undefined) ? this.state.value.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
             </TabPane>
           </TabbedArea>
         </div>
         <div className="modal-footer">
-          <Button onClick={this.cancel}>Cancel</Button>
+          <Button onClick={this.close}>Cancel</Button>
         </div>
       </Modal>
     );
@@ -81,7 +121,8 @@ var ConceptRegistryModal = React.createClass({
   getInitialState: function() {
     return {
       inputSearch: "",
-      currentLinkSelection: null
+      currentLinkSelection: null,
+      value: "http://hdl.handle.net/11459/CCR_C-1227_0eec90a9-a0f2-1240-a9b6-9bfd76654a2e"
     }
   },
   getDefaultProps: function() {
@@ -95,12 +136,12 @@ var ConceptRegistryModal = React.createClass({
   confirm: function(evt) {
     var target = this.props.target;
 
-    var selectedValue = "hdl://" //TODO use current selected table item HDL value
+    var selectedValue = this.state.value; //TODO use current selected table item HDL value
     target.refs.conceptRegInput.props.onChange(selectedValue);
-    
-    this.props.onRequestHide();
+
+    this.close();
   },
-  cancel: function(evt) {
+  close: function(evt) {
     this.props.onRequestHide();
   },
   render: function() {
@@ -110,7 +151,7 @@ var ConceptRegistryModal = React.createClass({
             <Input type="text" placeholder="Type keyword and press Enter to search" valueLink={this.linkState('inputSearch')} addonBefore={<Glyphicon glyph='search' />} buttonAfter={<Button onClick={this.inputSearchUpdate}>Search</Button>}/>
           </div>
           <div className="modal-footer">
-            <Button onClick={this.confirm}>Ok</Button><Button onClick={this.cancel}>Cancel</Button>
+            <Button onClick={this.confirm}>Ok (Test)</Button><Button onClick={this.close}>Cancel</Button>
           </div>
         </Modal>
       );

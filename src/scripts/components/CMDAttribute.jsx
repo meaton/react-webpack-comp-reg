@@ -16,7 +16,8 @@ var update = React.addons.update;
 var CMDAttribute = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {
-    return { attr: this.props.attr, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
+    return { attr: this.props.attr,
+             editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
   componentDidMount: function() {
     var attr = this.state.attr;
@@ -28,7 +29,7 @@ var CMDAttribute = React.createClass({
   componentDidUpdate: function(prevProps, prevState) {
     console.log('attr prev state: ' + JSON.stringify(prevState.attr));
     console.log('attr curr state: ' + JSON.stringify(this.state.attr));
-    if(JSON.stringify(prevState.attr) != JSON.stringify(this.state.attr))
+    if(JSON.stringify(prevState.attr) != JSON.stringify(this.state.attr)) // TODO required with ImmutableRenderMixin?
       if(this.props.onUpdate)
         this.props.onUpdate(this.state.attr);
   },
@@ -40,8 +41,8 @@ var CMDAttribute = React.createClass({
   },
   render: function () {
     var attr = this.state.attr;
-    var attr_val = this.props.value;
-    var conceptRegistryBtn = this.props.conceptRegistryBtn;
+    var attr_val = this.props.value(this);
+    var conceptRegistryBtn = this.props.conceptRegistryBtn(this);
     var actionButtons = this.getActionButtons(false);
 
     if(this.state.editMode)

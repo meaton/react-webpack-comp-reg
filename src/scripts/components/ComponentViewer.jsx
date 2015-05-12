@@ -170,9 +170,6 @@ var ComponentViewer = React.createClass({
   },
   componentWillMount: function() {
     this.setLoading(true);
-
-    //this.props.profileId = this.getParams().profile;
-    //this.props.componentId = this.getParams().component;
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('will receive props');
@@ -265,10 +262,11 @@ var ComponentViewer = React.createClass({
 
     this.replaceState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
   },
-  conceptRegistryBtn: function(container) {
+  conceptRegistryBtn: function(container, target) {
     if(container == undefined) container = this;
+    if(target == undefined) target = container;
     return (
-      <EditorDialog type="ConceptRegistry" buttonLabel="Search in concept registry..." container={container} />
+      <EditorDialog type="ConceptRegistry" buttonLabel="Search in concept registry..." container={container} target={target} />
     );
   },
   updateConceptLink: function(newValue) {
@@ -276,28 +274,57 @@ var ComponentViewer = React.createClass({
     if(this.state.component != null)
       this.setState({ component: (this.state.component.Header != undefined) ?
         update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
-        update(this.state.component, { '@ConceptLink': { $set: newValue } })
+        update(this.state.component, { $merge: { '@ConceptLink': newValue } })
       });
     else if(this.state.profile != null)
-      this.setState({ profile: update(this.state.profile, { 'CMD_Component:': { '@ConceptLink': { $set: newValue } }}) });
+      this.setState({ profile: update(this.state.profile, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) });
   },
   updateValueScheme: function(target, prop, newValue) {
-    console.log('update value scheme:' + evt.currentTarget);
-    var props = "@ValueScheme";
+    console.log('update value scheme:' + target.constructor.displayName);
+
+    var updateTypeFn = function(item) {
+      var props = prop;
+
+      if(props == undefined) props = "@ValueScheme";
+      else if(props != "@ValueScheme" && props != "Type") props = "ValueScheme";
+
+      if(props != '@ValueScheme' && item.hasOwnProperty('@ValueScheme'))
+        delete item['@ValueScheme'];
+      else if(props != "Type" && item.hasOwnProperty('Type'))
+        delete item['Type'];
+      else if(props != 'ValueScheme' && item.hasOwnProperty('ValueScheme'))
+        delete item['ValueScheme'];
+
+      if(props == '@ValueScheme' || props == 'Type')
+        item[props] = newValue;
+      else {
+        item['ValueScheme'] = new Object();
+        item['ValueScheme'][prop] = newValue;
+      }
+
+      return item;
+    };
 
     if(target != undefined) {
-      return true;
+      var updatedItem = null;
+      if(target.constructor.type === CMDAttribute)
+        updatedItem = { attr: update(target.state.attr, { $apply: updateTypeFn }) };
+      else if(target.constructor.type === CMDElement)
+        updatedItem = { elem: update(target.state.elem, { $apply: updateTypeFn }) };
+
+      if(updatedItem != null)
+        target.setState(updatedItem);
     }
   },
   getValueScheme: function(obj, container, target) {
     if(container == undefined) container = this;
     if(target == undefined) target = container;
 
-    var valueScheme = obj['@ValueScheme'];
     var typeTrigger = (
       <EditorDialog type="Type" buttonLabel="Edit..." container={container} target={target} />
     );
 
+    var valueScheme = obj['@ValueScheme'];
     console.log(typeof valueScheme);
 
     if(typeof valueScheme != "string") {
@@ -446,7 +473,7 @@ var ComponentViewer = React.createClass({
               var attrId = (attr.attrId != undefined) ? attr.attrId : "root_attr_" + md5.hash("root_attr_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
               return (
-                <CMDAttribute key={attrId} attr={attr} value={self.getValueScheme(attr, self)} conceptRegistryBtn={self.conceptRegistryBtn(self)} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
+                <CMDAttribute key={attrId} attr={attr} value={self.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.conceptRegistryBtn.bind(self, self)} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
               );
             })
             : <span>No Attributes</span>
@@ -480,7 +507,7 @@ var ComponentViewer = React.createClass({
             else if(comp.Header != undefined) compId = comp.Header.ID;
             else compId = "inline_" + md5.hash("inline_" + comp['@name'] + index);
 
-            return <CMDComponent key={compId} component={comp} viewer={self} getValue={self.getValueScheme} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} onRemove={self.removeComponent.bind(self, index)} moveUp={self.moveComponent.bind(self, index, index-1)} moveDown={self.moveComponent.bind(self, index, index+1)} />
+            return <CMDComponent key={compId} component={comp} viewer={self} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} onRemove={self.removeComponent.bind(self, index)} moveUp={self.moveComponent.bind(self, index, index-1)} moveDown={self.moveComponent.bind(self, index, index+1)} />
           }
         )}
           {cmdAddComponentSpecLink}

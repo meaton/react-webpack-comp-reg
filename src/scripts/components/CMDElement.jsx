@@ -54,6 +54,11 @@ var CMDElement = React.createClass({
       elem.AttributeList.Attribute = [elem.AttributeList.Attribute];
     }
 
+    if(elem.ValueScheme != undefined)
+      var enumVal = elem.ValueScheme.enumeration;
+      if(enumVal != undefined && enumVal.item != undefined && !$.isArray(enumVal.item))
+        enumVal.item = [enumVal.item];
+
     console.log('mounted element: ' + JSON.stringify(elem));
 
     this.setState({ elem: update(elem, { open: { $set: true }}) });
@@ -62,8 +67,7 @@ var CMDElement = React.createClass({
     console.log('element will update');
     console.log(JSON.stringify(this.props.elem));
     console.log(JSON.stringify(nextState.elem));
-
-    if(JSON.stringify(this.props.elem) != JSON.stringify(nextState.elem))
+    if(JSON.stringify(this.props.elem) != JSON.stringify(nextState.elem)) //TODO not required after ImmutableRenderMixin?
       this.props.onUpdate(nextState.elem);
   },
   updateAttribute: function(index, newAttr) {
@@ -97,7 +101,8 @@ var CMDElement = React.createClass({
       this.setState({ elem: elem });
   },
   updateConceptLink: function(newValue) {
-    this.setState({ elem: update(this.state.elem, { '@ConceptLink': { $set: newValue } }) });
+    if(this.state.elem != null)
+      this.setState({ elem: update(this.state.elem, { $merge: { '@ConceptLink': newValue } }) });
   },
   render: function () {
     var self = this;
@@ -107,6 +112,7 @@ var CMDElement = React.createClass({
     var actionButtons = this.getActionButtons();
 
     console.log('rendering element: ' + require('util').inspect(elem));
+
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
     if(elem.AttributeList != undefined || this.state.editMode) {
       attrList = (
@@ -116,7 +122,7 @@ var CMDElement = React.createClass({
             $.map(attrSet, function(attr, index) {
               var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
-              return <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme(attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn(self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
+              return <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
             }) : <span>No Attributes</span>
           }
         </div>);
@@ -159,10 +165,7 @@ var CMDElement = React.createClass({
           multiLink.requestChange((e.target.checked) ? 'true' : 'false');
       }
 
-      var valueScheme = this.props.viewer.getValueScheme(this.state.elem, this);
-
       // elem props
-      //TODO bind updates to parent
       var elemProps = (
         <div className="elementProps">
           <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
