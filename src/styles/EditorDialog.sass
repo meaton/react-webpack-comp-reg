@@ -4,8 +4,11 @@
 .modal-body {
   padding: 0;
 }
-.modal-body nav {
+.modal-body nav, .modal-body .form-group {
   margin-top: 3px;
+}
+.modal-body .input-group {
+  margin: 15px;
 }
 .modal-desc {
   padding: 15px
@@ -26,22 +29,42 @@
 .registry-dialog .modal-body, .type-dialog .modal-body {
   min-height: 170px;
 }
+.registry-dialog .modal-dialog {
+  width: 750px;
+}
 .type-dialog .table tfoot .table-row-clickable {
   cursor: pointer;
 }
-.type-dialog .table thead tr, .type-dialog .table tbody, .type-dialog .table tfoot {
+.type-dialog .table thead, .registry-dialog .table thead {
   display: block;
 }
-.type-dialog .table tbody {
-  height: 120px;
+.type-dialog .table tr, .type-dialog .table tbody, .type-dialog .table tfoot, .registry-dialog .table thead tr, .registry-dialog .table tbody {
+  display: block;
+}
+.type-dialog .table tbody, .registry-dialog .table tbody {
+  height: 130px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 .type-dialog .table th, .type-dialog .table td {
-  width: 189px;
+  display: inline-block;
+  width: 32%;
+  min-height: 36px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: none;
+}
+.registry-dialog .table th, .registry-dialog .table td {
+  display: inline-block;
+  width: 14.285%;
+  line-height: 1.6em;
+  font-size: 0.8em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .type-dialog .table th:last-child, .type-dialog .table td:last-child {
-  width: 25px;
+  width: 4%;
 }
 .modal-inline {
   text-align: right;
