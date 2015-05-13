@@ -11,7 +11,7 @@
   margin: 15px;
 }
 .modal-desc {
-  padding: 15px
+  padding: 15px;
 }
 .modal-footer {
   margin: 0 auto;
@@ -23,6 +23,11 @@
 .modal, .modal-backdrop {
   position: absolute;
 }
+.modal-inline {
+  text-align: right;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
 .tab-content {
   padding: 5px;
 }
@@ -32,34 +37,35 @@
 .registry-dialog .modal-dialog {
   width: 750px;
 }
-.type-dialog .table tfoot .table-row-clickable {
+#typeTable tfoot .table-row-clickable {
   cursor: pointer;
 }
-.type-dialog .table thead, .registry-dialog .table thead {
+#typeTable thead, #ccrTable thead {
   display: block;
 }
-.type-dialog .table tr, .type-dialog .table tbody, .type-dialog .table tfoot, .registry-dialog .table thead tr, .registry-dialog .table tbody {
+#typeTable tr, #typeTable tbody, #typeTable tfoot, #ccrTable thead tr, #ccrTable tbody {
   display: block;
 }
-.type-dialog .table tbody, .registry-dialog .table tbody {
+#typeTable tbody, #ccrTable tbody {
   height: 130px;
   overflow-y: auto;
   overflow-x: hidden;
 }
-.type-dialog .table th, .type-dialog .table td {
+#typeTable th, #typeTable td {
   display: inline-block;
   width: 32%;
-  line-height: 36px;
+  height: 40px;
+  line-height: 28px;
   white-space: nowrap;
   overflow: hidden;
 }
-.registry-dialog .table th, .registry-dialog .table tr {
+#ccrTable th, #ccrTable tr {
   cursor: pointer;
 }
-.registry-dialog .table tr.selected {
+#ccrTable tr.selected {
   background-color: #b0bed9;
 }
-.registry-dialog .table th, .registry-dialog .table td {
+#ccrTable th, #ccrTable td {
   display: inline-block;
   width: 14.285%;
   line-height: 1.6em;
@@ -68,14 +74,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.type-dialog .table th:last-child, .type-dialog .table td:last-child {
+#typeTable th:last-child, #typeTable td:last-child {
   width: 4%;
 }
-.registry-dialog .table th.sort-asc, .registry-dialog .table th.sort-desc {
+#ccrTable th.sort-asc, #ccrTable th.sort-desc {
   background-color: yellow;
-}
-.modal-inline {
-  text-align: right;
-  padding-right: 10px;
-  padding-bottom: 10px;
 }

@@ -93,9 +93,13 @@ var TypeModal = React.createClass({
         this.setState({ contextItem: contextItem, value: existingValue });
     }
   },
-  addConceptLink: function(rowIndex) {
-    //TODO open concept link dialog on top of type dialog
-    console.log('open concept link dialog: ' + rowIndex);
+  addConceptLink: function(rowIndex, newHdlValue) {
+    console.log('open concept link dialog: ' + rowIndex, newHdlValue);
+    if(this.state.value != null && this.state.value.enumeration != undefined) {
+      var newRow = update(this.state.value.enumeration.item[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
+      var newValue = update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1, newRow]] } } });
+      this.setState({ value: newValue });
+    }
   },
   addNewRow: function() {
     console.log('add new row test');
@@ -152,10 +156,7 @@ var TypeModal = React.createClass({
         header: 'Concept link',
         cell: function(value, data, rowIndex) {
           return {
-            value: (value) ? value : (<span><a className="addConceptLink" onClick={self.addConceptLink.bind(self, rowIndex)}>add link</a></span>),
-            props: {
-              onClick: self.addConceptLink.bind(self, rowIndex)
-            }
+            value: (value) ? value : (<span><ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self} onClose={self.addConceptLink.bind(self, rowIndex)} /></span>)
           };
         }
       },
@@ -173,7 +174,7 @@ var TypeModal = React.createClass({
     ];
 
     return (
-      <Modal id="myModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
+      <Modal id="ccrModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>
           <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <TabPane eventKey={0} tab="Type">
@@ -184,7 +185,7 @@ var TypeModal = React.createClass({
               </Input>
             </TabPane>
             <TabPane eventKey={1} tab="Controlled vocabulary">
-              <Table columns={vocabCols} data={vocabData} className={tableClasses}>
+              <Table id="typeTable" ref="table" columns={vocabCols} data={vocabData} className={tableClasses}>
                 <tfoot>
                   <tr>
                       <td className="table-row-clickable info" onClick={this.addNewRow}>
@@ -377,7 +378,11 @@ var ConceptRegistryModal = React.createClass({
   confirm: function(evt) {
     var target = this.props.target;
     var selectedValue = (this.state.currentLinkSelection != null) ? this.state.data[this.state.currentLinkSelection].pid : "";
-    target.refs.conceptRegInput.props.onChange(selectedValue);
+
+    if(target.refs.conceptRegInput != undefined)
+      target.refs.conceptRegInput.props.onChange(selectedValue);
+    else if(target.constructor.type === TypeModal)
+      this.props.onClose(selectedValue)
 
     this.close();
   },
@@ -392,7 +397,7 @@ var ConceptRegistryModal = React.createClass({
       tbody.children().eq(this.state.currentLinkSelection).toggleClass(selectedClass);
     }
 
-    this.props.onChange();
+    this.props.onChange(this.getDOMNode());
   },
   componentWillMount: function() {
     var defaultClick = this.handleCellClick;
@@ -441,7 +446,7 @@ var ConceptRegistryModal = React.createClass({
     ]});
   },
   componentDidMount: function() {
-    this.props.onChange();
+    this.props.onChange(this.getDOMNode());
   },
   defaultCellProps: function(rowIndex) {
     var self = this;
@@ -470,10 +475,10 @@ var ConceptRegistryModal = React.createClass({
       }
     };
     return (
-      <Modal id="myModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
+      <Modal ref="modal" id="typeModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>
           <Input type="text" placeholder="Type keyword and press Enter to search" valueLink={this.linkState('inputSearch')} addonBefore={<Glyphicon glyph='search' />} buttonAfter={<Button onClick={this.inputSearchUpdate}>Search</Button>}/>
-          <Table id="myTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
+          <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
         </div>
         <div className="modal-footer">
           <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button><Button onClick={this.close}>Cancel</Button>
@@ -485,6 +490,11 @@ var ConceptRegistryModal = React.createClass({
 
 var ModalTrigger = React.createClass({
   mixins: [OverlayMixin],
+  getDefaultProps: function() {
+    return {
+      useLink: false
+    }
+  },
   getInitialState: function() {
     return {
       isModalOpen: false,
@@ -497,10 +507,8 @@ var ModalTrigger = React.createClass({
   },
   toggleModal: function(evt) {
       console.log('hide modal');
-
       var offset = $(this.state.container.getDOMNode()).position();
       console.log('toggle modal offset: ' + offset.top + " " + offset.left);
-
       this.setState({
         position: (!this.state.isModalOpen) ? update(this.state.position, { $set: offset }) : { top: 0, left: 0 },
         isModalOpen: !this.state.isModalOpen
@@ -513,7 +521,6 @@ var ModalTrigger = React.createClass({
   handleDrag: function (event, ui) {
       console.log('Event: ', event);
       console.log('Position: ', ui.position);
-
       var offset = $(this.state.container.getDOMNode()).position();
       this.setState({
         position: update(this.state.position, { $set: { top: ui.position.top + offset.top, left: ui.position.left + offset.left }})
@@ -523,13 +530,13 @@ var ModalTrigger = React.createClass({
       console.log('Event: ', event);
       console.log('Position: ', ui.position);
   },
-  handleTableScroll: function() {
-    var tableBody = $('#myModal .table tbody');
-    var tableHead = $('#myModal .table thead');
+  handleTableScroll: function(domNode) {
+    var modal = domNode;
+    var tableBody = $(modal).find('.table tbody').eq(0);
+    var tableHead = $(modal).find('.table thead').eq(0);
     var scrollbarWidth = tableBody.innerWidth() - tableBody.prop('scrollWidth');
     if(tableBody.outerWidth() > tableBody.prop('scrollWidth'))
       tableHead.width(tableBody.outerWidth() - scrollbarWidth);
-      //tableHead.css({width: 'calc(100% - ' + scrollbarWidth + 'px)'});
     else
       tableHead.width('100%');
   },
@@ -552,11 +559,16 @@ var ModalTrigger = React.createClass({
     };
   },
   render: function() {
-    return (
-      <Button onClick={this.toggleModal}>
-        {this.props.buttonLabel}
-      </Button>
-    );
+    if(this.props.useLink)
+      return (
+        <a onClick={this.toggleModal}>{this.props.label}</a>
+      )
+    else
+      return (
+        <Button onClick={this.toggleModal}>
+          {this.props.label}
+        </Button>
+      );
   },
   renderOverlay: function () {
     if(!this.state.isModalOpen)
