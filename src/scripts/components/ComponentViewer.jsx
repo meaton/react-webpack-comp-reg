@@ -266,7 +266,7 @@ var ComponentViewer = React.createClass({
     if(container == undefined) container = this;
     if(target == undefined) target = container;
     return (
-      <EditorDialog type="ConceptRegistry" buttonLabel="Search in concept registry..." container={container} target={target} />
+      <EditorDialog type="ConceptRegistry" label="Search in concept registry..." container={container} target={target} />
     );
   },
   updateConceptLink: function(newValue) {
@@ -321,7 +321,7 @@ var ComponentViewer = React.createClass({
     if(target == undefined) target = container;
 
     var typeTrigger = (
-      <EditorDialog type="Type" buttonLabel="Edit..." container={container} target={target} />
+      <EditorDialog type="Type" label="Edit..." container={container} target={target} />
     );
 
     var valueScheme = obj['@ValueScheme'];
