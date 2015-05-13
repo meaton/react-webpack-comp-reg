@@ -118,10 +118,10 @@ var TypeModal = React.createClass({
     this.setState({ value: update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1]] }}}) });
   },
   componentDidMount: function() {
-    this.props.onChange();
+    this.props.onChange(this.getDOMNode());
   },
   componentDidUpdate: function() {
-    this.props.onChange();
+    this.props.onChange(this.getDOMNode());
   },
   render: function() {
     var self = this;
