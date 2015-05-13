@@ -125,7 +125,7 @@ var TypeModal = React.createClass({
   },
   render: function() {
     var self = this;
-    var tableClasses = classNames('table', 'table-stripped', 'table-condensed');
+    var tableClasses = classNames('table', 'table-striped', 'table-condensed');
 
     var cells = require('reactabular').cells;
     var editors = require('reactabular').editors;
