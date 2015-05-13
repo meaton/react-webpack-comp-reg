@@ -197,7 +197,7 @@ var TypeModal = React.createClass({
                   </tr>
                 </tfoot>
               </Table>
-              <div className="modal-inline"><Button onClick={this.setControlVocab}>Use Controlled Vocabulary</Button></div>
+              <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
             </TabPane>
             <TabPane eventKey={2} tab="Pattern">
               <Input ref="patternInput" type="text" defaultValue={(this.state.contextItem.hasOwnProperty('ValueScheme') && this.state.contextItem.ValueScheme.pattern != undefined) ? this.state.value.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
