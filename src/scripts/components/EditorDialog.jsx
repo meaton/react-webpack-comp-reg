@@ -156,7 +156,7 @@ var TypeModal = React.createClass({
         header: 'Concept link',
         cell: function(value, data, rowIndex) {
           return {
-            value: (value) ? (<span><a href={value} target="_blank">{value}</a></span>) : (<span><ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self} onClose={self.addConceptLink.bind(self, rowIndex)} /></span>)
+            value: (value) ? (<span><a href={value} target="_blank">{value}</a></span>) : (<span><ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self.props.container} target={self} onClose={self.addConceptLink.bind(self, rowIndex)} /></span>)
           };
         }
       },
@@ -174,7 +174,7 @@ var TypeModal = React.createClass({
     ];
 
     return (
-      <Modal id="ccrModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
+      <Modal ref="modal" id="typeModal" key="typeModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>
           <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <TabPane eventKey={0} tab="Type">
@@ -475,7 +475,7 @@ var ConceptRegistryModal = React.createClass({
       }
     };
     return (
-      <Modal ref="modal" id="typeModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
+      <Modal ref="modal" id="ccrModal" key="ccrModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>
           <Input type="text" placeholder="Type keyword and press Enter to search" valueLink={this.linkState('inputSearch')} addonBefore={<Glyphicon glyph='search' />} buttonAfter={<Button onClick={this.inputSearchUpdate}>Search</Button>}/>
           <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
@@ -506,8 +506,9 @@ var ModalTrigger = React.createClass({
     };
   },
   toggleModal: function(evt) {
-      console.log('hide modal');
+      console.log('modal visible: ' + this.state.isModalOpen);
       var offset = $(this.state.container.getDOMNode()).position();
+
       console.log('toggle modal offset: ' + offset.top + " " + offset.left);
       this.setState({
         position: (!this.state.isModalOpen) ? update(this.state.position, { $set: offset }) : { top: 0, left: 0 },
@@ -541,6 +542,8 @@ var ModalTrigger = React.createClass({
       tableHead.width('100%');
   },
   componentDidUpdate: function() {
+    var overlayNode = this.getOverlayDOMNode();
+    if(overlayNode == undefined) overlayNode = "#"
     $(this.getOverlayDOMNode()).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
   },
   componentDidMount: function() {
