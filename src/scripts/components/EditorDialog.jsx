@@ -535,13 +535,13 @@ var ModalTrigger = React.createClass({
     var tableBody = $(modal).find('.table tbody').eq(0);
     var tableHead = $(modal).find('.table thead').eq(0);
     var scrollbarWidth = tableBody.innerWidth() - tableBody.prop('scrollWidth');
-    if(tableBody.outerWidth() > tableBody.prop('scrollWidth'))
-      tableHead.width(tableBody.outerWidth() - scrollbarWidth);
+    if(tableBody.innerWidth() > tableBody.prop('scrollWidth'))
+      tableHead.width(tableBody.innerWidth() - scrollbarWidth);
     else
       tableHead.width('100%');
   },
   componentDidUpdate: function() {
-    $('#myModal').css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
+    $(this.getOverlayDOMNode()).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
   },
   componentDidMount: function() {
     console.log('container: ' + this.state.container);
