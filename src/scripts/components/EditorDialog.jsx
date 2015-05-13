@@ -156,7 +156,7 @@ var TypeModal = React.createClass({
         header: 'Concept link',
         cell: function(value, data, rowIndex) {
           return {
-            value: (value) ? value : (<span><ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self} onClose={self.addConceptLink.bind(self, rowIndex)} /></span>)
+            value: (value) ? (<span><a href={value} target="_blank">{value}</a></span>) : (<span><ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self} onClose={self.addConceptLink.bind(self, rowIndex)} /></span>)
           };
         }
       },
