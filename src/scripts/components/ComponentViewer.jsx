@@ -271,13 +271,14 @@ var ComponentViewer = React.createClass({
   },
   updateConceptLink: function(newValue) {
     console.log('update concept link - root component/profile: ' + newValue);
-    if(this.state.component != null)
-      this.setState({ component: (this.state.component.Header != undefined) ?
-        update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
-        update(this.state.component, { $merge: { '@ConceptLink': newValue } })
-      });
-    else if(this.state.profile != null)
-      this.setState({ profile: update(this.state.profile, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) });
+    if(typeof newValue === "string")
+      if(this.state.component != null)
+        this.setState({ component: (this.state.component.Header != undefined) ?
+          update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
+          update(this.state.component, { $merge: { '@ConceptLink': newValue } })
+        });
+      else if(this.state.profile != null)
+        this.setState({ profile: update(this.state.profile, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) });
   },
   updateValueScheme: function(target, prop, newValue) {
     console.log('update value scheme:' + target.constructor.displayName);
@@ -307,9 +308,9 @@ var ComponentViewer = React.createClass({
 
     if(target != undefined) {
       var updatedItem = null;
-      if(target.constructor.type === CMDAttribute)
+      if(target.constructor.displayName === "CMDAttribute")
         updatedItem = { attr: update(target.state.attr, { $apply: updateTypeFn }) };
-      else if(target.constructor.type === CMDElement)
+      else if(target.constructor.displayName === "CMDElement")
         updatedItem = { elem: update(target.state.elem, { $apply: updateTypeFn }) };
 
       if(updatedItem != null)
@@ -430,13 +431,13 @@ var ComponentViewer = React.createClass({
           {groupNameInput}
           <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={this.handleInputChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {domainNameInput}
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={rootComponent["@ConceptLink"]} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
         </form>
       );
 
     } else {
       // Display properties
-      var conceptLink = (rootComponent && rootComponent["@ConceptLink"] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent["@ConceptLink"]}>{rootComponent["@ConceptLink"]}</a></li> : null;
+      var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       return (
         <ul>
           <li><span>Name:</span> <b>{item.Header.Name}</b></li>
@@ -462,7 +463,7 @@ var ComponentViewer = React.createClass({
     </div> ) : null;
 
     var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
-    var addAttrLink = (editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, rootComponent)}>+Attribute</a></div> : null;
+    var addAttrLink = (editMode) ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, rootComponent)}>+Attribute</a></div> : null;
 
     if(attrSet != undefined || this.state.editMode)
       attrList = (

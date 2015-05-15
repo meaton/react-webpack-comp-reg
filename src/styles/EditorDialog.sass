@@ -7,6 +7,9 @@
 .tab-content {
   padding: 0;
 }
+.modal-body .tab-pane {
+  padding: 1px;
+}
 .modal-body nav, .modal-body .form-group {
   margin-top: 3px;
 }
@@ -35,7 +38,11 @@
   min-height: 170px;
 }
 .registry-dialog .modal-dialog {
-  width: 750px;
+  min-width: 750px;
+}
+.registry-dialog .modal-body {
+  padding-left: 1px;
+  width: 748px;
 }
 #typeTable tfoot .table-row-clickable {
   cursor: pointer;
@@ -48,6 +55,7 @@
 }
 #typeTable tbody, #ccrTable tbody {
   height: 130px;
+  display: block;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -60,7 +68,7 @@
   overflow: hidden;
 }
 #ccrTable {
-  margin-bottom: 0;
+  margin-bottom: 30px;
 }
 #ccrTable th, #ccrTable tr {
   cursor: pointer;
@@ -68,17 +76,27 @@
 #ccrTable tr.selected {
   background-color: #b0bed9;
 }
+#ccrTable thead {
+  border-bottom: 1px solid #ddd;
+}
+#ccrTable th {
+  border-bottom: 0;
+}
 #ccrTable th, #ccrTable td {
   display: inline-block;
-  width: 14.285%;
+  width: 106.278px;
   line-height: 1.6em;
+  min-height: 28px;
   font-size: 0.8em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#typeTable th-last-child, #typeTable td:last-child {
-  width: 40%
+#ccrTable.with-scroll th, #ccrTable.with-scroll td {
+  width: 104.285px;
+}
+#typeTable tfoot td:last-child {
+  width: 68%;
 }
 #typeTable th:last-child, #typeTable td:last-child {
   width: 4%;

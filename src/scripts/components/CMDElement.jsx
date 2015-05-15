@@ -101,8 +101,8 @@ var CMDElement = React.createClass({
       this.setState({ elem: elem });
   },
   updateConceptLink: function(newValue) {
-    if(this.state.elem != null)
-      this.setState({ elem: update(this.state.elem, { $merge: { '@ConceptLink': newValue } }) });
+    if(typeof newValue === "string" && this.state.elem != null)
+        this.setState({ elem: update(this.state.elem, { $merge: { '@ConceptLink': newValue } }) });
   },
   render: function () {
     var self = this;
@@ -122,7 +122,7 @@ var CMDElement = React.createClass({
             $.map(attrSet, function(attr, index) {
               var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
-              return <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
+              return <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self.props.viewer, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />;
             }) : <span>No Attributes</span>
           }
         </div>);
@@ -169,7 +169,7 @@ var CMDElement = React.createClass({
       var elemProps = (
         <div className="elementProps">
           <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={this.state.elem['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.elem['@ConceptLink']) ? this.state.elem['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
           <Input type="text" label="Documentation" defaultValue={this.state.elem['@Documentation']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, docuLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input type="number" label="DisplayPriority" min={0} max={10} step={1} defaultValue={(this.state.elem.hasOwnProperty('@DisplayPriority')) ? this.state.elem['@DisplayPriority'] : 0} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, displayPriorityLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {valueScheme}
@@ -178,7 +178,7 @@ var CMDElement = React.createClass({
       );
 
       if(this.state.elem.open) {
-        var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
+        var addAttrLink = (this.state.editMode) ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
         var integerOpts = $.map($(Array(10)), function(item, index) {
           return <option key={index} value={index}>{index}</option>
         });
@@ -223,7 +223,7 @@ var CMDElement = React.createClass({
           <span>Element: </span>
           <b>{elem['@name']}</b> { valueScheme }
           <div className="elemAttrs">
-            {this.elemAttrs(elem)}
+            { React.addons.createFragment({ left: this.elemAttrs(elem) }) }
           </div>
           {attrList}
         </div>

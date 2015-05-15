@@ -37,7 +37,8 @@ var CMDAttribute = React.createClass({
     this.linkState('attr.Name').requestChange(e.target.value);
   },
   updateConceptLink: function(newValue) {
-    this.linkState('attr.ConceptLink').requestChange(newValue);
+    if(typeof newValue === "string")
+      this.setState({ attr: update(this.state.attr, { ConceptLink: { $set: newValue } }) });
   },
   render: function () {
     var attr = this.state.attr;
@@ -51,7 +52,7 @@ var CMDAttribute = React.createClass({
           {actionButtons}
           <form name="attrForm" className="form-horizontal form-group">
             <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateName} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(attr.ConceptLink != undefined) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={conceptRegistryBtn} onChange={this.updateConceptLink} />
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(attr.ConceptLink) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={conceptRegistryBtn} onChange={this.updateConceptLink} />
             {attr_val}
           </form>
         </div>

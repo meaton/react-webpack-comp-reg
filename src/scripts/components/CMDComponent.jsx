@@ -127,7 +127,7 @@ var CMDComponent = React.createClass({
     linkChild.requestChange(newComponent);
   },
   updateConceptLink: function(newValue) {
-    if(this.state.component != null)
+    if(typeof newValue === "string" && this.state.component != null)
       this.setState({ component: (this.state.component.Header != undefined) ?
         update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
         update(this.state.component, { $merge: {  '@ConceptLink': newValue } })
@@ -266,7 +266,7 @@ var CMDComponent = React.createClass({
     var componentClasses = classNames('CMDComponent', { 'edit-mode': this.state.editMode, 'open': this.state.component.open });
 
     var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
-    var addAttrLink = (this.state.editMode) ? <div class="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
+    var addAttrLink = (this.state.editMode) ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
 
     var attrList = (
       <div className="attrList">AttributeList:
@@ -276,7 +276,7 @@ var CMDComponent = React.createClass({
             var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
             attr.attrId = attrId;
             return (
-              <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
+              <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self.props.viewer, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
             );
           })
           : <span>No Attributes</span>
@@ -305,7 +305,7 @@ var CMDComponent = React.createClass({
         componentProps = (
           <div>
             <Input type="text" label="Name" defaultValue={this.state.component['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={this.state.component['@ConceptLink']} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.component['@ConceptLink']) ? this.state.component['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
           </div>
         );
         //TODO move common viewer bind methods to mixin
