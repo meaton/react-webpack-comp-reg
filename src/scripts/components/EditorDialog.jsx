@@ -191,7 +191,7 @@ var TypeModal = React.createClass({
               <Table id="typeTable" ref="table" columns={vocabCols} data={vocabData} className={tableClasses}>
                 <tfoot>
                   <tr>
-                      <td className="table-row-clickable info" rowSpan="3" onClick={this.addNewRow}>
+                      <td className="info" rowSpan="3" onClick={this.addNewRow}>
                           Click here to add new row.
                       </td>
                       <td></td>
@@ -367,7 +367,7 @@ var ConceptRegistryModal = React.createClass({
         <div className="modal-footer">
           <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button>
           {testbutton}
-          <Button onClick={this.clear} className={classNames({ 'hide': (this.props.target.refs.conceptRegInput == undefined) })}>Clear</Button>
+          <Button onClick={this.clear} className={classNames({ 'hide': (this.props.target.refs.conceptRegInput == undefined) })}>Clear Setting</Button>
           <Button onClick={this.close}>Cancel</Button>
         </div>
       </Modal>
