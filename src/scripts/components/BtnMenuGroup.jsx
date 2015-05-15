@@ -52,7 +52,7 @@ var ButtonModal = React.createClass({
   });
 
 var BtnMenuGroup = React.createClass({
-  mixins: [ Router.State ],
+  mixins: [ Router.State, Router.Navigation ],
   propTypes: {
     mode: React.PropTypes.string
   },
@@ -67,11 +67,11 @@ var BtnMenuGroup = React.createClass({
     this.props.saveComp(isNew);
   },
   getCancelQueryParams: function() {
-    if(this.props.privateSelect || (this.props.newActive && this.props.component))
-      return { filter: (!this.props.privateSelect) ? "published" : "private",
-             type: (this.props.profile) ? "profiles" : "components" };
-    else
-      return null;
+    var cancelParams = null;
+    if((this.props.newActive && this.props.component != null) || !this.props.newActive)
+      cancelParams = { filter: (this.props.newActive) ? "published" : "private",
+             type: (this.props.profile != null) ? "profiles" : "components" };
+    return cancelParams;
   },
   render: function () {
     var selectedId = this.props.selectedId;
@@ -115,11 +115,6 @@ var BtnMenuGroup = React.createClass({
             </ButtonGroup>
         );
       case "editor":
-        var cancelParams = null;
-        if((this.props.newActive && this.props.component != null) || !this.props.newActive)
-          cancelParams = { filter: (this.props.newActive) ? "published" : "private",
-                 type: (this.props.profile != null) ? "profiles" : "components" };
-
         return (
           <ButtonGroup className="actionMenu">
             <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
@@ -128,7 +123,7 @@ var BtnMenuGroup = React.createClass({
               btnLabel="Publish"
               title="Publish"
               desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-            <ButtonLink to="/" query={cancelParams}>Cancel</ButtonLink>
+            <ButtonLink to="/" query={this.getCancelQueryParams()}>Cancel</ButtonLink>
           </ButtonGroup>
         );
       default:
