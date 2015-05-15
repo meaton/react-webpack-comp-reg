@@ -52,22 +52,22 @@ var BtnGroupMixin = {
   },
   postFormAction: function(update, publish) {
     var self = this;
+    var queryParams = { filter: (publish) ? "published" : "private", type: (this.state.profile) ? "profiles" : "components" };
     if(this.state.profile != null && this.saveProfile != undefined)
       this.saveProfile(this.state.profile.Header.ID, update, publish, function(data) {
         console.log('returned 200 POST: ' + JSON.stringify(data));
         // check errors, display messages inline or show alert
         if(data != null)
           if(data.errors != undefined) self.showErrors(data.errors);
-          else self.transitionTo('/'); // return route if no errors
+          else self.setState({ isSaved: true }, function() { self.transitionTo('/', null, queryParams); }); // return route if no errors
       });
     else if(this.state.component != null && this.saveComponent != undefined)
       this.saveComponent(this.state.component.Header.ID, update, publish, function(data) {
         console.log('return 200 POST: ' + JSON.stringify(data));
-
         // check errors, display messages inline or show alert
         if(data != null)
           if(data.errors != undefined) self.showErrors(data.errors);
-          else self.transitionTo('/'); // return route if no errors
+          else self.setState({ isSaved: true }, function() { self.transitionTo('/', null, queryParams); }); // return route if no errors
       });
   },
   createNewAction: function(evt) { //TODO

@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+var State = require('react-router').State;
 var Authentication = require('./Authentication.jsx').Authentication;
 var Profile = require('./ProfileOverview.jsx');
 var Component = require('./ComponentOverview.jsx');
@@ -13,7 +14,7 @@ var btnMenuGroup = require('../mixins/BtnGroupEvents');
 (window !== window.top ? window.top : window).React = React;
 
 var ComponentRegApp = React.createClass({
-  mixins: [btnMenuGroup, React.addons.LinkedStateMixin],
+  mixins: [btnMenuGroup, React.addons.LinkedStateMixin, State],
   //mixins: [ Authentication ],
   getInitialState: function() {
     return { filter: "published", type: "profiles", profileId: null, componentId: null, multiSelect: false };
@@ -29,6 +30,13 @@ var ComponentRegApp = React.createClass({
   },
   clearInfo: function() {
     this.setState({profileId: null, componentId: null})
+  },
+  componentWillMount: function() {
+    console.log('component will mount');
+    if(this.context.router != null && Object.keys(this.getQuery()).length > 0) {
+      console.log('query: ' + JSON.stringify(this.getQuery()));
+      this.setState(this.getQuery);
+    }
   },
   render: function() {
     //TODO insert draggable bar and have dragEvents change grid and viewer CSS style dimensons

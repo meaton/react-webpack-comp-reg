@@ -42,7 +42,17 @@ registryEvents.on('loadingChange', function(progress) {
 });
 
 var ComponentViewer = React.createClass({
-  // TODO: static fns willTransitionTo/From
+  statics: {
+    willTransitionTo: function(transition, params, query) {
+      console.log('attempting transition...' + transition.path);
+    },
+    willTransitionFrom: function(transition, component) {
+      console.log('transition from...' + this.path);
+      if(component.state.editMode && !component.state.isSaved)
+        if(!confirm('You have unsaved work. Are you sure you want to cancel?'))
+          transition.abort();
+    }
+  },
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -56,7 +66,8 @@ var ComponentViewer = React.createClass({
              editMode: (this.props.editMode != undefined) ?
                 this.props.editMode :
                 true,
-             errors: null
+             errors: null,
+             isSaved: false
     };
   },
   getDefaultProps: function() {
