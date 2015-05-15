@@ -346,7 +346,7 @@ var ConceptRegistryModal = React.createClass({
     };
   },
   loadTestdata: function() {
-    this.setState({ data: testdata });
+    this.setState({ data: testdata, currentLinkSelection: null });
   },
   render: function() {
     var self = this;

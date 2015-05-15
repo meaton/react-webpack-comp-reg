@@ -66,6 +66,13 @@ var BtnMenuGroup = React.createClass({
   saveComp: function(isNew) {
     this.props.saveComp(isNew);
   },
+  getCancelQueryParams: function() {
+    if(this.props.privateSelect || (this.props.newActive && this.props.component))
+      return { filter: (!this.props.privateSelect) ? "published" : "private",
+             type: (this.props.profile) ? "profiles" : "components" };
+    else
+      return null;
+  },
   render: function () {
     var selectedId = this.props.selectedId;
     var componentType = this.props.type;
@@ -108,6 +115,11 @@ var BtnMenuGroup = React.createClass({
             </ButtonGroup>
         );
       case "editor":
+        var cancelParams = null;
+        if((this.props.newActive && this.props.component != null) || !this.props.newActive)
+          cancelParams = { filter: (this.props.newActive) ? "published" : "private",
+                 type: (this.props.profile != null) ? "profiles" : "components" };
+
         return (
           <ButtonGroup className="actionMenu">
             <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
@@ -116,7 +128,7 @@ var BtnMenuGroup = React.createClass({
               btnLabel="Publish"
               title="Publish"
               desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-            <ButtonLink to="/">Cancel</ButtonLink>
+            <ButtonLink to="/" query={cancelParams}>Cancel</ButtonLink>
           </ButtonGroup>
         );
       default:
