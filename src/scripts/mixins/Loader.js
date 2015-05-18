@@ -275,6 +275,26 @@ var LoaderMixin = {
       }.bind(this)
     });
   },
+  loadAllowedTypes: function(cb) {
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:8080/ComponentRegistry/rest/registry/AllowedTypes',
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      processData: false,
+      contentType: false,
+      dataType:'json',
+      success: function(data) {
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        cb(null);
+      }.bind(this)
+    })
+  },
   queryCCR: function(searchQuery, cb) {
     var url = 'http://localhost:8080/ComponentRegistry/ccr?type=container&keywords=' + searchQuery;
     if(searchQuery != null || searchQuery != "")

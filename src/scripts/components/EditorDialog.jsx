@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+var LinkedStateMixin = React.addons.LinkedStateMixin;
 var CompRegLoader = require('../mixins/Loader');
 var testdata = require('../CCRtestdata.js');
 
@@ -31,9 +32,11 @@ var EditorDialog = React.createClass({
 });
 
 var TypeModal = React.createClass({
+  mixins: [CompRegLoader, LinkedStateMixin],
   getInitialState: function() {
     return {
       basic_type: 'string',
+      reg_types: [],
       pattern: null,
       vocab: null,
       currentTabIdx: 0,
@@ -82,11 +85,12 @@ var TypeModal = React.createClass({
       contextItem = state.attr;
     else if(state.elem != undefined)
       contextItem = state.elem;
-
     if(contextItem != null) {
-      var existingValue = (contextItem.hasOwnProperty('@ValueScheme') || contextItem.hasOwnProperty('Type')) ?
-                            contextItem['@ValueScheme']||contextItem['Type'] :
-                            contextItem['ValueScheme'];
+      var existingValue = contextItem['ValueScheme'];
+      if(contextItem.hasOwnProperty('@ValueScheme'))
+        existingValue = contextItem['@ValueScheme'];
+      else if(contextItem.hasOwnProperty('Type')) existingValue = contextItem['Type'];
+
       if(contextItem.ValueScheme != undefined) {
         if(contextItem['ValueScheme'].enumeration != undefined)
           this.setState({ contextItem: contextItem, value: existingValue, currentTabIdx: 1 });
@@ -95,6 +99,21 @@ var TypeModal = React.createClass({
       } else
         this.setState({ contextItem: contextItem, value: existingValue });
     }
+  },
+  componentDidMount: function() {
+    var self = this;
+    console.log('value state:' + this.state.value);
+    this.loadAllowedTypes(function(data) {
+      if(data != null && data.elementType != undefined && $.isArray(data.elementType))
+        self.setState({ reg_types: data.elementType }, function() {
+          var simpleType = this.refs.simpleTypeInput;
+          if(simpleType != undefined)
+            simpleType.refs.input.getDOMNode().selectedIndex = $.inArray(this.state.value, data.elementType);
+
+        });
+    });
+
+    this.props.onChange(this.getDOMNode());
   },
   addConceptLink: function(rowIndex, newHdlValue) {
     console.log('open concept link dialog: ' + rowIndex, newHdlValue);
@@ -119,9 +138,6 @@ var TypeModal = React.createClass({
   removeRow: function(rowIndex) {
     console.log('remove row: ' + rowIndex);
     this.setState({ value: update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1]] }}}) });
-  },
-  componentDidMount: function() {
-    this.props.onChange(this.getDOMNode());
   },
   componentDidUpdate: function() {
     this.props.onChange(this.getDOMNode());
@@ -181,9 +197,9 @@ var TypeModal = React.createClass({
         <div className='modal-body'>
           <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <TabPane eventKey={0} tab="Type">
-              <Input ref="simpleTypeInput" defaultValue={(this.state.contextItem.hasOwnProperty('@ValueScheme') || this.state.contextItem.hasOwnProperty('Type')) ? this.state.value : "string"} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
-              {$.map(['boolean', 'decimal', 'float', 'int', 'string', 'anyURI', 'date', 'gDay', 'gMonth', 'gYear', 'time', 'dateTime'], function(type, index) {
-                return <option key={index}>{type}</option>
+              <Input ref="simpleTypeInput" linkValue={this.linkState('value')} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
+              {$.map(this.state.reg_types, function(type, index) {
+                return <option key={type}>{type}</option>
               })}
               </Input>
             </TabPane>
