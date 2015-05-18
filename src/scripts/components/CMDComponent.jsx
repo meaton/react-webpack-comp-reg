@@ -1,10 +1,10 @@
 'use strict';
 
 var React = require('react/addons');
-
-var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
+
+var LinkedStateMixin = require('../mixins/LinkedStateMixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');

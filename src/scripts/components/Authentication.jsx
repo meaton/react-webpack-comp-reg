@@ -58,7 +58,7 @@ var Logout = React.createClass({
 
 var Authentication = {
   statics: {
-    willTransitionTo: function (transition) {
+    willTransitionTo: function (transition, params, query) {
       if (!auth.loggedIn()) {
         Login.attemptedTransition = transition;
         transition.redirect('login');

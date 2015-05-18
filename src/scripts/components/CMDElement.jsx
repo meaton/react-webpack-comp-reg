@@ -1,13 +1,14 @@
 'use strict';
 
 var React = require('react/addons');
-
-var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
+
+var LinkedStateMixin = require('../mixins/LinkedStateMixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+
+var Input = require('react-bootstrap/lib/Input');
 
 var CMDAttribute = require('./CMDAttribute');
-var Input = require('react-bootstrap/lib/Input');
 
 var update = React.addons.update;
 var classNames = require('classnames');
