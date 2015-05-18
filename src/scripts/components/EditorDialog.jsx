@@ -3,7 +3,6 @@
 var React = require('react/addons');
 var LinkedStateMixin = React.addons.LinkedStateMixin;
 var CompRegLoader = require('../mixins/Loader');
-var testdata = require('../CCRtestdata.js');
 
 var update = React.addons.update;
 
@@ -367,13 +366,12 @@ var ConceptRegistryModal = React.createClass({
   render: function() {
     var self = this;
     var tableClasses = classNames('table', 'table-bordered', 'table-hover', 'table-striped', 'table-condensed');
-
     var conceptRegHeader = {
       onClick: function(col) {
         sortColumn(self.state.columns, col, self.state.data, self.setState.bind(self));
       }
     };
-    var testbutton = <Button onClick={this.loadTestdata}>Load Test Data</Button>;
+    
     return (
       <Modal ref="modal" id="ccrModal" key="ccrModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>
@@ -382,7 +380,6 @@ var ConceptRegistryModal = React.createClass({
         </div>
         <div className="modal-footer">
           <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button>
-          {testbutton}
           <Button onClick={this.clear} className={classNames({ 'hide': (this.props.target.refs.conceptRegInput == undefined) })}>Clear Setting</Button>
           <Button onClick={this.close}>Cancel</Button>
         </div>
