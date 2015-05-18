@@ -123,8 +123,11 @@ var LoaderMixin = {
     console.log('child components: ' + $.isArray(this.state.childComponents));
     console.log('child elements: ' + $.isArray(this.state.childElements));
 
-    var data = this.handlePostData(clone(this.state.profile), this.state.childElements, this.state.childComponents);
+    var data = this.validate(this.handlePostData(clone(this.state.profile), this.state.childElements, this.state.childComponents));
     console.log('data: ' + JSON.stringify(data));
+
+    if(data.errors != undefined)
+      return cb(data); // return invalid
 
     var cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
     console.log('cmd schema: ' + cmd_schema_xml);
@@ -137,7 +140,78 @@ var LoaderMixin = {
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
-    /* CORS issue using XHR natively
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/profiles';
+    if(update) url += '/' + profileId + '/' + actionType;
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: fd,
+        mimeType: 'multipart/form-data',
+        username: Config.auth.username,
+        password: Config.auth.password,
+        xhrFields: {
+          withCredentials: true
+        },
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function(data) {
+          if(cb) cb(data);
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(componentId, status, err);
+        }.bind(this)
+      });
+  },
+  saveComponent: function(componentId, update, publish, cb) {
+    var actionType = (publish) ? "publish" : "update";
+    var registry = this.state.registry;
+
+    console.log('child components: ' + $.isArray(this.state.childComponents));
+    console.log('child elements: ' + $.isArray(this.state.childElements));
+
+    var data = this.validate(this.handlePostData(clone(this.state.component), this.state.childElements, this.state.childComponents));
+    console.log('data: ' + JSON.stringify(data));
+
+    if(data.errors != undefined) return cb(data); //invalid
+
+    var cmd_schema_xml = marshaller.marshalString({ name: { localPart: "CMD_ComponentSpec" }, value: data });
+    console.log('cmd schema: ' + cmd_schema_xml);
+
+    var fd = new FormData();
+    fd.append('componentId', componentId);
+    fd.append('name', data.Header.Name);
+    fd.append('description', data.Header.Description);
+    fd.append('group', registry.groupName);
+    fd.append('domainName', registry.domainName);
+    fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
+
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/components';
+    if(update) url += '/' + componentId + '/' + actionType;
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: fd,
+      mimeType: 'multipart/form-data',
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success: function(data) {
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(componentId, status, err);
+      }.bind(this)
+    });
+  },
+  /* CORS issue using XHR natively
+  corsRequest: function() {
     var createCORSRequest = function(method, url) {
       var xhr = new XMLHttpRequest();
       if ("withCredentials" in xhr) {
@@ -179,76 +253,8 @@ var LoaderMixin = {
     };
 
     xhr.send(fd);
-    */
 
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/profiles';
-    if(update) url += '/' + profileId + '/' + actionType;
-
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: fd,
-        mimeType: 'multipart/form-data',
-        username: Config.auth.username,
-        password: Config.auth.password,
-        xhrFields: {
-          withCredentials: true
-        },
-        processData: false,
-        contentType: false,
-        dataType: "json",
-        success: function(data) {
-          if(cb) cb(data);
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.error(componentId, status, err);
-        }.bind(this)
-      });
-  },
-  saveComponent: function(componentId, update, publish, cb) {
-    var actionType = (publish) ? "publish" : "update";
-    var registry = this.state.registry;
-
-    console.log('child components: ' + $.isArray(this.state.childComponents));
-    console.log('child elements: ' + $.isArray(this.state.childElements));
-
-    var data = this.handlePostData(clone(this.state.component), this.state.childElements, this.state.childComponents);
-    console.log('data: ' + JSON.stringify(data));
-
-    var cmd_schema_xml = marshaller.marshalString({ name: { localPart: "CMD_ComponentSpec" }, value: data });
-    console.log('cmd schema: ' + cmd_schema_xml);
-
-    var fd = new FormData();
-    fd.append('componentId', componentId);
-    fd.append('name', data.Header.Name);
-    fd.append('description', data.Header.Description);
-    fd.append('group', registry.groupName);
-    fd.append('domainName', registry.domainName);
-    fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
-
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/components';
-    if(update) url += '/' + componentId + '/' + actionType;
-    $.ajax({
-      type: 'POST',
-      url: url,
-      data: fd,
-      mimeType: 'multipart/form-data',
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
-      processData: false,
-      contentType: false,
-      dataType: "json",
-      success: function(data) {
-        if(cb) cb(data);
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(componentId, status, err);
-      }.bind(this)
-    });
-  },
+  },*/
   deleteItem: function(type, itemId, cb) {
     var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId;
     $.ajax({

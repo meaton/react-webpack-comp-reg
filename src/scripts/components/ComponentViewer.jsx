@@ -1,10 +1,14 @@
 'use strict';
 
 var React = require('react/addons');
-
-var LinkedStateMixin = require('../mixins/LinkedStateMixin.js');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin.js');
+var Router = require('react-router');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
+var LinkedStateMixin = require('../mixins/LinkedStateMixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+var CompRegLoader = require('../mixins/Loader');
+var btnGroup = require('../mixins/BtnGroupEvents');
+var ValidationMixin = require('../mixins/ValidationMixin');
 
 var ee = require('events').EventEmitter;
 var registryEvents = new ee();
@@ -16,12 +20,6 @@ var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Alert = require('react-bootstrap/lib/Alert');
 var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 
-var Router = require('react-router'); // TODO migration to Router context
-var update = React.addons.update;
-
-var CompRegLoader = require('../mixins/Loader');
-var btnGroup = require('../mixins/BtnGroupEvents');
-
 var CMDComponent = require('./CMDComponent');
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
@@ -29,6 +27,7 @@ var CMDAttribute = require('./CMDAttribute');
 var EditorBtnGroup = require('./BtnMenuGroup');
 var EditorDialog = require('./EditorDialog');
 
+var update = React.addons.update;
 var md5 = require('spark-md5');
 
 require('../../styles/ComponentViewer.sass');
@@ -56,7 +55,7 @@ var ComponentViewer = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
-  mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, Router.Navigation, Router.State],
+  mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   getInitialState: function() {
     return { registry: { domainName: '', groupName: '' },
              profile: null,
