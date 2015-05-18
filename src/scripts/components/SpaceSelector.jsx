@@ -62,7 +62,7 @@ var SpaceSelector = React.createClass({
       return (
         <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={(d.loginRequired && !auth.loggedIn())}>
           {d.registry.map(function(reg, mindex) {
-            var selectedTypeClass = classNames({ selected: (self.state.currentRegIdx == mindex) });
+            var selectedTypeClass = classNames({ selected: (selectedClass == "active" && self.state.currentRegIdx == mindex) });
             return (
               React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
           ) })}

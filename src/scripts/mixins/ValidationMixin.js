@@ -4,7 +4,8 @@ var err = {
   IllegalValueScheme: 'Illegal or missing value for type.',
   ReqName:  'Component or element is missing a name.',
   ReqComponentDesc: 'Component description is required.',
-  ReqDisplayPriority: 'Display priority value is required for elements.'
+  ReqDisplayPriority: 'Display priority value is required for elements.',
+  ReqValueScheme: 'Valid type value is required.'
 };
 
 var testConceptLink = function(fieldValue) {
@@ -46,7 +47,7 @@ var testValueScheme = function(item) {
   else if(item.hasOwnProperty('@ValueScheme') && item['@ValueScheme'].length <= 0) return false;
   else if(item.ValueScheme != undefined) {
     var fieldValue = item['ValueScheme'];
-    if((fieldValue.enumeration != undefined && fieldValue.enumeration.item != undefined) || fieldValue.pattern != undefined)
+    if((fieldValue.enumeration != undefined && fieldValue.enumeration.item != undefined) || (fieldValue.pattern != undefined && fieldValue.pattern.length > 0))
       return true;
     else
       return false;
@@ -66,7 +67,6 @@ var testMandatoryFields = function(header, componentDesc, cb) {
     if(componentDesc.hasOwnProperty('@DisplayPriority') && componentDesc['@DisplayPriority'].length <= 0) errReturned = cb(err.ReqDisplayPriority);
     if(!testValueScheme(componentDesc)) errReturned = cb(err.ReqValueScheme);
   }
-
   return !errReturned;
 };
 
@@ -82,7 +82,7 @@ var ValidationMixin = {
 
     var errors = [];
     var addError = function(message) {
-      errors.push({error: message});
+      errors.push({ message: message });
       return false;
     };
 
@@ -124,7 +124,6 @@ var ValidationMixin = {
           if(!testConceptLink(comps[i]['ConceptLink'])) addError(err.IllegalConceptLink);
           if(comps[i].AttributeList != undefined) testAttributeList(comps[i].AttributeList, addError)
         }
-        //if(!testCardinalitySettings(comps[i]['@CardinalityMin'], comps[i]['@CardinalityMax'])) addError(err.CardinalitySettings);
       }
     }
 

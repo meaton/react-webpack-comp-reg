@@ -15,7 +15,7 @@ module.exports = {
     path: 'dist/assets/',
     filename: 'main.js'
   },
-
+  console: false,
   debug: false,
   devtool: false,
   entry: './src/scripts/components/main.jsx',
