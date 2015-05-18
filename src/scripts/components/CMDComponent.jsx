@@ -305,7 +305,7 @@ var CMDComponent = React.createClass({
         componentProps = (
           <div>
             <Input type="text" label="Name" defaultValue={this.state.component['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.component['@ConceptLink']) ? this.state.component['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.component['@ConceptLink']) ? this.state.component['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
           </div>
         );
         //TODO move common viewer bind methods to mixin

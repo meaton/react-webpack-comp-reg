@@ -281,7 +281,7 @@ var ComponentViewer = React.createClass({
   },
   updateConceptLink: function(newValue) {
     console.log('update concept link - root component/profile: ' + newValue);
-    if(typeof newValue === "string")
+    if(typeof newValue === "string") // TODO Remove @ConceptLink attr is empty or null value
       if(this.state.component != null)
         this.setState({ component: (this.state.component.Header != undefined) ?
           update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
@@ -367,7 +367,7 @@ var ComponentViewer = React.createClass({
           valueScheme = obj.Type;
     }
 
-    return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} />;
+    return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} readOnly />;
   },
   handleInputChange: function(link, e) {
     if(link != undefined && link != null)
@@ -441,7 +441,7 @@ var ComponentViewer = React.createClass({
           {groupNameInput}
           <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={this.handleInputChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {domainNameInput}
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
         </form>
       );
 

@@ -36,23 +36,24 @@ var CMDAttribute = React.createClass({
   updateName: function(e) {
     this.linkState('attr.Name').requestChange(e.target.value);
   },
-  updateConceptLink: function(newValue) {
+  updateConceptLink: function(link, newValue, evt) {
+    console.log('newValue: ' + newValue);
     if(typeof newValue === "string")
-      this.setState({ attr: update(this.state.attr, { ConceptLink: { $set: newValue } }) });
+      link.requestChange(newValue);
   },
   render: function () {
     var attr = this.state.attr;
     var attr_val = this.props.value(this);
     var conceptRegistryBtn = this.props.conceptRegistryBtn(this);
     var actionButtons = this.getActionButtons(false);
-
+    var linkState = this.linkState('ConceptLink');
     if(this.state.editMode)
       return (
         <div className="attrAttr attrForm">
           {actionButtons}
           <form name="attrForm" className="form-horizontal form-group">
             <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateName} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(attr.ConceptLink) ? attr.ConceptLink : ""} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={conceptRegistryBtn} onChange={this.updateConceptLink} />
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={linkState.value} labelClassName="col-xs-1" wrapperClassName="col-xs-3" buttonAfter={conceptRegistryBtn} onChange={this.updateConceptLink.bind(this, linkState)} readOnly />
             {attr_val}
           </form>
         </div>

@@ -107,8 +107,7 @@ var TypeModal = React.createClass({
         self.setState({ reg_types: data.elementType }, function() {
           var simpleType = this.refs.simpleTypeInput;
           if(simpleType != undefined)
-            simpleType.refs.input.getDOMNode().selectedIndex = $.inArray(this.state.value, data.elementType);
-
+            simpleType.refs.input.getDOMNode().selectedIndex = (typeof this.state.value === "string") ? $.inArray(this.state.value, data.elementType) : $.inArray("string", data.elementType);
         });
     });
 
@@ -371,7 +370,7 @@ var ConceptRegistryModal = React.createClass({
         sortColumn(self.state.columns, col, self.state.data, self.setState.bind(self));
       }
     };
-    
+
     return (
       <Modal ref="modal" id="ccrModal" key="ccrModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
         <div className='modal-body'>

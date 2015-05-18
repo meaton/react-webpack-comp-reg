@@ -101,9 +101,9 @@ var CMDElement = React.createClass({
     if(this.state.elem != null)
       this.setState({ elem: elem });
   },
-  updateConceptLink: function(newValue) {
+  updateConceptLink: function(link, newValue) {
     if(typeof newValue === "string" && this.state.elem != null)
-        this.setState({ elem: update(this.state.elem, { $merge: { '@ConceptLink': newValue } }) });
+      link.requestChange(newValue);
   },
   render: function () {
     var self = this;
@@ -137,11 +137,12 @@ var CMDElement = React.createClass({
       // classNames
       var elementClasses = classNames('CMDElement', { 'edit-mode': this.state.editMode, 'open': this.state.elem.open });
       var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
-      var nameLink = this.linkState('elem.@name');
 
-      //TODO bind conceptLink
+      // linked state
+      var nameLink = this.linkState('elem.@name');
       var minComponentLink = this.linkState('elem.@CardinalityMin');
       var maxComponentLink = this.linkState('elem.@CardinalityMax');
+      var conceptLinkLink = this.linkState('elem.@ConceptLink');
       var docuLink = this.linkState('elem.@Documentation');
       var displayPriorityLink = this.linkState('elem.@DisplayPriority');
       var multiLink = this.linkState('elem.@Multilingual');
@@ -170,7 +171,7 @@ var CMDElement = React.createClass({
       var elemProps = (
         <div className="elementProps">
           <Input type="text" label="Name" defaultValue={this.state.elem['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.elem['@ConceptLink']) ? this.state.elem['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.elem['@ConceptLink']) ? this.state.elem['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink.bind(this, conceptLinkLink)} readOnly />
           <Input type="text" label="Documentation" defaultValue={this.state.elem['@Documentation']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, docuLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input type="number" label="DisplayPriority" min={0} max={10} step={1} defaultValue={(this.state.elem.hasOwnProperty('@DisplayPriority')) ? this.state.elem['@DisplayPriority'] : 0} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, displayPriorityLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {valueScheme}

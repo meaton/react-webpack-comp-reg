@@ -53,6 +53,10 @@ var Main = React.createClass({
     });
   },
   componentWillMount: function() {
+    /*$(document).ready(function() {
+      window['console']['log'] = function() {};
+    });*/
+
     auth.onChange = this.setStateOnAuth;
     auth.login();
   },
