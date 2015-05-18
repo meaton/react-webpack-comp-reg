@@ -28,6 +28,10 @@ html, body {
   padding-left: 20px;
 }
 
+.space_selector .dropdown-menu li.selected {
+  background-color: #337ab7;
+}
+
 a { cursor: pointer; color: #999; }
 
 html.progress, body.progress * {

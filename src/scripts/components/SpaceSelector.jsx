@@ -2,6 +2,8 @@
 
 var React = require('react');
 var {Route} = require('react-router');
+var classNames = require('classnames');
+
 var auth = require('./Authentication').auth;
 
 /** Bootstrap components */
@@ -21,8 +23,8 @@ var SpaceSelector = React.createClass({
     })
   },
   getInitialState: function() {
-    return { currentSpaceIdx: 0,
-             currentRegIdx: 0,
+    return { currentSpaceIdx: (this.props.filter == "private") ? 1 : 0,
+             currentRegIdx: (this.props.type == "components") ? 1 : 0,
              multiSelect: this.props.multiSelect.value,
              spaces: [
                 { label: "Public", registry: [{ type: "Profiles", filter: "published" }, { type: "Components", filter: "published" }], loginRequired: false },
@@ -56,11 +58,13 @@ var SpaceSelector = React.createClass({
   render: function() {
     var self = this;
     var list = this.state.spaces.map(function(d, sindex){
-      var selectedClass = (self.state.currentSpaceIdx == sindex) ? "active" : "";
+      var selectedClass = classNames({ active: (self.state.currentSpaceIdx == sindex) });
       return (
         <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={(d.loginRequired && !auth.loggedIn())}>
-          {d.registry.map(function(reg, mindex) { return (
-            React.createElement(MenuItem, { key: mindex, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
+          {d.registry.map(function(reg, mindex) {
+            var selectedTypeClass = classNames({ selected: (self.state.currentRegIdx == mindex) });
+            return (
+              React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
           ) })}
         </DropdownButton>
       );
