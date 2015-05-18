@@ -42,7 +42,8 @@ var testAttributeList = function(attrList, cb) {
 };
 
 var testValueScheme = function(item) {
-  if(item.hasOwnProperty('@ValueScheme') && item['@ValueScheme'].length <= 0) return false;
+  if(item.Type != undefined && item['Type'].length <= 0) return false;
+  else if(item.hasOwnProperty('@ValueScheme') && item['@ValueScheme'].length <= 0) return false;
   else if(item.ValueScheme != undefined) {
     var fieldValue = item['ValueScheme'];
     if((fieldValue.enumeration != undefined && fieldValue.enumeration.item != undefined) || fieldValue.pattern != undefined)
