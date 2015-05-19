@@ -13,6 +13,8 @@ var btnMenuGroup = require('../mixins/BtnGroupEvents');
 // Export React so the devtools can find it
 (window !== window.top ? window.top : window).React = React;
 
+require('../../styles/ComponentEditor.sass');
+
 var ComponentRegApp = React.createClass({
   mixins: [btnMenuGroup, React.addons.LinkedStateMixin, State],
   //mixins: [ Authentication ],
@@ -42,11 +44,15 @@ var ComponentRegApp = React.createClass({
     //TODO insert draggable bar and have dragEvents change grid and viewer CSS style dimensons
     return (
       <div className="main">
-        <SpaceSelector type={this.state.type} filter={this.state.filter} onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
-        <DataTablesBtnGroup { ...this.getBtnGroupProps() } />
-        <DataTablesGrid ref="grid" type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
-        <Profile ref="profile" profileId={this.state.profileId} />
-        <Component ref="component" componentId={this.state.componentId} />
+        <div className="browser">
+          <SpaceSelector type={this.state.type} filter={this.state.filter} onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
+          <DataTablesBtnGroup { ...this.getBtnGroupProps() } />
+          <DataTablesGrid ref="grid" type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
+        </div>
+        <div className="viewer">
+          <Profile ref="profile" profileId={this.state.profileId} />
+          <Component ref="component" componentId={this.state.componentId} />
+        </div>
       </div>
     );
   }

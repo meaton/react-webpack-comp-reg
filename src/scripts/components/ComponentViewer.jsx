@@ -4,6 +4,8 @@ var React = require('react/addons');
 var Router = require('react-router');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
+var DataTablesGrid = require('./DataTablesGrid');
+
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 var CompRegLoader = require('../mixins/Loader');
@@ -467,7 +469,6 @@ var ComponentViewer = React.createClass({
     childComp = null,
     errors = null;
 
-    var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup ref="editorBtnGroup" mode="editor" { ...this.getBtnGroupProps() } /> : null;
     var controlLinks = (this.state.editMode) ? ( <div className="controlLinks">
       <a onClick={this.openCloseAll.bind(this, false)}>Collapse all</a> <a onClick={this.openCloseAll.bind(this, true)}>Expand all</a>
     </div> ) : null;
@@ -534,7 +535,6 @@ var ComponentViewer = React.createClass({
 
     return (
       <div className="ComponentViewer">
-        {editBtnGroup}
         {errors}
         <div className="rootProperties">
           {this.printProperties(item)}
@@ -550,13 +550,24 @@ var ComponentViewer = React.createClass({
   render: function () {
     var self = this;
     var item = this.state.profile||this.state.component;
+    var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup ref="editorBtnGroup" mode="editor" { ...this.getBtnGroupProps() } /> : null;
 
     if(item == null)
       return (
         <div className="ComponentViewer loading" />
       );
-    else
-      return this.printRootComponent(item);
+    else {
+      var rootComponent = this.printRootComponent(item);
+      return (this.state.editMode) ? (
+        <div className="editor">
+          {editBtnGroup}
+          {rootComponent}
+          <div className="component-grid">
+            <DataTablesGrid ref="grid" type="components" filter="published" multiple={{ value: false, requestChange: null }} component={this.insertComponent} />
+          </div>
+        </div>
+      ) : rootComponent;
+    }
   }
 });
 

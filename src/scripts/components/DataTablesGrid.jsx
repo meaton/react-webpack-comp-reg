@@ -12,10 +12,33 @@ var DataTablesWrapper = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
+    var resizeScrollBody = function() {
+      var paddingBrowserDiv = $('.browser').innerHeight() - $('.browser').height();
+      var newScrollBodyHeight = $('.main').outerHeight() - $('#testtable_wrapper').offset().top - $('.dataTables_scrollHead').outerHeight() - $('.dataTables_info').outerHeight() - $('.viewer').outerHeight() - paddingBrowserDiv;
+      console.log('resizing dataTables scrollBody: ', newScrollBodyHeight, $('.browser').height());
+      if(newScrollBodyHeight < 280) newScrollBodyHeight = 280;
+      $('.dataTables_scrollBody').height(newScrollBodyHeight);
+    };
+
+    var resizeComponentViewer = function() {
+      var newCompViewerHeight = $('.editor').innerHeight() - $('.ComponentViewer').offset().top + $('.btn-group').outerHeight() - $('.component-grid').outerHeight();
+      console.log('resizing component viewer: ', newCompViewerHeight, $('.editor').outerHeight());
+      if(newCompViewerHeight < 200) newCompViewerHeight = 200;
+      $('.editor .ComponentViewer').height(newCompViewerHeight);
+    };
+
+    $( window ).resize(function() {
+      if(self.isMounted())
+        $('#' + self.getDOMNode().id).DataTable().draw();
+    });
 
     $('#' + this.getDOMNode().id).on( 'draw.dt', function () {
       console.log( 'Redraw occurred at: ' + new Date().getTime() );
       self.state.redraw = false;
+      if($('.browser').length)
+        resizeScrollBody();
+      else if($('.editor').length)
+        resizeComponentViewer();
     });
   },
   /*updateRows: function() {
@@ -184,8 +207,8 @@ var DataTablesGrid = React.createClass({
      var self = this;
      $('#' + this.refs.wrapper.getDOMNode().id).show();
      var table = $('#' + this.refs.wrapper.getDOMNode().id).DataTable({
-         "autoWidth": false,
-         "scrollY": "300px",
+         "autoWidth": true,
+         "scrollY": "250px",
          "scrollCollapse": true,
          "paging": false,
          "destroy": true

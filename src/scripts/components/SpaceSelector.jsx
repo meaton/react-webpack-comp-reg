@@ -70,11 +70,12 @@ var SpaceSelector = React.createClass({
       );
     });
     return (
-      <div>
-      <ButtonGroup className="space_selector">
-        {list}
-        <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
-      </ButtonGroup></div>
+      <div className="left">
+        <ButtonGroup className="space_selector">
+          {list}
+          <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
+        </ButtonGroup>
+      </div>
     );
   }
 });
