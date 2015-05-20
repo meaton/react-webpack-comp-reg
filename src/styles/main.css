@@ -3,6 +3,10 @@ html, body {
   background: #fff;
 }
 
+body.wait, body.wait * {
+   cursor:wait;
+}
+
 div {
   margin: 0;
 }

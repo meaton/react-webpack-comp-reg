@@ -115,12 +115,15 @@ var DataTablesGrid = React.createClass({
       $('#' + this.getDOMNode().id).DataTable().destroy();
   },
   removeSelected: function() {
-    var newData = null;
-    if(this.state.data != null && this.state.lastSelectedItem != null) {
-      console.log('Removing selected item: ' + this.state.lastSelectedItem.state.data.id);
-      //newData = React.addons.update(this.state.data, { $unshift: [this.state.lastSelectedItem.state.data]});
+    //TODO fix reloading of table or removing selected items
+    if(this.state.data != null && this.state.lastSelectedItem != null || $('#testtable tr.selected').length > 0) {
+      console.log('Removing last selected items..');
+
+      //var newData = React.addons.update(this.state.data, { $unshift: [this.state.lastSelectedItem.state.data]});
       //this.setState({ data: newData, lastSelectedItem: null });
+
       this.props.profile(null);
+
       this.clearTable();
       this.loadData(this.state.currentFilter, this.state.currentType);
     }
@@ -190,20 +193,22 @@ var DataTablesGrid = React.createClass({
       return true;
     } else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
       console.log('filters eq:' + (this.state.data.length));
+
       var newData = (this.state.data.length == 0 && nextState.data.length > 0);
       if(newData) this.clearTable();
-      return  newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
+
+      return newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
       this.clearTable();
-
       this.loadData(nextProps.filter, nextProps.type);
+
       return false;
     }
   },
  	componentDidUpdate: function(){
      updateCount++;
-     console.log('did update' + updateCount);
      this.setLoading(false);
+     console.log('did update' + updateCount);
 
      var self = this;
      $('#' + this.refs.wrapper.getDOMNode().id).show();

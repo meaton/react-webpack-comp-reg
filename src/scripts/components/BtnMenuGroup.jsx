@@ -52,7 +52,7 @@ var ButtonModal = React.createClass({
   });
 
 var BtnMenuGroup = React.createClass({
-  mixins: [ Router.State, Router.Navigation ],
+  mixins: [Router.State, Router.Navigation],
   propTypes: {
     mode: React.PropTypes.string
   },
@@ -72,6 +72,23 @@ var BtnMenuGroup = React.createClass({
       cancelParams = { filter: (this.props.newActive) ? "published" : "private",
              type: (this.props.profile != null) ? "profiles" : "components" };
     return cancelParams;
+  },
+  generateDeleteModal: function() {
+    var currentSelection = this.props.profile || this.props.component;
+    var selectedRows = $('#testtable tr.selected');
+    var deleteIdList = [];
+    if(this.props.multiSelect && selectedRows.length > 0)
+      selectedRows.each(function() {
+        var id = $(this).data().reactid;
+        deleteIdList.push((id != undefined && id.indexOf('clarin') > 0) ?
+          React.createElement('span', null, id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':'), React.createElement('br')) :
+          React.createElement('span')
+        );
+      });
+    else
+      deleteIdList = currentSelection;
+
+    return (<div className="modal-desc">You will delete the following item(s): <p>{deleteIdList}</p><p>This cannot be undone.</p></div>);
   },
   render: function () {
     var selectedId = this.props.selectedId;
@@ -103,6 +120,7 @@ var BtnMenuGroup = React.createClass({
         } else
           editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
 
+        var deleteModalDesc = (!isPublished) ? this.generateDeleteModal() : null;
         return (
             <ButtonGroup className="actionMenu">
               <ButtonLink to="newEditor">Create new</ButtonLink>
@@ -111,7 +129,7 @@ var BtnMenuGroup = React.createClass({
               <ButtonModal {...this.props} action={this.props.deleteComp} disabled={isPublished}
                 btnLabel="Delete"
                 title="Delete items"
-                desc={<div className="modal-desc">You will delete the following item(s): <br/>{this.props.profile || this.props.component}<p><br/>This cannot be undone.</p></div>} />
+                desc={deleteModalDesc} />
             </ButtonGroup>
         );
       case "editor":

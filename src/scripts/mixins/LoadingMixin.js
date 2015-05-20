@@ -14,11 +14,11 @@ var LoadingMixin = {
       if(delay == undefined) delay = 1000;
       if(progress) {
         clearTimeout(timeout);
-        $('body').css('cursor', 'wait');
+        $('body').addClass('wait');
       } else {
         if(timeout != null) clearTimeout(timeout);
         timeout = setTimeout(function() {
-          $('body').css('cursor', '');
+          $('body').removeClass('wait');
         }, delay);
       }
     });
