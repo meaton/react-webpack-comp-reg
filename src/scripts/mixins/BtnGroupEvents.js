@@ -40,7 +40,7 @@ var BtnGroupMixin = {
       });
     };
 
-    var deleteSelectedRows = function(selectedRows, cb) {
+    var deleteSelectedRows = function(cb) {
       if(selectedRows.length > 0) {
         selectedRows.each(function() {
           var id = $(this).data().reactid;
@@ -54,12 +54,12 @@ var BtnGroupMixin = {
 
     if(this.state.profileId != null && this.refs.profile != undefined && this.refs.profile.deleteItem != undefined)
       if(!this.state.multiSelect)
-        deleteProfile(selectedRows, this.state.profileId);
-      else deleteSelectedRows(selectedRows, deleteProfile);
+        deleteProfile(this.state.profileId);
+      else deleteSelectedRows(deleteProfile);
     else if(this.state.componentId != null && this.refs.component != undefined && this.refs.component.deleteItem != undefined)
       if(!this.state.multiSelect)
         deleteComponent(this.state.componentId);
-      else deleteSelectedRows(selectedRows, deleteComponent);
+      else deleteSelectedRows(deleteComponent);
 
   },
   saveAction: function(update) {
