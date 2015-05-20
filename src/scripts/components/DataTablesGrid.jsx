@@ -278,12 +278,15 @@ var DataTablesGrid = React.createClass({
     if(currentItem != null && currentItem != target && !this.state.multiSelect)
       currentItem.setState({selected: false});
 
-    if(this.state.currentType == "profiles")
-      this.props.profile(val);
-    else if(this.state.currentType == "components")
-      this.props.component(val);
+    this.setState(function(state, props) {
+      if(currentItem != target)
+        if(state.currentType == "profiles")
+          props.profile(val);
+        else if(state.currentType == "components")
+          props.component(val);
 
-    this.state.lastSelectedItem = target;
+      return  { lastSelectedItem: target };
+    });
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('next props: ' + nextProps.multiple.value + ' ' + this.props.multiple.value);
