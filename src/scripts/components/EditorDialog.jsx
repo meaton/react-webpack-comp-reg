@@ -406,7 +406,9 @@ var ModalTrigger = React.createClass({
   },
   toggleModal: function(evt) {
       console.log('modal visible: ' + this.state.isModalOpen);
+
       var offset = $(this.state.container.getDOMNode()).position();
+      offset.top += (this.state.container.getDOMNode().className == "editor") ? 0 : $('.ComponentViewer').scrollTop();
 
       console.log('toggle modal offset: ' + offset.top + " " + offset.left);
       this.setState({
