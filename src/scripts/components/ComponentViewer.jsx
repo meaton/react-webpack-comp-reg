@@ -12,9 +12,6 @@ var CompRegLoader = require('../mixins/Loader');
 var btnGroup = require('../mixins/BtnGroupEvents');
 var ValidationMixin = require('../mixins/ValidationMixin');
 
-var ee = require('events').EventEmitter;
-var registryEvents = new ee();
-
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
@@ -33,14 +30,6 @@ var update = React.addons.update;
 var md5 = require('spark-md5');
 
 require('../../styles/ComponentViewer.sass');
-
-//TODO: replace with Cursor React-component to received global events
-registryEvents.on('loadingChange', function(progress) {
-  if(progress)
-    $('body').addClass('progress');
-  else
-    $('body').removeClass('progress');
-});
 
 var ComponentViewer = React.createClass({
   statics: {
@@ -163,9 +152,6 @@ var ComponentViewer = React.createClass({
       if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
         childComp.CMD_Component[prop] = newValue;
   },
-  setLoading: function(isLoading) {
-     registryEvents.emit('loadingChange', isLoading);
-  },
   showErrors: function(errors) {
     this.setState({errors: errors});
   },
@@ -180,9 +166,6 @@ var ComponentViewer = React.createClass({
 
     this.setState({ childComponents: childComponents, childElements: childElements });
   },
-  componentWillMount: function() {
-    this.setLoading(true);
-  },
   componentWillReceiveProps: function(nextProps) {
     console.log('will receive props');
 
@@ -194,8 +177,6 @@ var ComponentViewer = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log('will update viewer');
-    this.setLoading(true);
-
     var newItem = nextState.profile||nextState.component;
     console.log('new item props: ' + JSON.stringify(newItem));
 
@@ -220,8 +201,6 @@ var ComponentViewer = React.createClass({
         else
           this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
     }
-
-    this.setLoading(false);
   },
   componentDidMount: function() {
     var self = this;
@@ -243,8 +222,6 @@ var ComponentViewer = React.createClass({
         console.log('Setting up new component...');
         this.setItemPropToState({ '@isProfile': "true", Header: { Name: "", Description: "" }, CMD_Component: { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1" } });
       }
-
-    this.setLoading(false);
   },
   parseComponent: function(item, state) {
     console.log('parseComponent');
@@ -272,7 +249,7 @@ var ComponentViewer = React.createClass({
         console.log('childComponent: ' + JSON.stringify(childComponents[i]));
       }
 
-    this.replaceState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
+    this.setState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
   },
   conceptRegistryBtn: function(container, target) {
     if(container == undefined) container = this;
@@ -484,6 +461,7 @@ var ComponentViewer = React.createClass({
             ? $.map(attrSet, function(attr, index) {
               var attrId = (attr.attrId != undefined) ? attr.attrId : "root_attr_" + md5.hash("root_attr_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
+              //TODO attach dialogs to itself as container rather than viewer
               return (
                 <CMDAttribute key={attrId} attr={attr} value={self.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.conceptRegistryBtn.bind(self, self)} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
               );
@@ -533,6 +511,7 @@ var ComponentViewer = React.createClass({
                  </Alert> );
     }
 
+    //TODO contain properties in its own component
     return (
       <div className="ComponentViewer">
         {errors}

@@ -2,12 +2,13 @@
 
 var React = require('react');
 var CompRegLoader = require('../mixins/Loader');
+var LoadingMixin = require('../mixins/LoadingMixin');
 
 /** Bootstrap components */
 var InfoPanel = require('./InfoPanel.jsx');
 
 var ProfileOverview = React.createClass({
-  mixins: [CompRegLoader],
+  mixins: [CompRegLoader, LoadingMixin],
   propTypes: {
     profileId: React.PropTypes.string
   },
@@ -21,6 +22,7 @@ var ProfileOverview = React.createClass({
   },
   loadProfileXml: function() {
     var self = this;
+    this.setLoading(true);
     this.loadProfile(this.props.profileId, "text", function(data) {
         self.setState({profile_xml: data, visible: true});
     });
@@ -29,27 +31,29 @@ var ProfileOverview = React.createClass({
     console.log('received profile props');
     var self = this;
     if(nextProps.profileId != null && (nextProps.profileId != this.props.profileId)) {
-        this.state.comments = null;
-        this.state.profile_xml = null;
+        this.setState({profile: null, comments: null, profile_xml: null }, function(state, props) {
+          self.setLoading(true);
 
-        this.loadProfile(nextProps.profileId, "json", function(data) {
-          self.setState({profile: data, visible: true});
-        });
+          self.loadProfile(nextProps.profileId, "json", function(data) {
+            self.setState({profile: data, visible: true});
+          });
 
-        this.loadComments(nextProps.profileId, true, function(comments) {
-          self.setState({comments: comments});
+          self.loadComments(nextProps.profileId, true, function(comments) {
+            self.setState({comments: comments});
+          });
         });
     } else
       this.setState({visible: false});
   },
-  componentWillUpdate: function(nextProps, nextState) {
+  componentWillUpdate: function() {
     console.log('profile overview update');
   },
   render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";
+    var infoPanel = (this.state.profile != null) ? <InfoPanel item={this.state.profile} load_data={this.loadProfileXml} xml_data={this.state.profile_xml} comments_data={this.state.comments} /> : null;
     return (
       <div className={hideClass}>
-        <InfoPanel item={this.state.profile} load_data={this.loadProfileXml} xml_data={this.state.profile_xml} comments_data={this.state.comments} />
+        {infoPanel}
       </div>
     );
   }

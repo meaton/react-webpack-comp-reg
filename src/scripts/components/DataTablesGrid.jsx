@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+var LoadingMixin = require('../mixins/LoadingMixin');
 var DataTablesRow = require('./DataTablesRow.jsx');
 var Config = require('../config.js');
 
@@ -95,7 +96,7 @@ var DataTablesWrapper = React.createClass({
 
 var updateCount = 0;
 var DataTablesGrid = React.createClass({
-  mixins: [React.addons.LinkedStateMixin],
+  mixins: [React.addons.LinkedStateMixin, LoadingMixin],
   propTypes: {
     multiple:  React.PropTypes.shape({
       value: React.PropTypes.bool.isRequired,
@@ -125,6 +126,7 @@ var DataTablesGrid = React.createClass({
     }
   },
   loadData: function(nextFilter, nextType) { // TODO: Move into Loader mixin
+    this.setLoading(true);
     var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
     $.ajax({
      url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
@@ -157,11 +159,11 @@ var DataTablesGrid = React.createClass({
      }.bind(this)
    });
  },
-  componentWillMount: function(){
+  componentDidMount: function(){
  		 console.log('will mount datagrid');
-     if(!this.isMounted()) this.loadData();
+     if(this.isMounted()) this.loadData();
  	},
- 	componentDidMount: function(){
+ /*	componentDidMount: function(){
  		// note: data currently loaded after component mount not provided on init
      /*var self = this;
  		var table = $('#' + this.getDOMNode().id).DataTable({
@@ -176,11 +178,9 @@ var DataTablesGrid = React.createClass({
 		}).on('search.dt', function(e, settings) {
       console.log('(mount) search event: ' + e);
     });*/
- 	},
   shouldComponentUpdate: function(nextProps, nextState) {
     console.log('filter: ' + nextProps.filter);
     console.log('currentFilter: ' + nextState.currentFilter);
-
     //console.log('type: ' + nextProps.type);
     //console.log('currentType:' + nextState.currentType);
     //console.log('data count:' + nextState.data.length);
@@ -203,6 +203,7 @@ var DataTablesGrid = React.createClass({
  	componentDidUpdate: function(){
      updateCount++;
      console.log('did update' + updateCount);
+     this.setLoading(false);
 
      var self = this;
      $('#' + this.refs.wrapper.getDOMNode().id).show();
