@@ -5,7 +5,7 @@ var LoadingMixin = require('../mixins/LoadingMixin');
 var DataTablesRow = require('./DataTablesRow.jsx');
 var Config = require('../config.js');
 
-//require('../../styles/DataGrid.sass');
+require('../../styles/DataGrid.sass');
 
 var DataTablesWrapper = React.createClass({
   getInitialState: function() {
@@ -13,6 +13,7 @@ var DataTablesWrapper = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
+    var id = this.getDOMNode().id;
     var resizeScrollBody = function() {
       var paddingBrowserDiv = $('.browser').innerHeight() - $('.browser').height();
       var newScrollBodyHeight = $('.main').outerHeight() - $('#testtable_wrapper').offset().top - $('.dataTables_scrollHead').outerHeight() - $('.dataTables_info').outerHeight() - $('.viewer').outerHeight() - paddingBrowserDiv;
@@ -29,8 +30,7 @@ var DataTablesWrapper = React.createClass({
     };
 
     $( window ).resize(function() {
-      if(self.isMounted())
-        $('#' + self.getDOMNode().id).DataTable().draw();
+        $('#' + id).DataTable().draw();
     });
 
     $('#' + this.getDOMNode().id).on( 'draw.dt', function () {
@@ -76,7 +76,7 @@ var DataTablesWrapper = React.createClass({
       <table className="table table-striped" id="testtable">
         <thead>
           <tr>
-            {(this.props.multiple) ? <td/> : null}
+            {(this.props.multiple || this.props.editMode) ? <td/> : null}
             <td>Name</td>
             <td>Group Name</td>
             <td>Domain Name</td>
@@ -94,25 +94,35 @@ var DataTablesWrapper = React.createClass({
   }
 });
 
-var updateCount = 0;
 var DataTablesGrid = React.createClass({
   mixins: [React.addons.LinkedStateMixin, LoadingMixin],
   propTypes: {
-    multiple:  React.PropTypes.shape({
-      value: React.PropTypes.bool.isRequired,
-      requestChange: React.PropTypes.func.isRequired
-    }),
+    multiple: React.PropTypes.oneOfType([
+      React.PropTypes.shape({
+        value: React.PropTypes.bool,
+        requestChange: React.PropTypes.func
+      }),
+      React.PropTypes.bool
+    ]).isRequired,
     type: React.PropTypes.string,
     filter: React.PropTypes.string, // published / private / group?
     component: React.PropTypes.func,
-    profile: React.PropTypes.func
+    profile: React.PropTypes.func,
+    editMode: React.PropTypes.bool
   },
   getInitialState: function() {
-    return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multiSelect: this.props.multiple.value, lastSelectedItem: null };
+    return {data:[], currentFilter: this.props.filter, currentType: this.props.type, multiSelect: (typeof this.props.multiple === 'boolean') ? this.props.multiple : this.props.multiple.value, lastSelectedItem: null };
+  },
+  getDefaultProps: function() {
+    return { editMode: false };
   },
   clearTable: function() {
-      $('#' + this.getDOMNode().id).hide();
-      $('#' + this.getDOMNode().id).DataTable().destroy();
+    $('#' + this.getDOMNode().id).hide();
+    $('#' + this.getDOMNode().id).DataTable().destroy();
+  },
+  loadItem: function(type, itemId) {
+    (this.props[type] != undefined && this.props[type] != null)
+      if(typeof this.props[type] === 'function') this.props[type](itemId)
   },
   removeSelected: function() {
     //TODO fix reloading of table or removing selected items
@@ -122,8 +132,7 @@ var DataTablesGrid = React.createClass({
       //var newData = React.addons.update(this.state.data, { $unshift: [this.state.lastSelectedItem.state.data]});
       //this.setState({ data: newData, lastSelectedItem: null });
 
-      this.props.profile(null);
-
+      this.loadItem("profile", null);
       this.clearTable();
       this.loadData(this.state.currentFilter, this.state.currentType);
     }
@@ -163,52 +172,36 @@ var DataTablesGrid = React.createClass({
    });
  },
   componentDidMount: function(){
- 		 console.log('will mount datagrid');
+ 		 console.log('will mount datagrid: ' + this.isMounted());
      if(this.isMounted()) this.loadData();
  	},
- /*	componentDidMount: function(){
- 		// note: data currently loaded after component mount not provided on init
-     /*var self = this;
- 		var table = $('#' + this.getDOMNode().id).DataTable({
-       "autoWidth": false,
-       "scrollY": "600px",
-       "scrollCollapse": true,
-       "paging": false,
-       "destroy": true,
-		   "drawCallback": function(settings) {
-         self.forceUpdate();
-       }
-		}).on('search.dt', function(e, settings) {
-      console.log('(mount) search event: ' + e);
-    });*/
   shouldComponentUpdate: function(nextProps, nextState) {
     console.log('filter: ' + nextProps.filter);
     console.log('currentFilter: ' + nextState.currentFilter);
-    //console.log('type: ' + nextProps.type);
-    //console.log('currentType:' + nextState.currentType);
-    //console.log('data count:' + nextState.data.length);
-    //console.log('datatable:' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
+    console.log('type: ' + nextProps.type);
+    console.log('currentType:' + nextState.currentType);
+    console.log('prev data:' + this.state.data.length);
+    console.log('data count:' + nextState.data.length);
+    console.log('datatable:' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
 
-    if(this.props.multiple.value != nextState.multiSelect) {
+    if(typeof this.props.multiple === 'boolean' && this.props.multiple != nextState.multiSelect)
       return true;
-    } else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
+    else if(typeof this.props.multiple.value === 'function' && this.props.multiple.value != nextState.multiSelect)
+      return true;
+    else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
       console.log('filters eq:' + (this.state.data.length));
-
       var newData = (this.state.data.length == 0 && nextState.data.length > 0);
       if(newData) this.clearTable();
-
+      console.log('new data: ' + newData);
       return newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
       this.clearTable();
       this.loadData(nextProps.filter, nextProps.type);
-
       return false;
     }
   },
  	componentDidUpdate: function(){
-     updateCount++;
      this.setLoading(false);
-     console.log('did update' + updateCount);
 
      var self = this;
      $('#' + this.refs.wrapper.getDOMNode().id).show();
@@ -246,18 +239,16 @@ var DataTablesGrid = React.createClass({
 
           not_selected.each(function(i, row) {
             console.log('deselect: ' +  table.row(row).index());
-
             if(!self.state.multiSelect && self.state.lastSelectedItem != row) {
               console.log('match to be deselect');
               self.state.lastSelectedItem.setState({selected: false});
-              self.state.lastSelectedItem = null;
-
-              self.props.profile(null);
+              self.setState({ lastSelectedItem: null }, function() {
+                self.loadItem("profile", null);
+              });
             }
           });
 
           console.log('redraw state: ' + self.refs.wrapper.state.redraw);
-
           if(self.state.multiSelect && !self.refs.wrapper.state.redraw)
             self.refs.wrapper.setState({ rows: not_selected });
         }
@@ -278,39 +269,52 @@ var DataTablesGrid = React.createClass({
         */
       });
  	},
-  rowClick: function(val, target) {
+  rowClick: function(val, target, addComponent) {
+    var self = this;
     var currentItem = this.state.lastSelectedItem;
     if(currentItem != null && currentItem != target && !this.state.multiSelect)
       currentItem.setState({selected: false});
 
+    console.log('addComponent:' + addComponent);
     this.setState(function(state, props) {
-      if(currentItem != target)
+      if(currentItem != target) {
         if(state.currentType == "profiles")
-          props.profile(val);
+          self.loadItem("profile", val);
         else if(state.currentType == "components")
-          props.component(val);
+          self.loadItem("component", val);
+      } else if(addComponent != undefined && state.currentType == "components") {
+        console.log('add component: ' + target.refs.addButton.props.active);
+        self.props.component(val, target.refs.addButton.props.active);
+        //TODO deactivate button on success comple
+        target.setState({ active: false });
+      }
 
       return  { lastSelectedItem: target };
     });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('next props: ' + nextProps.multiple.value + ' ' + this.props.multiple.value);
-    if(this.props.multiple.value != nextProps.multiple.value) {
+    console.log('next props: ' + JSON.stringify(nextProps));
+    if((this.props.multiple === 'boolean' && this.props.multiple != nextProps.multiple) ||
+       (this.props.multiple.value != nextProps.multiple.value)) {
       console.log('change state multiSelect : ' + this.state.multiSelect);
-      this.setState({multiSelect: nextProps.multiple.value, lastSelectedItem: null});
+      this.setState({multiSelect: (typeof nextProps.multiple === 'boolean') ?
+          nextProps.multiple :
+          nextProps.multiple.value,
+        lastSelectedItem: null});
     }
   },
  	render: function(){
      console.log('render');
      var self = this;
+     var addButton = (this.props.editMode) ? true : false;
  	   var x = this.state.data.map(function(d, index){
  			return (
-         <DataTablesRow data={d} key={d.id} multiple={self.state.multiSelect} onClick={self.rowClick} selected={false} className={(index+1 % 2) ? "odd" : "even"} ></DataTablesRow>
+         <DataTablesRow data={d} key={d.id} multiple={self.state.multiSelect} buttonBefore={addButton} onClick={self.rowClick} selected={false} className={(index+1 % 2) ? "odd" : "even"} ></DataTablesRow>
       );
      });
 
 		 return (
-       <DataTablesWrapper ref="wrapper" multiple={this.state.multiSelect} >
+       <DataTablesWrapper ref="wrapper" multiple={this.state.multiSelect} editMode={this.props.editMode} >
         {x}
        </DataTablesWrapper>
 		);

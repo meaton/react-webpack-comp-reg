@@ -31,7 +31,7 @@ var ProfileOverview = React.createClass({
     console.log('received profile props');
     var self = this;
     if(nextProps.profileId != null && (nextProps.profileId != this.props.profileId)) {
-        this.setState({profile: null, comments: null, profile_xml: null }, function(state, props) {
+        this.setState({profile: null, comments: null, profile_xml: null }, function() {
           self.setLoading(true);
 
           self.loadProfile(nextProps.profileId, "json", function(data) {

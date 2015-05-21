@@ -73,7 +73,11 @@ var ComponentViewer = React.createClass({
         this.setState({component: item, childElements: null, childComponents: null});
     }
   },
-
+  selectedComponent: function(componentId, addComponent) {
+    console.log('component selected in datatable: ' + componentId, addComponent);
+    if(addComponent)
+      this.addExistingComponent(componentId);
+  },
   addNewAttribute: function(component, evt) {
     var newAttrObj = { Name: "", Type: "string" }; //TODO check format
 
@@ -94,6 +98,17 @@ var ComponentViewer = React.createClass({
   addNewElement: function(evt) {
     var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
     this.setState({ childElements: elements });
+  },
+  addExistingComponent: function(componentId) { //TODO prevent component being added if already exists at that level
+    var self = this;
+    this.loadComponent(componentId, "json", function(data) {
+        console.log('insert data child comp: ' + (data.CMD_Component != null));
+        data['@ComponentId'] = componentId;
+        data['open'] = true;
+
+        var components = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
+        self.setState({ childComponents: components });
+    });
   },
   addNewComponent: function(evt) {
     var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
@@ -188,14 +203,15 @@ var ComponentViewer = React.createClass({
     }
   },
   componentDidUpdate: function(prevProps, prevState) {
+    var self = this;
+
     var item = this.state.component || this.state.profile;
     var prevItem = prevState.component || prevState.profile;
 
     console.log('component did update: ' + JSON.stringify(prevItem));
-
     if(item != null && prevItem != null && item.Header != undefined) {
-      if((item.Header.Name != item.CMD_Component['@name']) ||
-        (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])) ) //TODO handle isProfile change for non-new resource
+      if(item.Header.Name != item.CMD_Component['@name'] ||
+        (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])))
         if(item['@isProfile'] == "true")
           this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), component: null });
         else
@@ -526,7 +542,7 @@ var ComponentViewer = React.createClass({
       </div>
     );
   },
-  render: function () {
+  render: function() {
     var self = this;
     var item = this.state.profile||this.state.component;
     var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup ref="editorBtnGroup" mode="editor" { ...this.getBtnGroupProps() } /> : null;
@@ -542,7 +558,7 @@ var ComponentViewer = React.createClass({
           {editBtnGroup}
           {rootComponent}
           <div className="component-grid">
-            <DataTablesGrid ref="grid" type="components" filter="published" multiple={{ value: false, requestChange: null }} component={this.insertComponent} />
+            <DataTablesGrid ref="grid" type="components" filter="published" multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode} />
           </div>
         </div>
       ) : rootComponent;
