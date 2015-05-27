@@ -112,9 +112,25 @@ var ComponentViewer = React.createClass({
         console.log('insert data child comp: ' + (data.CMD_Component != null));
         data['@ComponentId'] = componentId;
         data['open'] = true;
+
+        var hasComp = function(comps, componentId) {
+          var foundSibling = false;
+          if($.isArray(comps))
+            comps.forEach(function(comp) {
+              if(comp['@ComponentId'] === componentId)
+                foundSibling = true;
+            });
+
+          return foundSibling;
+        };
+
         if(selectedComps == undefined) {
-          var components = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
-          self.setState({ childComponents: components });
+          if(hasComp(self.state.childComponents, data['@ComponentId']))
+            alert('Cannot add existing component as sibling.');
+          else {
+            var updatedComponents = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
+            self.setState({ childComponents: updatedComponents });
+          }
         } else if(self.state.childComponents != null) {
           // add component data to selected inline-components
           var newComponents = [];
@@ -124,9 +140,13 @@ var ComponentViewer = React.createClass({
               for(var i=0; i < parent.CMD_Component.length; i++) {
                 var parentCompChild = parent.CMD_Component[i];
                 if(parentCompChild.selected)
-                 parentCompChild = (parentCompChild.CMD_Component == undefined) ?
-                  update(parentCompChild, { $merge: { CMD_Component: [compData] } }) :
-                  update(parentCompChild, { CMD_Component: { $push: [compData] } });
+                  if(hasComp(comp.CMD_Component, data['@ComponentId']))
+                    alert('Cannot add existing component as a sibling.');
+                  else {
+                    parentCompChild = (parentCompChild.CMD_Component != undefined) ?
+                      update(parentCompChild, { CMD_Component: { $push: [compData] } }) :
+                      update(parentCompChild, { $merge: { CMD_Component: [compData] } });
+                  }
                 newChildComps.push(checkInlineSelection(parentCompChild, data));
               }
               return update(parent, { CMD_Component: { $set: newChildComps } });
@@ -137,16 +157,18 @@ var ComponentViewer = React.createClass({
           for(var j=0; j < self.state.childComponents.length; j++) {
             var comp = self.state.childComponents[j];
             if(comp.selected)
-              comp = (comp.CMD_Component == undefined) ?
-                update(comp, { $merge: { CMD_Component: [data] } }) :
-                update(comp, { CMD_Component: { $push: [data] } });
-            comp = update(comp, { $apply: function(c) {
-                return checkInlineSelection(c, data);
-            } });
-
+              if(hasComp(comp.CMD_Component, data['@ComponentId']))
+                alert('Cannot add existing component as a sibling.');
+              else {
+                comp = (comp.CMD_Component != undefined) ?
+                  update(comp, { CMD_Component: { $push: [data] } }) :
+                  update(comp, { $merge: { CMD_Component: [data] } });
+                comp = update(comp, { $apply: function(c) {
+                    return checkInlineSelection(c, data);
+                } });
+              }
             newComponents.push(comp);
           }
-
           self.setState({ childComponents: newComponents });
         }
     });
