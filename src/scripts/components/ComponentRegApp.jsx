@@ -42,6 +42,7 @@ var ComponentRegApp = React.createClass({
   },
   render: function() {
     //TODO insert draggable bar and have dragEvents change grid and viewer CSS style dimensons
+    //TODO use datatable toolbar custom DOM with insertion of BtnMenuGroup
     return (
       <div className="main">
         <div className="browser">

@@ -26,16 +26,19 @@ var SpaceSelector = React.createClass({
     return { currentSpaceIdx: (this.props.filter == "private") ? 1 : 0,
              currentRegIdx: (this.props.type == "components") ? 1 : 0,
              multiSelect: this.props.multiSelect.value,
-             spaces: [
-                { label: "Public", registry: [{ type: "Profiles", filter: "published" }, { type: "Components", filter: "published" }], loginRequired: false },
-                { label: "Private", registry: [{ type: "Profiles", filter: "private" }, { type: "Components", filter: "private" }], loginRequired: true }
-             ]};
+             spaces: (this.props.type == "componentsOnly") ?
+                [{ label: "Public", registry: {type: "Components", filter: "published" }, loginRequired: false },
+                 { label: "Private", registry: {type: "Components", filter: "private" }, loginRequired: true }] :
+                [{ label: "Public", registry: [{ type: "Profiles", filter: "published" }, { type: "Components", filter: "published" }], loginRequired: false },
+                 { label: "Private", registry: [{ type: "Profiles", filter: "private" }, { type: "Components", filter: "private" }], loginRequired: true }]
+           };
   },
   spaceSelect: function(nextState, event) {
     console.log('clicked: ' + nextState.currentSpaceIdx);
     console.log('mstate: ' + nextState.currentRegIdx);
     if(this.state.currentSpaceIdx != nextState.currentSpaceIdx || this.state.currentRegIndex != nextState.currentRegIdx) {
-      var registryName = this.state.spaces[nextState.currentSpaceIdx].registry[nextState.currentRegIdx];
+      var space = this.state.spaces[nextState.currentSpaceIdx]
+      var registryName = ($.isArray(space.registry)) ? space.registry[nextState.currentRegIdx] : space.registry.filter;
       console.log('changed props: ' + registryName.filter);
 
       this.props.onSelect(registryName);
@@ -59,21 +62,35 @@ var SpaceSelector = React.createClass({
     var self = this;
     var list = this.state.spaces.map(function(d, sindex){
       var selectedClass = classNames({ active: (self.state.currentSpaceIdx == sindex) });
-      return (
-        <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={(d.loginRequired && !auth.loggedIn())}>
-          {d.registry.map(function(reg, mindex) {
-            var selectedTypeClass = classNames({ selected: (selectedClass == "active" && self.state.currentRegIdx == mindex) });
-            return (
-              React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
-          ) })}
-        </DropdownButton>
-      );
+        if(self.props.type == "componentsOnly")
+          return (
+            <Button className={selectedClass} disabled={d.loginRequired && !auth.loggedIn()} onClick={self.spaceSelect.bind(self, {currentSpaceIdx: sindex, currentRegIdx: 0})} >
+              {d.label}
+            </Button>
+          );
+        else
+        return (
+          <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={d.loginRequired && !auth.loggedIn()}>
+            {d.registry.map(function(reg, mindex) {
+              var selectedTypeClass = classNames({ selected: (selectedClass == "active" && self.state.currentRegIdx == mindex) });
+              return (
+                React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
+            ) })}
+          </DropdownButton>
+        );
     });
-    return (
+    var selectModeBtn = <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>;
+    return (this.props.type == "componentsOnly") ?
+    (
+      <div className="left">
+        <ButtonGroup className="space_selector">{list}</ButtonGroup>
+      </div>
+    ) :
+    (
       <div className="left">
         <ButtonGroup className="space_selector">
           {list}
-          <Button bsStyle={(this.state.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>
+          {selectModeBtn}
         </ButtonGroup>
       </div>
     );

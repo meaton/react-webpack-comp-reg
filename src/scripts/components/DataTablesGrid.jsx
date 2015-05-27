@@ -210,6 +210,7 @@ var DataTablesGrid = React.createClass({
          "scrollY": "250px",
          "scrollCollapse": true,
          "paging": false,
+         "dom": '<"toolbar">frtip',
          "destroy": true
        });
 

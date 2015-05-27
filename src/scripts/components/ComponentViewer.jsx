@@ -5,6 +5,7 @@ var Router = require('react-router');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 var DataTablesGrid = require('./DataTablesGrid');
+var SpaceSelector = require('./SpaceSelector');
 
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
@@ -57,7 +58,8 @@ var ComponentViewer = React.createClass({
                 this.props.editMode :
                 true,
              errors: null,
-             isSaved: false
+             isSaved: false,
+             editorComponents: "published"
     };
   },
   getDefaultProps: function() {
@@ -280,6 +282,13 @@ var ComponentViewer = React.createClass({
         else
           this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
     }
+
+    if(this.state.editMode && this.refs.grid != undefined && this.refs.grid.isMounted()) {
+      $('#' + this.refs.grid.getDOMNode().id).one( 'draw.dt', function () {
+        var elem = React.createElement(SpaceSelector, { type:"componentsOnly", filter:self.state.editorComponents, onSelect: self.switchEditorComponents, multiSelect:false});
+        React.render(elem, $('#testtable_wrapper div.toolbar').get(0));
+      });
+    }
   },
   componentDidMount: function() {
     var self = this;
@@ -329,6 +338,9 @@ var ComponentViewer = React.createClass({
       }
 
     this.setState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
+  },
+  switchEditorComponents: function(filter) {
+    this.setState({ editorComponents: filter });
   },
   conceptRegistryBtn: function(container, target) {
     if(container == undefined) container = this;
@@ -621,7 +633,7 @@ var ComponentViewer = React.createClass({
           {editBtnGroup}
           {rootComponent}
           <div className="component-grid">
-            <DataTablesGrid ref="grid" type="components" filter="published" multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode} />
+            <DataTablesGrid ref="grid" type="components" filter={this.state.editorComponents} multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode} />
           </div>
         </div>
       ) : rootComponent;
