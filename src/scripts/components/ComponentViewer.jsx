@@ -75,8 +75,15 @@ var ComponentViewer = React.createClass({
   },
   selectedComponent: function(componentId, addComponent) {
     console.log('component selected in datatable: ' + componentId, addComponent);
-    if(addComponent)
-      this.addExistingComponent(componentId);
+    var selectedInlineComps = $('.CMDComponent.selected');
+    if(addComponent) //TODO add to selected components if they exist
+      if(selectedInlineComps.length > 0) {
+        console.log('add component ' + componentId + ' to selected inline Components (' + selectedInlineComps.length + ')');
+        this.addExistingComponent(componentId, selectedInlineComps);
+      } else {
+        console.log('add component ' + componentId + ' to root Component');
+        this.addExistingComponent(componentId);
+      }
   },
   addNewAttribute: function(component, evt) {
     var newAttrObj = { Name: "", Type: "string" }; //TODO check format
@@ -99,15 +106,49 @@ var ComponentViewer = React.createClass({
     var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
     this.setState({ childElements: elements });
   },
-  addExistingComponent: function(componentId) { //TODO prevent component being added if already exists at that level
+  addExistingComponent: function(componentId, selectedComps) { //TODO prevent component being added if already exists at that level
     var self = this;
     this.loadComponent(componentId, "json", function(data) {
         console.log('insert data child comp: ' + (data.CMD_Component != null));
         data['@ComponentId'] = componentId;
         data['open'] = true;
+        if(selectedComps == undefined) {
+          var components = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
+          self.setState({ childComponents: components });
+        } else if(self.state.childComponents != null) {
+          // add component data to selected inline-components
+          var newComponents = [];
+          var checkInlineSelection = function(parent, compData) {
+            if(parent.CMD_Component != undefined && parent.CMD_Component.length > 0) {
+              var newChildComps = [];
+              for(var i=0; i < parent.CMD_Component.length; i++) {
+                var parentCompChild = parent.CMD_Component[i];
+                if(parentCompChild.selected)
+                 parentCompChild = (parentCompChild.CMD_Component == undefined) ?
+                  update(parentCompChild, { $merge: { CMD_Component: [compData] } }) :
+                  update(parentCompChild, { CMD_Component: { $push: [compData] } });
+                newChildComps.push(checkInlineSelection(parentCompChild, data));
+              }
+              return update(parent, { CMD_Component: { $set: newChildComps } });
+            }
+            return parent;
+          };
 
-        var components = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
-        self.setState({ childComponents: components });
+          for(var j=0; j < self.state.childComponents.length; j++) {
+            var comp = self.state.childComponents[j];
+            if(comp.selected)
+              comp = (comp.CMD_Component == undefined) ?
+                update(comp, { $merge: { CMD_Component: [data] } }) :
+                update(comp, { CMD_Component: { $push: [data] } });
+            comp = update(comp, { $apply: function(c) {
+                return checkInlineSelection(c, data);
+            } });
+
+            newComponents.push(comp);
+          }
+
+          self.setState({ childComponents: newComponents });
+        }
     });
   },
   addNewComponent: function(evt) {

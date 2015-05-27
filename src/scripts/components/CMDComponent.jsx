@@ -20,7 +20,7 @@ require('../../styles/CMDComponent.sass');
 var CMDComponent = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {
-    return { component: this.props.component, editMode: (this.props.editMode != undefined) ? this.props.editMode : false, isInline: false }
+    return { component: this.props.component, editMode: (this.props.editMode != undefined) ? this.props.editMode : false, isInline: false, isSelected: (this.props.component.selected != undefined) ? this.props.component.selected : false }
   },
   toggleComponent: function(evt) {
     console.log('toggle component: ' + JSON.stringify(this.state.component));
@@ -30,6 +30,12 @@ var CMDComponent = React.createClass({
     else {
       var isOpen = (this.state.component.hasOwnProperty('open')) ? !this.state.component.open : true;
       this.setState({ component: update(this.state.component, { open: { $set: isOpen }}) });
+    }
+  },
+  toggleSelection: function(evt) {
+    if(this.state.isInline) { // selection inline components only
+      var updatedComponent = update(this.state.component, { $merge: { selected: !this.state.isSelected } });
+      this.setState({ component: updatedComponent, isSelected: !this.state.isSelected });
     }
   },
   loadComponentData: function() {
@@ -79,12 +85,15 @@ var CMDComponent = React.createClass({
   },
   addNewComponent: function(evt) {
     console.log('new Component');
-    var component = this.state.component;
+    this.addDefinedComponent({ "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true });
+  },
+  addDefinedComponent: function(component) {
+    console.log('defined component: ' + JSON.stringify(component));
+    var existingComponent = this.state.component;
+    var newComponents = (existingComponent.CMD_Component == undefined) ? [component] : update(existingComponent.CMD_Component, { $push: [component] });
+    var updateComponent = update(existingComponent, { CMD_Component: { $set: newComponents } });
 
-    if(component.CMD_Component == undefined) component.CMD_Component = [];
-    var updatedComponent = update(component, { $merge: { CMD_Component: update(component.CMD_Component, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] }) }});
-
-    this.setState({ component: updatedComponent });
+    this.setState({ component: updateComponent });
   },
   updateAttribute: function(index, newAttr) {
     console.log('attr update: ' + index);
@@ -141,7 +150,8 @@ var CMDComponent = React.createClass({
     if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
       component = update(component, { open: { $set: nextProps.component.open }});
       this.setState({ component: component });
-    }
+    } else if(this.state.isInline)
+      this.setState({ component: nextProps.component });
   },
   componentWillMount: function() {
     console.log('component will mount');
@@ -263,11 +273,11 @@ var CMDComponent = React.createClass({
     // classNames
     var viewClasses = classNames('componentBody', { 'hide': !this.state.component.open });
     var editClasses = classNames('componentBody', { 'hide-field': !this.state.component.open && this.state.editMode });
-    var componentClasses = classNames('CMDComponent', { 'edit-mode': this.state.editMode, 'open': this.state.component.open });
+    var componentClasses = classNames('CMDComponent', { 'edit-mode': this.state.editMode, 'open': this.state.component.open, 'selected': this.state.isSelected });
 
     var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
     var addAttrLink = (this.state.editMode) ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div> : null;
-
+    var selectionLink = (this.state.isInline) ? <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div> : null;
     var attrList = (
       <div className="attrList">AttributeList:
         {
@@ -338,18 +348,18 @@ var CMDComponent = React.createClass({
             <div className="childElements">{compElems}
               <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
             </div>
-            <div className="childComponents">{compComps}
-              <div className="addComponent"><a onClick={self.addNewComponent}>+Component</a></div>
+            <div ref="components" className="childComponents">{compComps}
+              <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>
             </div>
           </div>
         ): null;
 
       return (
         <div className={componentClasses}>
-          {actionButtons}
+          {actionButtons} {selectionLink}
           <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
           <div className={editClasses}>
-            <form className="form-horizontal form-group" name={"componentForm_" + compId}>
+            <form className="form-horizontal form-group" name={(this.state.isInline) ? "componentForm_inline" : "componentForm_" + compId}>
               {componentProps}
               <Input type="select" label="Min Occurrences" defaultValue={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={handleOccMinChange}>
                 <option value="unbounded">unbounded</option>
@@ -376,7 +386,7 @@ var CMDComponent = React.createClass({
           <div className={viewClasses}>
             {attrList}
             <div className="childElements">{compElems}</div>
-            <div className="childComponents">{compComps}</div>
+            <div ref="components" className="childComponents">{compComps}</div>
           </div>
         </div>
       );
