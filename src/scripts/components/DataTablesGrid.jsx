@@ -186,7 +186,7 @@ var DataTablesGrid = React.createClass({
 
     if(typeof this.props.multiple === 'boolean' && this.props.multiple != nextState.multiSelect)
       return true;
-    else if(typeof this.props.multiple.value === 'function' && this.props.multiple.value != nextState.multiSelect)
+    else if(typeof this.props.multiple.requestChange === 'function' && this.props.multiple.value != nextState.multiSelect)
       return true;
     else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
       console.log('filters eq:' + (this.state.data.length));
