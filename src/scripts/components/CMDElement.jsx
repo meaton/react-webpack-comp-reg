@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react/addons');
-var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
@@ -17,7 +17,7 @@ var md5 = require('spark-md5');
 require('../../styles/CMDElement.sass');
 
 var CMDElement = React.createClass({
-  mixins: [LinkedStateMixin, ImmutableRenderMixin, ActionButtonsMixin],
+  mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {
     return { elem: this.props.elem, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
   },
@@ -41,9 +41,9 @@ var CMDElement = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     var elem = this.state.elem;
     console.log('elem will received new props');
-    console.log('elem props: ' + JSON.stringify(nextProps.elem));
+    /*console.log('elem props: ' + JSON.stringify(nextProps.elem));
     console.log('elem props: ' + this.props.elem.open);
-
+    */
     if(nextProps.elem.hasOwnProperty('open') && (this.state.elem.open != nextProps.elem.open)) { // open/close all
       elem = update(elem, { open: { $set: nextProps.elem.open }});
       this.setState({ elem: elem });
@@ -51,25 +51,25 @@ var CMDElement = React.createClass({
   },
   componentDidMount: function() {
     var elem = this.state.elem;
-    if(elem.AttributeList != undefined && !$.isArray(elem.AttributeList.Attribute)) {
-      elem.AttributeList.Attribute = [elem.AttributeList.Attribute];
-    }
-
+    if(elem.AttributeList != undefined && !$.isArray(elem.AttributeList.Attribute))
+      elem = update(elem, { AttributeList: { Attribute: { $set: [elem.AttributeList.Attribute] } }});
     if(elem.ValueScheme != undefined)
       var enumVal = elem.ValueScheme.enumeration;
       if(enumVal != undefined && enumVal.item != undefined && !$.isArray(enumVal.item))
-        enumVal.item = [enumVal.item];
-
-    console.log('mounted element: ' + JSON.stringify(elem));
+        elem = update(elem, { ValueScheme: { enumeration: { item: { $set: [enumVal.item] } }}});
 
     this.setState({ elem: update(elem, { open: { $set: true }}) });
+    console.log('mounted element: ' + JSON.stringify(elem));
   },
   componentWillUpdate: function(nextProps, nextState) {
-    console.log('element will update');
-    console.log(JSON.stringify(this.props.elem));
-    console.log(JSON.stringify(nextState.elem));
-    if(JSON.stringify(this.props.elem) != JSON.stringify(nextState.elem)) //TODO not required after ImmutableRenderMixin?
-      this.props.onUpdate(nextState.elem);
+    console.log('element will update: ' + nextState.elem.elemId);
+  },
+  componentDidUpdate: function(prevProps, prevState) {
+    console.log('elem did update: ' + this.state.elem.elemId);
+    /*console.log(JSON.stringify(this.props.elem));
+    console.log(JSON.stringify(this.state.elem));*/
+    if(JSON.stringify(this.state.elem) != JSON.stringify(prevState.elem))
+      this.props.onUpdate(this.state.elem);
   },
   updateAttribute: function(index, newAttr) {
     console.log('attr update: ' + index);
@@ -107,12 +107,13 @@ var CMDElement = React.createClass({
   },
   render: function () {
     var self = this;
-    var elem = this.state.elem;
     var attrList = null;
     var valueScheme = this.props.viewer.getValueScheme(elem, this);
     var actionButtons = this.getActionButtons();
 
-    console.log('rendering element: ' + require('util').inspect(elem));
+    var elem = this.state.elem;
+    var elemInspect = elem.elemId; // require('util').inspect(elem);
+    console.log('rendering element: ',  elemInspect);
 
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
     if(elem.AttributeList != undefined || this.state.editMode) {

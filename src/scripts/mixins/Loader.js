@@ -44,10 +44,11 @@ var LoaderMixin = {
       }.bind(this)
     });
   },
-  getItemName: function(itemId, cb) {
+  getItemName: function(itemId, cb) { // cannot sync call require callback
     var name = null;
     this.loadRegistryItem(itemId, function(data) {
-      name = data.name;
+      if(cb) return cb(data.name);
+      else name = data.name;
     });
 
     return name;
@@ -58,7 +59,6 @@ var LoaderMixin = {
       dataType: "json",
       username: Config.auth.username,
       password: Config.auth.password,
-      async: false,
       xhrFields: {
         withCredentials: true
       },

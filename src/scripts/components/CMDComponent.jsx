@@ -20,12 +20,16 @@ require('../../styles/CMDComponent.sass');
 var CMDComponent = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {
-    return { component: this.props.component, editMode: (this.props.editMode != undefined) ? this.props.editMode : false, isInline: false, isSelected: (this.props.component.selected != undefined) ? this.props.component.selected : false }
+    return { component: this.props.component,
+             componentName: (this.props.component.Header != undefined) ? this.props.component.Header.Name : null,
+             editMode: (this.props.editMode != undefined) ? this.props.editMode : false,
+             isInline: false,
+             isSelected: (this.props.component.selected != undefined) ? this.props.component.selected : false }
   },
   toggleComponent: function(evt) {
     console.log('toggle component: ' + JSON.stringify(this.state.component));
     if((!this.state.component.hasOwnProperty('open') || !this.state.component.open) &&
-       this.state.component.hasOwnProperty('@ComponentId'))
+       this.state.component.hasOwnProperty('@ComponentId') && this.state.component.Header == undefined)
        this.loadComponentData();
     else {
       var isOpen = (this.state.component.hasOwnProperty('open')) ? !this.state.component.open : true;
@@ -41,12 +45,11 @@ var CMDComponent = React.createClass({
   loadComponentData: function() {
     var self = this;
     var comp = this.state.component;
-
     this.props.viewer.loadComponent(this.state.component["@ComponentId"], "json", function(data) { //TODO: use common load child Component spec fn callback as in viewer
           console.log('data child comp: ' + (data.CMD_Component != null));
           data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (comp.hasOwnProperty("@CardinalityMin")) ? comp["@CardinalityMin"] : 1, '@CardinalityMax': (comp.hasOwnProperty("@CardinalityMax")) ? comp["@CardinalityMax"] : 1}})
 
-          var newComponent = update(data, {open: {$set: true}})
+          var newComponent = update(data, { open: { $set: true } });
           self.setState({component: newComponent });
       });
   },
@@ -123,7 +126,6 @@ var CMDComponent = React.createClass({
     if(newMax != null) child['@CardinalityMax'] = newMax;
 
     var linkChild = this.linkState('component.' + index);
-
     linkChild.requestChange(child);
   },
   updateInlineComponent: function(index, newComponent) {
@@ -144,9 +146,11 @@ var CMDComponent = React.createClass({
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('component will received new props');
+
     var component = this.state.component;
     console.log('component props: ' + JSON.stringify(nextProps.component));
-    if(this.state.isInline)
+
+    if(this.state.isInline && nextProps.component.open && nextProps.component.selected)
       this.setState({ component: nextProps.component, open: nextProps.component.open });
     else if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
       component = update(component, { open: { $set: nextProps.component.open }});
@@ -159,42 +163,51 @@ var CMDComponent = React.createClass({
     if(!comp.hasOwnProperty("@ComponentId") && comp.Header != undefined)
       comp = comp.CMD_Component;
 
-    if(!comp.hasOwnProperty("@CardinalityMin")) comp['@CardinalityMin'] = 1;
-    if(!comp.hasOwnProperty("@CardinalityMax")) comp['@CardinalityMax'] = 1;
+    if(!comp.hasOwnProperty("@CardinalityMin")) comp = update(comp, { '@CardinalityMin': { $set: 1 } });
+    if(!comp.hasOwnProperty("@CardinalityMax")) comp = update(comp, { '@CardinalityMax': { $set:  1 } });
+
+    if(!comp.hasOwnProperty("@CardinalityMin") || !comp.hasOwnProperty("@CardinalityMax"))
+      this.setState({ component: update(this.state.component, { CMD_Component: { $set: comp } }) });
   },
   componentDidMount: function() {
     console.log('component did mount');
     var component = this.state.component;
 
     if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
-      component.CMD_Element = [component.CMD_Element];
+      component = update(component, { CMD_Element: { $set: [component.CMD_Element] } });
     }
 
     if(component.CMD_Component != undefined && !$.isArray(component.CMD_Component)) {
       if(component.Header == undefined)
-        component.CMD_Component = [component.CMD_Component];
+        component = update(component, { CMD_Component: { $set: [component.CMD_Component] } });
       else if(component.CMD_Component.CMD_Element != undefined && !$.isArray(component.CMD_Component.CMD_Element))
-        component.CMD_Component.CMD_Element = [component.CMD_Component.CMD_Element];
+        component = update(component, { CMD_Component: { CMD_Element: { $set: [component.CMD_Component.CMD_Element] } }});
     }
 
     if(component.AttributeList != undefined && !$.isArray(component.AttributeList.Attribute)) {
-      component.AttributeList.Attribute = [component.AttributeList.Attribute];
+      component = update(component, { AttributeList: { Attribute: { $set: [component.AttributeList.Attribute]} }});
     } else if($.isArray(component.AttributeList))
-      component.AttributeList.Attribute = component.AttributeList;
+      component = update(component, { AttributeList: { Attribute: { $set: component.AttributeList } }});
 
     if(!component.hasOwnProperty("@ComponentId") && component.hasOwnProperty("@name"))
         this.setState({ isInline: true, component: update(component, { open: { $set: true }}) });
-
+    else
+      this.setState({ component: component });
     console.log('mounted component: ' + JSON.stringify(component));
   },
-  componentWillUpdate: function(nextProps, nextState) {
-    console.log('component will update: ' + require('util').inspect(nextState.component));
-    if(this.state.editMode && this.state.isInline && this.state.component.open)
-      if(JSON.stringify(this.state.component) != JSON.stringify(nextState.component))
-        this.props.onInlineUpdate(nextState.component);
+  componentDidUpdate: function(prevProps, prevState) {
+    console.log('component did update: ', (this.state.isInline) ? this.state.component.inlineId : this.state.component['@ComponentId']);
+    var self = this;
+    if(!this.state.isInline && this.state.componentName == null && this.state.component.Header == undefined)
+      this.props.viewer.getItemName(this.state.component['@ComponentId'], function(name) {
+        self.setState({ componentName: name });
+      });
+    else if(this.state.editMode && this.state.isInline && this.state.component.open)
+      if(JSON.stringify(this.state.component) != JSON.stringify(prevState.component))
+        this.props.onInlineUpdate(this.state.component);
   },
   render: function () {
-    console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
+    //console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
     var self = this;
     var comp = this.state.component;
     var actionButtons = this.getActionButtons();
@@ -206,6 +219,8 @@ var CMDComponent = React.createClass({
       compId = comp.Header.ID;
     else
       compId = null;
+
+    console.log('comp render: ', (compId != null) ? compId : 'inline');
 
     var header = comp.Header;
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
@@ -219,18 +234,14 @@ var CMDComponent = React.createClass({
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
-    console.log('comp header: ' + JSON.stringify(header));
-    console.log('open: ' + this.state.component.open);
+    console.log('comp header: ', (header != undefined) ? JSON.stringify(header) : 'none');
+    console.log('open: ', (this.state.component.open != undefined) ? this.state.component.open : 'false');
 
     var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
     var compElems = comp.CMD_Element;
 
-    console.log('comp elems: ' + $.isArray(compElems));
-
     if(!$.isArray(compElems) && compElems != undefined)
       compElems = [compElems];
-
-    console.log('comp elems: ' + $.isArray(compElems));
 
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
@@ -240,9 +251,8 @@ var CMDComponent = React.createClass({
         return <CMDElement key={elemId} elem={elem} viewer={self.props.viewer} editMode={self.state.editMode} onUpdate={self.updateElement.bind(self, index)} onRemove={self.removeElement.bind(self, index)} moveUp={self.moveElement.bind(self, index, index-1)} moveDown={self.moveElement.bind(self, index, index+1)} />
       });
 
-    //TODO review name replace
-    if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name')))
-      compName = this.props.viewer.getItemName(compId); // load name if doesn't exist
+    if(!this.state.component.open && (compId != null && !comp.hasOwnProperty('@name') && this.state.componentName != null))
+       compName = this.state.componentName;
     else if(comp.hasOwnProperty("@name"))
       compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 

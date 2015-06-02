@@ -262,7 +262,7 @@ var ComponentViewer = React.createClass({
 
     if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
       if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
-        newItem.CMD_Component.AttributeList.Attribute = [newItem.CMD_Component.AttributeList.Attribute];
+        newItem = update(newItem, { CMD_Component: { AttributeList: { Attribute: { $set: [newItem.CMD_Component.AttributeList.Attribute] } }}});
 
       this.parseComponent(newItem, nextState);
     }
@@ -273,7 +273,8 @@ var ComponentViewer = React.createClass({
     var item = this.state.component || this.state.profile;
     var prevItem = prevState.component || prevState.profile;
 
-    console.log('component did update: ' + JSON.stringify(prevItem));
+    console.log('component did update: ' + JSON.stringify(item));
+
     if(item != null && prevItem != null && item.Header != undefined) {
       if(item.Header.Name != item.CMD_Component['@name'] ||
         (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])))
@@ -337,7 +338,7 @@ var ComponentViewer = React.createClass({
         console.log('childComponent: ' + JSON.stringify(childComponents[i]));
       }
 
-    this.setState({ childElements: childElements, childComponents: childComponents, profile: state.profile, component: state.component, registry: state.registry, editMode: state.editMode });
+    this.setState({ childElements: childElements, childComponents: childComponents, profile: (item['@isProfile'] === "true") ? item : state.profile, component: (item['@isProfile'] === "true") ? state.component : item, registry: state.registry, editMode: state.editMode });
   },
   switchEditorComponents: function(filter) {
     this.setState({ editorComponents: filter });
@@ -400,6 +401,7 @@ var ComponentViewer = React.createClass({
   getValueScheme: function(obj, container, target) {
     if(container == undefined) container = this;
     if(target == undefined) target = container;
+    if(obj == undefined) return null;
 
     var typeTrigger = (
       <EditorDialog type="Type" label="Edit..." container={container} target={target} />
