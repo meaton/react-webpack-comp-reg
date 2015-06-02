@@ -3,17 +3,13 @@ $gridHeight: 380px;
 $tabContentHeight: 300px;
 
 .browser {
-  top: 0;
   padding: 8px;
-  width: 100%;
 }
 
 .viewer {
-  bottom: 0;
   padding: 8px;
   min-height: $bottomPaneHeight;
   height: $bottomPaneHeight;
-  width: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
 }
@@ -24,32 +20,24 @@ $tabContentHeight: 300px;
 }
 
 .editor {
-  position: absolute;
-  top: 80px;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
+  margin-top: 60px;
+  height: 100%;
   background: #fff;
   color: #999;
+  overflow: hidden;
 }
 
 .editor .ComponentViewer {
-  padding: 8px;
-  width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
 .editor .component-grid {
-  padding: 8px;
-  width: 100%;
   min-height: $gridHeight;
   height: $gridHeight;
   overflow: hidden;
-  bottom: 20px;
 }
 
 .editor .actionMenu.btn-group {
-  margin: 16px;
+  padding: 8px;
 }

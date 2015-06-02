@@ -44,13 +44,13 @@ var ComponentRegApp = React.createClass({
     //TODO insert draggable bar and have dragEvents change grid and viewer CSS style dimensons
     //TODO use datatable toolbar custom DOM with insertion of BtnMenuGroup
     return (
-      <div className="main">
-        <div className="browser">
+      <div className="main container-fluid">
+        <div className="browser row">
           <SpaceSelector type={this.state.type} filter={this.state.filter} onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
           <DataTablesBtnGroup { ...this.getBtnGroupProps() } />
           <DataTablesGrid ref="grid" type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
         </div>
-        <div className="viewer">
+        <div className="viewer row">
           <Profile ref="profile" profileId={this.state.profileId} />
           <Component ref="component" componentId={this.state.componentId} />
         </div>

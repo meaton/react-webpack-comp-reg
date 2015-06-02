@@ -14,6 +14,8 @@ var DataTablesWrapper = React.createClass({
   componentDidMount: function() {
     var self = this;
     var id = this.getDOMNode().id;
+
+    //TODO review resizing and height setting of datagrid scrollBody
     var resizeScrollBody = function() {
       var paddingBrowserDiv = $('.browser').innerHeight() - $('.browser').height();
       var newScrollBodyHeight = $('.main').outerHeight() - $('#testtable_wrapper').offset().top - $('.dataTables_scrollHead').outerHeight() - $('.dataTables_info').outerHeight() - $('.viewer').outerHeight() - paddingBrowserDiv;
@@ -170,19 +172,31 @@ var DataTablesGrid = React.createClass({
        console.error(status, err);
      }.bind(this)
    });
- },
+  },
   componentDidMount: function(){
  		 console.log('will mount datagrid: ' + this.isMounted());
      if(this.isMounted()) this.loadData();
  	},
+  componentWillReceiveProps: function(nextProps) {
+     console.log('next props: ' + JSON.stringify(nextProps));
+     if((this.props.multiple === 'boolean' && this.props.multiple != nextProps.multiple) ||
+        (this.props.multiple.value != nextProps.multiple.value)) {
+       console.log('change state multiSelect : ' + this.state.multiSelect);
+       this.setState({multiSelect: (typeof nextProps.multiple === 'boolean') ?
+           nextProps.multiple :
+           nextProps.multiple.value,
+         lastSelectedItem: null});
+     }
+  },
   shouldComponentUpdate: function(nextProps, nextState) {
-    console.log('filter: ' + nextProps.filter);
+    /*console.log('filter: ' + nextProps.filter);
     console.log('currentFilter: ' + nextState.currentFilter);
     console.log('type: ' + nextProps.type);
     console.log('currentType:' + nextState.currentType);
     console.log('prev data:' + this.state.data.length);
     console.log('data count:' + nextState.data.length);
     console.log('datatable:' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
+    */
 
     if(typeof this.props.multiple === 'boolean' && this.props.multiple != nextState.multiSelect)
       return true;
@@ -286,23 +300,12 @@ var DataTablesGrid = React.createClass({
       } else if(addComponent != undefined && state.currentType == "components") {
         console.log('add component: ' + target.refs.addButton.props.active);
         self.props.component(val, target.refs.addButton.props.active);
-        //TODO deactivate button on success comple
+
         target.setState({ active: false });
       }
 
       return  { lastSelectedItem: target };
     });
-  },
-  componentWillReceiveProps: function(nextProps) {
-    console.log('next props: ' + JSON.stringify(nextProps));
-    if((this.props.multiple === 'boolean' && this.props.multiple != nextProps.multiple) ||
-       (this.props.multiple.value != nextProps.multiple.value)) {
-      console.log('change state multiSelect : ' + this.state.multiSelect);
-      this.setState({multiSelect: (typeof nextProps.multiple === 'boolean') ?
-          nextProps.multiple :
-          nextProps.multiple.value,
-        lastSelectedItem: null});
-    }
   },
  	render: function(){
      console.log('render');

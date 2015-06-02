@@ -146,12 +146,12 @@ var CMDComponent = React.createClass({
     console.log('component will received new props');
     var component = this.state.component;
     console.log('component props: ' + JSON.stringify(nextProps.component));
-
-    if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
+    if(this.state.isInline)
+      this.setState({ component: nextProps.component, open: nextProps.component.open });
+    else if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
       component = update(component, { open: { $set: nextProps.component.open }});
       this.setState({ component: component });
-    } else if(this.state.isInline)
-      this.setState({ component: nextProps.component });
+    }
   },
   componentWillMount: function() {
     console.log('component will mount');
@@ -190,9 +190,8 @@ var CMDComponent = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
     console.log('component will update: ' + require('util').inspect(nextState.component));
     if(this.state.editMode && this.state.isInline && this.state.component.open)
-      if(JSON.stringify(this.state.component) != JSON.stringify(nextState.component)) { // TODO required with ImmutableRenderMixin?
+      if(JSON.stringify(this.state.component) != JSON.stringify(nextState.component))
         this.props.onInlineUpdate(nextState.component);
-      }
   },
   render: function () {
     console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));

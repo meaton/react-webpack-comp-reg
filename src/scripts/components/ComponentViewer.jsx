@@ -28,6 +28,7 @@ var EditorBtnGroup = require('./BtnMenuGroup');
 var EditorDialog = require('./EditorDialog');
 
 var update = React.addons.update;
+var classNames = require('classnames');
 var md5 = require('spark-md5');
 
 require('../../styles/ComponentViewer.sass');
@@ -144,10 +145,10 @@ var ComponentViewer = React.createClass({
                 if(parentCompChild.selected)
                   if(hasComp(parentCompChild.CMD_Component, data['@ComponentId']))
                     alert('Cannot add existing component as a sibling.');
+                  else if(parentCompChild.CMD_Component != undefined)
+                    parentCompChild = update(parentCompChild, { $merge: { CMD_Component: update(parentCompChild.CMD_Component, { $push: [compData] }), open: true } });
                   else
-                    parentCompChild = (parentCompChild.CMD_Component != undefined) ?
-                      update(parentCompChild, { CMD_Component: { $push: [compData] } }) :
-                      update(parentCompChild, { $merge: { CMD_Component: [compData] } });
+                    parentCompChild = update(parentCompChild, { $merge: { CMD_Component: [compData], open: true } });
 
                 newChildComps.push(checkInlineSelection(parentCompChild, data));
               }
@@ -161,10 +162,9 @@ var ComponentViewer = React.createClass({
             if(comp.selected)
               if(hasComp(comp.CMD_Component, data['@ComponentId']))
                 alert('Cannot add existing component as a sibling.');
-              else
-                comp = (comp.CMD_Component != undefined) ?
-                  update(comp, { CMD_Component: { $push: [data] } }) :
-                  update(comp, { $merge: { CMD_Component: [data] } });
+              else if(comp.CMD_Component != undefined)
+                  comp = update(comp, { $merge: { CMD_Component: update(comp.CMD_Component, { $push: [data] }), open: true } });
+              else comp = update(comp, { $merge: { CMD_Component: [data], open: true } });
 
             comp = update(comp, { $apply: function(c) {
                 return checkInlineSelection(c, data);
@@ -603,8 +603,9 @@ var ComponentViewer = React.createClass({
     }
 
     //TODO contain properties in its own component
+    var rootClasses = classNames({ ComponentViewer: true });
     return (
-      <div className="ComponentViewer">
+      <div className={rootClasses}>
         {errors}
         <div className="rootProperties">
           {this.printProperties(item)}
@@ -629,10 +630,12 @@ var ComponentViewer = React.createClass({
     else {
       var rootComponent = this.printRootComponent(item);
       return (this.state.editMode) ? (
-        <div className="editor">
-          {editBtnGroup}
-          {rootComponent}
-          <div className="component-grid">
+        <div className="editor container-fluid">
+          <div className="component-edit-form row">
+            {editBtnGroup}
+            {rootComponent}
+          </div>
+          <div className="component-grid row">
             <DataTablesGrid ref="grid" type="components" filter={this.state.editorComponents} multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode} />
           </div>
         </div>
