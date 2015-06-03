@@ -50,7 +50,7 @@ var ComponentViewer = React.createClass({
   },
   mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   getInitialState: function() {
-    return { registry: { domainName: '', groupName: '' },
+    return { registry: { domainName: null, groupName: null },
              profile: null,
              component: null,
              childElements: null,
@@ -293,7 +293,7 @@ var ComponentViewer = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    var id = this.getParams().component||this.getParams.profile;
+    var id = this.getParams().component || this.getParams().profile;
 
     console.log('viewer mounted: ' + id);
     console.log('editmode: ' + this.state.editMode);
@@ -490,17 +490,14 @@ var ComponentViewer = React.createClass({
       var groupNameLink = this.linkState('registry.groupName');
 
       // Registry Input fields
-      var groupNameInput = (this.state.registry != null) ?
-        <Input type="text" ref="rootComponentGroupName" label="Group Name" defaultValue={groupNameLink.value} onChange={this.handleRegistryInputChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-                                         : null;
-      var domainNameInput = (this.state.registry != null) ? (
-        <Input type="select" ref="rootComponentDomain" label="Domain" defaultValue={domainLink.value} onChange={this.handleRegistryInputChange.bind(this, domainLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+      var groupNameInput = <Input type="text" ref="rootComponentGroupName" key={(this.state.registry.hasOwnProperty('id')) ? this.state.registry.id + "_groupName" : "root_groupName"} label="Group Name" defaultValue={groupNameLink.value} onChange={this.handleRegistryInputChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />;
+      var domainNameInput = (
+        <Input type="select" ref="rootComponentDomain" key={(this.state.registry.hasOwnProperty('id')) ? this.state.registry.id + "_domainName" : "root_domainName"} label="Domain" defaultValue={domainLink.value} onChange={this.handleRegistryInputChange.bind(this, domainLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
           <option value="">Select a domain...</option>
           {this.props.domains.map(function(domain, index) {
             return <option key={index} value={domain.data}>{domain.label}</option>
           })}
-        </Input> )
-        : null;
+        </Input> );
 
       // Edit properties form
       return (
