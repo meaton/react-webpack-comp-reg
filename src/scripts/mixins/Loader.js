@@ -1,3 +1,4 @@
+var React = require('react/addons');
 var Config = require('../config');
 var Jsonix = require('jsonix').Jsonix;
 var clone = require('clone');
@@ -35,6 +36,7 @@ var LoaderMixin = {
       xhrFields: {
         withCredentials: true
       },
+      async: false, //TODO sync is dep, review CMDComponent parseComponents usage
       success: function(data) {
         if(cb) cb(data);
       }.bind(this),
@@ -92,7 +94,13 @@ var LoaderMixin = {
     var self = this;
     var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
 
-    rootComponent.CMD_Component = (childComps != undefined || childComps != null) ? childComps.map(function(comp, index) {
+    if(childComps != undefined && childComps != null && !$.isArray(childComps)) {
+      console.log('found non-Array object:' + JSON.stringify(childComps));
+      //childComps = React.addons.update(childComps, { $set: [childComps ]});
+    }
+
+    rootComponent.CMD_Component = (childComps != undefined && childComps != null) ?
+      childComps.map(function(comp, index) {
         var newComp = comp;
         var componentId = null;
 
