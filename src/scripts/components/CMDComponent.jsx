@@ -172,16 +172,19 @@ var CMDComponent = React.createClass({
   componentDidMount: function() {
     console.log('component did mount');
     var component = this.state.component;
-
+    //TODO review single-object to array mappings
     if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
-      component = update(component, { CMD_Element: { $set: [component.CMD_Element] } });
+      component.CMD_Element = [component.CMD_Element];
+      //component = update(component, { CMD_Element: { $set: [component.CMD_Element] } });
     }
 
     if(component.CMD_Component != undefined && !$.isArray(component.CMD_Component)) {
       if(component.Header == undefined)
-        component = update(component, { CMD_Component: { $set: [component.CMD_Component] } });
+        component.CMD_Component = [component.CMD_Component];
+        //component = update(component, { CMD_Component: { $set: [component.CMD_Component] } });
       else if(component.CMD_Component.CMD_Element != undefined && !$.isArray(component.CMD_Component.CMD_Element))
-        component = update(component, { CMD_Component: { CMD_Element: { $set: [component.CMD_Component.CMD_Element] } }});
+        component.CMD_Component.CMD_Element = [component.CMD_Component.CMD_Element];
+        //component = update(component, { CMD_Component: { CMD_Element: { $set: [component.CMD_Component.CMD_Element] } }});
     }
 
     if(component.AttributeList != undefined && !$.isArray(component.AttributeList.Attribute)) {
@@ -193,6 +196,7 @@ var CMDComponent = React.createClass({
         this.setState({ isInline: true, component: update(component, { open: { $set: true }}) });
     else
       this.setState({ component: component });
+
     console.log('mounted component: ' + JSON.stringify(component));
   },
   componentDidUpdate: function(prevProps, prevState) {
