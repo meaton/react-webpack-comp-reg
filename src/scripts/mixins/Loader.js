@@ -32,7 +32,6 @@ var LoaderMixin = {
       dataType: (raw_type != undefined) ? raw_type : "json",
       username: Config.auth.username,
       password: Config.auth.password,
-      async: false, //TODO: sync is dep
       xhrFields: {
         withCredentials: true
       },
