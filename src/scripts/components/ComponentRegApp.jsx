@@ -17,7 +17,9 @@ require('../../styles/ComponentEditor.sass');
 
 var ComponentRegApp = React.createClass({
   mixins: [btnMenuGroup, React.addons.LinkedStateMixin, State],
-  //mixins: [ Authentication ],
+  contextTypes: {
+    loggedIn: React.PropTypes.bool.isRequired
+  },
   getInitialState: function() {
     return { filter: "published", type: "profiles", profileId: null, componentId: null, multiSelect: false };
   },
@@ -46,7 +48,7 @@ var ComponentRegApp = React.createClass({
     return (
       <div className="main container-fluid">
         <div className="browser row">
-          <SpaceSelector type={this.state.type} filter={this.state.filter} onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} onChange={this.clearInfo} />
+          <SpaceSelector type={this.state.type} filter={this.state.filter} onSelect={this.handleSelect} multiSelect={this.linkState("multiSelect")} validUserSession={this.context.loggedIn} onChange={this.clearInfo} />
           <DataTablesBtnGroup { ...this.getBtnGroupProps() } />
           <DataTablesGrid ref="grid" type={this.state.type} filter={this.state.filter} multiple={this.linkState("multiSelect")} profile={this.showProfile} component={this.showComponent} />
         </div>

@@ -46,7 +46,8 @@ var ComponentViewer = React.createClass({
     }
   },
   contextTypes: {
-    router: React.PropTypes.func
+    router: React.PropTypes.func,
+    loggedIn: React.PropTypes.bool.isRequired
   },
   mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   getInitialState: function() {
@@ -286,7 +287,7 @@ var ComponentViewer = React.createClass({
 
     if(this.state.editMode && this.refs.grid != undefined && this.refs.grid.isMounted()) {
       $('#' + this.refs.grid.getDOMNode().id).one( 'draw.dt', function () {
-        var elem = React.createElement(SpaceSelector, { type:"componentsOnly", filter:self.state.editorComponents, onSelect: self.switchEditorComponents, multiSelect:false});
+        var elem = React.createElement(SpaceSelector, { type:"componentsOnly", filter:self.state.editorComponents, onSelect: self.switchEditorComponents, validUserSession: self.context.loggedIn, multiSelect:false});
         React.render(elem, $('#testtable_wrapper div.toolbar').get(0));
       });
     }

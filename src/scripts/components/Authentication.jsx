@@ -15,17 +15,10 @@ var Login = React.createClass({
       error: false
     };
   },
-  handleSubmit: function(event) {
-    event.target.method = "post";
-    event.target.action = Login.authUrl + "?redirect=" + "http://" + window.location.host + "/";
-
-    return true;
-  },
   checkLogin: function (event) {
     auth.login(function (loggedIn) {
       if (!loggedIn)
         return this.setState({ error: true });
-
       if (Login.attemptedTransition) {
         var transition = Login.attemptedTransition;
         Login.attemptedTransition = null;
@@ -35,14 +28,22 @@ var Login = React.createClass({
       }
     }.bind(this));
   },
+  componentDidMount: function() {
+    this.refs.submitForm.getDOMNode().submit();
+  },
   render: function () {
     var errors = this.state.error ? <p>Error!</p> : '';
-    return (
-      <form onSubmit={this.handleSubmit}>
+    var postForm =
+      (<form ref="submitForm" action={ Login.authUrl + "?redirect=" + "http://" + window.location.host + "/" } method="POST" className="hide">
         <button type="button" onClick={this.checkLogin}>check status</button><br/>
         <button type="submit">login</button>
         {errors}
-      </form>
+      </form>);
+    return (
+      <div className="auth">
+        <span className="message">Redirecting to login...</span>
+        {postForm}
+      </div>
     );
   }
 });
@@ -52,14 +53,14 @@ var Logout = React.createClass({
     auth.logout();
   },
   render: function () {
-    return <p>You are now logged out</p>;
+    return ( <div className="auth"><span className="message">You are now logged out</span></div> );
   }
 });
 
 var Authentication = {
   statics: {
     willTransitionTo: function (transition, params, query) {
-      if (!auth.loggedIn()) {
+      if (!auth.login()) {
         Login.attemptedTransition = transition;
         transition.redirect('login');
       }
@@ -70,42 +71,41 @@ var Authentication = {
 var auth = {
   login: function (cb) {
     cb = arguments[arguments.length - 1];
+
+    /*
     if (localStorage.token && localStorage.displayName) {
       if (cb) cb(true);
       this.onChange(true, localStorage.displayName);
       return;
     }
+    */
 
     loginRequest(function (res) {
       console.log('auth:' + res.authenticated);
       if (res.authenticated) {
-        localStorage.token = res.token;
-        localStorage.displayName = res.displayName;
+        //localStorage.token = res.token;
+        //localStorage.displayName = res.displayName;
         if (cb) cb(true);
         this.onChange(true, res.displayName);
       } else {
         if (cb) cb(false);
         this.onChange(false);
       }
+
     }.bind(this));
   },
-  getDisplayName: function() {
+  /*getDisplayName: function() {
     return localStorage.displayName;
   },
   getToken: function () {
     return localStorage.token;
-  },
+  },*/
   logout: function (cb) {
     delete localStorage.displayName;
     delete localStorage.token;
+
     if (cb) cb();
     this.onChange(false);
-  },
-  loggedIn: function () {
-    return !!localStorage.token;
-  },
-  onChange: function () {
-    console.log('login change event');
   }
 };
 

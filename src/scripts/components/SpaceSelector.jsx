@@ -20,7 +20,8 @@ var SpaceSelector = React.createClass({
     multiSelect: React.PropTypes.shape({
       value: React.PropTypes.bool.isRequired,
       requestChange: React.PropTypes.func.isRequired
-    })
+    }),
+    validUserSession: React.PropTypes.bool
   },
   getInitialState: function() {
     return { currentSpaceIdx: (this.props.filter == "private") ? 1 : 0,
@@ -55,22 +56,23 @@ var SpaceSelector = React.createClass({
     if(JSON.stringify(this.props.currentSelection) != JSON.stringify(nextProps.currentSelection))
       this.forceUpdate();
   },
-  componentWillUpdate: function() {
-    console.log('is logged in : ' + auth.loggedIn())
+  componentWillUpdate: function(nextProps, nextState) {
+    console.log('is logged in : ' + nextProps.validUserSession);
   },
   render: function() {
+    console.log('context loggedIn: ' + this.props.validUserSession);
     var self = this;
     var list = this.state.spaces.map(function(d, sindex){
       var selectedClass = classNames({ active: (self.state.currentSpaceIdx == sindex) });
         if(self.props.type == "componentsOnly")
           return (
-            <Button className={selectedClass} disabled={d.loginRequired && !auth.loggedIn()} onClick={self.spaceSelect.bind(self, {currentSpaceIdx: sindex, currentRegIdx: 0})} >
+            <Button className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession} onClick={self.spaceSelect.bind(self, {currentSpaceIdx: sindex, currentRegIdx: 0})} >
               {d.label}
             </Button>
           );
         else
         return (
-          <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={d.loginRequired && !auth.loggedIn()}>
+          <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession}>
             {d.registry.map(function(reg, mindex) {
               var selectedTypeClass = classNames({ selected: (selectedClass == "active" && self.state.currentRegIdx == mindex) });
               return (

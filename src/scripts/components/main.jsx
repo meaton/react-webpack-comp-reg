@@ -14,14 +14,6 @@ var ComponentEditor = require('./ComponentEditor.jsx');
 
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 
-var UserSettings = React.createClass({
-    render: function() {
-      return (
-        <h1>Settings</h1>
-      );
-    }
-});
-
 var NotFound = React.createClass({
   render: function() {
     return (
@@ -42,7 +34,7 @@ require('../../styles/normalize.css');
 var Main = React.createClass({
   getInitialState: function() {
     return {
-      loggedIn: auth.loggedIn(),
+      loggedIn: false,
       displayName: ''
     };
   },
@@ -51,6 +43,13 @@ var Main = React.createClass({
       loggedIn: loggedIn,
       displayName: displayName
     });
+  },
+  childContextTypes: {
+      loggedIn: React.PropTypes.bool.isRequired,
+      displayName: React.PropTypes.string.isRequired
+  },
+  getChildContext: function() {
+       return { loggedIn: this.state.loggedIn, displayName: this.state.displayName };
   },
   componentWillMount: function() {
     /*$(document).ready(function() {
@@ -62,7 +61,7 @@ var Main = React.createClass({
   },
   render: function() {
      var loginOrOut = this.state.loggedIn ?
-       <div className="auth-logged-in">{this.state.displayName} <Link to="settings">settings</Link> <Link to="logout">logout</Link></div> :
+       <div className="auth-logged-in">{this.state.displayName} <a href="http://localhost:8080/ComponentRegistry/admin/userSettings" target="_blank">settings</a> <Link to="logout">logout</Link></div> :
        <Link to="login">login</Link>;
     return (
       <div>
@@ -79,7 +78,6 @@ var routes = (
       <NotFoundRoute handler={NotFound}/>
       <Route name="login" handler={Login} />
       <Route name="logout" handler={Logout} />
-      <Route name="settings" handler={UserSettings} />
       <Route name="import" handler={Import} />
       <Route path="editor" handler={ComponentEditor}>
         <Route name="component" path="component/:component" handler={ComponentViewer} />

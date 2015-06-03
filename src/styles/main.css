@@ -42,6 +42,14 @@ a { cursor: pointer; color: #999; }
   overflow: hidden;
 }
 
+.auth {
+  margin-top: 60px;
+}
+
+.auth .message {
+  padding: 16px;
+}
+
 .registry_item {
   margin-top: 20px;
   padding-left: 20px;
