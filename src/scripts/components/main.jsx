@@ -46,7 +46,7 @@ var Main = React.createClass({
   },
   childContextTypes: {
       loggedIn: React.PropTypes.bool.isRequired,
-      displayName: React.PropTypes.string.isRequired
+      displayName: React.PropTypes.string
   },
   getChildContext: function() {
        return { loggedIn: this.state.loggedIn, displayName: this.state.displayName };
