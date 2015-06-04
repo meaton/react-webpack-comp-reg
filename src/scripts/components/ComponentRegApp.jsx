@@ -2,7 +2,6 @@
 
 var React = require('react/addons');
 var State = require('react-router').State;
-var Authentication = require('./Authentication.jsx').Authentication;
 var Profile = require('./ProfileOverview.jsx');
 var Component = require('./ComponentOverview.jsx');
 var SpaceSelector = require('./SpaceSelector.jsx');
@@ -16,7 +15,7 @@ var btnMenuGroup = require('../mixins/BtnGroupEvents');
 require('../../styles/ComponentEditor.sass');
 
 var ComponentRegApp = React.createClass({
-  mixins: [Authentication, btnMenuGroup, React.addons.LinkedStateMixin, State],
+  mixins: [btnMenuGroup, React.addons.LinkedStateMixin, State],
   contextTypes: {
     loggedIn: React.PropTypes.bool.isRequired
   },

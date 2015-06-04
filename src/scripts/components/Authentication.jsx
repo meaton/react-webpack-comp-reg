@@ -7,6 +7,7 @@ var Config = require('../config');
 var Login = React.createClass({
   mixins: [ Router.Navigation ],
   statics: {
+    sessionExists: false,
     attemptedTransition: null,
     authUrl: "http://localhost:8080/ComponentRegistry/rest/authentication"
   },
@@ -33,6 +34,7 @@ var Login = React.createClass({
   },
   render: function () {
     var errors = this.state.error ? <p>Error!</p> : '';
+    //TODO check for last attemptedTransition (path), use in redirect
     var postForm =
       (<form ref="submitForm" action={ Login.authUrl + "?redirect=" + "http://" + window.location.host + "/" } method="POST" className="hide">
         <button type="button" onClick={this.checkLogin}>check status</button><br/>
@@ -59,13 +61,18 @@ var Logout = React.createClass({
 
 var Authentication = {
   statics: {
-    willTransitionTo: function (transition, params, query) {
-      auth.login(function(loggedIn) {
-        if(!loggedIn) {
-          Login.attemptedTransition = transition;
-          transition.redirect('login');
-        }
-      });
+    willTransitionTo: function (transition, params, query, callback) {
+      if(!Login.sessionExists) {
+        auth.login().then(function(data) {
+          if(data.authenticated === 'false') {
+            Login.attemptedTransition = transition;
+            transition.redirect('login');
+          } else {
+            Login.sessionExists = true;
+            transition.retry();
+          }
+        }).then(callback);
+      } else callback();
     }
   }
 };
@@ -82,15 +89,17 @@ var auth = {
     }
     */
 
-    loginRequest(function (res) {
+    return loginRequest(function (res) {
       console.log('auth:' + res.authenticated);
       if (res.authenticated) {
         //localStorage.token = res.token;
         //localStorage.displayName = res.displayName;
         if (cb) cb(true);
+        Login.sessionExists = true;
         this.onChange(true, res.displayName);
       } else {
         if (cb) cb(false);
+        Login.sessionExists = false;
         this.onChange(false);
       }
 
@@ -107,12 +116,13 @@ var auth = {
     delete localStorage.token;
 
     if (cb) cb();
+    Login.sessionExists = false;
     this.onChange(false);
   }
 };
 
 var loginRequest = function(cb) {
-    $.ajax({
+    return $.ajax({
       url: Login.authUrl,
       type: 'GET',
       username: Config.auth.username,
@@ -124,7 +134,7 @@ var loginRequest = function(cb) {
       success: function (result){
         console.log('result: ' + result);
         cb({
-          authenticated: result.authenticated == 'true',
+          authenticated: result.authenticated === 'true',
           token: Math.random().toString(36).substring(7),
           displayName: result.displayName
         });
