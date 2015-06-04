@@ -126,7 +126,7 @@ var BtnMenuGroup = React.createClass({
               <ButtonLink to="newEditor">Create new</ButtonLink>
               {editorLink}
               <ButtonLink to="import">Import</ButtonLink>
-              <ButtonModal {...this.props} action={this.props.deleteComp} disabled={isPublished}
+              <ButtonModal {...this.props} action={this.props.deleteComp} disabled={(this.props.profile == null && this.props.component == null) || isPublished}
                 btnLabel="Delete"
                 title="Delete items"
                 desc={deleteModalDesc} />
