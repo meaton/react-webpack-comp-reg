@@ -33,6 +33,7 @@ var DataTablesRow = React.createClass({
     console.log('received props row: ' +  this.props.multiple);
     if(this.props.multiple != nextProps.multiple)
         this.setState({selected: false});
+
   },
   componentDidUpdate: function() {
     if(this.refs.addButton) {
@@ -40,6 +41,12 @@ var DataTablesRow = React.createClass({
         console.log('add button is active: ' + this.refs.addButton.props.active, this.state.selected);
         this.props.onClick(this.state.data.id, this, true);
       }
+    }
+  },
+  componentDidMount: function() {
+    if(this.state.selected) {
+      console.log('row selected on mount: ' + this.state.data.id);
+      this.props.onClick(this.state.data.id, this);
     }
   },
   render: function(){

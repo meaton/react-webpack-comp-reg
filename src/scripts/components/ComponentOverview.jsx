@@ -38,10 +38,24 @@ var ComponentOverview = React.createClass({
           self.setState({comments: comments});
         });
       });
-    } else
+    } else if(nextProps.componentId == null)
       this.setState({visible: false});
   },
-  render: function () {
+  componentDidMount: function() {
+    var self = this;
+    if(this.props.componentId) {
+      self.setLoading(true);
+
+      self.loadComponent(this.props.componentId, "json", function(data) {
+        self.setState({component: data, visible: true});
+      });
+
+      self.loadComments(this.props.componentId, false, function(comments) {
+        self.setState({comments: comments});
+      });
+    }
+  },
+  render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";
     var infoPanel = (this.state.component != null) ? <InfoPanel item={this.state.component} load_data={this.loadComponentXml} xml_data={this.state.component_xml} comments_data={this.state.comments} /> : null;
     return (

@@ -16,12 +16,18 @@ var btnMenuGroup = require('../mixins/BtnGroupEvents');
 require('../../styles/ComponentEditor.sass');
 
 var ComponentRegApp = React.createClass({
-  mixins: [btnMenuGroup, React.addons.LinkedStateMixin, State],
+  mixins: [Authentication, btnMenuGroup, React.addons.LinkedStateMixin, State],
   contextTypes: {
     loggedIn: React.PropTypes.bool.isRequired
   },
+  childContextTypes: {
+      itemId: React.PropTypes.string
+  },
   getInitialState: function() {
     return { filter: "published", type: "profiles", profileId: null, componentId: null, multiSelect: false };
+  },
+  getChildContext: function() {
+       return { itemId: this.state.profileId || this.state.componentId };
   },
   handleSelect: function(sel_registry) {
     this.setState({ type: sel_registry.type.toLowerCase(), filter: sel_registry.filter, profileId: null, componentId: null });

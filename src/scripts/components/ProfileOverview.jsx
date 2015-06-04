@@ -28,7 +28,8 @@ var ProfileOverview = React.createClass({
     });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('received profile props');
+    console.log('received profile props: ' + JSON.stringify(nextProps));
+    console.log('profileId: ' + this.props.profileId);
     var self = this;
     if(nextProps.profileId != null && (nextProps.profileId != this.props.profileId)) {
         this.setState({profile: null, comments: null, profile_xml: null }, function() {
@@ -42,11 +43,23 @@ var ProfileOverview = React.createClass({
             self.setState({comments: comments});
           });
         });
-    } else
+    } else if(nextProps.profileId == null)
       this.setState({visible: false});
   },
-  componentWillUpdate: function() {
-    console.log('profile overview update');
+  componentDidMount: function() {
+    console.log('profileId mount:' + this.props.profileId);
+    var self = this;
+    if(this.props.profileId) {
+      this.setLoading(true);
+
+      this.loadProfile(this.props.profileId, "json", function(data) {
+        self.setState({profile: data, visible: true});
+      });
+
+      this.loadComments(this.props.profileId, true, function(comments) {
+        self.setState({comments: comments});
+      });
+    }
   },
   render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";

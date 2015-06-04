@@ -98,6 +98,9 @@ var DataTablesWrapper = React.createClass({
 
 var DataTablesGrid = React.createClass({
   mixins: [React.addons.LinkedStateMixin, LoadingMixin],
+  contextTypes: {
+    itemId: React.PropTypes.string
+  },
   propTypes: {
     multiple: React.PropTypes.oneOfType([
       React.PropTypes.shape({
@@ -283,6 +286,13 @@ var DataTablesGrid = React.createClass({
         }
         */
       });
+
+      console.log('row count: ' + React.Children.count(this.refs.wrapper.props.children));
+      React.Children.forEach(this.refs.wrapper.props.children, function(row) {
+        if(row.props.selected) {
+          console.log('selected row ' + row.key + ': ' + row.props.selected);
+        }
+      });
  	},
   rowClick: function(val, target, addComponent) {
     var self = this;
@@ -292,7 +302,7 @@ var DataTablesGrid = React.createClass({
 
     console.log('addComponent:' + addComponent);
     this.setState(function(state, props) {
-      if(currentItem != target) {
+      if(currentItem != target && !(currentItem == null && val === this.context.itemId)) {
         if(state.currentType == "profiles")
           self.loadItem("profile", val);
         else if(state.currentType == "components")
@@ -310,10 +320,11 @@ var DataTablesGrid = React.createClass({
  	render: function(){
      console.log('render');
      var self = this;
+     var contextItemId = this.context.itemId;
      var addButton = (this.props.editMode) ? true : false;
  	   var x = this.state.data.map(function(d, index){
  			return (
-         <DataTablesRow data={d} key={d.id} multiple={self.state.multiSelect} buttonBefore={addButton} onClick={self.rowClick} selected={false} className={(index+1 % 2) ? "odd" : "even"} ></DataTablesRow>
+         <DataTablesRow data={d} key={d.id} multiple={self.state.multiSelect} buttonBefore={addButton} onClick={self.rowClick} selected={contextItemId != undefined && contextItemId === d.id} className={(index+1 % 2) ? "odd" : "even"} ></DataTablesRow>
       );
      });
 
