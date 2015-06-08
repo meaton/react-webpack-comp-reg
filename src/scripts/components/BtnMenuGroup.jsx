@@ -105,7 +105,6 @@ var BtnMenuGroup = React.createClass({
 
     switch(this.props.mode) {
       case "normal":
-        // TODO: cleanup button link
         var currentSelect = this.props.profile || this.props.component;
         console.log('currentSelect: ' + currentSelect);
 

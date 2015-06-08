@@ -80,7 +80,7 @@ var ComponentViewer = React.createClass({
   selectedComponent: function(componentId, addComponent) {
     console.log('component selected in datatable: ' + componentId, addComponent);
     var selectedInlineComps = $('.CMDComponent.selected');
-    if(addComponent) //TODO add to selected components if they exist
+    if(addComponent)
       if(selectedInlineComps.length > 0) {
         console.log('add component ' + componentId + ' to selected inline Components (' + selectedInlineComps.length + ')');
         this.addExistingComponent(componentId, selectedInlineComps);

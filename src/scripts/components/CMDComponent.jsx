@@ -110,7 +110,7 @@ var CMDComponent = React.createClass({
       this.setState({ component: update(item, { AttributeList: { $set: { Attribute: attrSet } }}) });
     }
   },
-  updateElement: function(index, newElement) { // TODO check update state after reordering
+  updateElement: function(index, newElement) {
     var linkChild = (this.state.component.Header != undefined) ?
       this.linkState('component.CMD_Component.CMD_Element.' + index) :
       this.linkState('component.CMD_Element.' + index);
@@ -322,7 +322,7 @@ var CMDComponent = React.createClass({
 
       var componentProps = null;
       if(compId == null) {
-        var nameLink = this.linkState('component.@name'); //TODO bind conceptLink
+        var nameLink = this.linkState('component.@name');
 
         //inline component props
         componentProps = (

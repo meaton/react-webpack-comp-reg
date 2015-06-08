@@ -16,7 +16,7 @@ var DataTablesWrapper = React.createClass({
     var id = this.getDOMNode().id;
 
     //TODO review resizing and height setting of datagrid scrollBody
-    var resizeScrollBody = function() {
+     var resizeScrollBody = function() {
       var paddingBrowserDiv = $('.browser').innerHeight() - $('.browser').height();
       var newScrollBodyHeight = $('.main').outerHeight() - $('#testtable_wrapper').offset().top - $('.dataTables_scrollHead').outerHeight() - $('.dataTables_info').outerHeight() - $('.viewer').outerHeight() - paddingBrowserDiv;
       console.log('resizing dataTables scrollBody: ', newScrollBodyHeight, $('.browser').height());
@@ -35,14 +35,15 @@ var DataTablesWrapper = React.createClass({
         $('#' + id).DataTable().draw();
     });
 
-    $('#' + this.getDOMNode().id).on( 'draw.dt', function () {
+    /*$('#' + this.getDOMNode().id).on( 'draw.dt', function () {
       console.log( 'Redraw occurred at: ' + new Date().getTime() );
       self.state.redraw = false;
       if($('.browser').length)
         resizeScrollBody();
       else if($('.editor').length)
         resizeComponentViewer();
-    });
+    });*/
+
   },
   /*updateRows: function() {
     //TODO: update and draw of row state still not working with filtered results, likely destroy of table req, alt opt implement own search/filter feature in React component

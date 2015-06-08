@@ -95,9 +95,6 @@ var BtnGroupMixin = {
           else self.setState({ isSaved: true }, function() { self.transitionTo('/', null, queryParams); }); // return route if no errors
       });
   },
-  createNewAction: function(evt) { //TODO
-    console.log('create new clicked: ' + evt.target);
-  },
   importNewAction: function(evt) { //TODO
     console.log('import new clicked: ' + evt.target);
   }
