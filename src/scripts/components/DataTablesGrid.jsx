@@ -302,16 +302,26 @@ var DataTablesGrid = React.createClass({
 
     console.log('addComponent:' + addComponent);
     this.setState(function(state, props) {
-      if(currentItem != target && !(currentItem == null && val === this.context.itemId)) {
-        if(state.currentType == "profiles")
-          self.loadItem("profile", val);
-        else if(state.currentType == "components")
-          self.loadItem("component", val);
+
+      if(currentItem != target && !(currentItem == null && val === this.context.itemId) && target.state.selected) {
+        self.loadItem(state.currentType.substr(0, state.currentType.length-1), val);
       } else if(addComponent != undefined && state.currentType == "components") {
         console.log('add component: ' + target.refs.addButton.props.active);
         self.props.component(val, target.refs.addButton.props.active);
 
         target.setState({ active: false });
+      } else {
+        var selectedRows = $('#testtable tr.selected:first');
+        if(selectedRows.length < 1)
+          self.props.profile(null); //TODO find next selection item in multiple select mode
+        else {
+          var id = selectedRows.data().reactid;
+          if(id != undefined && id.indexOf('clarin') > 0) {
+            id = id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':');
+            self.loadItem(state.currentType.substr(0, state.currentType.length-1), id);
+          }
+        }
+        return { lastSelectedItem: null };
       }
 
       return  { lastSelectedItem: target };

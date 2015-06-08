@@ -3,6 +3,7 @@
 var React = require('react/addons');
 var Router = require('react-router');
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
+
 //Bootstrap components
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
@@ -13,7 +14,8 @@ var ButtonModal = React.createClass({
       mixins: [OverlayMixin],
       getInitialState: function() {
         return {
-          isModalOpen: false
+          isModalOpen: false,
+          description: this.props.desc
         };
       },
       getDefaultProps: function() {
@@ -28,15 +30,18 @@ var ButtonModal = React.createClass({
           isModalOpen: !this.state.isModalOpen
         });
       },
-      render() {
+      componentWillReceiveProps: function(nextProps) {
+        this.setState({ description: nextProps.desc });
+      },
+      render: function() {
         return <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
       },
-      renderOverlay() {
+      renderOverlay: function() {
         if(!this.state.isModalOpen) {
           return <span/>;
         }
 
-        var desc = (typeof this.props.desc == "string") ? ( <p className="modal-desc">{this.props.desc}</p> ) : this.props.desc;
+        var desc = (typeof this.props.desc == "string") ? ( <p className="modal-desc">{this.state.desc}</p> ) : this.props.desc;
         return (
           <Modal bsStyle="primary" title={this.props.title} animation={false} backdrop={true} onRequestHide={this.toggleModal}>
             <div className="modal-body">
@@ -120,7 +125,6 @@ var BtnMenuGroup = React.createClass({
         } else
           editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
 
-        var deleteModalDesc = (!isPublished) ? this.generateDeleteModal() : null;
         return (
             <ButtonGroup className="actionMenu">
               <ButtonLink to="newEditor">Create new</ButtonLink>
@@ -129,7 +133,7 @@ var BtnMenuGroup = React.createClass({
               <ButtonModal {...this.props} action={this.props.deleteComp} disabled={(this.props.profile == null && this.props.component == null) || isPublished}
                 btnLabel="Delete"
                 title="Delete items"
-                desc={deleteModalDesc} />
+                desc={this.generateDeleteModal()} />
             </ButtonGroup>
         );
       case "editor":

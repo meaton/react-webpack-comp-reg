@@ -16,14 +16,17 @@ var DataTablesRow = React.createClass({
     return { multiple: false, buttonBefore: false };
   },
   rowClick: function(val, event) {
+    var dgSelect = this.props.onClick;
     var target = event.currentTarget;
     var chkVal = (this.props.multiple) ? !this.state.selected : true;
 
     console.log('row click: ' + val);
     console.log('chkval: ' + chkVal);
 
-    this.props.onClick(val, this);
-    this.setState({selected: chkVal});
+    this.setState({selected: chkVal}, function() {
+      if(chkVal) dgSelect(val, this);
+      else dgSelect(null, this);
+    });
   },
   buttonClick: function(evt) {
     evt.currentTarget.blur();
