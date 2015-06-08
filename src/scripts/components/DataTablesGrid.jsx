@@ -163,7 +163,7 @@ var DataTablesGrid = React.createClass({
             _data = [_data];
         }
 
-       this.setState({data: (_data != null) ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
+       this.setState({data: (_data != null || _data != 'null') ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
      }.bind(this),
      error: function(xhr, status, err) {
        console.error(status, err);
@@ -292,7 +292,7 @@ var DataTablesGrid = React.createClass({
     var self = this;
     var currentItem = this.state.lastSelectedItem;
     if(currentItem != null && currentItem != target && !this.state.multiSelect)
-      currentItem.setState({selected: false});
+      currentItem.setState({selected: false, active:false});
 
     console.log('addComponent:' + addComponent);
     this.setState(function(state, props) {

@@ -51,7 +51,7 @@ var ComponentViewer = React.createClass({
   },
   mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   getInitialState: function() {
-    return { registry: { domainName: null, groupName: null },
+    return { registry: { domainName: '', groupName: '' },
              profile: null,
              component: null,
              childElements: null,

@@ -15,22 +15,26 @@ var DataTablesRow = React.createClass({
   getDefaultProps: function() {
     return { multiple: false, buttonBefore: false };
   },
-  rowClick: function(val, event) {
+  rowClick: function(val, evt) {
     var dgSelect = this.props.onClick;
-    var target = event.currentTarget;
+    var target = evt.currentTarget;
     var chkVal = (this.props.multiple) ? !this.state.selected : true;
 
     console.log('row click: ' + val);
     console.log('chkval: ' + chkVal);
 
     this.setState({selected: chkVal}, function() {
-      if(chkVal) dgSelect(val, this);
+      if(chkVal) dgSelect(val, this, this.state.active);
       else dgSelect(null, this);
     });
   },
   buttonClick: function(evt) {
+    var self = this;
+
+    evt.stopPropagation();
     evt.currentTarget.blur();
-    this.setState({active: true});
+
+    this.setState({ active: true }, function() { self.rowClick(self.state.data.id, evt); });
   },
   componentWillReceiveProps: function(nextProps) {
     console.log('received props row: ' +  this.props.multiple);
