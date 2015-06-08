@@ -2,7 +2,7 @@
 
 var React = require('react/addons');
 
-//require('../../styles/ActionButtons.sass');
+require('../../styles/ActionButtons.sass');
 
 var ActionButtons = React.createClass({
   propTypes: {

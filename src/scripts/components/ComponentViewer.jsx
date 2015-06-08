@@ -284,13 +284,6 @@ var ComponentViewer = React.createClass({
         else
           this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
     }
-
-    if(this.state.editMode && this.refs.grid != undefined && this.refs.grid.isMounted()) {
-      $('#' + this.refs.grid.getDOMNode().id).one( 'draw.dt', function () {
-        var elem = React.createElement(SpaceSelector, { type:"componentsOnly", filter:self.state.editorComponents, onSelect: self.switchEditorComponents, validUserSession: self.context.loggedIn, multiSelect:false});
-        React.render(elem, $('#testtable_wrapper div.toolbar').get(0));
-      });
-    }
   },
   componentDidMount: function() {
     var self = this;
@@ -636,7 +629,9 @@ var ComponentViewer = React.createClass({
             {rootComponent}
           </div>
           <div className="component-grid row">
-            <DataTablesGrid ref="grid" type="components" filter={this.state.editorComponents} multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode} />
+            <DataTablesGrid ref="grid" type="components" filter={this.state.editorComponents} multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode}>
+              <SpaceSelector type="componentsOnly" filter={this.state.editorComponents} onSelect={this.switchEditorComponents} validUserSession={this.context.loggedIn} multiSelect={false} />
+            </DataTablesGrid>
           </div>
         </div>
       ) : rootComponent;

@@ -153,7 +153,7 @@ var DataTablesGrid = React.createClass({
      },
      success: function(data) {
        var _data = data;
-       if(_data != null) {
+       if(_data != null && _data != 'null') {
           if(_data.hasOwnProperty("componentDescription") && type == "components")
             _data = data.componentDescription;
           else if(_data.hasOwnProperty("profileDescription") && type == "profiles")
@@ -163,19 +163,19 @@ var DataTablesGrid = React.createClass({
             _data = [_data];
         }
 
-       this.setState({data: (_data != null || _data != 'null') ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
+       this.setState({data: (_data != null && _data != 'null') ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
      }.bind(this),
      error: function(xhr, status, err) {
        console.error(status, err);
      }.bind(this)
    });
   },
-  componentDidMount: function(){
+  componentWillMount: function(){
  		 console.log('will mount datagrid: ' + this.isMounted());
-     if(this.isMounted()) this.loadData();
+     if(!this.isMounted()) this.loadData();
  	},
   componentWillReceiveProps: function(nextProps) {
-     console.log('next props: ' + JSON.stringify(nextProps));
+    // console.log('next props: ' + JSON.stringify(nextProps));
      if((this.props.multiple === 'boolean' && this.props.multiple != nextProps.multiple) ||
         (this.props.multiple.value != nextProps.multiple.value)) {
        console.log('change state multiSelect : ' + this.state.multiSelect);
@@ -206,7 +206,6 @@ var DataTablesGrid = React.createClass({
       console.log('new data: ' + newData);
       return newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
-      this.clearTable();
       this.loadData(nextProps.filter, nextProps.type);
       return false;
     }
@@ -221,9 +220,13 @@ var DataTablesGrid = React.createClass({
          "scrollY": "250px",
          "scrollCollapse": true,
          "paging": false,
-         "dom": '<"toolbar">frtip',
+         "dom": '<"#grid_toolbar">frtip',
          "destroy": true
        });
+
+        table.one('draw.dt', function () {
+          if(self.props.children) React.render(self.props.children, document.getElementById('grid_toolbar'));
+        });
 
       table.on('search.dt', function(e, settings) {
         console.log('search event: ' + e);
@@ -292,7 +295,7 @@ var DataTablesGrid = React.createClass({
     var self = this;
     var currentItem = this.state.lastSelectedItem;
     if(currentItem != null && currentItem != target && !this.state.multiSelect)
-      currentItem.setState({selected: false, active:false});
+      currentItem.setState({selected: false, active: false});
 
     console.log('addComponent:' + addComponent);
     this.setState(function(state, props) {
