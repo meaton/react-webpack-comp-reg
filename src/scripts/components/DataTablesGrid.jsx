@@ -31,11 +31,11 @@ var DataTablesWrapper = React.createClass({
       $('.editor .ComponentViewer').height(newCompViewerHeight);
     };
 
-    $( window ).resize(function() {
+    /*$( window ).resize(function() {
         $('#' + id).DataTable().draw();
     });
 
-    /*$('#' + this.getDOMNode().id).on( 'draw.dt', function () {
+    $('#' + this.getDOMNode().id).on( 'draw.dt', function () {
       console.log( 'Redraw occurred at: ' + new Date().getTime() );
       self.state.redraw = false;
       if($('.browser').length)

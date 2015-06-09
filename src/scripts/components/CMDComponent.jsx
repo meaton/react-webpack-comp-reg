@@ -128,14 +128,16 @@ var CMDComponent = React.createClass({
     var linkChild = this.linkState('component.' + index);
     linkChild.requestChange(child);
   },
-  updateInlineComponent: function(index, newComponent) {
+  updateParent: function(index, newComponent) {
     console.log('update nested component: ' + require('util').inspect(newComponent));
-
     var linkChild = (this.state.component.Header != undefined) ?
       this.linkState('component.CMD_Component.CMD_Component.' + index) :
       this.linkState('component.CMD_Component.' + index);
 
     linkChild.requestChange(newComponent);
+  },
+  updateInlineComponent: function(index, newComponent) {
+    this.updateParent(index, newComponent);
   },
   updateConceptLink: function(newValue) {
     if(typeof newValue === "string" && this.state.component != null)
@@ -150,8 +152,10 @@ var CMDComponent = React.createClass({
     var component = this.state.component;
     console.log('component props: ' + JSON.stringify(nextProps.component));
 
-    if(this.state.isInline && nextProps.component.open && nextProps.component.selected)
-      this.setState({ component: nextProps.component, open: nextProps.component.open });
+    if(this.state.isInline &&
+       ((nextProps.component.open && nextProps.component.selected) ||
+        JSON.stringify(this.state.component) != JSON.stringify(nextProps.component))) // TODO require state update if new component added to nested inline child
+      this.setState({ component: update(nextProps.component, { open: { $set: (this.state.component != nextProps.component.open) ? nextProps.component.open : true } }) });
     else if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
       component = update(component, { open: { $set: nextProps.component.open }});
       this.setState({ component: component });
@@ -171,6 +175,7 @@ var CMDComponent = React.createClass({
   },
   componentDidMount: function() {
     console.log('component did mount');
+    var self = this;
     var component = this.state.component;
     //TODO review single-object to array mappings
     if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
@@ -192,8 +197,10 @@ var CMDComponent = React.createClass({
     } else if($.isArray(component.AttributeList))
       component = update(component, { AttributeList: { Attribute: { $set: component.AttributeList } }});
 
-    if(!component.hasOwnProperty("@ComponentId") && component.hasOwnProperty("@name"))
-        this.setState({ isInline: true, component: update(component, { open: { $set: true }}) });
+    if(!component.hasOwnProperty("@ComponentId") && component.inlineId != undefined)
+        this.setState({ isInline: true, component: update(component, { open: { $set: true }}) }, function() {
+          self.props.onInlineUpdate(component);
+        });
     else
       this.setState({ component: component });
 
@@ -204,7 +211,9 @@ var CMDComponent = React.createClass({
     var self = this;
     if(!this.state.isInline && this.state.componentName == null && this.state.component.Header == undefined)
       this.props.viewer.getItemName(this.state.component['@ComponentId'], function(name) {
-        self.setState({ componentName: name });
+        self.setState({ component: update(self.state.component, { $merge: { "@name": name } }), componentName: name }, function() {
+          if(self.props.updateParent != undefined) self.props.updateParent(self.state.component);
+        });
       });
     else if(this.state.editMode && this.state.isInline && this.state.component.open)
       if(JSON.stringify(this.state.component) != JSON.stringify(prevState.component))
@@ -272,15 +281,15 @@ var CMDComponent = React.createClass({
         var compId;
         if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
         else if(nestedComp.Header != undefined) compId = nestedComp.Header.ID;
-        else if(nestedComp.inlineId != undefined) compId = nestedComp.inlineId;
-        else compId = "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
+        else compId = (nestedComp.inlineId != undefined) ? nestedComp.inlineId : "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
 
-        if(compId.startsWith("inline"))
-          nestedComp.inlineId = compId;
+        var newNestedComp = nestedComp;
+        if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
+          newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
 
         console.log('compId: ' + compId);
 
-        return <CMDComponent key={compId} parent={self.state.component} component={nestedComp} viewer={self.props.viewer} editMode={self.state.editMode} onInlineUpdate={self.updateInlineComponent.bind(self, ncindex)} onUpdate={self.updateComponentSettings.bind(self, ncindex)} onRemove={self.removeComponent.bind(self, ncindex)} moveUp={self.moveComponent.bind(self, ncindex, ncindex-1)} moveDown={self.moveComponent.bind(self, ncindex, ncindex+1)} />
+        return <CMDComponent key={compId} parent={self.state.component} component={newNestedComp} viewer={self.props.viewer} editMode={self.state.editMode} updateParent={self.updateParent.bind(self, ncindex)} onInlineUpdate={self.updateInlineComponent.bind(self, ncindex)} onUpdate={self.updateComponentSettings.bind(self, ncindex)} onRemove={self.removeComponent.bind(self, ncindex)} moveUp={self.moveComponent.bind(self, ncindex, ncindex-1)} moveDown={self.moveComponent.bind(self, ncindex, ncindex+1)} />
       });
 
     // classNames

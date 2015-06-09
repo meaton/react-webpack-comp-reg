@@ -112,25 +112,33 @@ var ComponentViewer = React.createClass({
   },
   addExistingComponent: function(componentId, selectedComps) { //TODO prevent component being added if already exists at that level
     var self = this;
+
     this.loadComponent(componentId, "json", function(data) {
         console.log('insert data child comp: ' + (data.CMD_Component != null));
         data['@ComponentId'] = componentId;
         data['open'] = true;
 
-        var hasComp = function(comps, componentId) {
+        var hasComp = function(comps, compName) {
           var foundSibling = false;
           if($.isArray(comps))
             comps.forEach(function(comp) {
-              if(comp['@ComponentId'] === componentId)
-                foundSibling = true;
+              var name = (comp.hasOwnProperty("@name")) ? comp['@name'] : comp.CMD_Component['@name'];
+              if(name === compName) foundSibling = true;
             });
-
           return foundSibling;
+
+
+          /*selectedComps.each(function() {
+            if($(this).find('.inline-body > .childComponents > .CMDComponent').find('.componentLink').text() == compName)) {
+              alert('Cannot add existing component that has the same name as a sibling.');
+              foundSibling = true;
+            }
+          });*/
         };
 
         if(selectedComps == undefined) {
-          if(hasComp(self.state.childComponents, data['@ComponentId']))
-            alert('Cannot add existing component as sibling.');
+          if(hasComp(self.state.childComponents, data.CMD_Component['@name']))
+            alert('Cannot add existing component that has the same name as a sibling.');
           else {
             var updatedComponents = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
             self.setState({ childComponents: updatedComponents });
@@ -138,14 +146,15 @@ var ComponentViewer = React.createClass({
         } else if(self.state.childComponents != null) {
           // add component data to selected inline-components
           var newComponents = [];
+
           var checkInlineSelection = function(parent, compData) {
             if(parent.CMD_Component != undefined && parent.CMD_Component.length > 0) {
               var newChildComps = [];
               for(var i=0; i < parent.CMD_Component.length; i++) {
                 var parentCompChild = parent.CMD_Component[i];
                 if(parentCompChild.selected)
-                  if(hasComp(parentCompChild.CMD_Component, data['@ComponentId']))
-                    alert('Cannot add existing component as a sibling.');
+                  if(hasComp(parentCompChild.CMD_Component, compData.CMD_Component['@name']))
+                    alert('Cannot add existing component that has the same name as a sibling.');
                   else if(parentCompChild.CMD_Component != undefined)
                     parentCompChild = update(parentCompChild, { $merge: { CMD_Component: update(parentCompChild.CMD_Component, { $push: [compData] }), open: true } });
                   else
@@ -153,16 +162,18 @@ var ComponentViewer = React.createClass({
 
                 newChildComps.push(checkInlineSelection(parentCompChild, data));
               }
+
               return update(parent, { CMD_Component: { $set: newChildComps } });
             }
+
             return parent;
           };
 
           for(var j=0; j < self.state.childComponents.length; j++) {
             var comp = self.state.childComponents[j];
             if(comp.selected)
-              if(hasComp(comp.CMD_Component, data['@ComponentId']))
-                alert('Cannot add existing component as a sibling.');
+              if(hasComp(comp.CMD_Component, data.CMD_Component['@name']))
+                alert('Cannot add existing component that has the same name as a sibling.');
               else if(comp.CMD_Component != undefined)
                   comp = update(comp, { $merge: { CMD_Component: update(comp.CMD_Component, { $push: [data] }), open: true } });
               else comp = update(comp, { $merge: { CMD_Component: [data], open: true } });
@@ -170,8 +181,10 @@ var ComponentViewer = React.createClass({
             comp = update(comp, { $apply: function(c) {
                 return checkInlineSelection(c, data);
             } });
+
             newComponents.push(comp);
           }
+
           self.setState({ childComponents: newComponents });
         }
     });
@@ -205,11 +218,7 @@ var ComponentViewer = React.createClass({
     console.log('inline update: ' + index);
     var childComponents = this.state.childComponents;
     if(index >= 0 && index < childComponents.length)
-      if((newComponent != null) &&
-         (newComponent.inlineId == childComponents[index].inlineId)) {
-        childComponents[index] = newComponent;
-        this.setState({childComponents: childComponents});
-      }
+      if(newComponent != null) this.setState({ childComponents: update(childComponents, { $splice: [[index, 1, newComponent]] }) });
   },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
@@ -579,9 +588,13 @@ var ComponentViewer = React.createClass({
             var compId;
             if(comp.hasOwnProperty("@ComponentId")) compId = comp['@ComponentId'];
             else if(comp.Header != undefined) compId = comp.Header.ID;
-            else compId = "inline_" + md5.hash("inline_" + comp['@name'] + index);
+            else compId = (comp.inlineId != undefined) ? comp.inlineId : "inline_" + md5.hash("inline_" + comp['@name'] + index);
 
-            return <CMDComponent key={compId} component={comp} viewer={self} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} onRemove={self.removeComponent.bind(self, index)} moveUp={self.moveComponent.bind(self, index, index-1)} moveDown={self.moveComponent.bind(self, index, index+1)} />
+            var newComp = comp;
+            if(compId.startsWith("inline") && comp.inlineId == undefined)
+              newComp = update(newComp, { $merge: { inlineId: compId } });
+
+            return <CMDComponent key={compId} component={newComp} viewer={self} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} onRemove={self.removeComponent.bind(self, index)} moveUp={self.moveComponent.bind(self, index, index-1)} moveDown={self.moveComponent.bind(self, index, index+1)} />
           }
         )}
           {cmdAddComponentSpecLink}
