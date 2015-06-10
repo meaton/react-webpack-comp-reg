@@ -13,6 +13,9 @@ var SpaceSelector = require('./SpaceSelector');
 var DataTablesGrid = require('./DataTablesGrid');
 var DataTablesBtnGroup = require('./BtnMenuGroup');
 
+//utils
+var update = React.addons.update;
+
 // Export React so the devtools can find it
 (window !== window.top ? window.top : window).React = React;
 
@@ -46,10 +49,51 @@ var ComponentRegApp = React.createClass({
   },
   componentWillMount: function() {
     console.log(this.constructor.displayName, 'will mount');
-
+    //TODO regex match profileId/componentId values
     if(this.context.router != null && Object.keys(this.getQuery()).length > 0) {
-      console.log('query: ' + JSON.stringify(this.getQuery()));
-      this.setState(this.getQuery);
+      var queryObj = this.getQuery();
+
+      console.log('query params: ' + JSON.stringify(queryObj));
+
+      if(queryObj.registrySpace != undefined && queryObj.registrySpace.length > 0) {
+        // backward-compat legacy flex-application urls
+        if(queryObj.itemId) { //TODO regex match itemId value
+          var itemValues = queryObj.itemId.split(':');
+          var type = null;
+
+          if(itemValues.length >= 3)
+            if(itemValues[2].indexOf('c') == 0)
+              type = "components";
+            else if(itemValues[2].indexOf('p') == 0)
+              type = "profiles";
+
+          if(type != null) {
+            this.setState(function() {
+              if(type == "components")
+                return { filter: queryObj.registrySpace, type: type, componentId: queryObj.itemId };
+              else if(type == "profiles")
+                return { filter: queryObj.registrySpace, type: type, profileId: queryObj.itemId }
+
+              return { filter: queryObj.registrySpace, type: type };
+            });
+          }
+        } else
+          this.setState(function() {
+            if(queryObj.profileId)
+              return { filter: queryObj.registrySpace, type: "profiles", profileId: queryObj.profileId };
+            else if(queryObj.componentId)
+              return { filter: queryObj.registrySpace, type: "components", componentId: queryObj.componentId };
+            else
+              return { filter: queryObj.registrySpace };
+          });
+      } else
+        this.setState(function() {
+          if(queryObj.profileId)
+            queryObj = update(queryObj, { $merge: { type: "profiles" }});
+          else if(queryObj.componentId)
+            queryObj = update(queryObj, { $merge: { type: "components" }});
+          return update(this.state, { filter: { $set: queryObj.filter }, type:  { $set: queryObj.type }, profileId: { $set: (queryObj.profileId && queryObj.type === "profiles") ? queryObj.profileId : null }, componentId: { $set: (queryObj.componentId && queryObj.type === "components") ? queryObj.componentId : null } });
+        });
     }
   },
   render: function() {

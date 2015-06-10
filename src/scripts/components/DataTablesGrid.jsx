@@ -143,6 +143,7 @@ var DataTablesGrid = React.createClass({
       this.loadData(this.state.currentFilter, this.state.currentType);
     }
   },
+  // TODO: Check user is logged in if loading private or group spaces
   loadData: function(nextFilter, nextType) { // TODO: Move into Loader mixin
     this.setLoading(true);
 

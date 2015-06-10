@@ -8,6 +8,7 @@ var marshaller = context.createMarshaller();
 
 var Config = require('../config');
 
+//TODO replace localhost address with config setting or window host
 var LoaderMixin = {
   loadProfile: function(profileId, raw_type, cb) {
     var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
