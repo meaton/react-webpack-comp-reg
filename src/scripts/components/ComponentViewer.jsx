@@ -274,7 +274,7 @@ var ComponentViewer = React.createClass({
 
     var newItem = nextState.profile||nextState.component;
 
-    console.log('new item props: ' + JSON.stringify(newItem));
+    //console.log('new item props: ' + JSON.stringify(newItem));
 
     if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
       if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))

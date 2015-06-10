@@ -30,7 +30,7 @@ var ProfileOverview = React.createClass({
     });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log(this.constructor.diplsayName, 'received profile props:', JSON.stringify(nextProps));
+    console.log(this.constructor.displayName, 'received profile props:', JSON.stringify(nextProps));
     console.log('profileId: ' + this.props.profileId);
     var self = this;
     if(nextProps.profileId != null && (nextProps.profileId != this.props.profileId)) {

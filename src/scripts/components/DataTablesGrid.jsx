@@ -79,7 +79,7 @@ var DataTablesWrapper = React.createClass({
     }.bind(this));
   },*/
   render: function() {
-    console.log('render wrapper', this.constructor.displayName);
+    console.log('render', this.constructor.displayName);
     return (
       <table className="table table-striped" id="testtable">
         <thead>

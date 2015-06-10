@@ -58,6 +58,7 @@ var CMDComponent = React.createClass({
       });
   },
   addNewAttribute: function(evt) {
+    console.log(this.constructor.displayName, 'new Attribute');
     var newAttrObj = { Name: "", Type: "string" }; //TODO check format
 
     var comp = this.state.component;
@@ -69,12 +70,14 @@ var CMDComponent = React.createClass({
     if(attrList != undefined && $.isArray(attrList.Attribute)) attrList = attrList.Attribute;
     if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
 
-    console.log('attrList: ' + attrList);
+    //console.log('attrList: ' + attrList);
+
     var item = (attrList == undefined) ?
       update(comp, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
       update(comp, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
 
-    console.log('new item after attr add: ' + JSON.stringify(item));
+    //console.log('new item after attr add: ' + JSON.stringify(item));
+
     if(this.state.component != null)
       if(this.state.component.Header != undefined)
         this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
@@ -82,7 +85,8 @@ var CMDComponent = React.createClass({
         this.setState({ component: item });
   },
   addNewElement: function(evt) {
-    console.log('new Element');
+    console.log(this.constructor.displayName, 'new Element');
+
     var component = this.state.component;
     if(component.CMD_Element == undefined) component.CMD_Element = [];
 
@@ -91,7 +95,7 @@ var CMDComponent = React.createClass({
     this.setState({ component: updatedComponent });
   },
   addNewComponent: function(evt) {
-    console.log('new Component');
+    console.log(this.constructor.displayName, 'new Component');
     this.addDefinedComponent({ "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true });
   },
   addDefinedComponent: function(component) {
@@ -154,7 +158,7 @@ var CMDComponent = React.createClass({
     console.log(this.constructor.displayName, 'will received new props');
 
     var component = this.state.component;
-    console.log('component props: ' + JSON.stringify(nextProps.component));
+    //console.log('component props: ' + JSON.stringify(nextProps.component));
 
     if(this.state.isInline &&
        ((nextProps.component.open && nextProps.component.selected) ||
@@ -183,7 +187,8 @@ var CMDComponent = React.createClass({
 
     var self = this;
     var component = this.state.component;
-    //TODO review single-object to array mappings
+
+    //TODO review single-object to array conversion - immutable data method
     if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
       component.CMD_Element = [component.CMD_Element];
       //component = update(component, { CMD_Element: { $set: [component.CMD_Element] } });
@@ -210,10 +215,11 @@ var CMDComponent = React.createClass({
     else
       this.setState({ component: component });
 
-    console.log('mounted component: ' + JSON.stringify(component));
+    //console.log('mounted component: ' + JSON.stringify(component));
   },
   componentDidUpdate: function(prevProps, prevState) {
     console.log(this.constructor.displayName, 'did update: ', (this.state.isInline) ? this.state.component.inlineId : this.state.component['@ComponentId']);
+
     var self = this;
     if(!this.state.isInline && this.state.componentName == null && this.state.component.Header == undefined)
       this.props.viewer.getItemName(this.state.component['@ComponentId'], function(name) {
@@ -227,6 +233,7 @@ var CMDComponent = React.createClass({
   },
   render: function () {
     //console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
+
     var self = this;
     var comp = this.state.component;
     var actionButtons = this.getActionButtons();
@@ -239,7 +246,7 @@ var CMDComponent = React.createClass({
     else
       compId = null;
 
-    console.log('comp render: ', (compId != null) ? compId : 'inline');
+    console.log('render', this.constructor.displayName, (compId != null) ? compId : 'inline');
 
     var header = comp.Header;
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
