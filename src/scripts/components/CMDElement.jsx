@@ -108,12 +108,13 @@ var CMDElement = React.createClass({
   render: function () {
     var self = this;
     var attrList = null;
-    var valueScheme = this.props.viewer.getValueScheme(elem, this);
     var actionButtons = this.getActionButtons();
 
     var elem = this.state.elem;
     var elemInspect = elem.elemId; // require('util').inspect(elem);
     console.log('rendering element: ',  elemInspect);
+    
+    var valueScheme = this.props.viewer.getValueScheme(elem, this);
 
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
     if(elem.AttributeList != undefined || this.state.editMode) {
