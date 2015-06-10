@@ -1,13 +1,17 @@
 'use strict';
 
 var React = require('react/addons');
-var State = require('react-router').State;
-var Profile = require('./ProfileOverview.jsx');
-var Component = require('./ComponentOverview.jsx');
-var SpaceSelector = require('./SpaceSelector.jsx');
-var DataTablesGrid = require('./DataTablesGrid.jsx');
-var DataTablesBtnGroup = require('./BtnMenuGroup.jsx');
+var Router = require('react-router');
+
+//mixins
 var btnMenuGroup = require('../mixins/BtnGroupEvents');
+
+//components
+var Profile = require('./ProfileOverview');
+var Component = require('./ComponentOverview');
+var SpaceSelector = require('./SpaceSelector');
+var DataTablesGrid = require('./DataTablesGrid');
+var DataTablesBtnGroup = require('./BtnMenuGroup');
 
 // Export React so the devtools can find it
 (window !== window.top ? window.top : window).React = React;
@@ -15,7 +19,7 @@ var btnMenuGroup = require('../mixins/BtnGroupEvents');
 require('../../styles/ComponentEditor.sass');
 
 var ComponentRegApp = React.createClass({
-  mixins: [btnMenuGroup, React.addons.LinkedStateMixin, State],
+  mixins: [React.addons.LinkedStateMixin, Router.State, btnMenuGroup],
   contextTypes: {
     loggedIn: React.PropTypes.bool.isRequired
   },
@@ -41,7 +45,8 @@ var ComponentRegApp = React.createClass({
     this.setState({profileId: null, componentId: null})
   },
   componentWillMount: function() {
-    console.log('component will mount');
+    console.log(this.constructor.displayName, 'will mount');
+
     if(this.context.router != null && Object.keys(this.getQuery()).length > 0) {
       console.log('query: ' + JSON.stringify(this.getQuery()));
       this.setState(this.getQuery);

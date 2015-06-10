@@ -1,6 +1,9 @@
 var React = require('react/addons');
+
+//components
 var ActionButtons = React.createFactory(require('../components/ActionButtons'));
 
+//utils
 var update = React.addons.update;
 
 var ActionButtonsMixin = {

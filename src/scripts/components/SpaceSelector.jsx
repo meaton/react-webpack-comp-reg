@@ -2,16 +2,17 @@
 
 var React = require('react');
 var {Route} = require('react-router');
-var classNames = require('classnames');
 
-var auth = require('./Authentication').auth;
-
-/** Bootstrap components */
+//bootstrap
 var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Button = require('react-bootstrap/lib/Button');
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
+
+//utils
+var auth = require('./Authentication').auth;
+var classNames = require('classnames');
 
 var SpaceSelector = React.createClass({
   propTypes: {
@@ -37,9 +38,11 @@ var SpaceSelector = React.createClass({
   spaceSelect: function(nextState, event) {
     console.log('clicked: ' + nextState.currentSpaceIdx);
     console.log('mstate: ' + nextState.currentRegIdx);
+
     if(this.state.currentSpaceIdx != nextState.currentSpaceIdx || this.state.currentRegIndex != nextState.currentRegIdx) {
       var space = this.state.spaces[nextState.currentSpaceIdx]
       var registryName = ($.isArray(space.registry)) ? space.registry[nextState.currentRegIdx] : space.registry.filter;
+
       console.log('changed props: ' + registryName.filter);
 
       this.props.onSelect(registryName);

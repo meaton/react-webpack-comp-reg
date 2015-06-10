@@ -1,16 +1,20 @@
 'use strict';
 
 var React = require('react/addons');
-var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
+//mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
+//bootstrap
+var Input = require('react-bootstrap/lib/Input');
+
+//components
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
 
-var Input = require('react-bootstrap/lib/Input');
-
+//utils
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
@@ -147,7 +151,7 @@ var CMDComponent = React.createClass({
       });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('component will received new props');
+    console.log(this.constructor.displayName, 'will received new props');
 
     var component = this.state.component;
     console.log('component props: ' + JSON.stringify(nextProps.component));
@@ -162,7 +166,8 @@ var CMDComponent = React.createClass({
     }
   },
   componentWillMount: function() {
-    console.log('component will mount');
+    console.log(this.constructor.displayName, 'will mount');
+
     var comp = this.state.component;
     if(!comp.hasOwnProperty("@ComponentId") && comp.Header != undefined)
       comp = comp.CMD_Component;
@@ -174,7 +179,8 @@ var CMDComponent = React.createClass({
       this.setState({ component: update(this.state.component, { CMD_Component: { $set: comp } }) });
   },
   componentDidMount: function() {
-    console.log('component did mount');
+    console.log(this.constructor.displayName, 'did mount');
+
     var self = this;
     var component = this.state.component;
     //TODO review single-object to array mappings
@@ -207,7 +213,7 @@ var CMDComponent = React.createClass({
     console.log('mounted component: ' + JSON.stringify(component));
   },
   componentDidUpdate: function(prevProps, prevState) {
-    console.log('component did update: ', (this.state.isInline) ? this.state.component.inlineId : this.state.component['@ComponentId']);
+    console.log(this.constructor.displayName, 'did update: ', (this.state.isInline) ? this.state.component.inlineId : this.state.component['@ComponentId']);
     var self = this;
     if(!this.state.isInline && this.state.componentName == null && this.state.component.Header == undefined)
       this.props.viewer.getItemName(this.state.component['@ComponentId'], function(name) {

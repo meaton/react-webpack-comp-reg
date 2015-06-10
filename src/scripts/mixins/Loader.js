@@ -1,14 +1,17 @@
-var React = require('react/addons');
-var Config = require('../config');
-var Jsonix = require('jsonix').Jsonix;
 var clone = require('clone');
+
+//JSONIX
+var Jsonix = require('jsonix').Jsonix;
 var CMD = require('../../mappings/Component').Component;
 var context = new Jsonix.Context([CMD]);
 var marshaller = context.createMarshaller();
 
+var Config = require('../config');
+
 var LoaderMixin = {
   loadProfile: function(profileId, raw_type, cb) {
     var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
+
     $.ajax({
       url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId,
       dataType: (raw_type != undefined) ? raw_type : "json",
@@ -28,6 +31,7 @@ var LoaderMixin = {
   loadComponent: function(componentId, raw_type, cb) {
     var syncData = null;
     var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
+
     $.ajax({
       url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId,
       dataType: (raw_type != undefined) ? raw_type : "json",
@@ -47,6 +51,7 @@ var LoaderMixin = {
   },
   getItemName: function(itemId, cb) { // cannot sync call require callback
     var name = null;
+
     this.loadRegistryItem(itemId, function(data) {
       if(cb) return cb(data.name);
       else name = data.name;
@@ -74,6 +79,7 @@ var LoaderMixin = {
   },
   loadComments: function(componentId, isProfile, cb) {
     var reg_type = (isProfile) ? "profiles" : "components";
+
     $.ajax({
       url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + reg_type + '/' + componentId + '/comments',
       dataType: "json",
@@ -95,8 +101,7 @@ var LoaderMixin = {
     var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
 
     if(childComps != undefined && childComps != null && !$.isArray(childComps)) {
-      console.log('found non-Array object:' + JSON.stringify(childComps));
-      //childComps = React.addons.update(childComps, { $set: [childComps ]});
+      console.warn('Warning found non-Array object:' + JSON.stringify(childComps));
     }
 
     rootComponent.CMD_Component = (childComps != undefined && childComps != null) ?
@@ -264,6 +269,7 @@ var LoaderMixin = {
   },*/
   deleteItem: function(type, itemId, cb) {
     var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId;
+
     $.ajax({
       type: 'DELETE', // 'POST' /* Note testing locally with CORS enable DELETE method in init-config accepted methods */
       url: url,
@@ -304,6 +310,7 @@ var LoaderMixin = {
   },
   queryCCR: function(searchQuery, cb) {
     var url = 'http://localhost:8080/ComponentRegistry/ccr?type=container&keywords=' + searchQuery;
+
     if(searchQuery != null || searchQuery != "")
       $.ajax({
         type: 'GET',
@@ -330,7 +337,9 @@ var LoaderMixin = {
   },
   componentDidMount: function() {
     console.log('Loader did mount');
+
     var self = this;
+
     if(this.context.router != undefined && this.getParams().profile != undefined)
       this.loadProfile(this.getParams().profile, "json", function(data) {
           self.setState({profile: data, visible: true});

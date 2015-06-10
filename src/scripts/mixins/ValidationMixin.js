@@ -76,8 +76,8 @@ var testCardinalitySettings = function(minValue, maxValue) {
 };
 
 var ValidationMixin = {
+  // client-side validation tests
   validate: function(data) {
-    // client-side validation tests
     console.log('validate data');
 
     var errors = [];

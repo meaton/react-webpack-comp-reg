@@ -2,13 +2,16 @@
 
 var React = require('react/addons');
 
+//mixins
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
+//bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
+//utils
 var update = React.addons.update;
 
 //require('../../styles/CMDAttribute.sass');
@@ -30,10 +33,10 @@ var CMDAttribute = React.createClass({
     }
   },
   componentWillUpdate: function(nextProps, nextState) {
-    console.log('attr will update: ' + nextState.attr.attrId);
+    console.log(this.constructor.displayName, 'will update: ', nextState.attr.attrId);
   },
   componentDidUpdate: function(prevProps, prevState) {
-    console.log('attr did update: ' + this.state.attr.attrId);
+    console.log(this.constructor.displayName, 'did update: ', this.state.attr.attrId);
     /*console.log('attr prev state: ' + JSON.stringify(prevState.attr));
     console.log('attr curr state: ' + JSON.stringify(this.state.attr));*/
     if(JSON.stringify(this.state.attr) != JSON.stringify(prevState.attr))

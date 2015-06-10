@@ -1,4 +1,5 @@
 'use strict';
+
 var RewirePlugin = require('rewire-webpack');
 
 module.exports = function (config) {

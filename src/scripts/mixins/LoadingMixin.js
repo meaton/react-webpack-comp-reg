@@ -1,6 +1,8 @@
 var ee = require('events').EventEmitter;
+
 var registryEvents = new ee();
 var timeout = null;
+
 var LoadingMixin = {
   setLoading: function(isLoading) {
     var eventEmitter = (this.state.eventHolder) ? this.state.eventHolder : null;
@@ -8,6 +10,7 @@ var LoadingMixin = {
   },
   loadingHandler: function(progress, delay) {
     console.log('received loading event');
+
     if(delay == undefined) delay = 1000;
     if(progress) {
       clearTimeout(timeout);
@@ -22,6 +25,7 @@ var LoadingMixin = {
   componentWillMount: function() {
     //TODO: replace with Cursor React-component to received global events
     var eventEmitter = registryEvents.on('loading', this.loadingHandler);
+
     this.setState({ eventHolder: eventEmitter }, function(state) {
       state.eventHolder.emit('loading', true);
     });

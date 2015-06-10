@@ -1,17 +1,19 @@
 'use strict';
 
 var React = require('react/addons');
-var ComponentViewer = require('./ComponentViewer.jsx');
-var Config = require('../config.js');
+var moment = require('moment-timezone');
 
-/** Bootstrap components */
+//bootstrap
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
 var TabPane = require('react-bootstrap/lib/TabPane');
 var Panel = require('react-bootstrap/lib/Panel');
 
-//require('../../styles/InfoPanel.sass');
+//components
+var ComponentViewer = require('./ComponentViewer');
 
-var moment = require('moment-timezone');
+var Config = require('../config.js');
+
+//require('../../styles/InfoPanel.sass');
 
 var InfoPanel = React.createClass({
   propTypes: {
@@ -63,7 +65,7 @@ var InfoPanel = React.createClass({
       return React.createElement('div', {className: "comment empty"}, "No Comments");
   },
   render: function () {
-    console.log('render info');
+    console.log('render', this.constructor.displayName);
     var item = this.props.item;
     var xmlElement = null;
     var viewer = null;

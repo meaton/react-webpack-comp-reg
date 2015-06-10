@@ -1,10 +1,12 @@
 'use strict';
 
 var React = require('react');
+
+//mixins
 var CompRegLoader = require('../mixins/Loader');
 var LoadingMixin = require('../mixins/LoadingMixin');
 
-/** Bootstrap components */
+//components
 var InfoPanel = require('./InfoPanel.jsx');
 
 var ProfileOverview = React.createClass({
@@ -28,7 +30,7 @@ var ProfileOverview = React.createClass({
     });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('received profile props: ' + JSON.stringify(nextProps));
+    console.log(this.constructor.diplsayName, 'received profile props:', JSON.stringify(nextProps));
     console.log('profileId: ' + this.props.profileId);
     var self = this;
     if(nextProps.profileId != null && (nextProps.profileId != this.props.profileId)) {
@@ -47,7 +49,6 @@ var ProfileOverview = React.createClass({
       this.setState({visible: false});
   },
   componentDidMount: function() {
-    console.log('profileId mount:' + this.props.profileId);
     var self = this;
     if(this.props.profileId) {
       this.setLoading(true);

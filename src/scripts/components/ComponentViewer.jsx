@@ -2,17 +2,16 @@
 
 var React = require('react/addons');
 var Router = require('react-router');
+
+//mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-
-var DataTablesGrid = require('./DataTablesGrid');
-var SpaceSelector = require('./SpaceSelector');
-
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 var CompRegLoader = require('../mixins/Loader');
 var btnGroup = require('../mixins/BtnGroupEvents');
 var ValidationMixin = require('../mixins/ValidationMixin');
 
+//bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
@@ -20,13 +19,16 @@ var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Alert = require('react-bootstrap/lib/Alert');
 var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 
+//components
+var DataTablesGrid = require('./DataTablesGrid');
+var SpaceSelector = require('./SpaceSelector');
 var CMDComponent = require('./CMDComponent');
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
-
 var EditorBtnGroup = require('./BtnMenuGroup');
 var EditorDialog = require('./EditorDialog');
 
+//utils
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
@@ -112,6 +114,7 @@ var ComponentViewer = React.createClass({
   },
   addExistingComponent: function(componentId, selectedComps) { //TODO prevent component being added if already exists at that level
     var self = this;
+    var warningMsg = 'Cannot add existing component that has the same name as a sibling.';
 
     this.loadComponent(componentId, "json", function(data) {
         console.log('insert data child comp: ' + (data.CMD_Component != null));
@@ -127,7 +130,7 @@ var ComponentViewer = React.createClass({
             });
           return foundSibling;
 
-
+          //TODO explore jQuery integration with determination of existing name
           /*selectedComps.each(function() {
             if($(this).find('.inline-body > .childComponents > .CMDComponent').find('.componentLink').text() == compName)) {
               alert('Cannot add existing component that has the same name as a sibling.');
@@ -138,7 +141,7 @@ var ComponentViewer = React.createClass({
 
         if(selectedComps == undefined) {
           if(hasComp(self.state.childComponents, data.CMD_Component['@name']))
-            alert('Cannot add existing component that has the same name as a sibling.');
+            alert(warningMsg);
           else {
             var updatedComponents = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
             self.setState({ childComponents: updatedComponents });
@@ -154,7 +157,7 @@ var ComponentViewer = React.createClass({
                 var parentCompChild = parent.CMD_Component[i];
                 if(parentCompChild.selected)
                   if(hasComp(parentCompChild.CMD_Component, compData.CMD_Component['@name']))
-                    alert('Cannot add existing component that has the same name as a sibling.');
+                    alert(warningMsg);
                   else if(parentCompChild.CMD_Component != undefined)
                     parentCompChild = update(parentCompChild, { $merge: { CMD_Component: update(parentCompChild.CMD_Component, { $push: [compData] }), open: true } });
                   else
@@ -173,7 +176,7 @@ var ComponentViewer = React.createClass({
             var comp = self.state.childComponents[j];
             if(comp.selected)
               if(hasComp(comp.CMD_Component, data.CMD_Component['@name']))
-                alert('Cannot add existing component that has the same name as a sibling.');
+                alert(warningMsg);
               else if(comp.CMD_Component != undefined)
                   comp = update(comp, { $merge: { CMD_Component: update(comp.CMD_Component, { $push: [data] }), open: true } });
               else comp = update(comp, { $merge: { CMD_Component: [data], open: true } });
@@ -222,6 +225,7 @@ var ComponentViewer = React.createClass({
   },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
+
     var childComponents = this.state.childComponents;
     console.log('child to update: ' + JSON.stringify(childComponents[index]));
 
@@ -257,7 +261,7 @@ var ComponentViewer = React.createClass({
     this.setState({ childComponents: childComponents, childElements: childElements });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('will receive props');
+    console.log(this.constructor.displayName, 'will receive props');
 
     if(this.props.editMode != nextProps.editMode)
       this.setState({editMode: nextProps.editMode});
@@ -266,8 +270,10 @@ var ComponentViewer = React.createClass({
       this.setItemPropToState(nextProps.item);
   },
   componentWillUpdate: function(nextProps, nextState) {
-    console.log('will update viewer');
+    console.log(this.constructor.displayName, 'will update');
+
     var newItem = nextState.profile||nextState.component;
+
     console.log('new item props: ' + JSON.stringify(newItem));
 
     if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
@@ -283,7 +289,7 @@ var ComponentViewer = React.createClass({
     var item = this.state.component || this.state.profile;
     var prevItem = prevState.component || prevState.profile;
 
-    console.log('component did update: ' + JSON.stringify(item));
+    console.log(this.constructor.displayName, 'component did update: ' + JSON.stringify(item));
 
     if(item != null && prevItem != null && item.Header != undefined) {
       if(item.Header.Name != item.CMD_Component['@name'] ||
@@ -298,7 +304,7 @@ var ComponentViewer = React.createClass({
     var self = this;
     var id = this.getParams().component || this.getParams().profile;
 
-    console.log('viewer mounted: ' + id);
+    console.log(this.constructor.displayName, 'mounted: ' + id);
     console.log('editmode: ' + this.state.editMode);
 
     if(this.props.item != undefined || this.props.item != null)
@@ -355,6 +361,7 @@ var ComponentViewer = React.createClass({
   },
   updateConceptLink: function(newValue) {
     console.log('update concept link - root component/profile: ' + newValue);
+
     if(typeof newValue === "string") // TODO Remove @ConceptLink attr is empty or null value
       if(this.state.component != null)
         this.setState({ component: (this.state.component.Header != undefined) ?
@@ -392,6 +399,7 @@ var ComponentViewer = React.createClass({
 
     if(target != undefined) {
       var updatedItem = null;
+
       if(target.constructor.displayName === "CMDAttribute")
         updatedItem = { attr: update(target.state.attr, { $apply: updateTypeFn }) };
       else if(target.constructor.displayName === "CMDElement")
@@ -582,7 +590,7 @@ var ComponentViewer = React.createClass({
     var cmdAddComponentSpecLink = (this.state.editMode) ? <div className="addComponent controlLinks"><a onClick={self.addNewComponent}>+Component</a></div> : null;
     if(this.state.childComponents != null)
       childComp = (
-        // component key should be comp Id (except for inline comps)
+        // component key should be componentId (except for inline comps which use generated hash)
         <div ref="components" className="childComponents">{this.state.childComponents.map(
           function(comp, index) {
             var compId;

@@ -1,1 +1,1 @@
-# CMDI Component Registry - React Test Prototype
+# CMDI Component Registry - React.js Prototype beta

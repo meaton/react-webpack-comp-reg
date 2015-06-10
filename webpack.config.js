@@ -6,6 +6,7 @@
  */
 
 'use strict';
+
 var webpack = require('webpack');
 var bower_dir = __dirname + '/bower_components';
 
@@ -71,7 +72,6 @@ var config = {
 
 };
 
-//config.addVendor('google-code-prettify', bower_dir + '/google-code-prettify/bin/prettify.min.js');
-//config.addVendor('prismjs', bower_dir + '/prismjs/prism.min.js');
+//config.addVendor('moduleName', bower_dir + '/module_dir/filename.js');
 
 module.exports = config;

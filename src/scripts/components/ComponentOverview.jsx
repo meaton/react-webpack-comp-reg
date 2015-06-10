@@ -1,10 +1,13 @@
 'use strict';
 
 var React = require('react');
+
+//mixins
 var ComRegLoader = require('../mixins/Loader');
 var LoadingMixin = require('../mixins/LoadingMixin');
-/** Bootstrap components */
-var InfoPanel = require('./InfoPanel.jsx');
+
+//bootstrap
+var InfoPanel = require('./InfoPanel');
 
 var ComponentOverview = React.createClass({
   mixins: [ComRegLoader, LoadingMixin],

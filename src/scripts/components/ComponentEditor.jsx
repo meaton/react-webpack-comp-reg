@@ -2,7 +2,9 @@
 
 var React = require('react');
 var {RouteHandler, Navigation} = require('react-router');
-var Authentication = require('./Authentication.jsx').Authentication;
+
+//components
+var Authentication = require('./Authentication').Authentication;
 
 require('../../styles/ComponentEditor.sass');
 

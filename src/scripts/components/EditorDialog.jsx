@@ -1,25 +1,29 @@
 'use strict';
 
 var React = require('react/addons');
+var Draggable = require('react-draggable');
+var Table = require('reactabular').Table;
+var sortColumn = require('reactabular').sortColumn;
+
+//mixins
 var LinkedStateMixin = React.addons.LinkedStateMixin;
 var CompRegLoader = require('../mixins/Loader');
 
-var update = React.addons.update;
+//bootstrap mixins
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 
-var Draggable = require('react-draggable');
+//bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
 var Input = require('react-bootstrap/lib/Input');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var Button = require('react-bootstrap/lib/Button');
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
 var TabPane = require('react-bootstrap/lib/TabPane');
 
-// Reactabular
-var Table = require('reactabular').Table;
-var sortColumn = require('reactabular').sortColumn;
 
+//utils
+var update = React.addons.update;
 var classNames = require('classnames');
 
 require('../../styles/EditorDialog.sass');
@@ -122,7 +126,6 @@ var TypeModal = React.createClass({
     }
   },
   addNewRow: function() {
-    console.log('add new row test');
     var val = this.state.value;
     if(val.enumeration == undefined)
       if(typeof val === "string" || val.pattern != undefined)

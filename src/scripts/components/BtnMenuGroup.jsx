@@ -2,13 +2,17 @@
 
 var React = require('react/addons');
 var Router = require('react-router');
+
+//router bootstrap
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
 
-//Bootstrap components
+//bootstrap mixin
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
+
+//bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var Modal = require('react-bootstrap/lib/Modal');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 
 var ButtonModal = React.createClass({
       mixins: [OverlayMixin],
@@ -93,7 +97,12 @@ var BtnMenuGroup = React.createClass({
     else
       deleteIdList = currentSelection;
 
-    return (<div className="modal-desc">You will delete the following item(s): <p>{deleteIdList}</p><p>This cannot be undone.</p></div>);
+    return (
+      <div className="modal-desc">You will delete the following item(s):
+        <p>{deleteIdList}</p>
+        <p>This cannot be undone.</p>
+      </div>
+    );
   },
   render: function () {
     var selectedId = this.props.selectedId;

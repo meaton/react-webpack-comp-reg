@@ -2,17 +2,16 @@
 
 var React = require('react');
 var Router = require('react-router');
-
 var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 
-var Authentication = require('./Authentication');
-var { auth, Login, Logout } = Authentication;
-
-var ComponentRegApp = require('./ComponentRegApp.jsx');
-var ComponentViewer = require('./ComponentViewer.jsx');
-var ComponentEditor = require('./ComponentEditor.jsx');
-
+//boostrap
 var PageHeader = require('react-bootstrap/lib/PageHeader');
+
+//components
+var { auth, Login, Logout } = require('./Authentication');
+var ComponentRegApp = require('./ComponentRegApp');
+var ComponentViewer = require('./ComponentViewer');
+var ComponentEditor = require('./ComponentEditor');
 
 var NotFound = React.createClass({
   render: function() {
@@ -52,10 +51,10 @@ var Main = React.createClass({
        return { loggedIn: this.state.loggedIn, displayName: this.state.displayName };
   },
   componentWillMount: function() {
+    //TODO use Webpack console setting for production
     /*$(document).ready(function() {
       window['console']['log'] = function() {};
     });*/
-
     auth.onChange = this.setStateOnAuth;
     auth.login();
   },
@@ -65,7 +64,7 @@ var Main = React.createClass({
        <Link to="login">login</Link>;
     return (
       <div>
-        <PageHeader>CMDI Component Registry <small>ReactJS/REST Test</small></PageHeader>
+        <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
         <div className="auth-login">{loginOrOut}</div>
         <RouteHandler/>
       </div>

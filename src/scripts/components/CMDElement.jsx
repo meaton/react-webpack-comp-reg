@@ -2,14 +2,18 @@
 
 var React = require('react/addons');
 
+//mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var LinkedStateMixin = require('../mixins/LinkedStateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
+//bootstrap
 var Input = require('react-bootstrap/lib/Input');
 
+//components
 var CMDAttribute = require('./CMDAttribute');
 
+//utils
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
@@ -39,8 +43,8 @@ var CMDElement = React.createClass({
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
   componentWillReceiveProps: function(nextProps) {
+    console.log(this.constructor.displayName, 'will received new props');
     var elem = this.state.elem;
-    console.log('elem will received new props');
     /*console.log('elem props: ' + JSON.stringify(nextProps.elem));
     console.log('elem props: ' + this.props.elem.open);
     */
@@ -62,10 +66,10 @@ var CMDElement = React.createClass({
     console.log('mounted element: ' + JSON.stringify(elem));
   },
   componentWillUpdate: function(nextProps, nextState) {
-    console.log('element will update: ' + nextState.elem.elemId);
+    console.log(this.constructor.displayName, 'will update: ' + nextState.elem.elemId);
   },
   componentDidUpdate: function(prevProps, prevState) {
-    console.log('elem did update: ' + this.state.elem.elemId);
+    console.log(this.constructor.displayName, 'did update: ' + this.state.elem.elemId);
     /*console.log(JSON.stringify(this.props.elem));
     console.log(JSON.stringify(this.state.elem));*/
     if(JSON.stringify(this.state.elem) != JSON.stringify(prevState.elem))
@@ -113,7 +117,7 @@ var CMDElement = React.createClass({
     var elem = this.state.elem;
     var elemInspect = elem.elemId; // require('util').inspect(elem);
     console.log('rendering element: ',  elemInspect);
-    
+
     var valueScheme = this.props.viewer.getValueScheme(elem, this);
 
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;

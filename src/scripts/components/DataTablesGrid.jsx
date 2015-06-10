@@ -1,8 +1,13 @@
 'use strict';
 
 var React = require('react/addons');
+
+//mixins
 var LoadingMixin = require('../mixins/LoadingMixin');
-var DataTablesRow = require('./DataTablesRow.jsx');
+
+//components
+var DataTablesRow = require('./DataTablesRow');
+
 var Config = require('../config.js');
 
 require('../../styles/DataGrid.sass');
@@ -18,7 +23,7 @@ var DataTablesWrapper = React.createClass({
     //TODO review resizing and height setting of datagrid scrollBody
      var resizeScrollBody = function() {
       var paddingBrowserDiv = $('.browser').innerHeight() - $('.browser').height();
-      var newScrollBodyHeight = $('.main').outerHeight() - $('#testtable_wrapper').offset().top - $('.dataTables_scrollHead').outerHeight() - $('.dataTables_info').outerHeight() - $('.viewer').outerHeight() - paddingBrowserDiv;
+      var newScrollBodyHeight = $('.main').outerHeight() - $('#' + id + '_wrapper').offset().top - $('.dataTables_scrollHead').outerHeight() - $('.dataTables_info').outerHeight() - $('.viewer').outerHeight() - paddingBrowserDiv;
       console.log('resizing dataTables scrollBody: ', newScrollBodyHeight, $('.browser').height());
       if(newScrollBodyHeight < 280) newScrollBodyHeight = 280;
       $('.dataTables_scrollBody').height(newScrollBodyHeight);
@@ -74,7 +79,7 @@ var DataTablesWrapper = React.createClass({
     }.bind(this));
   },*/
   render: function() {
-    console.log('render wrapper');
+    console.log('render wrapper', this.constructor.displayName);
     return (
       <table className="table table-striped" id="testtable">
         <thead>
@@ -132,13 +137,15 @@ var DataTablesGrid = React.createClass({
   },
   removeSelected: function() {
     if(this.state.data != null && this.state.lastSelectedItem != null) {
-      console.log('Removing selected items... reloading table');
+      console.log('Removed selected items... reloading table');
+
       this.loadItem("profile", null);
       this.loadData(this.state.currentFilter, this.state.currentType);
     }
   },
   loadData: function(nextFilter, nextType) { // TODO: Move into Loader mixin
     this.setLoading(true);
+
     var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
     $.ajax({
      url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
@@ -172,14 +179,15 @@ var DataTablesGrid = React.createClass({
    });
   },
   componentWillMount: function(){
- 		 console.log('will mount datagrid: ' + this.isMounted());
-     if(!this.isMounted()) this.loadData();
+ 		 console.log(this.constructor.displayName, 'will mount: ', !this.isMounted());
+
+     if(!this.isMounted())
+       this.loadData();
  	},
   componentWillReceiveProps: function(nextProps) {
-    // console.log('next props: ' + JSON.stringify(nextProps));
      if((this.props.multiple === 'boolean' && this.props.multiple != nextProps.multiple) ||
         (this.props.multiple.value != nextProps.multiple.value)) {
-       console.log('change state multiSelect : ' + this.state.multiSelect);
+       console.log('changed state multiSelect : ' + this.state.multiSelect);
        this.setState({multiSelect: (typeof nextProps.multiple === 'boolean') ?
            nextProps.multiple :
            nextProps.multiple.value,
@@ -195,7 +203,6 @@ var DataTablesGrid = React.createClass({
     console.log('data count:' + nextState.data.length);
     console.log('datatable:' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
     */
-
     if(typeof this.props.multiple === 'boolean' && this.props.multiple != nextState.multiSelect)
       return true;
     else if(typeof this.props.multiple.requestChange === 'function' && this.props.multiple.value != nextState.multiSelect)
@@ -215,6 +222,7 @@ var DataTablesGrid = React.createClass({
      this.setLoading(false);
 
      var self = this;
+
      $('#' + this.refs.wrapper.getDOMNode().id).show();
      var table = $('#' + this.refs.wrapper.getDOMNode().id).DataTable({
          "autoWidth": true,
@@ -294,22 +302,25 @@ var DataTablesGrid = React.createClass({
  	},
   rowClick: function(val, target, addComponent) {
     var self = this;
+    var tableId = this.refs.wrapper.getDOMNode().id;
     var currentItem = this.state.lastSelectedItem;
+
     if(currentItem != null && currentItem != target && !this.state.multiSelect)
       currentItem.setState({selected: false, active: false});
 
     console.log('addComponent:' + addComponent);
-    this.setState(function(state, props) {
 
+    this.setState(function(state, props) {
       if(currentItem != target && !(currentItem == null && val === this.context.itemId) && target.state.selected) {
         self.loadItem(state.currentType.substr(0, state.currentType.length-1), val);
       } else if(addComponent != undefined && state.currentType == "components") {
         console.log('add component: ' + target.refs.addButton.props.active);
-        self.props.component(val, target.refs.addButton.props.active);
 
+        self.props.component(val, target.refs.addButton.props.active);
         target.setState({ active: false });
       } else {
-        var selectedRows = $('#testtable tr.selected:first');
+        var selectedRows = $('#' + tableId + ' tr.selected:first');
+
         if(selectedRows.length < 1)
           self.props.profile(null); //TODO find next selection item in multiple select mode
         else {
@@ -326,7 +337,8 @@ var DataTablesGrid = React.createClass({
     });
   },
  	render: function(){
-     console.log('render');
+     console.log('render', this.constructor.displayName);
+
      var self = this;
      var contextItemId = this.context.itemId;
      var addButton = (this.props.editMode) ? true : false;

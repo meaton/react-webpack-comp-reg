@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react');
+
+//bootstrap
 var Button = require('react-bootstrap/lib/Button');
 
 var DataTablesRow = React.createClass({
@@ -29,15 +31,15 @@ var DataTablesRow = React.createClass({
     });
   },
   buttonClick: function(evt) {
-    var self = this;
-
     evt.stopPropagation();
     evt.currentTarget.blur();
 
-    this.setState({ active: true }, function() { self.rowClick(self.state.data.id, evt); });
+    var rowClick = this.rowClick;
+    var rowId = this.state.data.id;
+    this.setState({ active: true }, function() { rowClick(rowId, evt); });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log('received props row: ' +  this.props.multiple);
+    console.log(this.constructor.displayName, 'received props row: ', this.props.multiple);
     if(this.props.multiple != nextProps.multiple)
         this.setState({selected: false});
 
