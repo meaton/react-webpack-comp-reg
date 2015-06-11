@@ -23,6 +23,9 @@ var InfoPanel = React.createClass({
     load_data: React.PropTypes.func,
     xml_data: React.PropTypes.string // XMLDocument or String
   },
+  contextTypes: {
+    loggedIn: React.PropTypes.bool.isRequired
+  },
   getInitialState: function() {
     return { xml_data: null, comments_data: [], currentTabIdx: 0 }
   },
@@ -52,19 +55,25 @@ var InfoPanel = React.createClass({
   processComments: function() {
     var comments = this.state.comments_data;
     var commentSubmit = this.commentSubmit;
+    var isLoggedIn = this.context.loggedIn;
+
     if(comments != null && comments.length > 0)
       return (
         comments.map(function(comment, index) {
+          var deleteForm = (isLoggedIn && comment.canDelete === "true") ? (
+            <form name={"comment-" + index} onSubmit={commentSubmit}>
+              <input type="hidden" name="id" value={comment.id} />
+              <ButtonInput type='submit' value='Delete Comment' />
+            </form>
+          ) : null;
+
           return (
             <div key={"comment-" + index} className="comment">
               <span className="comment-name">{comment.userName}
               </span><span> - </span>
               <span className="comment-date">{ moment(comment.commentDate).format('LLL') }</span>
               <p className="comment-comments">{comment.comments}</p>
-              <form name={"comment-" + index} onSubmit={commentSubmit}>
-                <input type="hidden" name="id" value={comment.id} />
-                <ButtonInput type='submit' value='Delete Comment' />
-              </form>
+              {deleteForm}
             </div>
           );
         })
@@ -102,11 +111,13 @@ var InfoPanel = React.createClass({
       );
 
     // comments form and submission
-    var commentsForm = (
+    var commentsForm = (this.context.loggedIn) ? (
       <form name="commentsBox" onSubmit={this.commentSubmit}>
         <Input id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
         <ButtonInput type='submit' value='Submit' />
       </form>
+    ) : (
+      <span>Login to enter a comment</span>
     );
 
     return (
