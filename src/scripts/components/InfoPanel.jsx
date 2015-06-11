@@ -4,6 +4,8 @@ var React = require('react/addons');
 var moment = require('moment-timezone');
 
 //bootstrap
+var Input = require('react-bootstrap/lib/Input');
+var ButtonInput = require('react-bootstrap/lib/ButtonInput');
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
 var TabPane = require('react-bootstrap/lib/TabPane');
 var Panel = require('react-bootstrap/lib/Panel');
@@ -13,7 +15,7 @@ var ComponentViewer = require('./ComponentViewer');
 
 var Config = require('../config.js');
 
-//require('../../styles/InfoPanel.sass');
+require('../../styles/InfoPanel.sass');
 
 var InfoPanel = React.createClass({
   propTypes: {
@@ -49,14 +51,20 @@ var InfoPanel = React.createClass({
   },
   processComments: function() {
     var comments = this.state.comments_data;
+    var commentSubmit = this.commentSubmit;
     if(comments != null && comments.length > 0)
       return (
         comments.map(function(comment, index) {
           return (
             <div key={"comment-" + index} className="comment">
-              <span className="comment-name">{comment.userName}</span>
+              <span className="comment-name">{comment.userName}
+              </span><span> - </span>
               <span className="comment-date">{ moment(comment.commentDate).format('LLL') }</span>
               <p className="comment-comments">{comment.comments}</p>
+              <form name={"comment-" + index} onSubmit={commentSubmit}>
+                <input type="hidden" name="id" value={comment.id} />
+                <ButtonInput type='submit' value='Delete Comment' />
+              </form>
             </div>
           );
         })
@@ -64,8 +72,24 @@ var InfoPanel = React.createClass({
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
   },
+  commentSubmit: function(evt) {
+    evt.preventDefault();
+
+    console.log('comment form submit: ' + evt.currentTarget.name)
+    if(evt.currentTarget.name === "commentsBox") {
+      var commentText = $(evt.currentTarget).find('textarea#commentText');
+      var comments = commentText.val();
+
+      this.props.commentsHandler().save(comments);
+      commentText.val('');
+    } else if(evt.currentTarget.name.indexOf("comment-") > -1)
+      this.props.commentsHandler().delete($(evt.currentTarget).find("input:hidden[name=id]").val());
+
+    return false;
+  },
   render: function () {
     console.log('render', this.constructor.displayName);
+
     var item = this.props.item;
     var xmlElement = null;
     var viewer = null;
@@ -77,8 +101,16 @@ var InfoPanel = React.createClass({
         <ComponentViewer item={this.props.item} editMode={false} />
       );
 
+    // comments form and submission
+    var commentsForm = (
+      <form name="commentsBox" onSubmit={this.commentSubmit}>
+        <Input id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
+        <ButtonInput type='submit' value='Submit' />
+      </form>
+    );
+
     return (
-      <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile']) ? "profile" : "component"}>
+      <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile'] === "true") ? "profile" : "component"}>
         <TabPane eventKey={0} tab="view">
           {viewer}
         </TabPane>
@@ -89,6 +121,7 @@ var InfoPanel = React.createClass({
         </TabPane>
         <TabPane eventKey={2} tab={"Comments (" + this.state.comments_data.length + ")"}>
             {this.processComments()}
+            {commentsForm}
         </TabPane>
       </TabbedArea>
     );

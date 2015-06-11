@@ -18,10 +18,11 @@ var BtnGroupMixin = {
     };
   },
   deleteAction: function() {
-    //TODO: - Handle for multiple select
-    //      - Expect a response from REST?
+    //TODO: - Handle for multiple select *done*
+    //      - Expect a response from REST? 200, handle errors 40x
     //      - Display notice warning temp post-deletion
-    //      - Remove nodes selected for delete on confirm/200 OK resp.
+    //      - Remove nodes selected for delete on confirm/200 OK resp. *done*
+    //      - Check first if selected items have any usage (REST)
     var self = this;
     var selectedRows = $('#testtable tr.selected');
 

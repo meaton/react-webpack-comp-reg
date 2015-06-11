@@ -91,6 +91,7 @@ var LoaderMixin = {
       },
       success: function(data) {
         if(cb && data != null) if(data.comment != null) cb(data.comment); else cb(data);
+        else cb([]);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(componentId, status, err);
@@ -268,6 +269,54 @@ var LoaderMixin = {
     xhr.send(fd);
 
   },*/
+  saveComment: function(comment, profileId, componentId, cb) {
+    //POST
+    /*<comment>
+      <comments>test comment</comments>
+      <commentDate/>
+      <componentId>clarin.eu:cr1:p_1433928406468</componentId>
+      <userName/>
+    </comment>*/
+    var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/';
+
+    var fd = new FormData();
+
+    if(profileId != null) {
+      url += 'profiles/' + profileId + '/comments/';
+      comments_xml += "<componentId>" + profileId + "</componentId>";
+    } else if (componentId != null) {
+      url += 'components/' + componentId + '/comments/';
+      comments_xml += "<componentId>" + componentId + "</componentId>";
+    }
+
+    comments_xml += "<userName/></comment>";
+
+    fd.append('data', new Blob([ comments_xml ], { type: "application/xml" }));
+
+    console.log('sending comment POST: ' + comments_xml, profileId || componentId);
+
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: fd,
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success: function(data) {
+        console.log('comment saved: ' + JSON.stringify(data));
+        if(cb) cb(data.id);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(profileId || componentId, status, err);
+      }.bind(this)
+    });
+  },
   deleteItem: function(type, itemId, cb) {
     var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId;
 
@@ -275,6 +324,35 @@ var LoaderMixin = {
       type: 'DELETE', // 'POST' /* Note testing locally with CORS enable DELETE method in init-config accepted methods */
       url: url,
       //data: { method: 'DELETE' }, // used for POST method of deletion
+      username: Config.auth.username,
+      password: Config.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function(data) {
+        console.log('return delete action: ' + data);
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(itemId, status, err);
+      }.bind(this)
+    });
+  },
+  deleteComment: function(commentId, profileId, componentId, cb) {
+    var type = "profiles";
+    var itemId = profileId;
+
+    if(profileId == null && componentId != null) {
+      type = "components";
+      itemId = componentId;
+    }
+
+    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId + '/comments/' + commentId;
+
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: { method: 'DELETE' }, // used for POST method of deletion
       username: Config.auth.username,
       password: Config.auth.password,
       xhrFields: {

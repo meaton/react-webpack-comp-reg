@@ -29,6 +29,29 @@ var ProfileOverview = React.createClass({
         self.setState({profile_xml: data, visible: true});
     });
   },
+  reloadComments: function() {
+    var self = this;
+    this.loadComments(this.props.profileId, false, function(comments) {
+      self.setState({comments: comments});
+    });
+  },
+  commentsHandler: function() {
+    var self = this;
+    return {
+      save: function(comment) {
+        self.saveComment(comment, self.props.profileId, null, function(id) {
+          console.log('comment saved: ', id);
+          self.reloadComments();
+        });
+      },
+      delete: function(commentId) {
+        self.deleteComment(commentId, self.props.profileId, null, function(resp) {
+          console.log(resp);
+          self.reloadComments();
+        });
+      }
+    };
+  },
   componentWillReceiveProps: function(nextProps) {
     console.log(this.constructor.displayName, 'received profile props:', JSON.stringify(nextProps));
     console.log('profileId: ' + this.props.profileId);
@@ -64,7 +87,7 @@ var ProfileOverview = React.createClass({
   },
   render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";
-    var infoPanel = (this.state.profile != null) ? <InfoPanel item={this.state.profile} load_data={this.loadProfileXml} xml_data={this.state.profile_xml} comments_data={this.state.comments} /> : null;
+    var infoPanel = (this.state.profile != null) ? <InfoPanel item={this.state.profile} load_data={this.loadProfileXml} xml_data={this.state.profile_xml} comments_data={this.state.comments} commentsHandler={this.commentsHandler} /> : null;
     return (
       <div className={hideClass}>
         {infoPanel}

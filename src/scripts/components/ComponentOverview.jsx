@@ -27,6 +27,29 @@ var ComponentOverview = React.createClass({
       self.setState({component_xml: data, visible: true});
     });
   },
+  reloadComments: function() {
+    var self = this;
+    this.loadComments(this.props.componentId, false, function(comments) {
+      self.setState({comments: comments});
+    });
+  },
+  commentsHandler: function() {
+    var self = this;
+    return {
+      save: function(comment) {
+        self.saveComment(comment, null, self.props.componentId, function(id) {
+          console.log('comment saved: ', id);
+          self.reloadComments();
+        });
+      },
+      delete: function(commentId) {
+        self.deleteComment(commentId, null, self.props.componentId, function(resp) {
+          console.log(resp);
+          self.reloadComments();
+        });
+      }
+    };
+  },
   componentWillReceiveProps: function(nextProps) {
     var self = this;
     if(nextProps.componentId && (this.props.componentId != nextProps.componentId)) {
@@ -60,7 +83,7 @@ var ComponentOverview = React.createClass({
   },
   render: function() {
     var hideClass = (!this.state.visible) ? "hide" : "show";
-    var infoPanel = (this.state.component != null) ? <InfoPanel item={this.state.component} load_data={this.loadComponentXml} xml_data={this.state.component_xml} comments_data={this.state.comments} /> : null;
+    var infoPanel = (this.state.component != null) ? <InfoPanel item={this.state.component} load_data={this.loadComponentXml} xml_data={this.state.component_xml} comments_data={this.state.comments} commentsHandler={this.commentsHandler} /> : null;
     return (
       <div className={hideClass}>
         {infoPanel}
