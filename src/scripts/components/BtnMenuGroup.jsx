@@ -65,6 +65,9 @@ var BtnMenuGroup = React.createClass({
   propTypes: {
     mode: React.PropTypes.string
   },
+  contextTypes: {
+    loggedIn: React.PropTypes.bool.isRequired
+  },
   getDefaultProps: function() {
     return {
       mode: "normal",
@@ -135,9 +138,9 @@ var BtnMenuGroup = React.createClass({
 
         return (
             <ButtonGroup className="actionMenu">
-              <ButtonLink to="newEditor">Create new</ButtonLink>
+              <ButtonLink to="newEditor" disabled={!this.context.loggedIn}>Create new</ButtonLink>
               {editorLink}
-              <ButtonLink to="import">Import</ButtonLink>
+              <ButtonLink to="import" disabled={!this.context.loggedIn}>Import</ButtonLink>
               <ButtonModal {...this.props} action={this.props.deleteComp} disabled={(this.props.profile == null && this.props.component == null) || isPublished}
                 btnLabel="Delete"
                 title="Delete items"

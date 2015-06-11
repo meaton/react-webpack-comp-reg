@@ -127,13 +127,17 @@ var CMDComponent = React.createClass({
   },
   updateComponentSettings: function(index, newMin, newMax) {
     console.log('comp update: ' + index);
+
     var component = this.state.component;
     var child = (component.Header != undefined) ? component.CMD_Component.CMD_Component[index] : component.CMD_Component[index];
+    var childPath = (component.Header != undefined) ? 'CMD_Component.CMD_Component.' + index : 'CMD_Component.' + index;
 
-    if(newMin != null) child['@CardinalityMin'] = newMin;
-    if(newMax != null) child['@CardinalityMax'] = newMax;
+    if(newMin != null) child = (child.Header != undefined) ? update(child, { CMD_Component: { '@CardinalityMin' : { $set: newMin } } }) :
+                                                             update(child, { '@CardinalityMin': { $set: newMin } });
+    if(newMax != null) child = (child.Header != undefined) ? update(child, { CMD_Component: { '@CardinalityMax' : { $set: newMax } } }) :
+                                                             update(child, { '@CardinalityMax': { $set: newMax } });
 
-    var linkChild = this.linkState('component.' + index);
+    var linkChild = this.linkState('component.' +  childPath);
     linkChild.requestChange(child);
   },
   updateParent: function(index, newComponent) {
@@ -324,7 +328,7 @@ var CMDComponent = React.createClass({
               <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self.props.viewer, attr, self)} conceptRegistryBtn={self.props.viewer.conceptRegistryBtn.bind(self.props.viewer, self)} editMode={self.state.editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
             );
           })
-          : <span>No Attributes</span>
+          : <span> No Attributes</span>
         }
         {addAttrLink}
       </div>
