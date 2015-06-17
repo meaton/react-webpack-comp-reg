@@ -17,6 +17,10 @@ var Config = require('../config.js');
 
 require('../../styles/InfoPanel.sass');
 
+/*
+* InfoPanel - displays the loaded registry item data and comments in Bootstrap tabbed-panes.
+* @constructor
+*/
 var InfoPanel = React.createClass({
   propTypes: {
     item: React.PropTypes.object,

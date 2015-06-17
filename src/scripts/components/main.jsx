@@ -8,28 +8,42 @@ var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 
 //components
-var { auth, Login, Logout } = require('./Authentication');
+var { auth, Login, Logout, Authentication } = require('./Authentication');
 var ComponentRegApp = require('./ComponentRegApp');
 var ComponentViewer = require('./ComponentViewer');
 var ComponentEditor = require('./ComponentEditor');
 
+// main stylesheets
+require('../../styles/main.css');
+require('../../styles/normalize.css');
+
+/*
+* NotFound - Display for a non-configured route
+* @constructor
+*/
 var NotFound = React.createClass({
   render: function() {
     return (
-      <h1>Not Found</h1>
+      <div className="main"><h1>Not Found</h1></div>
     );
   }
 });
 
+/*
+* Import - web-form to import data to the Component Registry
+* @constructor
+*/
 var Import = React.createClass({
+  mixin: [Authentication],
   render: function() {
-    return <h1>Importer</h1>
+    return <div className="main"><h1>Importer</h1></div>
   }
 });
 
-require('../../styles/main.css');
-require('../../styles/normalize.css');
-
+/*
+* Main - Default component and entry point to the application.
+* @constructor
+*/
 var Main = React.createClass({
   getInitialState: function() {
     return {
@@ -72,6 +86,7 @@ var Main = React.createClass({
   }
 });
 
+// react-router configuration
 var routes = (
     <Route handler={Main} path="/" >
       <NotFoundRoute handler={NotFound}/>
@@ -89,6 +104,7 @@ var routes = (
     </Route>
 );
 
+// manage defined routes and history with react-router
 Router.run(routes, Router.HistoryLocation, function(Handler) {
   React.render(<Handler/>, document.getElementById('content'));
 });

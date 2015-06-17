@@ -3,6 +3,10 @@ var ee = require('events').EventEmitter;
 var registryEvents = new ee();
 var timeout = null;
 
+/*
+* LoadingMixin - manages cursor state when some activity is occurring in the application.
+* @mixin
+*/
 var LoadingMixin = {
   setLoading: function(isLoading) {
     var eventEmitter = (this.state.eventHolder) ? this.state.eventHolder : null;

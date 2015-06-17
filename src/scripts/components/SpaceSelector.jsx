@@ -14,6 +14,10 @@ var ButtonLink = require('react-router-bootstrap').ButtonLink;
 var auth = require('./Authentication').auth;
 var classNames = require('classnames');
 
+/*
+* SpaceSelector - selector or switcher between public, private and/or group spaces and component or profile types.
+* @constructor
+*/
 var SpaceSelector = React.createClass({
   propTypes: {
     onChange: React.PropTypes.func,

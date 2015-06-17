@@ -75,8 +75,11 @@ var testCardinalitySettings = function(minValue, maxValue) {
   return true;
 };
 
+/*
+* ValidationMixin - client-side validation checks before saving a CMDI Profile or Component item.
+* @mixin
+*/
 var ValidationMixin = {
-  // client-side validation tests
   validate: function(data) {
     console.log('validate data');
 

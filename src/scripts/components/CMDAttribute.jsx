@@ -16,6 +16,13 @@ var update = React.addons.update;
 
 //require('../../styles/CMDAttribute.sass');
 
+/*
+* CMDAttribute - view display and editing form for a CMDI Attribute item. 
+* @constructor
+* @mixes ImmutableRenderMixin
+* @mixes LinkedStateMixin
+* @mixes ActionButtonsMixin
+*/
 var CMDAttribute = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {

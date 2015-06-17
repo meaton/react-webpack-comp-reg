@@ -1,3 +1,6 @@
+/*
+* @module Domain labels and data values used in CMDI Component root property domainName.
+*/
 module.exports = [
     {"label": "Anthropological Linguistics", "data": "anthropological_linguistics"},
     {"label": "Applied Linguistics", "data": "applied_linguistics"},

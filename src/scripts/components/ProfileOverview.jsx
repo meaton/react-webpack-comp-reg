@@ -9,6 +9,12 @@ var LoadingMixin = require('../mixins/LoadingMixin');
 //components
 var InfoPanel = require('./InfoPanel.jsx');
 
+/*
+* ProfileOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
+* @constructor
+* @mixes Loader
+* @mixes LoadingMixin
+*/
 var ProfileOverview = React.createClass({
   mixins: [CompRegLoader, LoadingMixin],
   propTypes: {

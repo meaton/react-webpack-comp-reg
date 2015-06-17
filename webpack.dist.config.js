@@ -10,18 +10,21 @@ var webpack = require('webpack');
 
 module.exports = {
 
+  entry: './src/scripts/components/main.jsx',
+
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
     filename: 'main.js'
   },
+  
   console: false,
   debug: false,
   devtool: false,
-  entry: './src/scripts/components/main.jsx',
 
   stats: {
     colors: true,
+    modules: true,
     reasons: false
   },
 

@@ -5,6 +5,10 @@ var React = require('react');
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 
+/*
+* DataTablesRow - manages the table-row selection state and display of the table-rows in the DataTablesGrid.
+* @constructor
+*/
 var DataTablesRow = React.createClass({
   propTypes: {
     data: React.PropTypes.object.isRequired,

@@ -5,12 +5,20 @@ var Router = require('react-router');
 
 var Config = require('../config');
 
+var restUrl = "http://" + Config.REST.host;
+restUrl += (Config.REST.port != undefined && Config.REST.port.length > 0) ? ":" + Config.REST.port + "/" + Config.REST.path : "/" + Config.REST.path;
+
+/*
+* Login - redirects to the REST Auth service. The form submit event occurs after component is mounted.
+* @constructor
+* @mixes Router.Navigation
+*/
 var Login = React.createClass({
   mixins: [ Router.Navigation ],
   statics: {
     sessionExists: false,
     attemptedTransition: null,
-    authUrl: "http://localhost:8080/ComponentRegistry/rest/authentication"
+    authUrl: restUrl + "/authentication"
   },
   getInitialState: function () {
     return {
@@ -51,6 +59,10 @@ var Login = React.createClass({
   }
 });
 
+/*
+* Logout - a test component for changing the authenticated/session state of the application.
+* @constructor
+*/
 var Logout = React.createClass({
   componentDidMount: function () {
     auth.logout();
@@ -60,6 +72,11 @@ var Logout = React.createClass({
   }
 });
 
+/*
+* Authentication - mixin implements static functions for react-router transition hooks, for checking the authentication state of the application before transitioning to the new route.
+* Currently used as a mixin to ComponentEditor and Import (Main).
+* @mixin
+*/
 var Authentication = {
   statics: {
     willTransitionTo: function (transition, params, query, callback) {
@@ -78,6 +95,7 @@ var Authentication = {
   }
 };
 
+/* Login/logout handler */
 var auth = {
   login: function (cb) {
     cb = arguments[arguments.length - 1];
@@ -123,29 +141,31 @@ var auth = {
 };
 
 var loginRequest = function(cb) {
-    return $.ajax({
-      url: Login.authUrl,
-      type: 'GET',
-      username: Config.auth.username,
-      password: Config.auth.password,
+  var corsRequestParams = (Config.dev) ?
+    { username: Config.REST.auth.username,
+      password: Config.REST.auth.password,
       xhrFields: {
         withCredentials: true
-      },
-      dataType: 'json',
-      success: function (result){
-        console.log('result: ' + result);
-        cb({
-          authenticated: result.authenticated === 'true',
-          token: Math.random().toString(36).substring(7),
-          displayName: result.displayName
-        });
-      },
-      error: function() {
-        cb({authenticated: false});
-      }
-    });
-  }
+    }} : {};
+  return $.ajax($.extend({
+    url: Login.authUrl,
+    type: 'GET',
+    dataType: 'json',
+    success: function (result){
+      console.log('result: ' + result);
+      cb({
+        authenticated: result.authenticated === 'true',
+        token: Math.random().toString(36).substring(7),
+        displayName: result.displayName
+      });
+    },
+    error: function() {
+      cb({authenticated: false});
+    }
+  }, corsRequestParams));
+}
 
+/* @module Authentication handler */
 module.exports = {
   auth: auth,
   Login: Login,

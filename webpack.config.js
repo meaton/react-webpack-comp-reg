@@ -16,6 +16,12 @@ var config = {
     this.module.noParse.push(new RegExp(path));
   },
 
+  entry: [
+      'webpack-dev-server/client?http://localhost:8000',
+      'webpack/hot/only-dev-server',
+      './src/scripts/components/main.jsx'
+  ],
+
   output: {
     filename: 'main.js',
     publicPath: '/assets/'
@@ -24,14 +30,10 @@ var config = {
   cache: true,
   debug: true,
   devtool: false,
-  entry: [
-      'webpack-dev-server/client?http://localhost:8000',
-      'webpack/hot/only-dev-server',
-      './src/scripts/components/main.jsx'
-  ],
 
   stats: {
     colors: true,
+    modules: true,
     reasons: true
   },
 

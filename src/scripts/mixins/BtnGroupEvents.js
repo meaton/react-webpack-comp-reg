@@ -1,3 +1,7 @@
+/*
+* BtnGroupMixin - handlers for BtnMenuGroup
+* @mixin
+*/
 var BtnGroupMixin = {
   getBtnGroupProps: function() {
     return {

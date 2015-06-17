@@ -14,6 +14,11 @@ var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var Modal = require('react-bootstrap/lib/Modal');
 
+/*
+* ButtonModal - Bootstrap Modal dialog triggered by Button, utilising react-bootstrap OverlayMixin to control overlay display.
+* @constructor
+* @mixes OverlayMixin
+*/
 var ButtonModal = React.createClass({
       mixins: [OverlayMixin],
       getInitialState: function() {
@@ -60,6 +65,12 @@ var ButtonModal = React.createClass({
       }
   });
 
+/*
+* BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.
+* @constructor
+* @mixes Router.State
+* @mixes Router.Navigation
+*/
 var BtnMenuGroup = React.createClass({
   mixins: [Router.State, Router.Navigation],
   propTypes: {

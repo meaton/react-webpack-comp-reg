@@ -6,6 +6,10 @@ var ActionButtons = React.createFactory(require('../components/ActionButtons'));
 //utils
 var update = React.addons.update;
 
+/*
+* ActionButtonsMixin - handlers for ActionButtons.
+* @mixin
+*/
 var ActionButtonsMixin = {
   getActionButtons: function(moveEnabled) {
       if(moveEnabled == undefined) moveEnabled = true;

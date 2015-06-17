@@ -9,6 +9,12 @@ var LoadingMixin = require('../mixins/LoadingMixin');
 //bootstrap
 var InfoPanel = require('./InfoPanel');
 
+/*
+* ComponentOverview - displays the loaded CMDI Component, full schema and comments in Bootstrap tabbed-panes.
+* @constructor
+* @mixes Loader
+* @mixes LoadingMixin
+*/
 var ComponentOverview = React.createClass({
   mixins: [ComRegLoader, LoadingMixin],
   propTypes: {

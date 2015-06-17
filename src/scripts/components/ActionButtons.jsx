@@ -2,8 +2,12 @@
 
 var React = require('react');
 
-require('../../styles/ActionButtons.sass');
+require('../../styles/ActionButtons.sass'); // TODO apply image styles to links
 
+/*
+* ActionButtons - Generates button links displayed inline and used to apply ordering or remove actions to a CMDComponent, CMDElement or CMDAttribute.
+* @constructor
+*/
 var ActionButtons = React.createClass({
   propTypes: {
     target: React.PropTypes.any.isRequired, // TODO replace with instanceOf check

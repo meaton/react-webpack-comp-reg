@@ -8,39 +8,73 @@ var marshaller = context.createMarshaller();
 
 var Config = require('../config');
 
-//TODO replace localhost address with config setting or window host
+var restUrl = "http://" + Config.REST.host;
+restUrl += (Config.REST.port != undefined && Config.REST.port.length > 0) ? ':' + Config.REST.port + '/' + Config.REST.path : '/' + Config.REST.path;
+
+var corsRequestParams = (Config.dev) ?
+  { username: Config.REST.auth.username,
+    password: Config.REST.auth.password,
+    xhrFields: {
+      withCredentials: true
+  }} : {};
+
+/*
+* LoaderMixin - AJAX calls to the Component Registry REST service
+* @mixin
+*/
 var LoaderMixin = {
+  // TODO: Check user is logged in if loading private or group spaces
+  loadData: function(nextFilter, nextType) {
+    this.setLoading(true);
+
+    var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
+    $.ajax($.extend({
+     url: restUrl + '/registry/' + type,
+     accepts: {
+       json: 'application/json'
+     },
+     data: { unique: new Date().getTime(), registrySpace: (nextFilter != null) ? nextFilter: this.props.filter },
+     dataType: 'json',
+     success: function(data) {
+       var _data = data;
+       if(_data != null && _data != 'null') {
+          if(_data.hasOwnProperty("componentDescription") && type == "components")
+            _data = data.componentDescription;
+          else if(_data.hasOwnProperty("profileDescription") && type == "profiles")
+            _data = data.profileDescription;
+
+          if(!$.isArray(_data))
+            _data = [_data];
+        }
+
+       this.setState({data: (_data != null && _data != 'null') ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
+     }.bind(this),
+     error: function(xhr, status, err) {
+       console.error(status, err);
+     }.bind(this)
+   }, corsRequestParams));
+  },
   loadProfile: function(profileId, raw_type, cb) {
     var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
 
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId,
+    $.ajax($.extend({
+      url: restUrl + '/registry/profiles/' + profileId,
       dataType: (raw_type != undefined) ? raw_type : "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       success: function(data) {
         if(cb) cb(data);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(profileId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   loadComponent: function(componentId, raw_type, cb) {
     var syncData = null;
     var type = (raw_type != undefined || raw_type == "json") ? "/" + raw_type : "";
 
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/components/' + componentId,
+    $.ajax($.extend({
+      url: restUrl + '/registry/components/' + componentId,
       dataType: (raw_type != undefined) ? raw_type : "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       async: false, //TODO sync is dep, review CMDComponent parseComponents usage
       success: function(data) {
         if(cb) cb(data);
@@ -48,7 +82,7 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(componentId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   getItemName: function(itemId, cb) { // cannot sync call require callback
     var name = null;
@@ -61,14 +95,9 @@ var LoaderMixin = {
     return name;
   },
   loadRegistryItem: function(itemId, cb) {
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/items/' + itemId,
+    $.ajax($.extend({
+      url: restUrl + '/registry/items/' + itemId,
       dataType: "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       success: function(data) {
         console.log('return 200 registry item: ' + data != null);
         if(cb) cb(data);
@@ -76,19 +105,14 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(componentId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   loadComments: function(componentId, isProfile, cb) {
     var reg_type = (isProfile) ? "profiles" : "components";
 
-    $.ajax({
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + reg_type + '/' + componentId + '/comments',
+    $.ajax($.extend({
+      url: restUrl + '/registry/' + reg_type + '/' + componentId + '/comments',
       dataType: "json",
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       success: function(data) {
         if(cb && data != null) if(data.comment != null) cb(data.comment); else cb(data);
         else cb([]);
@@ -96,7 +120,7 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(componentId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   handlePostData: function(data, childElems, childComps) {
     var self = this;
@@ -154,16 +178,16 @@ var LoaderMixin = {
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/profiles';
+    var url = restUrl + '/registry/profiles';
     if(update) url += '/' + profileId + '/' + actionType;
 
-    $.ajax({
+    $.ajax($.extend({
         type: 'POST',
         url: url,
         data: fd,
         mimeType: 'multipart/form-data',
-        username: Config.auth.username,
-        password: Config.auth.password,
+        username: Config.REST.auth.username,
+        password: Config.REST.auth.password,
         xhrFields: {
           withCredentials: true
         },
@@ -176,7 +200,7 @@ var LoaderMixin = {
         error: function(xhr, status, err) {
           console.error(componentId, status, err);
         }.bind(this)
-      });
+      }, corsRequestParams));
   },
   saveComponent: function(componentId, update, publish, cb) {
     var actionType = (publish) ? "publish" : "update";
@@ -201,18 +225,13 @@ var LoaderMixin = {
     fd.append('domainName', registry.domainName);
     fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/components';
+    var url = restUrl + '/registry/components';
     if(update) url += '/' + componentId + '/' + actionType;
-    $.ajax({
+    $.ajax($.extend({
       type: 'POST',
       url: url,
       data: fd,
       mimeType: 'multipart/form-data',
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       processData: false,
       contentType: false,
       dataType: "json",
@@ -222,7 +241,7 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(componentId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   /* CORS issue using XHR natively
   corsRequest: function() {
@@ -250,14 +269,14 @@ var LoaderMixin = {
       return xhr;
     }
 
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/profiles/' + profileId + '/' + actionType;
+    var url = restUrl + '/registry/profiles/' + profileId + '/' + actionType;
     var xhr = createCORSRequest('POST', url);
     if (!xhr) {
       throw new Error('CORS not supported');
     }
     xhr.withCredentials = true;
     xhr.setRequestHeader(
-      'Authorization','Basic ' + btoa(Config.auth.username + ':' + Config.auth.password)
+      'Authorization','Basic ' + btoa(Config.REST.auth.username + ':' + Config.REST.auth.password)
     );
 
     xhr.onreadystatechange = function() {
@@ -278,7 +297,7 @@ var LoaderMixin = {
       <userName/>
     </comment>*/
     var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/';
+    var url = restUrl + '/registry/';
 
     var fd = new FormData();
 
@@ -296,15 +315,10 @@ var LoaderMixin = {
 
     console.log('sending comment POST: ' + comments_xml, profileId || componentId);
 
-    $.ajax({
+    $.ajax($.extend({
       type: 'POST',
       url: url,
       data: fd,
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       processData: false,
       contentType: false,
       dataType: "json",
@@ -315,20 +329,15 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(profileId || componentId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   deleteItem: function(type, itemId, cb) {
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId;
+    var url = restUrl + '/registry/' + type + '/' + itemId;
 
-    $.ajax({
+    $.ajax($.extend({
       type: 'DELETE', // 'POST' /* Note testing locally with CORS enable DELETE method in init-config accepted methods */
       url: url,
       //data: { method: 'DELETE' }, // used for POST method of deletion
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       success: function(data) {
         console.log('return delete action: ' + data);
         if(cb) cb(data);
@@ -336,7 +345,7 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(itemId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   deleteComment: function(commentId, profileId, componentId, cb) {
     var type = "profiles";
@@ -347,17 +356,12 @@ var LoaderMixin = {
       itemId = componentId;
     }
 
-    var url = 'http://localhost:8080/ComponentRegistry/rest/registry/' + type + '/' + itemId + '/comments/' + commentId;
+    var url = restUrl + '/registry/' + type + '/' + itemId + '/comments/' + commentId;
 
-    $.ajax({
+    $.ajax($.extend({
       type: 'POST',
       url: url,
       data: { method: 'DELETE' }, // used for POST method of deletion
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       success: function(data) {
         console.log('return delete action: ' + data);
         if(cb) cb(data);
@@ -365,17 +369,12 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         console.error(itemId, status, err);
       }.bind(this)
-    });
+    }, corsRequestParams));
   },
   loadAllowedTypes: function(cb) {
-    $.ajax({
+    $.ajax($.extend({
       type: 'GET',
-      url: 'http://localhost:8080/ComponentRegistry/rest/registry/AllowedTypes',
-      username: Config.auth.username,
-      password: Config.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
+      url: restUrl + '/registry/AllowedTypes',
       processData: false,
       contentType: false,
       dataType:'json',
@@ -385,20 +384,15 @@ var LoaderMixin = {
       error: function(xhr, status, err) {
         cb(null);
       }.bind(this)
-    })
+    }, corsRequestParams));
   },
   queryCCR: function(searchQuery, cb) {
-    var url = 'http://localhost:8080/ComponentRegistry/ccr?type=container&keywords=' + searchQuery;
+    var url = restUrl + '/ccr?type=container&keywords=' + searchQuery;
 
     if(searchQuery != null || searchQuery != "")
-      $.ajax({
+      $.ajax($.extend({
         type: 'GET',
         url: url,
-        username: Config.auth.username,
-        password: Config.auth.password,
-        xhrFields: {
-          withCredentials: true
-        },
         processData: false,
         contentType: false,
         dataType: "json",
@@ -409,7 +403,7 @@ var LoaderMixin = {
         error: function(xhr, status, err) {
           cb(null);
         }.bind(this)
-      });
+      }, corsRequestParams));
   },
   componentWillMount: function() {
     console.log('Loader mount');

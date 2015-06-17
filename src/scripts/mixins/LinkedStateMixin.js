@@ -1,4 +1,10 @@
-//TODO replace with Omniscient.js
+/*
+* LinkedStateMixin - Alternate to React.addons.LinkedStateMixin, with support for deep path-based state access.
+* @mixin
+* @author Tung Dao me@tungdao.com
+* @see gist.github.com/tungd/8367229
+* @description Modified to use clone module when setting new state on target component.
+*/
 var clone = require('clone');
 
 function getIn(object, path) {

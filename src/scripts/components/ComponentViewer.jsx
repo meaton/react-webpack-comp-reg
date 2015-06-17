@@ -35,6 +35,18 @@ var md5 = require('spark-md5');
 
 require('../../styles/ComponentViewer.sass');
 
+/*
+* ComponentViewer - view display and editing form for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
+* @constructor
+* @mixes ImmutableRenderMixin
+* @LinkedStateMixin
+* @BtnGroupEvents
+* @Loader
+* @ActionButtonsMixin
+* @ValidationMixin
+* @Router.Navigation
+* @Router.State
+*/
 var ComponentViewer = React.createClass({
   statics: {
     willTransitionTo: function(transition, params, query) {

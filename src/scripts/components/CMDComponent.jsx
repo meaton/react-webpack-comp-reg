@@ -21,6 +21,13 @@ var md5 = require('spark-md5');
 
 require('../../styles/CMDComponent.sass');
 
+/*
+* CMDComponent - view display and editing form for a CMDI Component item. 
+* @constructor
+* @mixes ImmutableRenderMixin
+* @mixes LinkedStateMixin
+* @mixes ActionButtonsMixin
+*/
 var CMDComponent = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
   getInitialState: function() {

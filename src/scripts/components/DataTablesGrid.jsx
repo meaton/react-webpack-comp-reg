@@ -3,6 +3,7 @@
 var React = require('react/addons');
 
 //mixins
+var CompRegLoader = require('../mixins/Loader');
 var LoadingMixin = require('../mixins/LoadingMixin');
 
 //components
@@ -12,6 +13,10 @@ var Config = require('../config.js');
 
 require('../../styles/DataGrid.sass');
 
+/*
+* DataTablesWrapper - outputs a HTML static table layout and header coloums for rendering by the DataTables plugin.
+* @constructor
+*/
 var DataTablesWrapper = React.createClass({
   getInitialState: function() {
     return { rows: [], redraw: false }
@@ -102,8 +107,14 @@ var DataTablesWrapper = React.createClass({
   }
 });
 
+/*
+* DataTablesGrid - manages the data and display or rendering of the datagrid.
+* @constructor
+* @mixes React.addons.LinkedStateMixin
+* @mixes LoadingMixin
+*/
 var DataTablesGrid = React.createClass({
-  mixins: [React.addons.LinkedStateMixin, LoadingMixin],
+  mixins: [React.addons.LinkedStateMixin, CompRegLoader, LoadingMixin],
   contextTypes: {
     itemId: React.PropTypes.string
   },
@@ -142,42 +153,6 @@ var DataTablesGrid = React.createClass({
       this.loadItem("profile", null);
       this.loadData(this.state.currentFilter, this.state.currentType);
     }
-  },
-  // TODO: Check user is logged in if loading private or group spaces
-  loadData: function(nextFilter, nextType) { // TODO: Move into Loader mixin
-    this.setLoading(true);
-
-    var type = (nextType != null) ? nextType.toLowerCase() : this.props.type.toLowerCase();
-    $.ajax({
-     url: 'http://localhost:8080/ComponentRegistry/rest/registry/' + type,
-     accepts: {
-       json: 'application/json'
-     },
-     data: { unique: new Date().getTime(), registrySpace: (nextFilter != null) ? nextFilter: this.props.filter },
-     dataType: 'json',
-     username: Config.auth.username,
-     password: Config.auth.password,
-     xhrFields: {
-       withCredentials: true
-     },
-     success: function(data) {
-       var _data = data;
-       if(_data != null && _data != 'null') {
-          if(_data.hasOwnProperty("componentDescription") && type == "components")
-            _data = data.componentDescription;
-          else if(_data.hasOwnProperty("profileDescription") && type == "profiles")
-            _data = data.profileDescription;
-
-          if(!$.isArray(_data))
-            _data = [_data];
-        }
-
-       this.setState({data: (_data != null && _data != 'null') ? _data : [], currentFilter: nextFilter || this.props.filter, currentType: nextType || this.props.type, lastSelectedItem: null});
-     }.bind(this),
-     error: function(xhr, status, err) {
-       console.error(status, err);
-     }.bind(this)
-   });
   },
   componentWillMount: function(){
  		 console.log(this.constructor.displayName, 'will mount: ', !this.isMounted());
