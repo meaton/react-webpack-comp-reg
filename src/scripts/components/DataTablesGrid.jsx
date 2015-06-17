@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
+var md5 = require('spark-md5');
 
 //mixins
 var CompRegLoader = require('../mixins/Loader');
@@ -185,10 +186,12 @@ var DataTablesGrid = React.createClass({
       return true;
     else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
       console.log('filters eq:' + (this.state.data.length));
-      var newData = (this.state.data.length != nextState.data.length);
-      if(newData) this.clearTable();
+      console.log('filters eq:' + (nextState.data.length))
+      var newData = (nextState.data.length >= 0 && (md5.hash(JSON.stringify(nextState.data)) != md5.hash(JSON.stringify(this.state.data))));
       console.log('new data: ' + newData);
-      return newData || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
+      console.log('table exists: ' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
+      if(newData) this.clearTable();
+      return (newData) || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
       this.loadData(nextProps.filter, nextProps.type);
       return false;
@@ -270,6 +273,7 @@ var DataTablesGrid = React.createClass({
       });
 
       console.log('row count: ' + React.Children.count(this.refs.wrapper.props.children));
+      
       React.Children.forEach(this.refs.wrapper.props.children, function(row) {
         if(row.props.selected) {
           console.log('selected row ' + row.key + ': ' + row.props.selected);
