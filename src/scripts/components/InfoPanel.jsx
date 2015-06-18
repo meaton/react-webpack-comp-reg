@@ -13,8 +13,6 @@ var Panel = require('react-bootstrap/lib/Panel');
 //components
 var ComponentViewer = require('./ComponentViewer');
 
-var Config = require('../config.js');
-
 require('../../styles/InfoPanel.sass');
 
 /*

@@ -13,6 +13,9 @@ var ComponentRegApp = require('./ComponentRegApp');
 var ComponentViewer = require('./ComponentViewer');
 var ComponentEditor = require('./ComponentEditor');
 
+var Config = require('../config').Config;
+var adminUrl = require('../config').adminUrl;
+
 // main stylesheets
 require('../../styles/main.css');
 require('../../styles/normalize.css');
@@ -74,7 +77,7 @@ var Main = React.createClass({
   },
   render: function() {
      var loginOrOut = this.state.loggedIn ?
-       <div className="auth-logged-in">{this.state.displayName} <a href="http://localhost:8080/ComponentRegistry/admin/userSettings" target="_blank">settings</a> <Link to="logout">logout</Link></div> :
+       <div className="auth-logged-in">{this.state.displayName} <a href={adminUrl + "/userSettings"} target="_blank">settings</a> <Link to="logout">logout</Link></div> :
        <Link to="login">login</Link>;
     return (
       <div>

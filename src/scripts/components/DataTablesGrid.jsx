@@ -10,8 +10,6 @@ var LoadingMixin = require('../mixins/LoadingMixin');
 //components
 var DataTablesRow = require('./DataTablesRow');
 
-var Config = require('../config.js');
-
 require('../../styles/DataGrid.sass');
 
 /*
@@ -273,7 +271,7 @@ var DataTablesGrid = React.createClass({
       });
 
       console.log('row count: ' + React.Children.count(this.refs.wrapper.props.children));
-      
+
       React.Children.forEach(this.refs.wrapper.props.children, function(row) {
         if(row.props.selected) {
           console.log('selected row ' + row.key + ': ' + row.props.selected);

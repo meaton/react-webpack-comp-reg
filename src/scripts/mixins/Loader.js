@@ -6,10 +6,8 @@ var CMD = require('../../mappings/Component').Component;
 var context = new Jsonix.Context([CMD]);
 var marshaller = context.createMarshaller();
 
-var Config = require('../config');
-
-var restUrl = "http://" + Config.REST.host;
-restUrl += (Config.REST.port != undefined && Config.REST.port.length > 0) ? ':' + Config.REST.port + '/' + Config.REST.path : '/' + Config.REST.path;
+var Config = require('../config').Config;
+var restUrl = require('../config').restUrl;
 
 var corsRequestParams = (Config.dev) ?
   { username: Config.REST.auth.username,

@@ -3,10 +3,8 @@
 var React = require('react');
 var Router = require('react-router');
 
-var Config = require('../config');
-
-var restUrl = "http://" + Config.REST.host;
-restUrl += (Config.REST.port != undefined && Config.REST.port.length > 0) ? ":" + Config.REST.port + "/" + Config.REST.path : "/" + Config.REST.path;
+var Config = require('../config').Config;
+var restUrl = require('../config').restUrl;
 
 /*
 * Login - redirects to the REST Auth service. The form submit event occurs after component is mounted.
