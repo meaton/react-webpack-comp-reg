@@ -20,7 +20,7 @@ var adminUrl = require('../config').adminUrl;
 require('../../styles/main.css');
 require('../../styles/normalize.css');
 
-/*
+/***
 * NotFound - Display for a non-configured route
 * @constructor
 */
@@ -32,7 +32,7 @@ var NotFound = React.createClass({
   }
 });
 
-/*
+/**
 * Import - web-form to import data to the Component Registry
 * @constructor
 */
@@ -43,7 +43,7 @@ var Import = React.createClass({
   }
 });
 
-/*
+/***
 * Main - Default component and entry point to the application.
 * @constructor
 */
@@ -76,8 +76,9 @@ var Main = React.createClass({
     auth.login();
   },
   render: function() {
+    var logout = null; //<Link to="logout">logout</Link>;
      var loginOrOut = this.state.loggedIn ?
-       <div className="auth-logged-in">{this.state.displayName} <a href={adminUrl + "/userSettings"} target="_blank">settings</a> <Link to="logout">logout</Link></div> :
+       <div className="auth-logged-in">{this.state.displayName} <a href={adminUrl + "/userSettings"} target="_blank">settings</a> {logout}</div> :
        <Link to="login">login</Link>;
     return (
       <div>

@@ -6,7 +6,7 @@ var Router = require('react-router');
 var Config = require('../config').Config;
 var restUrl = require('../config').restUrl;
 
-/*
+/**
 * Login - redirects to the REST Auth service. The form submit event occurs after component is mounted.
 * @constructor
 * @mixes Router.Navigation
@@ -57,7 +57,7 @@ var Login = React.createClass({
   }
 });
 
-/*
+/**
 * Logout - a test component for changing the authenticated/session state of the application.
 * @constructor
 */
@@ -70,7 +70,7 @@ var Logout = React.createClass({
   }
 });
 
-/*
+/**
 * Authentication - mixin implements static functions for react-router transition hooks, for checking the authentication state of the application before transitioning to the new route.
 * Currently used as a mixin to ComponentEditor and Import (Main).
 * @mixin
@@ -163,7 +163,7 @@ var loginRequest = function(cb) {
   }, corsRequestParams));
 }
 
-/* @module Authentication handler */
+/** @module Authentication handler */
 module.exports = {
   auth: auth,
   Login: Login,

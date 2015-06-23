@@ -15,7 +15,7 @@ var ComponentViewer = require('./ComponentViewer');
 
 require('../../styles/InfoPanel.sass');
 
-/*
+/**
 * InfoPanel - displays the loaded registry item data and comments in Bootstrap tabbed-panes.
 * @constructor
 */

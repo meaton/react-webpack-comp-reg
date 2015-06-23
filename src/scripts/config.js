@@ -1,4 +1,4 @@
-/* @module General configuration for Component Registry REST service */
+/** @module General configuration for Component Registry REST service */
 var Config = {
   dev: true,
   REST: {

@@ -20,8 +20,8 @@ var md5 = require('spark-md5');
 
 require('../../styles/CMDElement.sass');
 
-/*
-* CMDElement - view display and editing form for a CMDI Element item. 
+/**
+* CMDElement - view display and editing form for a CMDI Element item.
 * @constructor
 * @mixes ImmutableRenderMixin
 * @mixes LinkedStateMixin
@@ -52,9 +52,10 @@ var CMDElement = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     console.log(this.constructor.displayName, 'will received new props');
     var elem = this.state.elem;
-    /*console.log('elem props: ' + JSON.stringify(nextProps.elem));
-    console.log('elem props: ' + this.props.elem.open);
-    */
+
+    //console.log('elem props: ' + JSON.stringify(nextProps.elem));
+    //console.log('elem props: ' + this.props.elem.open);
+
     if(nextProps.elem.hasOwnProperty('open') && (this.state.elem.open != nextProps.elem.open)) { // open/close all
       elem = update(elem, { open: { $set: nextProps.elem.open }});
       this.setState({ elem: elem });
@@ -77,8 +78,8 @@ var CMDElement = React.createClass({
   },
   componentDidUpdate: function(prevProps, prevState) {
     console.log(this.constructor.displayName, 'did update: ' + this.state.elem.elemId);
-    /*console.log(JSON.stringify(this.props.elem));
-    console.log(JSON.stringify(this.state.elem));*/
+    //console.log(JSON.stringify(this.props.elem));
+    //console.log(JSON.stringify(this.state.elem));
     if(JSON.stringify(this.state.elem) != JSON.stringify(prevState.elem))
       this.props.onUpdate(this.state.elem);
   },

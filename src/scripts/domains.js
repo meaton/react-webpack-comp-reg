@@ -1,4 +1,4 @@
-/*
+/**
 * @module Domain labels and data values used in CMDI Component root property domainName.
 */
 module.exports = [

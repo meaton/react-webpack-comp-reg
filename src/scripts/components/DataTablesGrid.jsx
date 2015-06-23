@@ -12,7 +12,7 @@ var DataTablesRow = require('./DataTablesRow');
 
 require('../../styles/DataGrid.sass');
 
-/*
+/**
 * DataTablesWrapper - outputs a HTML static table layout and header coloums for rendering by the DataTables plugin.
 * @constructor
 */
@@ -106,7 +106,7 @@ var DataTablesWrapper = React.createClass({
   }
 });
 
-/*
+/**
 * DataTablesGrid - manages the data and display or rendering of the datagrid.
 * @constructor
 * @mixes React.addons.LinkedStateMixin
@@ -254,7 +254,7 @@ var DataTablesGrid = React.createClass({
             self.refs.wrapper.setState({ rows: not_selected });
         }
 
-        /*
+        /**
         if(self.state.lastSelectedItem != null) {
           var row = table.row(self.state.lastSelectedItem.getDOMNode());
           if(row != null) {

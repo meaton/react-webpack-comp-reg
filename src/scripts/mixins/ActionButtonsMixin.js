@@ -6,7 +6,7 @@ var ActionButtons = React.createFactory(require('../components/ActionButtons'));
 //utils
 var update = React.addons.update;
 
-/*
+/**
 * ActionButtonsMixin - handlers for ActionButtons.
 * @mixin
 */

@@ -16,7 +16,7 @@ var corsRequestParams = (Config.dev) ?
       withCredentials: true
   }} : {};
 
-/*
+/**
 * LoaderMixin - AJAX calls to the Component Registry REST service
 * @mixin
 */
@@ -333,7 +333,7 @@ var LoaderMixin = {
     var url = restUrl + '/registry/' + type + '/' + itemId;
 
     $.ajax($.extend({
-      type: 'DELETE', // 'POST' /* Note testing locally with CORS enable DELETE method in init-config accepted methods */
+      type: 'DELETE', // 'POST' // Note testing locally with CORS enable DELETE method in init-config accepted methods
       url: url,
       //data: { method: 'DELETE' }, // used for POST method of deletion
       success: function(data) {

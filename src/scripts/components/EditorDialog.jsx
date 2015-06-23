@@ -28,7 +28,7 @@ var classNames = require('classnames');
 
 require('../../styles/EditorDialog.sass');
 
-/*
+/**
 * EditorDialog - generic custom ModalTrigger utilising react-bootstrap OverlayMixin. Used in React components CMD
 * @constructor
 */
@@ -38,7 +38,7 @@ var EditorDialog = React.createClass({
   }
 });
 
-/*
+/**
 * TypeModal - Bootstrap Modal dialog used for setting the defined Type value, Pattern value or a custom-defined Vocabulary enum.
 * @constructor
 * @mixes Loader
@@ -240,7 +240,7 @@ var TypeModal = React.createClass({
   }
 });
 
-/*
+/**
 * ConceptRegistryModal - Bootstrap Modal dialog for setting the Concept Registry (CCR) link.
 * @constructor
 * @mixes Loader
@@ -406,7 +406,7 @@ var ConceptRegistryModal = React.createClass({
   }
 });
 
-/*
+/**
 * ModalTrigger - Bootstrap custom ModalTrigger utilising react-bootstrap OverlayMixin. Manages dialog display for two components implementing Bootstrap Modal, TypeModal and ConceptRegistryModal.
 * @constructor
 * @mixes OverlayMixin

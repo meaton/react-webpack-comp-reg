@@ -21,7 +21,7 @@ var update = React.addons.update;
 
 require('../../styles/ComponentEditor.sass');
 
-/*
+/**
 * ComponentRegApp - default application component containing a browser and viewer for CMDI profiles or components.
 * @constructor
 * @mixes React.addons.LinkedStateMixin

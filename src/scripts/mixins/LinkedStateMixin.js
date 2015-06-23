@@ -1,4 +1,4 @@
-/*
+/**
 * LinkedStateMixin - Alternate to React.addons.LinkedStateMixin, with support for deep path-based state access.
 * @mixin
 * @author Tung Dao me@tungdao.com

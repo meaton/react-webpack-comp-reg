@@ -1,4 +1,4 @@
-/*
+/**
 * BtnGroupMixin - handlers for BtnMenuGroup
 * @mixin
 */
@@ -38,6 +38,8 @@ var BtnGroupMixin = {
     };
 
     var deleteComponent = function(componentId, cb) {
+      //TODO: usage check
+      
       self.refs.component.deleteItem("components", componentId, function(resp) {
         console.log('delete response: ' + resp);
         if(cb != undefined) cb()

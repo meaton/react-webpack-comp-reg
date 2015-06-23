@@ -16,8 +16,8 @@ var update = React.addons.update;
 
 //require('../../styles/CMDAttribute.sass');
 
-/*
-* CMDAttribute - view display and editing form for a CMDI Attribute item. 
+/**
+* CMDAttribute - view display and editing form for a CMDI Attribute item.
 * @constructor
 * @mixes ImmutableRenderMixin
 * @mixes LinkedStateMixin
@@ -44,8 +44,9 @@ var CMDAttribute = React.createClass({
   },
   componentDidUpdate: function(prevProps, prevState) {
     console.log(this.constructor.displayName, 'did update: ', this.state.attr.attrId);
-    /*console.log('attr prev state: ' + JSON.stringify(prevState.attr));
-    console.log('attr curr state: ' + JSON.stringify(this.state.attr));*/
+    //console.log('attr prev state: ' + JSON.stringify(prevState.attr));
+    //console.log('attr curr state: ' + JSON.stringify(this.state.attr));
+
     if(JSON.stringify(this.state.attr) != JSON.stringify(prevState.attr))
       this.props.onUpdate(this.state.attr);
   },
