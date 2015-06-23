@@ -1,11 +1,14 @@
 /** @module General configuration for Component Registry REST service */
 var Config = {
-  dev: true,
+  cors: true,
   REST: {
     auth: { username: "seaton", password: "compreg" },
     host: 'localhost',
     port: '8080',
     path: 'ComponentRegistry'
+  },
+  deploy: {
+    path: '/'
   }
 }
 
