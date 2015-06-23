@@ -7,9 +7,26 @@
         "includePattern": ".+\\.js(x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
       },
-      "plugins": ["node_modules/jsdoc-jsx/index"],
+      "plugins": ["plugins/markdown", "node_modules/jsdoc-jsx"],
       "templates": {
         "cleverLinks": false,
-        "monospaceLinks": false
+        "monospaceLinks": false,
+        "dateFormat": "ddd MMM Do YYYY",
+        "outputSourceFiles": true,
+        "outputSourcePath": true,
+        "systemName": "CLARIN ERIC",
+        "footer": "",
+        "copyright": "CC-BY",
+        "navType": "vertical",
+        "theme": "cosmo",
+        "linenums": true,
+        "collapseSymbols": false,
+        "inverseNav": true,
+        "highlightTutorialCode": true,
+        "protocol": "html://"
+      },
+      "markdown": {
+        "parser": "gfm",
+        "hardwrap": true
       }
 }
