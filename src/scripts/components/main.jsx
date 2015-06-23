@@ -92,7 +92,7 @@ var Main = React.createClass({
 
 // react-router configuration
 var routes = (
-    <Route handler={Main} path="/" >
+    <Route handler={Main} path={Config.deploy.path} >
       <NotFoundRoute handler={NotFound}/>
       <Route name="login" handler={Login} />
       <Route name="logout" handler={Logout} />

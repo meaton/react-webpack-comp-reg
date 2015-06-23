@@ -9,7 +9,7 @@ var marshaller = context.createMarshaller();
 var Config = require('../config').Config;
 var restUrl = require('../config').restUrl;
 
-var corsRequestParams = (Config.dev) ?
+var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
     password: Config.REST.auth.password,
     xhrFields: {

@@ -139,7 +139,7 @@ var auth = {
 };
 
 var loginRequest = function(cb) {
-  var corsRequestParams = (Config.dev) ?
+  var corsRequestParams = (Config.cors) ?
     { username: Config.REST.auth.username,
       password: Config.REST.auth.password,
       xhrFields: {
