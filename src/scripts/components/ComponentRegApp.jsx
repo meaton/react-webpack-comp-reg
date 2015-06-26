@@ -83,16 +83,22 @@ var ComponentRegApp = React.createClass({
   },
   handleDelErrors: function(errors) {
     var self = this;
-
+    var errorsReactDOM = [];
     if(errors != undefined && !$.isArray(errors))
       errors = [errors];
 
     if(errors != undefined && errors.length > 0) {
-      for(var i=0; i < errors.length; i++)
-        errors[i] = React.DOM.li({ key: errors[i].componentId }, errors[i].profileDescription.name);
+      for(var i=0; i < errors.length; i++) {
+        if(errors[i].result != undefined) {
+          if(!$.isArray(errors[i].result))
+            errors[i].result = [errors[i].result];
+          for(var j=0; j < errors[i].result.length; j++)
+            errorsReactDOM.push(React.DOM.li({ key: errors[i].componentId + "_profile:" + errors[i].result[j].id }, errors[i].result[j].name));
+        }
+      }
 
       var alertMsg = (<div>The component(s) cannot be deleted because it is used by the following component(s) and/or profile(s):
-        <ul>{errors}</ul>
+        <ul>{errorsReactDOM}</ul>
       </div>);
 
       self.showAlert("Component is used", alertMsg, function(evt) {

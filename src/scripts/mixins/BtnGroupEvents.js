@@ -43,7 +43,7 @@ var BtnGroupMixin = {
           console.log('usage result: ' + JSON.stringify(result));
           console.error('Error occurred: Component ' + componentId + ' is in use.');
 
-          if(cb) cb({componentId: componentId, profileDescription: result.profileDescription});
+          if(cb) cb({componentId: componentId, result: result.profileDescription});
         } else {
           self.refs.component.deleteItem("components", componentId, function(resp) {
             console.log('delete response: ' + resp);
@@ -56,25 +56,30 @@ var BtnGroupMixin = {
     var deleteSelectedRows = function(cb) {
       if(selectedRows.length > 0) {
         var errors = [];
-        selectedRows.each(function(index, elem) {
-          var id = $(this).data().reactid;
-          id = (id != undefined && id.indexOf('clarin') > 0) ? id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':') : null;
+        var doNextRow = function(rowIdx) {
+          if(rowIdx <= selectedRows.length-1) {
+            var row = selectedRows.get(rowIdx);
+            var id = $(row).data().reactid;
+            id = (id != undefined && id.indexOf('clarin') > 0) ? id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':') : null;
 
-          var callback = function(error) {
-            if(error) errors.push(error);
-            if(index == selectedRows.length-1) {
-              if(errors.length > 0) {
-                self.handleDelErrors(errors);
-              } else {
-                self.refs.grid.removeSelected();
-              }
-            }
-          };
+            if(id != null)
+              cb(id, function(error) {
+                  if(error) errors.push(error);
+                  if(rowIdx == selectedRows.length-1) {
+                    if(errors.length > 0) {
+                      self.handleDelErrors(errors);
+                    } else {
+                      self.refs.grid.removeSelected();
+                    }
+                  } else {
+                    rowIdx += 1;
+                    doNextRow(rowIdx);
+                  }
+              });
+          }
+        };
 
-          if(id != null)
-            cb(id, callback);
-
-        });
+        doNextRow(0);
       }
     };
 
