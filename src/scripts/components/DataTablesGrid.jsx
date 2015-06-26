@@ -150,8 +150,15 @@ var DataTablesGrid = React.createClass({
       console.log('Removed selected items... reloading table');
 
       this.loadItem("profile", null);
-      if(newData) this.loadData(this.state.currentFilter, this.state.currentType);
-      else this.forceUpdate();
+
+      if(newData)
+        this.loadData(this.state.currentFilter, this.state.currentType);
+      else {
+        var self = this;
+        this.setState({ lastSelectedItem: null }, function() {
+          self.forceUpdate();
+        });
+      }
     }
   },
   componentWillMount: function(){
