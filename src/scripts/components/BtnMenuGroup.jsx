@@ -100,20 +100,17 @@ var BtnMenuGroup = React.createClass({
     var currentSelection = this.props.profile || this.props.component;
     var selectedRows = $('#testtable tr.selected');
     var deleteIdList = [];
-    if(this.props.multiSelect && selectedRows.length > 0)
+    if(selectedRows.length > 0)
       selectedRows.each(function() {
         var id = $(this).data().reactid;
-        deleteIdList.push((id != undefined && id.indexOf('clarin') > 0) ?
-          React.createElement('span', null, id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':'), React.createElement('br')) :
-          React.createElement('span')
-        );
+        if(id != undefined && id.indexOf('clarin') > 0) {
+          id = id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':')
+          deleteIdList.push(React.createElement('li', { key: id }, $(this).find('td.name').text()));
+        }
       });
-    else
-      deleteIdList = currentSelection;
-
     return (
       <div className="modal-desc">You will delete the following item(s):
-        <p>{deleteIdList}</p>
+        <ul>{deleteIdList}</ul>
         <p>This cannot be undone.</p>
       </div>
     );

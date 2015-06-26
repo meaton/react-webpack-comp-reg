@@ -369,6 +369,22 @@ var LoaderMixin = {
       }.bind(this)
     }, corsRequestParams));
   },
+  usageCheck: function(componentId, cb) {
+    var url = restUrl +'/registry/components/usage/' + componentId;
+
+    $.ajax($.extend({
+      type: 'GET',
+      url: url,
+      dataType: "json",
+      success: function(data) {
+        console.log('return usage check: ' + data);
+        if(cb) cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(itemId, status, err);
+      }.bind(this)
+    }, corsRequestParams));
+  },
   loadAllowedTypes: function(cb) {
     $.ajax($.extend({
       type: 'GET',

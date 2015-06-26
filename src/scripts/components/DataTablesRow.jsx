@@ -72,7 +72,13 @@ var DataTablesRow = React.createClass({
       <tr onClick={this.rowClick.bind(this, this.state.data.id)} key={this.state.data.id} className={(this.state.selected) ? "selected " + this.props.className : this.props.className}>
         {checkbox}
         {buttonBefore}
-        <td>{data.name}</td><td>{data.groupName}</td><td>{data.domainName}</td><td>{data.creatorName}</td><td>{data.description}</td><td>{data.registrationDate}</td><td>{data.commentsCount}</td>
+        <td className="name">{data.name}</td>
+        <td className="groupName">{data.groupName}</td>
+        <td className="domainName">{data.domainName}</td>
+        <td className="creatorName">{data.creatorName}</td>
+        <td className="description">{data.description}</td>
+        <td className="registrationDate">{data.registrationDate}</td>
+        <td className="commentsCount">{data.commentsCount}</td>
       </tr>
     )
   }

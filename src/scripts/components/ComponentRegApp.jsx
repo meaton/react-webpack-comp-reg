@@ -6,6 +6,10 @@ var Router = require('react-router');
 //mixins
 var btnMenuGroup = require('../mixins/BtnGroupEvents');
 
+//bootstrap
+var Button = require('react-bootstrap/lib/Button');
+var Modal = require('react-bootstrap/lib/Modal');
+
 //components
 var Profile = require('./ProfileOverview');
 var Component = require('./ComponentOverview');
@@ -53,6 +57,49 @@ var ComponentRegApp = React.createClass({
   },
   clearInfo: function() {
     this.setState({profileId: null, componentId: null})
+  },
+  hideAlert: function(evt) {
+    evt.stopPropagation();
+    React.unmountComponentAtNode(document.getElementById("alert-container"));
+  },
+  showAlert: function(title, desc, onRequestHide) {
+    var instance = (
+      <Modal title={title}
+        enforceFocus={true}
+        backdrop={true}
+        animation={false}
+        container={this}
+        onRequestHide={(onRequestHide) ? onRequestHide : this.hideAlert}>
+        <div className="modal-body">
+          <div className="modal-desc">{desc}</div>
+        </div>
+        <div className="modal-footer">
+          <Button onClick={(onRequestHide) ? onRequestHide : this.hideAlert} bsStyle="primary">Close</Button>
+        </div>
+      </Modal>
+    );
+    var div = React.DOM.div;
+    React.render(div({ className: 'static-modal' }, instance), document.getElementById("alert-container"));
+  },
+  handleDelErrors: function(errors) {
+    var self = this;
+
+    if(errors != undefined && !$.isArray(errors))
+      errors = [errors];
+
+    if(errors != undefined && errors.length > 0) {
+      for(var i=0; i < errors.length; i++)
+        errors[i] = React.DOM.li({ key: errors[i].componentId }, errors[i].profileDescription.name);
+
+      var alertMsg = (<div>The component(s) cannot be deleted because it is used by the following component(s) and/or profile(s):
+        <ul>{errors}</ul>
+      </div>);
+
+      self.showAlert("Component is used", alertMsg, function(evt) {
+        self.hideAlert(evt);
+        self.refs.grid.removeSelected();
+      });
+    }
   },
   componentWillMount: function() {
     console.log(this.constructor.displayName, 'will mount');
@@ -117,6 +164,7 @@ var ComponentRegApp = React.createClass({
           <Profile ref="profile" profileId={this.state.profileId} />
           <Component ref="component" componentId={this.state.componentId} />
         </div>
+        <div id="alert-container" />
       </div>
     );
   }

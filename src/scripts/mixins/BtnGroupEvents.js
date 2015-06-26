@@ -38,23 +38,42 @@ var BtnGroupMixin = {
     };
 
     var deleteComponent = function(componentId, cb) {
-      //TODO: usage check
-      
-      self.refs.component.deleteItem("components", componentId, function(resp) {
-        console.log('delete response: ' + resp);
-        if(cb != undefined) cb()
+      self.refs.component.usageCheck(componentId, function(result) {
+        if(result != null && result.profileDescription != undefined) {
+          console.log('usage result: ' + JSON.stringify(result));
+          console.error('Error occurred: Component ' + componentId + ' is in use.');
+
+          if(cb) cb({componentId: componentId, profileDescription: result.profileDescription});
+        } else {
+          self.refs.component.deleteItem("components", componentId, function(resp) {
+            console.log('delete response: ' + resp);
+            if(cb) cb();
+          });
+        }
       });
     };
 
     var deleteSelectedRows = function(cb) {
       if(selectedRows.length > 0) {
+        var errors = [];
         selectedRows.each(function(index, elem) {
           var id = $(this).data().reactid;
           id = (id != undefined && id.indexOf('clarin') > 0) ? id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':') : null;
 
-          var callback = (index == selectedRows.length-1) ? self.refs.grid.removeSelected : undefined;
+          var callback = function(error) {
+            if(error) errors.push(error);
+            if(index == selectedRows.length-1) {
+              if(errors.length > 0) {
+                self.handleDelErrors(errors);
+              } else {
+                self.refs.grid.removeSelected();
+              }
+            }
+          };
+
           if(id != null)
             cb(id, callback);
+
         });
       }
     };
@@ -63,7 +82,7 @@ var BtnGroupMixin = {
       if(!this.state.multiSelect) deleteProfile(this.state.profileId, self.refs.grid.removeSelected);
       else deleteSelectedRows(deleteProfile);
     else if(this.state.componentId != null && this.refs.component != undefined && this.refs.component.deleteItem != undefined)
-      if(!this.state.multiSelect) deleteComponent(this.state.componentId, self.refs.grid.removeSelected);
+      if(!this.state.multiSelect) deleteComponent(this.state.componentId, self.handleDelErrors);
       else deleteSelectedRows(deleteComponent);
   },
   saveAction: function(update) {

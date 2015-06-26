@@ -42,6 +42,10 @@ a { cursor: pointer; color: #999; }
   overflow: hidden;
 }
 
+.static-modal {
+  color: #000;
+}
+
 .auth {
   margin-top: 60px;
 }

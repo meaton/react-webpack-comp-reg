@@ -197,7 +197,6 @@ var DataTablesGrid = React.createClass({
   },
  	componentDidUpdate: function(){
      this.setLoading(false);
-
      var self = this;
 
      $('#' + this.refs.wrapper.getDOMNode().id).show();
@@ -210,7 +209,7 @@ var DataTablesGrid = React.createClass({
          "destroy": true
        });
 
-        table.one('draw.dt', function () {
+        table.on('draw.dt', function () {
           if(self.props.children) React.render(self.props.children, document.getElementById('grid_toolbar'));
         });
 
