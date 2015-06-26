@@ -145,12 +145,13 @@ var DataTablesGrid = React.createClass({
     (this.props[type] != undefined && this.props[type] != null)
       if(typeof this.props[type] === 'function') this.props[type](itemId)
   },
-  removeSelected: function() {
+  removeSelected: function(newData) {
     if(this.state.data != null && this.state.lastSelectedItem != null) {
       console.log('Removed selected items... reloading table');
 
       this.loadItem("profile", null);
-      this.loadData(this.state.currentFilter, this.state.currentType);
+      if(newData) this.loadData(this.state.currentFilter, this.state.currentType);
+      else this.forceUpdate();
     }
   },
   componentWillMount: function(){
@@ -185,10 +186,13 @@ var DataTablesGrid = React.createClass({
     else if(nextProps.filter == nextState.currentFilter && nextProps.type == nextState.currentType) {
       console.log('filters eq:' + (this.state.data.length));
       console.log('filters eq:' + (nextState.data.length))
+
       var newData = (nextState.data.length >= 0 && (md5.hash(JSON.stringify(nextState.data)) != md5.hash(JSON.stringify(this.state.data))));
       console.log('new data: ' + newData);
       console.log('table exists: ' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
+
       if(newData) this.clearTable();
+
       return (newData) || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
       this.loadData(nextProps.filter, nextProps.type);

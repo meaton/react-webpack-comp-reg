@@ -59,7 +59,7 @@ var ComponentRegApp = React.createClass({
     this.setState({profileId: null, componentId: null})
   },
   hideAlert: function(evt) {
-    evt.stopPropagation();
+    if(evt) evt.stopPropagation();
     React.unmountComponentAtNode(document.getElementById("alert-container"));
   },
   showAlert: function(title, desc, onRequestHide) {
@@ -84,6 +84,7 @@ var ComponentRegApp = React.createClass({
   handleDelErrors: function(errors) {
     var self = this;
     var errorsReactDOM = [];
+
     if(errors != undefined && !$.isArray(errors))
       errors = [errors];
 
@@ -103,8 +104,10 @@ var ComponentRegApp = React.createClass({
 
       self.showAlert("Component is used", alertMsg, function(evt) {
         self.hideAlert(evt);
-        self.refs.grid.removeSelected();
+        self.refs.grid.removeSelected(errors.length != $('#testtable tr.selected').length);
       });
+    } else {
+      self.refs.grid.removeSelected(true);
     }
   },
   componentWillMount: function() {
