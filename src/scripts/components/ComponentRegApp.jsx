@@ -58,10 +58,6 @@ var ComponentRegApp = React.createClass({
   clearInfo: function() {
     this.setState({profileId: null, componentId: null})
   },
-  hideAlert: function(evt) {
-    if(evt) evt.stopPropagation();
-    React.unmountComponentAtNode(document.getElementById("alert-container"));
-  },
   showAlert: function(title, desc, onRequestHide) {
     var instance = (
       <Modal title={title}
@@ -69,46 +65,36 @@ var ComponentRegApp = React.createClass({
         backdrop={true}
         animation={false}
         container={this}
-        onRequestHide={(onRequestHide) ? onRequestHide : this.hideAlert}>
+        onRequestHide={(onRequestHide) ? onRequestHide : this.closeAlert.bind(this, "alert-container")}>
         <div className="modal-body">
           <div className="modal-desc">{desc}</div>
         </div>
         <div className="modal-footer">
-          <Button onClick={(onRequestHide) ? onRequestHide : this.hideAlert} bsStyle="primary">Close</Button>
+          <Button onClick={(onRequestHide) ? onRequestHide : this.closeAlert.bind(this, "alert-container")} bsStyle="primary">Close</Button>
         </div>
       </Modal>
     );
-    var div = React.DOM.div;
-    React.render(div({ className: 'static-modal' }, instance), document.getElementById("alert-container"));
+
+    this.renderAlert(instance, "alert-container");
   },
-  handleDelErrors: function(errors) {
+  handleUsageErrors: function(errors) {
     var self = this;
-    var errorsReactDOM = [];
+    var errors = this.processUsageErrors(errors, React.DOM.li); // replace errors array with React.DOM.li array, text() containing profile name
 
-    if(errors != undefined && !$.isArray(errors))
-      errors = [errors];
+    var alertMsgDesc = "The component(s) cannot be deleted because it is used by the following component(s) and/or profile(s):";
+    var alertMsg = (
+      <div>{alertMsgDesc}
+        <ul>{errors}</ul>
+      </div>
+    );
 
-    if(errors != undefined && errors.length > 0) {
-      for(var i=0; i < errors.length; i++) {
-        if(errors[i].result != undefined) {
-          if(!$.isArray(errors[i].result))
-            errors[i].result = [errors[i].result];
-          for(var j=0; j < errors[i].result.length; j++)
-            errorsReactDOM.push(React.DOM.li({ key: errors[i].componentId + "_profile:" + errors[i].result[j].id }, errors[i].result[j].name));
-        }
-      }
-
-      var alertMsg = (<div>The component(s) cannot be deleted because it is used by the following component(s) and/or profile(s):
-        <ul>{errorsReactDOM}</ul>
-      </div>);
-
-      self.showAlert("Component is used", alertMsg, function(evt) {
-        self.hideAlert(evt);
+    if(errors.length > 0)
+      this.showAlert("Component is used", alertMsg, function(evt) {
         self.refs.grid.removeSelected(errors.length != $('#testtable tr.selected').length);
+        self.closeAlert("alert-container", evt);
       });
-    } else {
-      self.refs.grid.removeSelected(true);
-    }
+    else
+      this.refs.grid.removeSelected(true);
   },
   componentWillMount: function() {
     console.log(this.constructor.displayName, 'will mount');

@@ -199,7 +199,6 @@ var DataTablesGrid = React.createClass({
       console.log('table exists: ' + $.fn.dataTable.isDataTable('#' + this.getDOMNode().id));
 
       if(newData) this.clearTable();
-
       return (newData) || !$.fn.dataTable.isDataTable('#' + this.getDOMNode().id);
     } else {
       this.loadData(nextProps.filter, nextProps.type);
@@ -207,7 +206,6 @@ var DataTablesGrid = React.createClass({
     }
   },
  	componentDidUpdate: function(){
-     this.setLoading(false);
      var self = this;
 
      $('#' + this.refs.wrapper.getDOMNode().id).show();

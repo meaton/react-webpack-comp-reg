@@ -50,7 +50,7 @@ var ButtonModal = React.createClass({
           return <span/>;
         }
 
-        var desc = (typeof this.props.desc == "string") ? ( <p className="modal-desc">{this.state.desc}</p> ) : this.props.desc;
+        var desc = (typeof this.props.desc === "string") ? ( <p className="modal-desc">{this.state.desc || this.props.desc}</p> ) : this.props.desc;
         return (
           <Modal bsStyle="primary" title={this.props.title} animation={false} backdrop={true} onRequestHide={this.toggleModal}>
             <div className="modal-body">
@@ -87,7 +87,7 @@ var BtnMenuGroup = React.createClass({
     };
   },
   saveComp: function(isNew) {
-    this.props.saveComp(isNew);
+    this.props.saveComp(!isNew, isNew);
   },
   getCancelQueryParams: function() {
     var cancelParams = null;
@@ -158,8 +158,8 @@ var BtnMenuGroup = React.createClass({
       case "editor":
         return (
           <ButtonGroup className="actionMenu">
-            <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, true)} disabled={this.props.newActive}>Save</Button>
-            <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, false)}>Save new</Button>
+            <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, false)} disabled={this.props.newActive}>Save</Button>
+            <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, true)}>Save new</Button>
             <ButtonModal {...this.props} action={this.props.publishComp} disabled={this.props.newActive}
               btnLabel="Publish"
               title="Publish"

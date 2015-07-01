@@ -8,42 +8,51 @@ var timeout = null;
 * @mixin
 */
 var LoadingMixin = {
+  isLoading: function() {
+    return (timeout != null && timeout != undefined);
+  },
   setLoading: function(isLoading) {
     var eventEmitter = (this.state.eventHolder) ? this.state.eventHolder : null;
     if(eventEmitter != null) eventEmitter.emit('loading', isLoading);
+    //console.log(this.constructor.displayName, 'event holder:', eventEmitter);
+    //console.log(this.constructor.displayName, ' :: set loading: ', isLoading);
   },
   loadingHandler: function(progress, delay) {
-    console.log('received loading event');
-
-    if(delay == undefined) delay = 1000;
+    //console.log(this.constructor.displayName, ' :: received loading event: ', progress);
+    var body = $('body');
+    if(delay == undefined) delay = 200;
     if(progress) {
       clearTimeout(timeout);
-      $('body').addClass('wait');
+      body.addClass('wait');
     } else {
       if(timeout != null) clearTimeout(timeout);
       timeout = setTimeout(function() {
-        $('body').removeClass('wait');
+        body.removeClass('wait');
       }, delay);
     }
   },
   componentWillMount: function() {
     //TODO: replace with Cursor React-component to received global events
-    var eventEmitter = registryEvents.on('loading', this.loadingHandler);
+    if(!this.isMounted()) {
+      var eventEmitter = registryEvents.on('loading', this.loadingHandler);
 
-    this.setState({ eventHolder: eventEmitter }, function(state) {
-      state.eventHolder.emit('loading', true);
-    });
+      this.setState({ eventHolder: eventEmitter });
+    }
   },
   componentDidMount: function() {
-    //this.setLoading(false);
+    //if(this.isMounted()) this.setLoading(false);
   },
   componentWillUnmount: function() {
-    this.state.eventHolder.removeListener('loading', this.loadingHandler);
+    if(this.isMounted()) this.state.eventHolder.removeListener('loading', this.loadingHandler);
   },
-  componentWillUpdate: function() {
-    this.setLoading(true);
+  componentWillUpdate: function(nextState) {
+    if(!this.eventHolder && nextState.eventHolder) nextState.eventHolder.emit('loading', true);
+    else this.setLoading(true);
   },
   componentDidUpdate: function() {
+    if(function(state) {
+      state.eventHolder.emit('loading', true);
+    })
     this.setLoading(false);
   }
 };

@@ -17,6 +17,7 @@ var Button = require('react-bootstrap/lib/Button');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Alert = require('react-bootstrap/lib/Alert');
+var Modal = require('react-bootstrap/lib/Modal');
 var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 
 //components
@@ -75,6 +76,7 @@ var ComponentViewer = React.createClass({
                 true,
              errors: null,
              isSaved: false,
+             isEdited: false,
              editorComponents: "published"
     };
   },
@@ -283,10 +285,12 @@ var ComponentViewer = React.createClass({
   },
   componentWillUpdate: function(nextProps, nextState) {
     console.log(this.constructor.displayName, 'will update');
+    var self = this;
+    var newItem = nextState.profile||nextState.component;  //console.log('new item props: ' + JSON.stringify(newItem));
+    var prevItem = this.state.profile||this.state.component;
 
-    var newItem = nextState.profile||nextState.component;
-
-    //console.log('new item props: ' + JSON.stringify(newItem));
+    if(nextState.editMode && prevItem != null && !nextState.isEdited && JSON.stringify(newItem) != JSON.stringify(prevItem))
+      this.setState({ isEdited: true });
 
     if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
       if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
@@ -304,6 +308,8 @@ var ComponentViewer = React.createClass({
     console.log(this.constructor.displayName, 'component did update: ' + JSON.stringify(item));
 
     if(item != null && prevItem != null && item.Header != undefined) {
+      if(this.state.isSaved) this.refs.grid.setLoading(false);
+      if(this.state.isEdited) this.refs.grid.setLoading(false);
       if(item.Header.Name != item.CMD_Component['@name'] ||
         (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])))
         if(item['@isProfile'] == "true")
@@ -478,6 +484,42 @@ var ComponentViewer = React.createClass({
         console.error('Registry data is empty: ' + this.state.registry);
     else
       console.log('Linked state variable is undefined: ' + e.target);
+  },
+  handleUsageWarning: function(errors, cb) {
+    var self = this;
+    var errors = this.processUsageErrors(errors, React.DOM.li);
+    console.log('handleUsageWarning errors len(): ', errors.length);
+
+    if(errors.length == 1) {
+      var saveContinue = function(evt) {
+        self.closeAlert("alert-container", evt);
+        cb(true);
+      };
+
+      var instance = (
+        <Modal title={"Component is used"}
+          enforceFocus={true}
+          backdrop={true}
+          animation={false}
+          container={this}
+          onRequestHide={this.closeAlert.bind(this, "alert-container")}>
+          <div className="modal-body">
+            <div className="modal-desc">
+              <div>The component you are about to save is used by the following component(s) and/or profile(s):
+                <ul>{errors}</ul>
+              </div>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <div>Changes in this component will affect the above. Do you want to proceed?</div>
+            <Button onClick={saveContinue} bsStyle="primary">Yes</Button>
+            <Button onClick={this.closeAlert.bind(this, "alert-container")}>No</Button>
+          </div>
+        </Modal>
+      );
+
+      this.renderAlert(instance, "alert-container");
+    } else console.warn('Except single error result to display, value: ', errors);
   },
   getLinkStateCompTypeStr: function() {
     if(this.state.profile != null)
@@ -666,6 +708,7 @@ var ComponentViewer = React.createClass({
               <SpaceSelector type="componentsOnly" filter={this.state.editorComponents} onSelect={this.switchEditorComponents} validUserSession={this.context.loggedIn} multiSelect={false} />
             </DataTablesGrid>
           </div>
+          <div id="alert-container"/>
         </div>
       ) : rootComponent;
     }
