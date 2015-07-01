@@ -77,7 +77,7 @@ var ComponentRegApp = React.createClass({
 
     this.renderAlert(instance, "alert-container");
   },
-  handleUsageErrors: function(errors) {
+  handleUsageErrors: function(errors) { //TODO display components (non-profiles) that are linked?
     var self = this;
     var errors = this.processUsageErrors(errors, React.DOM.li); // replace errors array with React.DOM.li array, text() containing profile name
 
@@ -88,12 +88,13 @@ var ComponentRegApp = React.createClass({
       </div>
     );
 
-    if(errors.length > 0)
+    if(errors.length > 0) {
+      this.refs.grid.setLoading(false);
       this.showAlert("Component is used", alertMsg, function(evt) {
         self.refs.grid.removeSelected(errors.length != $('#testtable tr.selected').length);
         self.closeAlert("alert-container", evt);
       });
-    else
+    } else
       this.refs.grid.removeSelected(true);
   },
   componentWillMount: function() {

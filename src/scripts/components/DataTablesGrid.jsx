@@ -146,6 +146,7 @@ var DataTablesGrid = React.createClass({
       if(typeof this.props[type] === 'function') this.props[type](itemId)
   },
   removeSelected: function(newData) {
+    this.setLoading(false);
     if(this.state.data != null && this.state.lastSelectedItem != null) {
       console.log('Removed selected items... reloading table');
 

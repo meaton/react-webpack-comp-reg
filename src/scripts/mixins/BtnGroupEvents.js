@@ -83,6 +83,8 @@ var BtnGroupMixin = {
       }
     };
 
+    this.refs.grid.setLoading(true);
+
     if(this.state.profileId != null && this.refs.profile != undefined && this.refs.profile.deleteItem != undefined)
       if(!this.state.multiSelect) deleteProfile(this.state.profileId, self.refs.grid.removeSelected.bind(self, true));
       else deleteSelectedRows(deleteProfile);

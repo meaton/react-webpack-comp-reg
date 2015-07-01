@@ -485,7 +485,7 @@ var ComponentViewer = React.createClass({
     else
       console.log('Linked state variable is undefined: ' + e.target);
   },
-  handleUsageWarning: function(errors, cb) {
+  handleUsageWarning: function(errors, cb) { // //TODO display components (non-profiles) that are linked?
     var self = this;
     var errors = this.processUsageErrors(errors, React.DOM.li);
     console.log('handleUsageWarning errors len(): ', errors.length);
