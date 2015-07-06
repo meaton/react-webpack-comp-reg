@@ -1,3 +1,4 @@
+var Config = require('../config').Config;
 /**
 * BtnGroupMixin - handlers for BtnMenuGroup
 * @mixin
@@ -22,11 +23,12 @@ var BtnGroupMixin = {
     };
   },
   deleteAction: function() {
-    //TODO: - Handle for multiple select *done*
+    //      - Handle for multiple select
+    //      - Remove nodes selected for delete on confirm/200 OK resp.
+    //      - Check first if selected items have any usage (REST)
+    // TODO:
     //      - Expect a response from REST? 200, handle errors 40x
     //      - Display notice warning temp post-deletion
-    //      - Remove nodes selected for delete on confirm/200 OK resp. *done*
-    //      - Check first if selected items have any usage (REST)
     var self = this;
     var selectedRows = $('#testtable tr.selected');
 
@@ -119,7 +121,7 @@ var BtnGroupMixin = {
         // check errors, display messages inline or show alert
         if(data != null)
           if(data.errors != undefined) self.showErrors(data.errors);
-          else self.setState({ isSaved: true }, function() { self.transitionTo('/', null, queryParams); }); // return route if no errors
+          else self.setState({ isSaved: true }, function() { self.transitionTo(Config.deploy.path, null, queryParams); }); // return route if no errors
       });
     else if(this.state.component != null && this.saveComponent != undefined)
       if(!publish && !ignoreUsage)
@@ -144,7 +146,7 @@ var BtnGroupMixin = {
           // check errors, display messages inline or show alert
           if(data != null)
             if(data.errors != undefined) self.showErrors(data.errors);
-            else self.setState({ isSaved: true }, function() { self.transitionTo('/', null, queryParams); }); // return route if no errors
+            else self.setState({ isSaved: true }, function() { self.transitionTo(Config.deploy.path, null, queryParams); }); // return route if no errors
         });
 
   },
