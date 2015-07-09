@@ -490,7 +490,7 @@ var ComponentViewer = React.createClass({
     var errors = this.processUsageErrors(errors);
     console.log('handleUsageWarning errors len(): ', errors.length);
 
-    if(errors.length == 1) {
+    if(errors.length >= 1) {
       var saveContinue = function(evt) {
         self.closeAlert("alert-container", evt);
         cb(true);
@@ -519,7 +519,7 @@ var ComponentViewer = React.createClass({
       );
 
       this.renderAlert(instance, "alert-container");
-    } else console.warn('Expect a single error result to display, value: ', errors);
+    } // else console.warn('Expect a single error result to display, value: ', errors);
   },
   getLinkStateCompTypeStr: function() {
     if(this.state.profile != null)

@@ -42,11 +42,13 @@ var BtnGroupMixin = {
 
     var deleteComponent = function(componentId, cb) {
       self.refs.component.usageCheck(componentId, function(result) {
-        if(result != null && result.profileDescription != undefined) {
+        if(result != null && (result.profileDescription != undefined || result.componentDescription != undefined)) {
           console.log('usage result: ' + JSON.stringify(result));
           console.warn('Error occurred: Component ' + componentId + ' is in use.');
-
-          if(cb) cb({componentId: componentId, result: result.profileDescription});
+          var resultObj = [];
+          if(result.profileDescription) resultObj.push({componentId: componentId, result: result.profileDescription});
+          if(result.componentDescription) resultObj.push({componentId: componentId, result: result.componentDescription});
+          if(cb) cb(resultObj);
         } else {
           self.refs.component.deleteItem("components", componentId, function(resp) {
             console.log('delete response: ' + resp);
@@ -59,6 +61,7 @@ var BtnGroupMixin = {
     var deleteSelectedRows = function(cb) {
       if(selectedRows.length > 0) {
         var errors = [];
+        var itemRemoved = false;
         var doNextRow = function(rowIdx) {
           if(rowIdx <= selectedRows.length-1) {
             var row = selectedRows.get(rowIdx);
@@ -67,10 +70,14 @@ var BtnGroupMixin = {
 
             if(id != null)
               cb(id, function(error) {
-                  if(error) errors.push(error);
+                  if(error)
+                    if($.isArray(error)) errors = errors.concat(error);
+                    else errors.push(error);
+                  else itemRemoved = true;
+
                   if(rowIdx == selectedRows.length-1) {
                     if(errors.length > 0) {
-                      self.handleUsageErrors(errors);
+                      self.handleUsageErrors(errors, itemRemoved);
                     } else {
                       self.refs.grid.removeSelected(true);
                     }
@@ -129,11 +136,17 @@ var BtnGroupMixin = {
         this.usageCheck(this.state.component.Header.ID, function(result) {
           if(self.refs.grid.setLoading) self.refs.grid.setLoading(false);
 
-          if(result != null && result.profileDescription != undefined) {
+          if(result != null && (result.profileDescription != undefined && result.componentDescription != undefined)) {
             console.log('usage result: ' + JSON.stringify(result));
             console.warn('Error occurred: Component ' + self.state.component.Header.ID + ' is in use.');
 
-            self.handleUsageWarning([{componentId: self.state.component.Header.ID, result: result.profileDescription}],
+            var resultObj = [];
+            if(result.profileDescription)
+              resultObj.push({ componentId: self.state.component.Header.ID, result: profileDescription });
+            if(result.componentDescription)
+              resultObj.push({ componentId: self.state.component.Header.ID, result: componentDescription });
+
+            self.handleUsageWarning(resultObj,
               function(ignore) {
                 self.postFormAction(update, publish, ignore);
               });

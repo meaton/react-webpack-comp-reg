@@ -149,7 +149,7 @@ var DataTablesGrid = React.createClass({
     this.setLoading(false);
     if(this.state.data != null && this.state.lastSelectedItem != null) {
       console.log('Removed selected items... reloading table');
-
+      console.log('newData: ' + newData);
       this.loadItem("profile", null);
 
       if(newData)
@@ -300,7 +300,7 @@ var DataTablesGrid = React.createClass({
     this.setState(function(state, props) {
       if(currentItem != target && !(currentItem == null && val === this.context.itemId) && target.state.selected) {
         self.loadItem(state.currentType.substr(0, state.currentType.length-1), val);
-      } else if(addComponent != undefined && state.currentType == "components") {
+      } else if(addComponent && state.currentType == "components") {
         console.log('add component: ' + target.refs.addButton.props.active);
 
         self.props.component(val, target.refs.addButton.props.active);

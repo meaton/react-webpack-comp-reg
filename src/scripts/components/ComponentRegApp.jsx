@@ -77,9 +77,10 @@ var ComponentRegApp = React.createClass({
 
     this.renderAlert(instance, "alert-container");
   },
-  handleUsageErrors: function(errors) { //TODO display components (non-profiles) that are linked?
+  handleUsageErrors: function(errors, isItemRemoved) {
     var self = this;
-    var errors = this.processUsageErrors(errors, React.DOM.li); // replace errors array with React.DOM.li array, text() containing profile name
+    if(isItemRemoved == undefined) isItemRemoved = false;
+    var errors = this.processUsageErrors(errors); // replace errors array with React.DOM.li array, text() containing profile name
 
     var alertMsgDesc = "The component(s) cannot be deleted because it is used by the following component(s) and/or profile(s):";
     var alertMsg = (
@@ -88,10 +89,10 @@ var ComponentRegApp = React.createClass({
       </div>
     );
 
-    if(errors.length > 0) {
+    if(errors.length >= 1) {
       this.refs.grid.setLoading(false);
       this.showAlert("Component is used", alertMsg, function(evt) {
-        self.refs.grid.removeSelected(errors.length != $('#testtable tr.selected').length);
+        self.refs.grid.removeSelected(isItemRemoved);
         self.closeAlert("alert-container", evt);
       });
     } else
