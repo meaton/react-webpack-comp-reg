@@ -43,7 +43,7 @@ var Login = React.createClass({
     var errors = this.state.error ? <p>Error!</p> : '';
     //TODO check for last attemptedTransition (path), use in redirect
     var postForm =
-      (<form ref="submitForm" action={ Login.authUrl + "?redirect=" + "http://" + window.location.host + Config.deploy.path } method="POST" className="hide">
+      (<form ref="submitForm" action={ Login.authUrl + "?redirect=" + window.location.protocol + "//" + window.location.host + Config.deploy.path } method="POST" className="hide">
         <button type="button" onClick={this.checkLogin}>check status</button><br/>
         <button type="submit">login</button>
         {errors}
