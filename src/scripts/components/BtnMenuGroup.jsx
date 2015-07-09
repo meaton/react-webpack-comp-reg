@@ -164,7 +164,7 @@ var BtnMenuGroup = React.createClass({
               btnLabel="Publish"
               title="Publish"
               desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-            <ButtonLink to="/" query={this.getCancelQueryParams()}>Cancel</ButtonLink>
+            <ButtonLink to={Config.deploy.path} query={this.getCancelQueryParams()}>Cancel</ButtonLink>
           </ButtonGroup>
         );
       default:
