@@ -6,7 +6,7 @@ var Config = {
     protocol: "http",
     host: 'localhost',
     port: '8080',
-    path: 'ComponentRegistry'
+    path: '/ComponentRegistry'
   },
   deploy: {
     path: '/'
@@ -15,7 +15,7 @@ var Config = {
 
 function getUrl() {
   var url = (Config.REST.host != undefined && Config.REST.host.length > 0) ? Config.REST.protocol + "://" + Config.REST.host : "";
-  url+= (Config.REST.port != undefined && Config.REST.port.length > 0 && url.length > 0) ? ":" + Config.REST.port + "/" + Config.REST.path : "/" + Config.REST.path;
+  url+= (Config.REST.port != undefined && Config.REST.port.length > 0 && url.length > 0) ? ":" + Config.REST.port + Config.REST.path : Config.REST.path;
   return url;
 };
 
