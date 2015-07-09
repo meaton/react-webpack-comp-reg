@@ -487,7 +487,7 @@ var ComponentViewer = React.createClass({
   },
   handleUsageWarning: function(errors, cb) { // //TODO display components (non-profiles) that are linked?
     var self = this;
-    var errors = this.processUsageErrors(errors, React.DOM.li);
+    var errors = this.processUsageErrors(errors);
     console.log('handleUsageWarning errors len(): ', errors.length);
 
     if(errors.length == 1) {
@@ -519,7 +519,7 @@ var ComponentViewer = React.createClass({
       );
 
       this.renderAlert(instance, "alert-container");
-    } else console.warn('Except single error result to display, value: ', errors);
+    } else console.warn('Expect a single error result to display, value: ', errors);
   },
   getLinkStateCompTypeStr: function() {
     if(this.state.profile != null)

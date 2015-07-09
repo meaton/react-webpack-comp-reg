@@ -1,3 +1,4 @@
+var React = require('react');
 var Config = require('../config').Config;
 /**
 * BtnGroupMixin - handlers for BtnMenuGroup
@@ -163,8 +164,9 @@ var BtnGroupMixin = {
     if(instance && elementId) React.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));
     else console.error('Cannot render Alert dialog: ', elementId);
   },
-  processUsageErrors: function(errors, li) {
+  processUsageErrors: function(errors) {
     var self = this;
+    var li = React.DOM.li;
     var errorsReactDOM = [];
 
     if(errors != undefined && !$.isArray(errors))
