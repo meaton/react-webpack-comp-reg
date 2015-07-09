@@ -136,15 +136,15 @@ var BtnGroupMixin = {
         this.usageCheck(this.state.component.Header.ID, function(result) {
           if(self.refs.grid.setLoading) self.refs.grid.setLoading(false);
 
-          if(result != null && (result.profileDescription != undefined && result.componentDescription != undefined)) {
+          if(result != null && (result.profileDescription != undefined || result.componentDescription != undefined)) {
             console.log('usage result: ' + JSON.stringify(result));
             console.warn('Error occurred: Component ' + self.state.component.Header.ID + ' is in use.');
 
             var resultObj = [];
             if(result.profileDescription)
-              resultObj.push({ componentId: self.state.component.Header.ID, result: profileDescription });
+              resultObj.push({ componentId: self.state.component.Header.ID, result: result.profileDescription });
             if(result.componentDescription)
-              resultObj.push({ componentId: self.state.component.Header.ID, result: componentDescription });
+              resultObj.push({ componentId: self.state.component.Header.ID, result: result.componentDescription });
 
             self.handleUsageWarning(resultObj,
               function(ignore) {
