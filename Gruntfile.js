@@ -57,14 +57,19 @@ module.exports = function (grunt) {
     },
 
     open: {
-      options: {
-        delay: 500
-      },
       dev: {
-        path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/'
+        path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/',
+        app: 'google-chrome',
+        options: {
+          delay: 500
+        }
       },
       dist: {
-        path: 'http://localhost:<%= connect.options.port %>/'
+        path: 'http://localhost:<%= connect.options.port %>/',
+        app: 'google-chrome',
+        options: {
+          openOn: 'serverListening'
+        }
       }
     },
 
@@ -124,13 +129,14 @@ module.exports = function (grunt) {
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
+      grunt.event.once('connect.dist.listening', function(host, port) {
+        grunt.event.emit('serverListening');
+      });
+
       return grunt.task.run(['build', 'open:dist', 'connect:dist']);
     }
 
-    grunt.task.run([
-      'open:dev',
-      'webpack-dev-server'
-    ]);
+    grunt.task.run(['open:dev', 'webpack-dev-server']);
   });
 
   grunt.registerTask('test', ['karma']);
