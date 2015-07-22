@@ -59,14 +59,12 @@ module.exports = function (grunt) {
     open: {
       dev: {
         path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/',
-        app: 'google-chrome',
         options: {
           delay: 500
         }
       },
       dist: {
         path: 'http://localhost:<%= connect.options.port %>/',
-        app: 'google-chrome',
         options: {
           openOn: 'serverListening'
         }
