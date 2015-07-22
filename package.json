@@ -1,6 +1,6 @@
 {
   "name": "CMDI-Component-Registry",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "repository": "",
   "private": true,
@@ -28,8 +28,8 @@
   "devDependencies": {
     "grunt": "~0.4.5",
     "load-grunt-tasks": "~0.6.0",
-    "grunt-contrib-connect": "~0.8.0",
-    "webpack": "~1.8.x",
+    "grunt-contrib-connect": "~0.10.0",
+    "webpack": "~1.10.x",
     "jsx-loader": "~0.12.x",
     "grunt-webpack": "~1.0.8",
     "style-loader": "~0.8.0",
