@@ -8,17 +8,17 @@ var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 
 //components
-var { auth, Login, Logout, Authentication } = require('./Authentication');
-var ComponentRegApp = require('./ComponentRegApp');
-var ComponentViewer = require('./ComponentViewer');
-var ComponentEditor = require('./ComponentEditor');
+var { auth, Login, Logout, Authentication } = require('./components/Authentication');
+var ComponentRegApp = require('./components/ComponentRegApp');
+var ComponentViewer = require('./components/ComponentViewer');
+var ComponentEditor = require('./components/ComponentEditor');
 
-var Config = require('../config').Config;
-var adminUrl = require('../config').adminUrl;
+var Config = require('./config').Config;
+var adminUrl = require('./config').adminUrl;
 
 // main stylesheets
-require('../../styles/main.css');
-require('../../styles/normalize.css');
+require('../styles/main.css');
+require('../styles/normalize.css');
 
 /***
 * NotFound - Display for a non-configured route

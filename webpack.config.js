@@ -19,7 +19,7 @@ var config = {
   entry: [
       'webpack-dev-server/client?http://localhost:8000',
       'webpack/hot/only-dev-server',
-      './src/scripts/components/main.jsx'
+      './src/scripts/main.jsx'
   ],
 
   output: {
