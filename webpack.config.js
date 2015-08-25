@@ -50,6 +50,9 @@ var config = {
       loader: 'jshint'
     }],
     loaders: [{
+      test: require.resolve("react"),
+      loader: "expose?React"
+    }, {
       test: /\.jsx$/,
       loader: 'react-hot!jsx-loader?harmony'
     }, {
@@ -64,7 +67,8 @@ var config = {
     }, {
       test: /\.(png|jpg)$/,
       loader: 'url-loader?limit=8192'
-    }]
+    }
+  ]
   },
 
   plugins: [
