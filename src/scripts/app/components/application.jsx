@@ -23,17 +23,17 @@ var Application = React.createClass({
           items={this.state.items.items}
           loading={this.state.items.loading}
           errorMessage={this.state.items.errorMessage}
-          onReload={this.onReload} />
+          onReload={this.loadItems} />
       </section>
     );
   },
 
   componentDidMount: function() {
-    this.getFlux().actions.loadItems();
+    this.loadItems();
   },
 
-  onReload: function() {
-    this.getFlux().actions.loadItems();
+  loadItems: function() {
+    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space);
   }
 });
 

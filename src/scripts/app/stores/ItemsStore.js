@@ -9,6 +9,8 @@ var ItemsStore = Fluxxor.createStore({
     this.items = [];
     this.loading = false;
     this.errorMessage = null;
+    this.type = Constants.TYPE_PROFILE;
+    this.space = Constants.SPACE_PUBLISHED;
 
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
@@ -21,7 +23,9 @@ var ItemsStore = Fluxxor.createStore({
     return {
       items: this.items,
       loading: this.loading,
-      errorMessage: this.errorMessage
+      errorMessage: this.errorMessage,
+      type: this.type,
+      space: this.space
     };
   },
 

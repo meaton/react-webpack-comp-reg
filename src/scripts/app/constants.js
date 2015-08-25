@@ -2,5 +2,11 @@ module.exports = {
   LOAD_ITEMS: "LOAD_ITEMS",
   LOAD_ITEMS_SUCCESS: "LOAD_ITEMS_SUCCESS",
   LOAD_ITEMS_FAILURE: "LOAD_ITEMS_FAILURE",
-  EDIT_ITEM: "EDIT_ITEM"
+  EDIT_ITEM: "EDIT_ITEM",
+
+  TYPE_PROFILE: "profiles",
+  TYPE_COMPONENTS: "components",
+
+  SPACE_PUBLISHED: "published",
+  SPACE_PRIVATE: "private"
 };
