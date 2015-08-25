@@ -3,7 +3,7 @@ html, body {
   background: #fff;
 }
 
-body.wait, body.wait * {
+.wait, .wait * {
    cursor:wait !important;
 }
 

@@ -1,5 +1,8 @@
 var Constants = require("./constants"),
+    /* mock */
     ComponentRegistryClient = require("./service/ComponentRegistryMockClient")
+    /* REST client */
+    // ComponentRegistryClient = require("./service/ComponentRegistryClient")
 
 module.exports = {
   loadItems: function() {

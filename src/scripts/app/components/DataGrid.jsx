@@ -2,6 +2,8 @@ var React = require("react")
     Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React);
 
+require('../../../styles/DataGrid.sass');
+
 var DataGrid = React.createClass({
   mixins: [FluxMixin],
 
@@ -15,9 +17,9 @@ var DataGrid = React.createClass({
   render: function() {
     return (
       <div>
-        <div className={this.getGridClass} id="grid">
+        <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
           {this.props.loading ? <span>Loading...</span> : null}
-          {(this.props.errorMessage != null) ? <span class="error">{this.props.errorMessage}</span> : null}
+          {(this.props.errorMessage != null) ? <span className="error">{this.props.errorMessage}</span> : null}
           <ul>
             {
               this.props.items.map(function(item, i){
@@ -32,18 +34,6 @@ var DataGrid = React.createClass({
         <a onClick={this.props.onReload}>reload</a>
       </div>
     )
-  },
-
-  componentDidMount: function() {
-    this.getFlux().actions.loadItems();
-  },
-
-  getGridClass: function() {
-    if(this.props.loading) {
-      return "grid loading";
-    } else {
-      return "grid loaded";
-    }
   }
 });
 

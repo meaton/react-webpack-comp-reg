@@ -1,9 +1,10 @@
 var CompRegLoader = require('../../mixins/Loader');
 
 var ComponentRegistryClient = {
+  mixins: [CompRegLoader],
 
   loadComponents: function(success, failure) {
-    //TODO
+    failure("Client not implemented");
   }
 
 };

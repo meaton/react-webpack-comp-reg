@@ -28,6 +28,10 @@ var Application = React.createClass({
     );
   },
 
+  componentDidMount: function() {
+    this.getFlux().actions.loadItems();
+  },
+
   onReload: function() {
     this.getFlux().actions.loadItems();
   }
