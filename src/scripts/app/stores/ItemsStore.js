@@ -3,9 +3,6 @@ var Fluxxor = require("fluxxor"),
 
 var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
-    // this.current = options.current || 0;
-    // this.count = options.count || 0;
-
     this.items = [];
     this.loading = false;
     this.errorMessage = null;

@@ -23,6 +23,8 @@ var Application = React.createClass({
           items={this.state.items.items}
           loading={this.state.items.loading}
           errorMessage={this.state.items.errorMessage}
+          multiSelect={false}
+          editMode={false}
           onReload={this.loadItems} />
       </section>
     );
