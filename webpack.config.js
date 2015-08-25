@@ -19,7 +19,7 @@ var config = {
   entry: [
       'webpack-dev-server/client?http://localhost:8000',
       'webpack/hot/only-dev-server',
-      './src/scripts/main.jsx'
+      './src/scripts/app/app.jsx'
   ],
 
   output: {
@@ -29,7 +29,7 @@ var config = {
 
   cache: true,
   debug: true,
-  devtool: false,
+  devtool: "source-map",
 
   stats: {
     colors: true,

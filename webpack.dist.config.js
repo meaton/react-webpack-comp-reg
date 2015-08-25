@@ -10,7 +10,7 @@ var webpack = require('webpack');
 
 module.exports = {
 
-  entry: './src/scripts/main.jsx',
+  entry: './src/scripts/app/app.jsx',
 
   output: {
     publicPath: '/assets/',
