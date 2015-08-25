@@ -1,20 +1,17 @@
-var Constants = require("./constants");
+var Constants = require("./constants"),
+    ComponentRegistryClient = require("./ComponentRegistryClient")
 
 module.exports = {
   loadItems: function() {
     this.dispatch(Constants.LOAD_ITEMS);
-    // do load
-    this.dispatch(Constants.LOAD_ITEMS_SUCCESS,
-    [
-      {
-        id: 1,
-        name: "First item"
-      },
-      {
-        id: 2,
-        name: "Second item"
-      }
-    ]);
+    ComponentRegistryClient.loadComponents(function(items){
+        // success
+        this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
+      }.bind(this),
+      function(message) {
+        this.dispatch(Constants.LOAD_ITEMS_FAILURE, message);
+      }.bind(this)
+    );
   },
 
   editItem: function(item) {

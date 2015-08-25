@@ -9,6 +9,7 @@ var Application = require("./components/application.jsx"),
 require('../../styles/main.css');
 require('../../styles/normalize.css');
 
+
 // var images = ["images/bttf1.png", "images/bttf2.png", "images/bttf3.png",
 //               "images/bttf4.png", "images/bttf5.png", "images/bttf6.png"];
 

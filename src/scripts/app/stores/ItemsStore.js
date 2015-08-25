@@ -6,27 +6,27 @@ var ItemsStore = Fluxxor.createStore({
     // this.current = options.current || 0;
     // this.count = options.count || 0;
 
-    this.items = [
-      {
-        id: 0,
-        name: "Not loaded"
-      }
-    ];
+    this.items = [];
     this.loading = false;
+    this.errorMessage = null;
 
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
-      Constants.LOAD_ITEMS_SUCCESS, this.handleLoadItemsSuccess
+      Constants.LOAD_ITEMS_SUCCESS, this.handleLoadItemsSuccess,
+      Constants.LOAD_ITEMS_FAILURE, this.handleLoadItemsFailure
     );
   },
 
   getState: function() {
     return {
-      items: this.items
+      items: this.items,
+      loading: this.loading,
+      errorMessage: this.errorMessage
     };
   },
 
   handleLoadItems: function() {
+    this.errorMessage = null;
     this.loading = true;
     this.emit("change");
   },
@@ -34,6 +34,12 @@ var ItemsStore = Fluxxor.createStore({
   handleLoadItemsSuccess: function(items) {
     this.items = items;
     this.loading = false;
+    this.emit("change");
+  },
+
+  handleLoadItemsFailure: function(message) {
+    this.loading = false;
+    this.errorMessage = message;
     this.emit("change");
   }
 

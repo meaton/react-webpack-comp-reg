@@ -19,7 +19,11 @@ var Application = React.createClass({
   render: function() {
     return (
       <section className="application-container">
-        <DataGrid items={this.state.items.items} onReload={this.onReload} />
+        <DataGrid
+          items={this.state.items.items}
+          loading={this.state.items.loading}
+          errorMessage={this.state.items.errorMessage}
+          onReload={this.onReload} />
       </section>
     );
   },
