@@ -3,22 +3,32 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var DataGrid = require("./DataGrid.jsx")
+var DataGrid = require("./DataGrid.jsx"),
+    SpaceSelector = require("./SpaceSelector.jsx")
 
 var Application = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ItemsStore")],
+  mixins: [FluxMixin, StoreWatchMixin("ItemsStore", "BrowserSelectionStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
-      items: flux.store("ItemsStore").getState()
+      items: flux.store("ItemsStore").getState(),
+      selection: flux.store("BrowserSelectionStore").getState()
     };
   },
 
   render: function() {
+    //TODO: get login state from UserStore/AuthStore -> validUserSession
     return (
       <section className="application-container">
+        <SpaceSelector
+          type={this.state.items.type}
+          space={this.state.items.space}
+          multiSelect={this.state.selection.allowMultiple}
+          validUserSession={false}
+          onSpaceSelect={this.handleSpaceSelect}
+          onChange={this.clearInfo} />
         <DataGrid
           items={this.state.items.items}
           loading={this.state.items.loading}
@@ -36,6 +46,10 @@ var Application = React.createClass({
 
   loadItems: function() {
     this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space);
+  },
+
+  handleSpaceSelect: function(space) {
+    //TODO
   }
 });
 

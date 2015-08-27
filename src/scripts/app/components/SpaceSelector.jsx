@@ -11,7 +11,7 @@ var Button = require('react-bootstrap/lib/Button');
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
 
 //utils
-var auth = require('./Authentication').auth;
+//var auth = require('./Authentication').auth;
 var classNames = require('classnames');
 
 /**
@@ -23,7 +23,7 @@ var SpaceSelector = React.createClass({
     space: React.PropTypes.string,
     type: React.PropTypes.string,
     onSpaceSelect: React.PropTypes.func,
-    multiSelect: value: React.PropTypes.bool.isRequired,
+    multiSelect: React.PropTypes.bool.isRequired,
     validUserSession: React.PropTypes.bool
   },
   getInitialState: function() {
@@ -49,7 +49,7 @@ var SpaceSelector = React.createClass({
       //
       // this.props.onSelect(registryName);
       // this.setState(nextState);
-    }
+    //}
   },
   toggleSelect: function(evt) {
     //TODO: trigger switch multiple select action

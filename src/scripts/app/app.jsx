@@ -3,6 +3,7 @@ var React = require("react"),
 
 var Application = require("./components/application.jsx"),
     ItemsStore = require("./stores/ItemsStore"),
+    BrowserSelectionStore = require("./stores/BrowserSelectionStore"),
     actions = require("./actions");
 
 // main stylesheets
@@ -10,7 +11,8 @@ require('../../styles/main.css');
 require('../../styles/normalize.css');
 
 var stores = {
-  ItemsStore: new ItemsStore()
+  ItemsStore: new ItemsStore(),
+  BrowserSelectionStore: new BrowserSelectionStore()
 };
 
 var flux = new Fluxxor.Flux(stores, actions);
