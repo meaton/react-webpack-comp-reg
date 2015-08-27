@@ -22,10 +22,12 @@ var SpaceSelector = React.createClass({
   propTypes: {
     space: React.PropTypes.string,
     type: React.PropTypes.string,
-    onSpaceSelect: React.PropTypes.func,
     multiSelect: React.PropTypes.bool.isRequired,
-    validUserSession: React.PropTypes.bool
+    validUserSession: React.PropTypes.bool,
+    onSpaceSelect: React.PropTypes.func,
+    onToggleMultipleSelect: React.PropTypes.func
   },
+
   getInitialState: function() {
     return {
              multiSelect: this.props.multiSelect.value,
@@ -36,6 +38,7 @@ var SpaceSelector = React.createClass({
                  { label: "Private", registry: [{ type: "Profiles", filter: "private" }, { type: "Components", filter: "private" }], loginRequired: true }]
            };
   },
+
   spaceSelect: function(nextState, event) {
     //TODO: trigger space select action
     // console.log('clicked: ' + nextState.currentSpaceIdx);
@@ -51,15 +54,7 @@ var SpaceSelector = React.createClass({
       // this.setState(nextState);
     //}
   },
-  toggleSelect: function(evt) {
-    //TODO: trigger switch multiple select action
-  },
-  // componentWillReceiveProps: function(nextProps) {
-  //   if(this.props.multiSelect.value != nextProps.multiSelect.value)
-  //     this.setState({multiSelect: nextProps.multiSelect.value});
-  //   if(JSON.stringify(this.props.currentSelection) != JSON.stringify(nextProps.currentSelection))
-  //     this.forceUpdate();
-  // },
+
   render: function() {
     var currentSpaceIdx = (this.props.space == "private") ? 1 : 0;
     var currentRegIdx = (this.props.type == "components") ? 1 : 0;
@@ -85,7 +80,7 @@ var SpaceSelector = React.createClass({
           </DropdownButton>
         );
     });
-    var selectModeBtn = <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"} onClick={this.toggleSelect}>Toggle Select Mode</Button>;
+    var selectModeBtn = <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"} onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>;
     return (this.props.type == "componentsOnly") ?
     (
       <div className="left">

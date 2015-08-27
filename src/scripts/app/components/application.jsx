@@ -28,6 +28,7 @@ var Application = React.createClass({
           multiSelect={this.state.selection.allowMultiple}
           validUserSession={false}
           onSpaceSelect={this.handleSpaceSelect}
+          onToggleMultipleSelect={this.handleToggleMultipleSelect}
           onChange={this.clearInfo} />
         <DataGrid
           items={this.state.items.items}
@@ -46,6 +47,10 @@ var Application = React.createClass({
 
   loadItems: function() {
     this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space);
+  },
+
+  handleToggleMultipleSelect: function() {
+    this.getFlux().actions.switchMultipleSelect();
   },
 
   handleSpaceSelect: function(space) {

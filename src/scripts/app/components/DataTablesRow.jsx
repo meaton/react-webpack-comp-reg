@@ -44,7 +44,7 @@ var DataTablesRow = React.createClass({
     this.setState({ active: true }, function() { rowClick(rowId, evt); });
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log(this.constructor.displayName, 'received props row: ', JSON.stringify(this.props));
+    //console.log(this.constructor.displayName, 'received props row: ', JSON.stringify(this.props));
     if(this.props.multiple != nextProps.multiple)
       this.setState({ selected: false });
     if(this.props.selected != nextProps.selected)

@@ -30,8 +30,8 @@ var BrowserSelectionStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleSwitchMultipleSelect: function(allow) {
-    this.allowMultiple = allow
+  handleSwitchMultipleSelect: function() {
+    this.allowMultiple = !this.allowMultiple;
     //TODO: remove selection if !allow?
     this.emit("change");
   }
