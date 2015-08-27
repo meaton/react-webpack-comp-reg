@@ -2,7 +2,7 @@ var React = require("react"),
     Fluxxor = require("fluxxor");
 
 var Application = require("./components/application.jsx"),
-    ItemsStore = require("./stores/ItemsStore"),
+    BrowserItemsStore = require("./stores/BrowserItemsStore"),
     BrowserSelectionStore = require("./stores/BrowserSelectionStore"),
     actions = require("./actions");
 
@@ -11,7 +11,7 @@ require('../../styles/main.css');
 require('../../styles/normalize.css');
 
 var stores = {
-  ItemsStore: new ItemsStore(),
+  BrowserItemsStore: new BrowserItemsStore(),
   BrowserSelectionStore: new BrowserSelectionStore()
 };
 

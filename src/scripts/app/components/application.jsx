@@ -7,13 +7,13 @@ var DataGrid = require("./DataGrid.jsx"),
     SpaceSelector = require("./SpaceSelector.jsx")
 
 var Application = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ItemsStore", "BrowserSelectionStore")],
+  mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
-      items: flux.store("ItemsStore").getState(),
+      items: flux.store("BrowserItemsStore").getState(),
       selection: flux.store("BrowserSelectionStore").getState()
     };
   },

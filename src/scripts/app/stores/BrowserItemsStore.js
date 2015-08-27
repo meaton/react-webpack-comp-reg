@@ -1,7 +1,7 @@
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
 
-var ItemsStore = Fluxxor.createStore({
+var BrowserItemsStore = Fluxxor.createStore({
   initialize: function(options) {
     this.items = [];
     this.loading = false;
@@ -46,4 +46,4 @@ var ItemsStore = Fluxxor.createStore({
 
 });
 
-module.exports = ItemsStore;
+module.exports = BrowserItemsStore;
