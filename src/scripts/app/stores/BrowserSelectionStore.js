@@ -3,7 +3,7 @@ var Fluxxor = require("fluxxor"),
 
 var BrowserSelectionStore = Fluxxor.createStore({
   initialize: function(options) {
-    this.selected = [];
+    this.selectedItems = [];
     this.allowMultiple = false;
 
     this.bindActions(
@@ -15,17 +15,17 @@ var BrowserSelectionStore = Fluxxor.createStore({
 
   getState: function() {
     return {
-      selected: this.selected,
+      selectedItems: this.selectedItems,
       allowMultiple: this.allowMultiple
     };
   },
 
-  handleSelectItem: function(item) {
-    //TODO
+  handleSelectItem: function(itemId) {
+    //this.selectedItems.push(itemId);
     this.emit("change");
   },
 
-  handleUnselectItem: function(item) {
+  handleUnselectItem: function(itemId) {
     //TODO
     this.emit("change");
   },

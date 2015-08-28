@@ -23,17 +23,19 @@ var DataTablesRow = React.createClass({
     return { multiple: false, buttonBefore: false };
   },
   rowClick: function(val, evt) {
-    var dgSelect = this.props.onClick;
-    var target = evt.currentTarget;
-    var chkVal = (this.props.multiple) ? !this.props.selected : true;
+    //var dgSelect = this.props.onClick;
+    //var target = evt.currentTarget;
+    //var chkVal = (this.props.multiple) ? !this.props.selected : true;
 
-    console.log('row click: ' + val);
-    console.log('chkval: ' + chkVal);
+    // console.log('row click: ' + val);
+    // console.log('chkval: ' + chkVal);
+    //
+    // this.setState({selected: chkVal}, function() {
+    //   if(chkVal) dgSelect(val, this, this.state.active);
+    //   else dgSelect(null, this);
+    // });
 
-    this.setState({selected: chkVal}, function() {
-      if(chkVal) dgSelect(val, this, this.state.active);
-      else dgSelect(null, this);
-    });
+    this.props.onClick(val, this);
   },
   buttonClick: function(evt) {
     evt.stopPropagation();
@@ -45,10 +47,10 @@ var DataTablesRow = React.createClass({
   },
   componentWillReceiveProps: function(nextProps) {
     //console.log(this.constructor.displayName, 'received props row: ', JSON.stringify(this.props));
-    if(this.props.multiple != nextProps.multiple)
-      this.setState({ selected: false });
-    if(this.props.selected != nextProps.selected)
-      this.setState({ selected: nextProps.selected });
+    // if(this.props.multiple != nextProps.multiple)
+    //   this.setState({ selected: false });
+    // if(this.props.selected != nextProps.selected)
+    //   this.setState({ selected: nextProps.selected });
   },
   componentDidUpdate: function() {
     if(this.refs.addButton) {
@@ -59,10 +61,10 @@ var DataTablesRow = React.createClass({
     }
   },
   componentDidMount: function() {
-    if(this.props.selected) {
-      console.log('row selected on mount: ' + this.props.data.id);
-      this.props.onClick(this.props.data.id, this);
-    }
+    // if(this.props.selected) {
+    //   console.log('row selected on mount: ' + this.props.data.id);
+    //   this.props.onClick(this.props.data.id, this);
+    // }
   },
   render: function(){
     var data = this.props.data;

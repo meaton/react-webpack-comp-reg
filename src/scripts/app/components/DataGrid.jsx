@@ -11,16 +11,19 @@ var DataGrid = React.createClass({
 
   propTypes: {
     items: React.PropTypes.array.isRequired,
+    selected: React.PropTypes.array.isRequired,
     loading: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
     onReload: React.PropTypes.func.isRequired,
-    errorMessage: React.PropTypes.string
+    errorMessage: React.PropTypes.string,
+    onRowSelect: React.PropTypes.func
   },
 
   render: function() {
     var self = this;
-    var contextItemId = this.context.itemId;
+    var selectedContext = this.props.selected;
+    //var contextItemId = this.context.itemId;
     var addButton = (this.props.editMode) ? true : false;
     var multiSelect = this.props.multiSelect;
     var x = this.props.items.map(function(d, index){
@@ -31,7 +34,7 @@ var DataGrid = React.createClass({
           multiple={multiSelect}
           buttonBefore={addButton}
           onClick={self.rowClick}
-          selected={contextItemId != undefined && contextItemId === d.id}
+          selected={false}
           className={(index+1 % 2) ? "odd" : "even"} >
         </DataTablesRow>
      );
@@ -54,6 +57,7 @@ var DataGrid = React.createClass({
   },
 
   rowClick: function(val, target, addComponent) {
+    this.props.onRowSelect(val, target);
     // var self = this;
     // var tableId = this.refs.wrapper.getDOMNode().id;
     // var currentItem = this.state.lastSelectedItem;

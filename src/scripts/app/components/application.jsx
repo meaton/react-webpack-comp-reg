@@ -14,7 +14,7 @@ var Application = React.createClass({
     var flux = this.getFlux();
     return {
       items: flux.store("BrowserItemsStore").getState(),
-      selection: flux.store("BrowserSelectionStore").getState()
+      itemSelection: flux.store("BrowserSelectionStore").getState()
     };
   },
 
@@ -25,18 +25,21 @@ var Application = React.createClass({
         <SpaceSelector
           type={this.state.items.type}
           space={this.state.items.space}
-          multiSelect={this.state.selection.allowMultiple}
+          multiSelect={this.state.itemSelection.allowMultiple}
           validUserSession={false}
           onSpaceSelect={this.handleSpaceSelect}
           onToggleMultipleSelect={this.handleToggleMultipleSelect}
           onChange={this.clearInfo} />
         <DataGrid
           items={this.state.items.items}
+          selected={this.state.itemSelection.selectedItems}
           loading={this.state.items.loading}
           errorMessage={this.state.items.errorMessage}
           multiSelect={false}
           editMode={false}
-          onReload={this.loadItems} />
+          onReload={this.loadItems}
+          onRowSelect={this.handleRowSelect}
+          />
       </section>
     );
   },
@@ -55,6 +58,10 @@ var Application = React.createClass({
 
   handleSpaceSelect: function(space) {
     //TODO
+  },
+
+  handleRowSelect: function(val, target) {
+    this.getFlux().actions.selectBrowserItem(val);
   }
 });
 
