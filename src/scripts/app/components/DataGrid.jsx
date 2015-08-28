@@ -11,7 +11,7 @@ var DataGrid = React.createClass({
 
   propTypes: {
     items: React.PropTypes.array.isRequired,
-    selectedItems: React.PropTypes.array.isRequired,
+    selectedItems: React.PropTypes.object.isRequired,
     loading: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
@@ -34,7 +34,7 @@ var DataGrid = React.createClass({
           multiple={multiSelect}
           buttonBefore={addButton}
           onClick={self.rowClick}
-          selected={selectedContext[d.id]}
+          selected={selectedContext[d.id]?true:false}
           className={(index+1) % 2 ? "odd" : "even"} >
         </DataTablesRow>
      );

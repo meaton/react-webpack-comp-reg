@@ -8,7 +8,6 @@ var BrowserSelectionStore = Fluxxor.createStore({
 
     this.bindActions(
       Constants.SELECT_BROWSER_ITEM, this.handleSelectItem,
-      //Constants.UNSELECT_BROWSER_ITEM, this.handleUnselectItem,
       Constants.SWITCH_MULTIPLE_SELECT, this.handleSwitchMultipleSelect
     );
   },
@@ -21,28 +20,26 @@ var BrowserSelectionStore = Fluxxor.createStore({
   },
 
   handleSelectItem: function(itemId) {
-    if(this.selectedItems[itemId]) {
-      // unselect
-      delete this.selectedItems[itemId];
-    } else {
-      // select
-      if(!this.allowMultiple) {
-        // erase existing selection
-        this.selectedItems = {};
+    if(this.allowMultiple) {
+      // we may already have a selection, check if we want to unselect
+      if(this.selectedItems[itemId]) {
+          //special case: unselect
+          delete this.selectedItems[itemId];
+          this.emit("change");
+          return
       }
-      this.selectedItems[itemId] = true;
+    } else {
+      // only one item can be selected, erase existing selection
+      this.selectedItems = {};
     }
+
+    // select identified item
+    this.selectedItems[itemId] = true;
     this.emit("change");
   },
 
-  // handleUnselectItem: function(itemId) {
-  //   //TODO
-  //   this.emit("change");
-  // },
-
   handleSwitchMultipleSelect: function() {
     this.allowMultiple = !this.allowMultiple;
-    //TODO: remove selection if !allow?
     this.emit("change");
   }
 });
