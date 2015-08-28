@@ -59,7 +59,6 @@ var SpaceSelector = React.createClass({
     var currentSpaceIdx = (this.props.space == "private") ? 1 : 0;
     var currentRegIdx = (this.props.type == "components") ? 1 : 0;
 
-    console.log('context loggedIn: ' + this.props.validUserSession);
     var self = this;
     var list = this.state.spaces.map(function(d, sindex){
       var selectedClass = classNames({ active: (currentSpaceIdx == sindex) });
