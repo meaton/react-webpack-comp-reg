@@ -32,7 +32,7 @@ var Application = React.createClass({
           onChange={this.clearInfo} />
         <DataGrid
           items={this.state.items.items}
-          selected={this.state.itemSelection.selectedItems}
+          selectedItems={this.state.itemSelection.selectedItems}
           loading={this.state.items.loading}
           errorMessage={this.state.items.errorMessage}
           multiSelect={false}

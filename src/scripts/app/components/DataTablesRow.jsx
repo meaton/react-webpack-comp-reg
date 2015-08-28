@@ -14,13 +14,14 @@ var DataTablesRow = React.createClass({
     data: React.PropTypes.object.isRequired,
     multiple: React.PropTypes.bool.isRequired,
     selected: React.PropTypes.bool.isRequired,
-    onClick: React.PropTypes.function
+    onClick: React.PropTypes.func,
+    className: React.PropTypes.string,
   },
   getInitialState: function() {
     return {active: false };
   },
   getDefaultProps: function() {
-    return { multiple: false, buttonBefore: false };
+    return { multiple: false, buttonBefore: false, className: "unknown" };
   },
   rowClick: function(val, evt) {
     //var dgSelect = this.props.onClick;
