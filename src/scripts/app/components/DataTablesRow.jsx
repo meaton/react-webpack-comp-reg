@@ -24,18 +24,7 @@ var DataTablesRow = React.createClass({
     return { multiple: false, buttonBefore: false, className: "unknown" };
   },
   rowClick: function(val, evt) {
-    //var dgSelect = this.props.onClick;
-    //var target = evt.currentTarget;
-    //var chkVal = (this.props.multiple) ? !this.props.selected : true;
-
-    // console.log('row click: ' + val);
-    // console.log('chkval: ' + chkVal);
-    //
-    // this.setState({selected: chkVal}, function() {
-    //   if(chkVal) dgSelect(val, this, this.state.active);
-    //   else dgSelect(null, this);
-    // });
-
+    evt.stopPropagation();
     this.props.onClick(val, this);
   },
   buttonClick: function(evt) {
@@ -54,12 +43,12 @@ var DataTablesRow = React.createClass({
     //   this.setState({ selected: nextProps.selected });
   },
   componentDidUpdate: function() {
-    if(this.refs.addButton) {
-      if(this.refs.addButton.props.active && this.props.selected) {
-        console.log('add button is active: ' + this.refs.addButton.props.active, this.props.selected);
-        this.props.onClick(this.props.data.id, this, true);
-      }
-    }
+    // if(this.refs.addButton) {
+    //   if(this.refs.addButton.props.active && this.props.selected) {
+    //     console.log('add button is active: ' + this.refs.addButton.props.active, this.props.selected);
+    //     this.props.onClick(this.props.data.id, this, true);
+    //   }
+    // }
   },
   componentDidMount: function() {
     // if(this.props.selected) {
@@ -70,7 +59,8 @@ var DataTablesRow = React.createClass({
   render: function(){
     var data = this.props.data;
     var button = (this.state.active) ? <Button ref="addButton" onClick={this.buttonClick} active>+</Button> : <Button ref="addButton" onClick={this.buttonClick}>+</Button>;
-    var checkbox = (this.props.multiple) ? <td><input type="checkbox" name="componentCb" value={this.props.data.id} onChange={this.rowClick.bind(this, this.props.data.id)} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
+    // if multiple select, add a checkbox to visually indicate this mode - notice there's no event handler because the change bubbles up to the row click event
+    var checkbox = (this.props.multiple) ? <td><input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
     var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
 
     return (

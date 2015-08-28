@@ -31,7 +31,7 @@ var DataGrid = React.createClass({
         <DataTablesRow
           data={d}
           key={d.id}
-          multiple={multiSelect}
+          multiple={self.props.multiSelect}
           buttonBefore={addButton}
           onClick={self.rowClick}
           selected={selectedContext[d.id]?true:false}

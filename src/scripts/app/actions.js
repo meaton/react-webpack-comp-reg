@@ -25,10 +25,6 @@ module.exports = {
     this.dispatch(Constants.SELECT_BROWSER_ITEM, itemId)
   },
 
-  unselectBrowserItem: function(itemId) {
-    this.dispatch(Constants.UNSELECT_BROWSER_ITEM, itemId)
-  },
-
   switchMultipleSelect: function() {
     this.dispatch(Constants.SWITCH_MULTIPLE_SELECT)
   }
