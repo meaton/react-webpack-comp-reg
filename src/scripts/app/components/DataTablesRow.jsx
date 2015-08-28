@@ -28,6 +28,7 @@ var DataTablesRow = React.createClass({
     this.props.onClick(val, this);
   },
   buttonClick: function(evt) {
+    //TODO: handle add button event
     evt.stopPropagation();
     evt.currentTarget.blur();
 
@@ -35,32 +36,13 @@ var DataTablesRow = React.createClass({
     var rowId = this.props.data.id;
     this.setState({ active: true }, function() { rowClick(rowId, evt); });
   },
-  componentWillReceiveProps: function(nextProps) {
-    //console.log(this.constructor.displayName, 'received props row: ', JSON.stringify(this.props));
-    // if(this.props.multiple != nextProps.multiple)
-    //   this.setState({ selected: false });
-    // if(this.props.selected != nextProps.selected)
-    //   this.setState({ selected: nextProps.selected });
-  },
-  componentDidUpdate: function() {
-    // if(this.refs.addButton) {
-    //   if(this.refs.addButton.props.active && this.props.selected) {
-    //     console.log('add button is active: ' + this.refs.addButton.props.active, this.props.selected);
-    //     this.props.onClick(this.props.data.id, this, true);
-    //   }
-    // }
-  },
-  componentDidMount: function() {
-    // if(this.props.selected) {
-    //   console.log('row selected on mount: ' + this.props.data.id);
-    //   this.props.onClick(this.props.data.id, this);
-    // }
-  },
   render: function(){
     var data = this.props.data;
-    var button = (this.state.active) ? <Button ref="addButton" onClick={this.buttonClick} active>+</Button> : <Button ref="addButton" onClick={this.buttonClick}>+</Button>;
+
     // if multiple select, add a checkbox to visually indicate this mode - notice there's no event handler because the change bubbles up to the row click event
     var checkbox = (this.props.multiple) ? <td><input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
+
+    var button = (this.state.active) ? <Button ref="addButton" onClick={this.buttonClick} active>+</Button> : <Button ref="addButton" onClick={this.buttonClick}>+</Button>;
     var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
 
     return (
