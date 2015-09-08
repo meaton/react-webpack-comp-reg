@@ -21,8 +21,8 @@ module.exports = {
     this.dispatch(Constants.EDIT_ITEM);
   },
 
-  selectBrowserItem: function(itemId) {
-    this.dispatch(Constants.SELECT_BROWSER_ITEM, itemId)
+  selectBrowserItem: function(item) {
+    this.dispatch(Constants.SELECT_BROWSER_ITEM, item)
   },
 
   switchMultipleSelect: function() {

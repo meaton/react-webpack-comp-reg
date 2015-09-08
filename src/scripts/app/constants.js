@@ -5,7 +5,7 @@ module.exports = {
   LOAD_ITEMS: "LOAD_ITEMS",
   LOAD_ITEMS_SUCCESS: "LOAD_ITEMS_SUCCESS",
   LOAD_ITEMS_FAILURE: "LOAD_ITEMS_FAILURE",
-  
+
   /* start editing an item */
   EDIT_ITEM: "EDIT_ITEM",
   /* toggle item selection in the browser */

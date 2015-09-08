@@ -5,6 +5,7 @@ var BrowserSelectionStore = Fluxxor.createStore({
   initialize: function(options) {
     this.selectedItems = {};
     this.allowMultiple = false;
+    this.currentItem = null;
 
     this.bindActions(
       Constants.SELECT_BROWSER_ITEM, this.handleSelectItem,
@@ -15,16 +16,19 @@ var BrowserSelectionStore = Fluxxor.createStore({
   getState: function() {
     return {
       selectedItems: this.selectedItems,
-      allowMultiple: this.allowMultiple
+      allowMultiple: this.allowMultiple,
+      currentItem: this.currentItem
     };
   },
 
-  handleSelectItem: function(itemId) {
+  handleSelectItem: function(item) {
+    this.currentItem = item;
+
     if(this.allowMultiple) {
       // we may already have a selection, check if we want to unselect
-      if(this.selectedItems[itemId]) {
+      if(this.selectedItems[item.id]) {
           //special case: unselect
-          delete this.selectedItems[itemId];
+          delete this.selectedItems[item.id];
           this.emit("change");
           return
       }
@@ -34,7 +38,7 @@ var BrowserSelectionStore = Fluxxor.createStore({
     }
 
     // select identified item
-    this.selectedItems[itemId] = true;
+    this.selectedItems[item.id] = item;
     this.emit("change");
   },
 

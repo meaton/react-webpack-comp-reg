@@ -46,7 +46,7 @@ var DataTablesRow = React.createClass({
     var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
 
     return (
-      <tr onClick={this.rowClick.bind(this, this.props.data.id)} key={this.props.data.id} className={(this.props.selected) ? "selected " + this.props.className : this.props.className}>
+      <tr onClick={this.rowClick.bind(this, this.props.data)} key={this.props.data.id} className={(this.props.selected) ? "selected " + this.props.className : this.props.className}>
         {checkbox}
         {buttonBefore}
         <td className="name">{data.name}</td>

@@ -80,3 +80,8 @@ a { cursor: pointer; color: #999; }
 .modal-open {
   overflow: visible;
 }
+
+.main .browser {
+  max-height: 200px;
+  overflow-y: auto;
+}
