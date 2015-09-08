@@ -23,25 +23,81 @@ require('../../../styles/InfoPanel.sass');
 var InfoPanel = React.createClass({
   propTypes: {
     item: React.PropTypes.object,
-    load_data: React.PropTypes.func,
-    xml_data: React.PropTypes.string, // XMLDocument or String
-    comments: React.PropTypes.object,
+    loadSpec: React.PropTypes.func,
+    loadSpecXml: React.PropTypes.func,
+    spec: React.PropTypes.object,
+    specXml: React.PropTypes.string, // XMLDocument or String
+    comments: React.PropTypes.array,
   },
+
   contextTypes: {
     loggedIn: React.PropTypes.bool.isRequired
   },
+
   getInitialState: function() {
-    return { xml_data: null, comments_data: [], currentTabIdx: 0 }
+    return { currentTabIdx: 0 }
   },
+
   tabSelect: function(index) {
     console.log('tabSelect: ' + index);
 
     if(index != this.state.currentTabIdx) {
       if(index == 1)
-        this.props.load_data();
+        this.props.loadSpecXml();
       this.setState({ currentTabIdx: index });
     }
   },
+
+  componentWillUpdate: function(nextProps, nextState) {
+    if(nextState.currentTabIdx == 1 && nextProps.specXml == null) {
+      this.setState({currentTabIdx: 0});
+    }
+  },
+
+  render: function () {
+    console.log('xml: ' + this.props.specXml);
+
+    var item = this.props.item;
+    var xmlElement = null;
+    var viewer = null;
+
+    if(item == null)
+      return null;
+    else
+        viewer = null;
+        //TODO flux: Re-enable viewer
+      // viewer = (
+      //   <ComponentViewer item={this.props.item} editMode={false} />
+      // );
+
+    // comments form and submission
+    var commentsForm = (this.context.loggedIn) ? (
+      <form name="commentsBox" onSubmit={this.commentSubmit}>
+        <Input id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
+        <ButtonInput type='submit' value='Submit' />
+      </form>
+    ) : (
+      <span>Login to enter a comment</span>
+    );
+
+    return (
+      <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile'] === "true") ? "profile" : "component"}>
+        <TabPane eventKey={0} tab="view">
+          {viewer}
+        </TabPane>
+        <TabPane eventKey={1} tab="xml">
+            {(this.props.specXml != null) ?
+            <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
+              : null }
+        </TabPane>
+        <TabPane eventKey={2} tab={"Comments (" + this.props.comments.length + ")"}>
+            {this.processComments()}
+            {commentsForm}
+        </TabPane>
+      </TabbedArea>
+    );
+  },
+
   // componentWillReceiveProps: function(nextProps) {
   //     if(nextProps.xml_data != null)
   //       this.setState({xml_data: nextProps.xml_data});
@@ -53,11 +109,12 @@ var InfoPanel = React.createClass({
   //         this.setState({comments_data: [nextProps.comments_data]})
   // },
   // componentWillUpdate: function(nextProps, nextState) {
-  //   if(nextState.currentTabIdx == 1 && nextProps.xml_data == null)
-  //     this.props.load_data();
+  //   if(nextState.currentTabIdx == 1 && nextProps.specXml == null)
+  //     this.props.loadSpecXml();
   // },
+
   processComments: function() {
-    var comments = this.state.comments_data;
+    var comments = this.props.comments;
     var commentSubmit = this.commentSubmit;
     var isLoggedIn = this.context.loggedIn;
 
@@ -99,49 +156,6 @@ var InfoPanel = React.createClass({
       this.props.commentsHandler().delete($(evt.currentTarget).find("input:hidden[name=id]").val());
 
     return false;
-  },
-  render: function () {
-    console.log('render', this.constructor.displayName);
-
-    var item = this.props.item;
-    var xmlElement = null;
-    var viewer = null;
-
-    if(item == null)
-      return null;
-    else
-        viewer = null;
-        //TODO flux: Re-enable viewer
-      // viewer = (
-      //   <ComponentViewer item={this.props.item} editMode={false} />
-      // );
-
-    // comments form and submission
-    var commentsForm = (this.context.loggedIn) ? (
-      <form name="commentsBox" onSubmit={this.commentSubmit}>
-        <Input id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
-        <ButtonInput type='submit' value='Submit' />
-      </form>
-    ) : (
-      <span>Login to enter a comment</span>
-    );
-
-    return (
-      <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile'] === "true") ? "profile" : "component"}>
-        <TabPane eventKey={0} tab="view">
-          {viewer}
-        </TabPane>
-        <TabPane eventKey={1} tab="xml">
-            {(this.state.xml_data != null) ?
-            <pre><code ref="xmlcode" className="language-markup">{formatXml(this.state.xml_data.substring(55))}</code></pre>
-              : null }
-        </TabPane>
-        <TabPane eventKey={2} tab={"Comments (" + this.state.comments_data.length + ")"}>
-            {this.processComments()}
-            {commentsForm}
-        </TabPane>
-      </TabbedArea>
-    );
   }
 });
 

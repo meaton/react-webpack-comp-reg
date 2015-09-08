@@ -33,8 +33,12 @@ var ProfileOverview = React.createClass({
     space: React.PropTypes.string
   },
 
-  loadXml: function () {
+  loadSpec: function () {
     this.getFlux().actions.loadComponentSpec(this.props.type, this.props.space, this.props.item);
+  },
+
+  loadXml: function () {
+    this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
   },
 
   render: function() {
@@ -42,9 +46,11 @@ var ProfileOverview = React.createClass({
     var hideClass = (this.props.item != null) ? "show" : "hide";
     var infoPanel = (this.props.item != null) ?
       <InfoPanel  item={this.props.item}
-                  load_data={this.loadXml}
-                  xml_data={this.state.spec.xml}
-                  comments_data={this.state.comments.comments}
+                  loadSpec={this.loadSpec}
+                  loadSpecXml={this.loadXml}
+                  spec={this.state.spec.spec}
+                  specXml={this.state.spec.xml}
+                  comments={this.state.comments.comments}
                   commentsHandler={this.commentsHandler}
                   className={(this.state.spec.loading||this.state.comments.loading)?" wait":""}
       />

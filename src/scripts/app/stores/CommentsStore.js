@@ -4,7 +4,7 @@ var Fluxxor = require("fluxxor"),
 var CommentsStore = Fluxxor.createStore({
   initialize: function(options) {
     this.loading = false;
-    this.comments = null;
+    this.comments = [];
 
     this.bindActions(
       Constants.LOAD_COMMENTS, this.handleLoadComments,
