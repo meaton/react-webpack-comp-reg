@@ -1,10 +1,10 @@
 'use strict';
 
-var React = require('react');
-
-//mixins
-// var CompRegLoader = require('../mixins/Loader');
-// var LoadingMixin = require('../mixins/LoadingMixin');
+var React = require("react"),
+    Constants = require("../constants"),
+    Fluxxor = require("fluxxor"),
+    FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 //components
 var InfoPanel = require('./InfoPanel.jsx');
@@ -16,13 +16,42 @@ var InfoPanel = require('./InfoPanel.jsx');
 * @mixes LoadingMixin
 */
 var ProfileOverview = React.createClass({
-  // mixins: [CompRegLoader, LoadingMixin],
-  propTypes: {
-    item: React.PropTypes.object,
-    xml: React.PropTypes.object,
-    comments: React.PropTypes.object,
-    loadXml: React.PropTypes.func
+  mixins: [FluxMixin, StoreWatchMixin("ComponentSpecStore", "CommentsStore")],
+
+  // Required by StoreWatchMixin
+  getStateFromFlux: function() {
+    var flux = this.getFlux();
+    return {
+      spec: flux.store("ComponentSpecStore").getState(),
+      comments: flux.store("CommentsStore").getState()
+    };
   },
+
+  propTypes: {
+    item: React.PropTypes.object
+  },
+
+  //TODO: connect with registry item store (provides xml, comments)
+
+  loadXml: function () {
+    this.props.loadXml();
+  },
+
+  render: function() {
+    var hideClass = (this.props.item != null) ? "show" : "hide";
+    var infoPanel = (this.props.item != null) ?
+      <InfoPanel  item={this.props.item}
+                  load_data={this.loadXml}
+                  xml_data={this.state.spec.xml}
+                  comments_data={this.state.comments.comments}
+                  commentsHandler={this.commentsHandler} />
+      : null;
+    return (
+      <div className={hideClass}>
+        {infoPanel}
+      </div>
+    );
+  }
 
   // getInitialState: function() {
   //   return {
@@ -94,26 +123,7 @@ var ProfileOverview = React.createClass({
   //       self.setState({comments: comments});
   //     });
   //   }
-  // },
-  loadXml: function () {
-    this.props.loadXml();
-  },
-
-  render: function() {
-    var hideClass = (this.props.item != null) ? "show" : "hide";
-    var infoPanel = (this.props.item != null) ?
-      <InfoPanel  item={this.props.item}
-                  load_data={this.loadXml}
-                  xml_data={this.props.xml}
-                  comments_data={this.props.comments}
-                  commentsHandler={this.commentsHandler} />
-      : null;
-    return (
-      <div className={hideClass}>
-        {infoPanel}
-      </div>
-    );
-  }
+  // }
 });
 
 module.exports = ProfileOverview;

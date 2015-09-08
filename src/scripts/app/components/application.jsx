@@ -30,15 +30,10 @@ var Application = React.createClass({
        (this.state.items.type == Constants.TYPE_PROFILE) ?
         <Profile
           ref="profile"
-          profileId={item} />
+          item={item} />
         :null
-        //TODO flux: component overview
+        //TODO flux: component overview - merge?
         //:<Component ref="component" componentId={item} />
-
-        // item: React.PropTypes.object,
-        // xml: React.PropTypes.object,
-        // comments: React.PropTypes.object,
-        // loadXml: React.PropTypes.func
 
         console.log("current item: "+ item);
         console.log("viewer: "+ viewer);
