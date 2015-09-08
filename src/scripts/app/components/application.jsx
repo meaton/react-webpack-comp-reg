@@ -11,14 +11,15 @@ var Profile = require('./ProfileOverview');
 // var Component = require('./ComponentOverview');
 
 var Application = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore")],
+  mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore", "ComponentDetailsStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
       items: flux.store("BrowserItemsStore").getState(),
-      selection: flux.store("BrowserSelectionStore").getState()
+      selection: flux.store("BrowserSelectionStore").getState(),
+      details: flux.store("ComponentDetailsStore").getState()
     };
   },
 
@@ -37,9 +38,6 @@ var Application = React.createClass({
         :null
         //TODO flux: component overview - merge?
         //:<Component ref="component" componentId={item} />
-
-        console.log("current item: "+ item);
-        console.log("viewer: "+ viewer);
 
     return (
       <section className="application-container">
@@ -91,7 +89,15 @@ var Application = React.createClass({
 
   handleRowSelect: function(val, target) {
     this.getFlux().actions.selectBrowserItem(val);
-    this.getFlux().actions.loadComponentSpec(this.state.items.type, this.state.items.space, val);
+
+    // update the info view
+    if(this.state.details.activeView == Constants.INFO_VIEW_SPEC) {
+      this.getFlux().actions.loadComponentSpec(this.state.items.type, this.state.items.space, val);
+    }
+    if(this.state.details.activeView == Constants.INFO_VIEW_XML) {
+      this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, val);
+    }
+    //TODO flux: comments
   }
 });
 

@@ -1,6 +1,8 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react/addons'),
+    Constants = require("../constants");
+
 var moment = require('moment-timezone');
 
 //bootstrap
@@ -22,41 +24,31 @@ require('../../../styles/InfoPanel.sass');
 */
 var InfoPanel = React.createClass({
   propTypes: {
-    item: React.PropTypes.object,
-    loadSpec: React.PropTypes.func,
-    loadSpecXml: React.PropTypes.func,
-    spec: React.PropTypes.object,
-    specXml: React.PropTypes.string, // XMLDocument or String
-    comments: React.PropTypes.array,
-  },
-
-  contextTypes: {
-    loggedIn: React.PropTypes.bool.isRequired
-  },
-
-  getInitialState: function() {
-    return { currentTabIdx: 0 }
+    activeView: React.PropTypes.string.isRequired,
+    item: React.PropTypes.object.isRequired,
+    loadSpec: React.PropTypes.func.isRequired,
+    loadSpecXml: React.PropTypes.func.isRequired,
+    spec: React.PropTypes.object.isRequired,
+    specXml: React.PropTypes.string.isRequired,
+    comments: React.PropTypes.array.isRequired
   },
 
   tabSelect: function(index) {
     console.log('tabSelect: ' + index);
 
-    if(index != this.state.currentTabIdx) {
-      if(index == 1)
-        this.props.loadSpecXml();
-      this.setState({ currentTabIdx: index });
+    if(index === Constants.INFO_VIEW_SPEC) {
+      this.props.loadSpec();
+    }
+    if(index === Constants.INFO_VIEW_XML) {
+      this.props.loadSpecXml();
+    }
+    if(index == Constants.INFO_VIEW_COMMENTS) {
+      //TODO
     }
   },
 
-  componentWillUpdate: function(nextProps, nextState) {
-    if(nextState.currentTabIdx == 1 && nextProps.specXml == null) {
-      this.setState({currentTabIdx: 0});
-    }
-  },
 
   render: function () {
-    console.log('xml: ' + this.props.specXml);
-
     var item = this.props.item;
     var xmlElement = null;
     var viewer = null;
@@ -81,37 +73,22 @@ var InfoPanel = React.createClass({
     );
 
     return (
-      <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect} className={(item['@isProfile'] === "true") ? "profile" : "component"}>
-        <TabPane eventKey={0} tab="view">
+      <TabbedArea activeKey={this.props.activeView} onSelect={this.tabSelect} className={(item['@isProfile'] === "true") ? "profile" : "component"}>
+        <TabPane eventKey={Constants.INFO_VIEW_SPEC} tab="view">
           {viewer}
         </TabPane>
-        <TabPane eventKey={1} tab="xml">
+        <TabPane eventKey={Constants.INFO_VIEW_XML} tab="xml">
             {(this.props.specXml != null) ?
             <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
               : null }
         </TabPane>
-        <TabPane eventKey={2} tab={"Comments (" + this.props.comments.length + ")"}>
+        <TabPane eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + this.props.comments.length + ")"}>
             {this.processComments()}
             {commentsForm}
         </TabPane>
       </TabbedArea>
     );
   },
-
-  // componentWillReceiveProps: function(nextProps) {
-  //     if(nextProps.xml_data != null)
-  //       this.setState({xml_data: nextProps.xml_data});
-  //
-  //     if(nextProps.item != null && nextProps.comments_data != null)
-  //       if($.isArray(nextProps.comments_data))
-  //         this.setState({comments_data: nextProps.comments_data});
-  //       else
-  //         this.setState({comments_data: [nextProps.comments_data]})
-  // },
-  // componentWillUpdate: function(nextProps, nextState) {
-  //   if(nextState.currentTabIdx == 1 && nextProps.specXml == null)
-  //     this.props.loadSpecXml();
-  // },
 
   processComments: function() {
     var comments = this.props.comments;
@@ -142,6 +119,7 @@ var InfoPanel = React.createClass({
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
   },
+
   commentSubmit: function(evt) {
     evt.preventDefault();
 

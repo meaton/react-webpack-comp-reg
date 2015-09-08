@@ -6,21 +6,26 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.loading = false;
     this.spec = null;
     this.xml = null;
+    this.comments = [];
     this.errorMessage = null;
+    this.activeView = Constants.INFO_VIEW_SPEC;
 
     this.bindActions(
       Constants.LOAD_COMPONENT_SPEC, this.handleLoadSpec,
       Constants.LOAD_COMPONENT_SPEC_SUCCES, this.handleLoadSpecSuccess,
       Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, this.handleLoadSpecXmlSuccess,
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure
+      //TODO: comments
     );
   },
 
   getState: function() {
     return {
       loading: this.loading,
+      activeView: this.activeView,
       spec: this.spec,
       xml: this.xml,
+      comments: this.comments,
       errorMessage: this.errorMessage
     };
   },
@@ -36,7 +41,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     // JSON spec loaded
     this.loading = false;
     this.spec = spec;
-    this.xml = null;
+    this.activeView = Constants.INFO_VIEW_SPEC;
     this.emit("change");
   },
 
@@ -44,7 +49,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     // XML spec loaded
     this.loading = false;
     this.xml = xml;
-    this.spec = null;
+    this.activeView = Constants.INFO_VIEW_XML;
     this.emit("change");
   },
 

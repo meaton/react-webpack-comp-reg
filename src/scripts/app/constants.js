@@ -30,5 +30,10 @@ module.exports = {
 
   /* ITEM SPACES */
   SPACE_PUBLISHED: "published",
-  SPACE_PRIVATE: "private"
+  SPACE_PRIVATE: "private",
+
+  /* INFO VIEWS */
+  INFO_VIEW_SPEC: "INFO_VIEW_SPEC",
+  INFO_VIEW_XML: "INFO_VIEW_XML",
+  INFO_VIEW_COMMENTS: "INFO_VIEW_COMMENTS"
 };
