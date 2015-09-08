@@ -28,27 +28,42 @@ var ProfileOverview = React.createClass({
   },
 
   propTypes: {
-    item: React.PropTypes.object
+    item: React.PropTypes.object,
+    type: React.PropTypes.string,
+    space: React.PropTypes.string
   },
 
-  //TODO: connect with registry item store (provides xml, comments)
-
   loadXml: function () {
-    this.props.loadXml();
+    this.getFlux().actions.loadComponentSpec(this.props.type, this.props.space, this.props.item);
   },
 
   render: function() {
+
     var hideClass = (this.props.item != null) ? "show" : "hide";
     var infoPanel = (this.props.item != null) ?
       <InfoPanel  item={this.props.item}
                   load_data={this.loadXml}
                   xml_data={this.state.spec.xml}
                   comments_data={this.state.comments.comments}
-                  commentsHandler={this.commentsHandler} />
+                  commentsHandler={this.commentsHandler}
+                  className={(this.state.spec.loading||this.state.comments.loading)?" wait":""}
+      />
       : null;
+
+
+    var specError = (this.state.spec.errorMessage != null) ?
+      <p className="error">{this.state.spec.errorMessage}</p>
+      :null;
+
+    var commentsError = (this.state.comments.errorMessage != null) ?
+      <p className="error">{this.state.comments.errorMessage}</p>
+      :null;
+
     return (
       <div className={hideClass}>
         {infoPanel}
+        {specError}
+        {commentsError}
       </div>
     );
   }
@@ -124,6 +139,7 @@ var ProfileOverview = React.createClass({
   //     });
   //   }
   // }
+
 });
 
 module.exports = ProfileOverview;

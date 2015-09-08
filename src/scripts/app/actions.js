@@ -12,21 +12,35 @@ module.exports = {
         this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
       }.bind(this),
       function(message) {
+        // failure
         this.dispatch(Constants.LOAD_ITEMS_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  selectBrowserItem: function(item) {
+    this.dispatch(Constants.SELECT_BROWSER_ITEM, item);
+  },
+
+  switchMultipleSelect: function() {
+    this.dispatch(Constants.SWITCH_MULTIPLE_SELECT);
+  },
+
+  loadComponentSpec: function(type, space, item) {
+    this.dispatch(Constants.LOAD_COMPONENT_SPEC);
+    ComponentRegistryClient.loadSpec(type, space, item.id, function(spec){
+        // success
+        this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, spec);
+      }.bind(this),
+      function(message) {
+        // failure
+        this.dispatch(Constants.LOAD_COMPONENT_SPEC_FAILURE, message);
       }.bind(this)
     );
   },
 
   editItem: function(item) {
     this.dispatch(Constants.EDIT_ITEM);
-  },
-
-  selectBrowserItem: function(item) {
-    this.dispatch(Constants.SELECT_BROWSER_ITEM, item)
-  },
-
-  switchMultipleSelect: function() {
-    this.dispatch(Constants.SWITCH_MULTIPLE_SELECT)
   }
 
 };

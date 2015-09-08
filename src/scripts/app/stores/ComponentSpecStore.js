@@ -5,24 +5,25 @@ var ComponentSpecStore = Fluxxor.createStore({
   initialize: function(options) {
     this.loading = false;
     this.xml = null;
-    this.message = null;
+    this.errorMessage = null;
 
     this.bindActions(
       Constants.LOAD_COMPONENT_SPEC, this.handleLoadSpec,
       Constants.LOAD_COMPONENT_SPEC_SUCCES, this.handleLoadSpecSuccess,
-      Constants.LOAD_COMPONENT_SPEC_SUCCES_FAILURE, this.handleLoadSpecFailure
+      Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure
     );
   },
 
   getState: function() {
     return {
-      spec: this.spec
+      spec: this.spec,
+      errorMessage: this.errorMessage
     };
   },
 
   handleLoadSpec: function() {
     this.loading = true;
-    this.message = null;
+    this.errorMessage = null;
     this.emit("change");
   },
 
@@ -34,7 +35,7 @@ var ComponentSpecStore = Fluxxor.createStore({
 
   handleLoadSpecFailure: function(message) {
     this.loading = false;
-    this.message = message;
+    this.errorMessage = message;
     this.emit("change");
   }
 

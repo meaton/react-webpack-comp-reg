@@ -24,7 +24,8 @@ var InfoPanel = React.createClass({
   propTypes: {
     item: React.PropTypes.object,
     load_data: React.PropTypes.func,
-    xml_data: React.PropTypes.string // XMLDocument or String
+    xml_data: React.PropTypes.string, // XMLDocument or String
+    comments: React.PropTypes.object,
   },
   contextTypes: {
     loggedIn: React.PropTypes.bool.isRequired
@@ -41,20 +42,20 @@ var InfoPanel = React.createClass({
       this.setState({ currentTabIdx: index });
     }
   },
-  componentWillReceiveProps: function(nextProps) {
-      if(nextProps.xml_data != null)
-        this.setState({xml_data: nextProps.xml_data});
-
-      if(nextProps.item != null && nextProps.comments_data != null)
-        if($.isArray(nextProps.comments_data))
-          this.setState({comments_data: nextProps.comments_data});
-        else
-          this.setState({comments_data: [nextProps.comments_data]})
-  },
-  componentWillUpdate: function(nextProps, nextState) {
-    if(nextState.currentTabIdx == 1 && nextProps.xml_data == null)
-      this.props.load_data();
-  },
+  // componentWillReceiveProps: function(nextProps) {
+  //     if(nextProps.xml_data != null)
+  //       this.setState({xml_data: nextProps.xml_data});
+  //
+  //     if(nextProps.item != null && nextProps.comments_data != null)
+  //       if($.isArray(nextProps.comments_data))
+  //         this.setState({comments_data: nextProps.comments_data});
+  //       else
+  //         this.setState({comments_data: [nextProps.comments_data]})
+  // },
+  // componentWillUpdate: function(nextProps, nextState) {
+  //   if(nextState.currentTabIdx == 1 && nextProps.xml_data == null)
+  //     this.props.load_data();
+  // },
   processComments: function() {
     var comments = this.state.comments_data;
     var commentSubmit = this.commentSubmit;
@@ -133,7 +134,7 @@ var InfoPanel = React.createClass({
         <TabPane eventKey={1} tab="xml">
             {(this.state.xml_data != null) ?
             <pre><code ref="xmlcode" className="language-markup">{formatXml(this.state.xml_data.substring(55))}</code></pre>
-              : "loading.." }
+              : null }
         </TabPane>
         <TabPane eventKey={2} tab={"Comments (" + this.state.comments_data.length + ")"}>
             {this.processComments()}

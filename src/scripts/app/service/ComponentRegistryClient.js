@@ -46,7 +46,12 @@ var ComponentRegistryClient = {
        handleFailure("Error loading data from " + requestUrl + ": " + err);
      }.bind(this)
    }, corsRequestParams));
-  }
+ },
+
+ loadSpec: function(type, space, id, handleSuccess, handleFailure) {
+   var err = "test";
+   handleFailure("Error loading spec for " + id + ": " + err);
+ }
 
 };
 

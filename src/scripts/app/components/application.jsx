@@ -30,7 +30,10 @@ var Application = React.createClass({
        (this.state.items.type == Constants.TYPE_PROFILE) ?
         <Profile
           ref="profile"
-          item={item} />
+          item={item}
+          type={this.state.items.type}
+          space={this.state.items.space}
+          />
         :null
         //TODO flux: component overview - merge?
         //:<Component ref="component" componentId={item} />
@@ -88,6 +91,7 @@ var Application = React.createClass({
 
   handleRowSelect: function(val, target) {
     this.getFlux().actions.selectBrowserItem(val);
+    this.getFlux().actions.loadComponentSpec(this.state.items.type, this.state.items.space, val);
   }
 });
 
