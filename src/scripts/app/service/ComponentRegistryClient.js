@@ -6,6 +6,7 @@ var CMD = require('../../../mappings/Component').Component;
 var context = new Jsonix.Context([CMD]);
 var marshaller = context.createMarshaller();
 
+var Constants = require("../constants");
 var Config = require('../../config').Config;
 var restUrl = require('../../config').restUrl;
 
@@ -48,9 +49,19 @@ var ComponentRegistryClient = {
    }, corsRequestParams));
  },
 
- loadSpec: function(type, space, id, handleSuccess, handleFailure) {
-   var err = "test";
-   handleFailure("Error loading spec for " + id + ": " + err);
+ loadSpec: function(type, space, id, handleSuccess, handleFailure, raw_type) {
+  var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles/':'/registry/components/';
+  var requestUrl = restUrl + typepath + id;
+  $.ajax($.extend({
+    url: requestUrl,
+    dataType: (raw_type != undefined) ? raw_type : "json",
+    success: function(data) {
+      handleSuccess(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      handleFailure("Error loading spec for " + id + ": " + err);
+    }.bind(this)
+  }, corsRequestParams));
  }
 
 };
