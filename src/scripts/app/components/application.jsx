@@ -7,7 +7,7 @@ var React = require("react"),
 var DataGrid = require("./DataGrid.jsx");
 var SpaceSelector = require("./SpaceSelector.jsx");
 
-var Profile = require('./ProfileOverview');
+var ComponentDetails = require('./ComponentDetailsOverview');
 // var Component = require('./ComponentOverview');
 
 var Application = React.createClass({
@@ -28,16 +28,16 @@ var Application = React.createClass({
     var item = this.state.selection.currentItem;
     var viewer =
      (!item)? null :
+     //TODO flux: component overview - merge?
+     //:<Component ref="component" componentId={item} />
        (this.state.items.type == Constants.TYPE_PROFILE) ?
-        <Profile
+        <ComponentDetails
           ref="profile"
           item={item}
           type={this.state.items.type}
           space={this.state.items.space}
           />
         :null
-        //TODO flux: component overview - merge?
-        //:<Component ref="component" componentId={item} />
 
     return (
       <section className="application-container">

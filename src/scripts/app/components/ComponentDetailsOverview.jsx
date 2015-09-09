@@ -10,12 +10,12 @@ var React = require("react"),
 var InfoPanel = require('./InfoPanel.jsx');
 
 /**
-* ProfileOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
+* ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
 * @constructor
 * @mixes Loader
 * @mixes LoadingMixin
 */
-var ProfileOverview = React.createClass({
+var ComponentDetailsOverview = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore")],
 
   // Required by StoreWatchMixin
@@ -71,4 +71,4 @@ var ProfileOverview = React.createClass({
 
 });
 
-module.exports = ProfileOverview;
+module.exports = ComponentDetailsOverview;
