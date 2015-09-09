@@ -60,21 +60,27 @@ var ComponentViewer = React.createClass({
           transition.abort();
     }
   },
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    spec: React.PropTypes.object.isRequired,
+    editMode: React.PropTypes.bool.isRequired,
+    childElements: React.PropTypes.array,
+    childComponents: React.PropTypes.array,
+  },
   contextTypes: {
     router: React.PropTypes.func,
-    loggedIn: React.PropTypes.bool.isRequired
+    //TODO flux: auth context - loggedIn: React.PropTypes.bool.isRequired
   },
-  //old (pre-flux) mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   getInitialState: function() {
     return { registry: { domainName: '', groupName: '' },
-             profile: null,
-             component: null,
-             childElements: null,
-             childComponents: null,
-             editMode: (this.props.editMode != undefined) ?
-                this.props.editMode :
-                true,
+             profile: null,   //set from spec prop
+             component: null, //set from spec prop
+             //childElements: null,
+             //childComponents: null,
+            //  editMode: (this.props.editMode != undefined) ?
+            //     this.props.editMode :
+            //     true,
              errors: null,
              isSaved: false,
              isEdited: false,
@@ -86,14 +92,17 @@ var ComponentViewer = React.createClass({
       domains: require('../../domains.js')
     };
   },
-  setItemPropToState: function(item) {
-    if(item != null) {
-      if(item['@isProfile'] == "true")
-        this.setState({profile: item, childElements: null, childComponents: null});
-      else
-        this.setState({component: item, childElements: null, childComponents: null});
+
+  componentWillReceiveProps: function(nextProps) {
+    if(nextProps.spec['@isProfile'] === "true") {
+      console.log("Item is profile");
+      this.setState({component: null, profile: nextProps.spec});
+    } else {
+      console.log("Item is component");
+      this.setState({component: nextProps.spec, profile: null});
     }
   },
+
   selectedComponent: function(componentId, addComponent) {
     console.log('component selected in datatable: ' + componentId, addComponent);
     var selectedInlineComps = $('.CMDComponent.selected');
@@ -275,71 +284,71 @@ var ComponentViewer = React.createClass({
 
     this.setState({ childComponents: childComponents, childElements: childElements });
   },
-  componentWillReceiveProps: function(nextProps) {
-    console.log(this.constructor.displayName, 'will receive props');
-
-    if(this.props.editMode != nextProps.editMode)
-      this.setState({editMode: nextProps.editMode});
-
-    if(JSON.stringify(this.props.item) != JSON.stringify(nextProps.item))
-      this.setItemPropToState(nextProps.item);
-  },
-  componentWillUpdate: function(nextProps, nextState) {
-    console.log(this.constructor.displayName, 'will update');
-    var self = this;
-    var newItem = nextState.profile||nextState.component;  //console.log('new item props: ' + JSON.stringify(newItem));
-    var prevItem = this.state.profile||this.state.component;
-
-    if(nextState.editMode && prevItem != null && !nextState.isEdited && JSON.stringify(newItem) != JSON.stringify(prevItem))
-      this.setState({ isEdited: true });
-
-    if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
-      if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
-        newItem = update(newItem, { CMD_Component: { AttributeList: { Attribute: { $set: [newItem.CMD_Component.AttributeList.Attribute] } }}});
-
-      this.parseComponent(newItem, nextState);
-    }
-  },
-  componentDidUpdate: function(prevProps, prevState) {
-    var self = this;
-
-    var item = this.state.component || this.state.profile;
-    var prevItem = prevState.component || prevState.profile;
-
-    console.log(this.constructor.displayName, 'component did update: ' + JSON.stringify(item));
-
-    if(item != null && prevItem != null && item.Header != undefined) {
-      if(this.state.isSaved) this.refs.grid.setLoading(false);
-      if(this.state.isEdited) this.refs.grid.setLoading(false);
-      if(item.Header.Name != item.CMD_Component['@name'] ||
-        (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])))
-        if(item['@isProfile'] == "true")
-          this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), component: null });
-        else
-          this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
-    }
-  },
-  componentDidMount: function() {
-    var self = this;
-    var id = this.getParams().component || this.getParams().profile;
-
-    console.log(this.constructor.displayName, 'mounted: ' + id);
-    console.log('editmode: ' + this.state.editMode);
-
-    if(this.props.item != undefined || this.props.item != null)
-      this.setItemPropToState(this.props.item);
-
-    if(this.state.editMode)
-      if(id != undefined && id != null)
-        this.loadRegistryItem(id, function(regItem) {
-          console.log("regItem:" + JSON.stringify(regItem));
-          self.setState({registry: regItem});
-        });
-      else if(this.isActive('newEditor')) {
-        console.log('Setting up new component...');
-        this.setItemPropToState({ '@isProfile': "true", Header: { Name: "", Description: "" }, CMD_Component: { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1" } });
-      }
-  },
+  // componentWillReceiveProps: function(nextProps) {
+  //   console.log(this.constructor.displayName, 'will receive props');
+  //
+  //   if(this.props.editMode != nextProps.editMode)
+  //     this.setState({editMode: nextProps.editMode});
+  //
+  //   if(JSON.stringify(this.props.item) != JSON.stringify(nextProps.item))
+  //     this.setItemPropToState(nextProps.item);
+  // },
+  // componentWillUpdate: function(nextProps, nextState) {
+  //   console.log(this.constructor.displayName, 'will update');
+  //   var self = this;
+  //   var newItem = nextState.profile||nextState.component;  //console.log('new item props: ' + JSON.stringify(newItem));
+  //   var prevItem = this.state.profile||this.state.component;
+  //
+  //   if(nextState.editMode && prevItem != null && !nextState.isEdited && JSON.stringify(newItem) != JSON.stringify(prevItem))
+  //     this.setState({ isEdited: true });
+  //
+  //   if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
+  //     if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
+  //       newItem = update(newItem, { CMD_Component: { AttributeList: { Attribute: { $set: [newItem.CMD_Component.AttributeList.Attribute] } }}});
+  //
+  //     this.parseComponent(newItem, nextState);
+  //   }
+  // },
+  // componentDidUpdate: function(prevProps, prevState) {
+  //   var self = this;
+  //
+  //   var item = this.state.component || this.state.profile;
+  //   var prevItem = prevState.component || prevState.profile;
+  //
+  //   console.log(this.constructor.displayName, 'component did update: ' + JSON.stringify(item));
+  //
+  //   if(item != null && prevItem != null && item.Header != undefined) {
+  //     if(this.state.isSaved) this.refs.grid.setLoading(false);
+  //     if(this.state.isEdited) this.refs.grid.setLoading(false);
+  //     if(item.Header.Name != item.CMD_Component['@name'] ||
+  //       (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])))
+  //       if(item['@isProfile'] == "true")
+  //         this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), component: null });
+  //       else
+  //         this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
+  //   }
+  // },
+  // componentDidMount: function() {
+  //   var self = this;
+  //   var id = this.getParams().component || this.getParams().profile;
+  //
+  //   console.log(this.constructor.displayName, 'mounted: ' + id);
+  //   console.log('editmode: ' + this.state.editMode);
+  //
+  //   if(this.props.item != undefined || this.props.item != null)
+  //     this.setItemPropToState(this.props.item);
+  //
+  //   if(this.state.editMode)
+  //     if(id != undefined && id != null)
+  //       this.loadRegistryItem(id, function(regItem) {
+  //         console.log("regItem:" + JSON.stringify(regItem));
+  //         self.setState({registry: regItem});
+  //       });
+  //     else if(this.isActive('newEditor')) {
+  //       console.log('Setting up new component...');
+  //       this.setItemPropToState({ '@isProfile': "true", Header: { Name: "", Description: "" }, CMD_Component: { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1" } });
+  //     }
+  // },
   parseComponent: function(item, state) {
     console.log('parseComponent');
 
@@ -435,9 +444,10 @@ var ComponentViewer = React.createClass({
     if(target == undefined) target = container;
     if(obj == undefined) return null;
 
-    var typeTrigger = (
-      <EditorDialog type="Type" label="Edit..." container={container} target={target} />
-    );
+    // TODO flux
+    // var typeTrigger = (
+    //   <EditorDialog type="Type" label="Edit..." container={container} target={target} />
+    // );
 
     var valueScheme = obj['@ValueScheme'];
     console.log(typeof valueScheme);

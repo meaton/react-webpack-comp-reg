@@ -27,8 +27,8 @@ var InfoPanel = React.createClass({
     item: React.PropTypes.object.isRequired,
     loadSpec: React.PropTypes.func.isRequired,
     loadSpecXml: React.PropTypes.func.isRequired,
-    spec: React.PropTypes.object.isRequired,
-    specXml: React.PropTypes.string.isRequired,
+    spec: React.PropTypes.object,
+    specXml: React.PropTypes.string,
     comments: React.PropTypes.array.isRequired
   },
 
@@ -52,11 +52,11 @@ var InfoPanel = React.createClass({
     var xmlElement = null;
     var viewer = null;
 
-    if(item == null)
+    if(this.props.spec == null)
       return null;
     else
       viewer = (
-        <ComponentViewer item={this.props.item} editMode={false} />
+        <ComponentViewer item={item} spec={this.props.spec} editMode={false} />
       );
 
     // comments form and submission

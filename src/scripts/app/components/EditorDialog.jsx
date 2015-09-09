@@ -7,7 +7,7 @@ var sortColumn = require('reactabular').sortColumn;
 
 //mixins
 var LinkedStateMixin = React.addons.LinkedStateMixin;
-var CompRegLoader = require('../mixins/Loader');
+var CompRegLoader = require('../../mixins/Loader');
 
 //bootstrap mixins
 var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
@@ -26,7 +26,7 @@ var TabPane = require('react-bootstrap/lib/TabPane');
 var update = React.addons.update;
 var classNames = require('classnames');
 
-require('../../styles/EditorDialog.sass');
+require('../../../styles/EditorDialog.sass');
 
 /**
 * EditorDialog - generic custom ModalTrigger utilising react-bootstrap OverlayMixin. Used in React components CMD
