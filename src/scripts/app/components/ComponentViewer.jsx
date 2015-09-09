@@ -116,159 +116,159 @@ var ComponentViewer = React.createClass({
       }
   },
   addNewAttribute: function(component, evt) {
-    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
-
-    var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
-    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
-
-    console.log('attrList: ' + attrList);
-    var item = (attrList == undefined) ?
-      update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
-      update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
-
-    console.log('new item after attr add: ' + JSON.stringify(item));
-    if(this.state.profile != null)
-      this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
-    else if(this.state.component != null)
-      this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
+    // var newAttrObj = { Name: "", Type: "string" }; //TODO check format
+    //
+    // var attrList = (component.AttributeList != undefined && $.isArray(component.AttributeList.Attribute)) ? component.AttributeList.Attribute : component.AttributeList;
+    // if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
+    //
+    // console.log('attrList: ' + attrList);
+    // var item = (attrList == undefined) ?
+    //   update(component, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
+    //   update(component, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+    //
+    // console.log('new item after attr add: ' + JSON.stringify(item));
+    // if(this.state.profile != null)
+    //   this.setState({ profile: update(this.state.profile, { CMD_Component: { $set: item } }) });
+    // else if(this.state.component != null)
+    //   this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
   },
   addNewElement: function(evt) {
-    var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
-    this.setState({ childElements: elements });
+    // var elements = update(this.state.childElements, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] });
+    // this.setState({ childElements: elements });
   },
   addExistingComponent: function(componentId, selectedComps) { //TODO prevent component being added if already exists at that level
-    var self = this;
-    var warningMsg = 'Cannot add existing component that has the same name as a sibling.';
-
-    this.loadComponent(componentId, "json", function(data) {
-        console.log('insert data child comp: ' + (data.CMD_Component != null));
-        data['@ComponentId'] = componentId;
-        data['open'] = true;
-
-        var hasComp = function(comps, compName) {
-          var foundSibling = false;
-          if($.isArray(comps))
-            comps.forEach(function(comp) {
-              var name = (comp.hasOwnProperty("@name")) ? comp['@name'] : comp.CMD_Component['@name'];
-              if(name === compName) foundSibling = true;
-            });
-          return foundSibling;
-
-          //TODO explore jQuery integration with determination of existing name
-          /*selectedComps.each(function() {
-            if($(this).find('.inline-body > .childComponents > .CMDComponent').find('.componentLink').text() == compName)) {
-              alert('Cannot add existing component that has the same name as a sibling.');
-              foundSibling = true;
-            }
-          });*/
-        };
-
-        if(selectedComps == undefined) {
-          if(hasComp(self.state.childComponents, data.CMD_Component['@name']))
-            alert(warningMsg);
-          else {
-            var updatedComponents = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
-            self.setState({ childComponents: updatedComponents });
-          }
-        } else if(self.state.childComponents != null) {
-          // add component data to selected inline-components
-          var newComponents = [];
-
-          var checkInlineSelection = function(parent, compData) {
-            if(parent.CMD_Component != undefined && parent.CMD_Component.length > 0) {
-              var newChildComps = [];
-              for(var i=0; i < parent.CMD_Component.length; i++) {
-                var parentCompChild = parent.CMD_Component[i];
-                if(parentCompChild.selected)
-                  if(hasComp(parentCompChild.CMD_Component, compData.CMD_Component['@name']))
-                    alert(warningMsg);
-                  else if(parentCompChild.CMD_Component != undefined)
-                    parentCompChild = update(parentCompChild, { $merge: { CMD_Component: update(parentCompChild.CMD_Component, { $push: [compData] }), open: true } });
-                  else
-                    parentCompChild = update(parentCompChild, { $merge: { CMD_Component: [compData], open: true } });
-
-                newChildComps.push(checkInlineSelection(parentCompChild, data));
-              }
-
-              return update(parent, { CMD_Component: { $set: newChildComps } });
-            }
-
-            return parent;
-          };
-
-          for(var j=0; j < self.state.childComponents.length; j++) {
-            var comp = self.state.childComponents[j];
-            if(comp.selected)
-              if(hasComp(comp.CMD_Component, data.CMD_Component['@name']))
-                alert(warningMsg);
-              else if(comp.CMD_Component != undefined)
-                  comp = update(comp, { $merge: { CMD_Component: update(comp.CMD_Component, { $push: [data] }), open: true } });
-              else comp = update(comp, { $merge: { CMD_Component: [data], open: true } });
-
-            comp = update(comp, { $apply: function(c) {
-                return checkInlineSelection(c, data);
-            } });
-
-            newComponents.push(comp);
-          }
-
-          self.setState({ childComponents: newComponents });
-        }
-    });
+    // var self = this;
+    // var warningMsg = 'Cannot add existing component that has the same name as a sibling.';
+    //
+    // this.loadComponent(componentId, "json", function(data) {
+    //     console.log('insert data child comp: ' + (data.CMD_Component != null));
+    //     data['@ComponentId'] = componentId;
+    //     data['open'] = true;
+    //
+    //     var hasComp = function(comps, compName) {
+    //       var foundSibling = false;
+    //       if($.isArray(comps))
+    //         comps.forEach(function(comp) {
+    //           var name = (comp.hasOwnProperty("@name")) ? comp['@name'] : comp.CMD_Component['@name'];
+    //           if(name === compName) foundSibling = true;
+    //         });
+    //       return foundSibling;
+    //
+    //       //TODO explore jQuery integration with determination of existing name
+    //       /*selectedComps.each(function() {
+    //         if($(this).find('.inline-body > .childComponents > .CMDComponent').find('.componentLink').text() == compName)) {
+    //           alert('Cannot add existing component that has the same name as a sibling.');
+    //           foundSibling = true;
+    //         }
+    //       });*/
+    //     };
+    //
+    //     if(selectedComps == undefined) {
+    //       if(hasComp(self.state.childComponents, data.CMD_Component['@name']))
+    //         alert(warningMsg);
+    //       else {
+    //         var updatedComponents = (self.state.childComponents) ? update(self.state.childComponents, { $push: [data] }) : [data];
+    //         self.setState({ childComponents: updatedComponents });
+    //       }
+    //     } else if(self.state.childComponents != null) {
+    //       // add component data to selected inline-components
+    //       var newComponents = [];
+    //
+    //       var checkInlineSelection = function(parent, compData) {
+    //         if(parent.CMD_Component != undefined && parent.CMD_Component.length > 0) {
+    //           var newChildComps = [];
+    //           for(var i=0; i < parent.CMD_Component.length; i++) {
+    //             var parentCompChild = parent.CMD_Component[i];
+    //             if(parentCompChild.selected)
+    //               if(hasComp(parentCompChild.CMD_Component, compData.CMD_Component['@name']))
+    //                 alert(warningMsg);
+    //               else if(parentCompChild.CMD_Component != undefined)
+    //                 parentCompChild = update(parentCompChild, { $merge: { CMD_Component: update(parentCompChild.CMD_Component, { $push: [compData] }), open: true } });
+    //               else
+    //                 parentCompChild = update(parentCompChild, { $merge: { CMD_Component: [compData], open: true } });
+    //
+    //             newChildComps.push(checkInlineSelection(parentCompChild, data));
+    //           }
+    //
+    //           return update(parent, { CMD_Component: { $set: newChildComps } });
+    //         }
+    //
+    //         return parent;
+    //       };
+    //
+    //       for(var j=0; j < self.state.childComponents.length; j++) {
+    //         var comp = self.state.childComponents[j];
+    //         if(comp.selected)
+    //           if(hasComp(comp.CMD_Component, data.CMD_Component['@name']))
+    //             alert(warningMsg);
+    //           else if(comp.CMD_Component != undefined)
+    //               comp = update(comp, { $merge: { CMD_Component: update(comp.CMD_Component, { $push: [data] }), open: true } });
+    //           else comp = update(comp, { $merge: { CMD_Component: [data], open: true } });
+    //
+    //         comp = update(comp, { $apply: function(c) {
+    //             return checkInlineSelection(c, data);
+    //         } });
+    //
+    //         newComponents.push(comp);
+    //       }
+    //
+    //       self.setState({ childComponents: newComponents });
+    //     }
+    // });
   },
   addNewComponent: function(evt) {
-    var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
-    this.setState({ childComponents: components });
+    // var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
+    // this.setState({ childComponents: components });
   },
   updateAttribute: function(index, newAttr) {
-    console.log('attr update: ' + index);
-    var item = this.state.component || this.state.profile;
-    var attrSet = item.CMD_Component.AttributeList.Attribute;
-    attrSet[index] = newAttr;
-
-    if(this.state.profile != null)
-      this.setState({ profile: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
-    else if(this.state.component != null)
-      this.setState({ component: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
+    // console.log('attr update: ' + index);
+    // var item = this.state.component || this.state.profile;
+    // var attrSet = item.CMD_Component.AttributeList.Attribute;
+    // attrSet[index] = newAttr;
+    //
+    // if(this.state.profile != null)
+    //   this.setState({ profile: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
+    // else if(this.state.component != null)
+    //   this.setState({ component: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
   },
   updateElement: function(index, newElement) {
-    console.log('elem update: ' + index);
-    var childElements = this.state.childElements;
-    if(index >= 0 && index < childElements.length)
-      if((newElement.elemId == childElements[index].elemId) &&
-         (JSON.stringify(newElement) != JSON.stringify(childElements[index]))) {
-        childElements[index] = newElement;
-        this.setState({childElements: childElements});
-      }
+    // console.log('elem update: ' + index);
+    // var childElements = this.state.childElements;
+    // if(index >= 0 && index < childElements.length)
+    //   if((newElement.elemId == childElements[index].elemId) &&
+    //      (JSON.stringify(newElement) != JSON.stringify(childElements[index]))) {
+    //     childElements[index] = newElement;
+    //     this.setState({childElements: childElements});
+    //   }
   },
   updateInlineComponent: function(index, newComponent) {
-    console.log('inline update: ' + index);
-    var childComponents = this.state.childComponents;
-    if(index >= 0 && index < childComponents.length)
-      if(newComponent != null) this.setState({ childComponents: update(childComponents, { $splice: [[index, 1, newComponent]] }) });
+    // console.log('inline update: ' + index);
+    // var childComponents = this.state.childComponents;
+    // if(index >= 0 && index < childComponents.length)
+    //   if(newComponent != null) this.setState({ childComponents: update(childComponents, { $splice: [[index, 1, newComponent]] }) });
   },
   updateComponentSettings: function(index, newMin, newMax) {
-    console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
-
-    var childComponents = this.state.childComponents;
-    console.log('child to update: ' + JSON.stringify(childComponents[index]));
-
-    if(newMin != null)
-      this.setChildComponentProperty(childComponents[index], '@CardinalityMin', newMin);
-    if(newMax != null)
-      this.setChildComponentProperty(childComponents[index], '@CardinalityMax', newMax);
-
-    this.setState({childComponents: childComponents});
+    // console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
+    //
+    // var childComponents = this.state.childComponents;
+    // console.log('child to update: ' + JSON.stringify(childComponents[index]));
+    //
+    // if(newMin != null)
+    //   this.setChildComponentProperty(childComponents[index], '@CardinalityMin', newMin);
+    // if(newMax != null)
+    //   this.setChildComponentProperty(childComponents[index], '@CardinalityMax', newMax);
+    //
+    // this.setState({childComponents: childComponents});
   },
   setChildComponentProperty : function(childComp, prop, newValue) {
-    if(childComp == null)
-      return;
-
-    if(childComp.hasOwnProperty('prop'))
-      childComp[prop] = newValue;
-    if(childComp.Header != undefined && childComp.CMD_Component != undefined)
-      if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
-        childComp.CMD_Component[prop] = newValue;
+    // if(childComp == null)
+    //   return;
+    //
+    // if(childComp.hasOwnProperty('prop'))
+    //   childComp[prop] = newValue;
+    // if(childComp.Header != undefined && childComp.CMD_Component != undefined)
+    //   if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
+    //     childComp.CMD_Component[prop] = newValue;
   },
   showErrors: function(errors) {
     this.setState({errors: errors});
@@ -293,22 +293,22 @@ var ComponentViewer = React.createClass({
   //   if(JSON.stringify(this.props.item) != JSON.stringify(nextProps.item))
   //     this.setItemPropToState(nextProps.item);
   // },
-  // componentWillUpdate: function(nextProps, nextState) {
-  //   console.log(this.constructor.displayName, 'will update');
-  //   var self = this;
-  //   var newItem = nextState.profile||nextState.component;  //console.log('new item props: ' + JSON.stringify(newItem));
-  //   var prevItem = this.state.profile||this.state.component;
-  //
-  //   if(nextState.editMode && prevItem != null && !nextState.isEdited && JSON.stringify(newItem) != JSON.stringify(prevItem))
-  //     this.setState({ isEdited: true });
-  //
-  //   if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
-  //     if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
-  //       newItem = update(newItem, { CMD_Component: { AttributeList: { Attribute: { $set: [newItem.CMD_Component.AttributeList.Attribute] } }}});
-  //
-  //     this.parseComponent(newItem, nextState);
-  //   }
-  // },
+  componentWillUpdate: function(nextProps, nextState) {
+    console.log(this.constructor.displayName, 'will update');
+    var self = this;
+    var newItem = nextState.profile||nextState.component;  //console.log('new item props: ' + JSON.stringify(newItem));
+    var prevItem = this.state.profile||this.state.component;
+
+    if(nextState.editMode && prevItem != null && !nextState.isEdited && JSON.stringify(newItem) != JSON.stringify(prevItem))
+      this.setState({ isEdited: true });
+
+    if(newItem != null && nextState.childComponents == null && nextState.childElements == null) {
+      if(newItem.CMD_Component.AttributeList != undefined && !$.isArray(newItem.CMD_Component.AttributeList.Attribute))
+        newItem = update(newItem, { CMD_Component: { AttributeList: { Attribute: { $set: [newItem.CMD_Component.AttributeList.Attribute] } }}});
+  
+      this.parseComponent(newItem, nextState);
+    }
+  },
   // componentDidUpdate: function(prevProps, prevState) {
   //   var self = this;
   //
@@ -701,7 +701,7 @@ var ComponentViewer = React.createClass({
   },
   render: function() {
     var self = this;
-    var item = this.state.profile||this.state.component;
+    var item = this.props.spec;
     var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup ref="editorBtnGroup" mode="editor" { ...this.getBtnGroupProps() } /> : null;
 
     if(item == null)
