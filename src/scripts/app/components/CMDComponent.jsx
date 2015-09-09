@@ -4,8 +4,8 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var LinkedStateMixin = require('../mixins/LinkedStateMixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -19,10 +19,10 @@ var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 
-require('../../styles/CMDComponent.sass');
+require('../../../styles/CMDComponent.sass');
 
 /**
-* CMDComponent - view display and editing form for a CMDI Component item. 
+* CMDComponent - view display and editing form for a CMDI Component item.
 * @constructor
 * @mixes ImmutableRenderMixin
 * @mixes LinkedStateMixin

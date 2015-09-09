@@ -13,8 +13,7 @@ var TabPane = require('react-bootstrap/lib/TabPane');
 var Panel = require('react-bootstrap/lib/Panel');
 
 //components
-//TODO flux: Re-enable viewer
-//var ComponentViewer = require('./ComponentViewer');
+var ComponentViewer = require('./ComponentViewer');
 
 require('../../../styles/InfoPanel.sass');
 
@@ -56,11 +55,9 @@ var InfoPanel = React.createClass({
     if(item == null)
       return null;
     else
-        viewer = null;
-        //TODO flux: Re-enable viewer
-      // viewer = (
-      //   <ComponentViewer item={this.props.item} editMode={false} />
-      // );
+      viewer = (
+        <ComponentViewer item={this.props.item} editMode={false} />
+      );
 
     // comments form and submission
     var commentsForm = (this.context.loggedIn) ? (

@@ -5,11 +5,11 @@ var Router = require('react-router');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var LinkedStateMixin = require('../mixins/LinkedStateMixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
-var CompRegLoader = require('../mixins/Loader');
-var btnGroup = require('../mixins/BtnGroupEvents');
-var ValidationMixin = require('../mixins/ValidationMixin');
+var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+//var CompRegLoader = require('../mixins/Loader');
+var btnGroup = require('../../mixins/BtnGroupEvents');
+var ValidationMixin = require('../../mixins/ValidationMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -21,20 +21,20 @@ var Modal = require('react-bootstrap/lib/Modal');
 var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 
 //components
-var DataTablesGrid = require('./DataTablesGrid');
+var DataTablesGrid = require('./DataGrid');
 var SpaceSelector = require('./SpaceSelector');
 var CMDComponent = require('./CMDComponent');
 var CMDElement = require('./CMDElement');
 var CMDAttribute = require('./CMDAttribute');
 var EditorBtnGroup = require('./BtnMenuGroup');
-var EditorDialog = require('./EditorDialog');
+//TODO flux: var EditorDialog = require('./EditorDialog');
 
 //utils
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 
-require('../../styles/ComponentViewer.sass');
+require('../../../styles/ComponentViewer.sass');
 
 /**
 * ComponentViewer - view display and editing form for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
@@ -64,7 +64,8 @@ var ComponentViewer = React.createClass({
     router: React.PropTypes.func,
     loggedIn: React.PropTypes.bool.isRequired
   },
-  mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
+  //old (pre-flux) mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, CompRegLoader, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
+  mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
   getInitialState: function() {
     return { registry: { domainName: '', groupName: '' },
              profile: null,
@@ -82,7 +83,7 @@ var ComponentViewer = React.createClass({
   },
   getDefaultProps: function() {
     return {
-      domains: require('../domains.js')
+      domains: require('../../domains.js')
     };
   },
   setItemPropToState: function(item) {
@@ -373,9 +374,11 @@ var ComponentViewer = React.createClass({
   conceptRegistryBtn: function(container, target) {
     if(container == undefined) container = this;
     if(target == undefined) target = container;
-    return (
-      <EditorDialog type="ConceptRegistry" label="Search in concept registry..." container={container} target={target} />
-    );
+    //TODO flux:
+    // return (
+    //   <EditorDialog type="ConceptRegistry" label="Search in concept registry..." container={container} target={target} />
+    // );
+    return null;
   },
   updateConceptLink: function(newValue) {
     console.log('update concept link - root component/profile: ' + newValue);
@@ -704,6 +707,7 @@ var ComponentViewer = React.createClass({
             {rootComponent}
           </div>
           <div className="component-grid row">
+            {/* TODO flux: update props, see application.jsx */}
             <DataTablesGrid ref="grid" type="components" filter={this.state.editorComponents} multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode}>
               <SpaceSelector type="componentsOnly" filter={this.state.editorComponents} onSelect={this.switchEditorComponents} validUserSession={this.context.loggedIn} multiSelect={false} />
             </DataTablesGrid>

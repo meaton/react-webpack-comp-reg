@@ -3,9 +3,9 @@
 var React = require('react/addons');
 
 //mixins
-var LinkedStateMixin = require('../mixins/LinkedStateMixin');
+var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
