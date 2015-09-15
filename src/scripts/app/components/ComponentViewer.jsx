@@ -63,25 +63,28 @@ var ComponentViewer = React.createClass({
   propTypes: {
     item: React.PropTypes.object.isRequired,
     spec: React.PropTypes.object.isRequired,
-    editMode: React.PropTypes.bool.isRequired,
-    childElements: React.PropTypes.array,
-    childComponents: React.PropTypes.array,
+    editMode: React.PropTypes.bool.isRequired
+    //,childElements: React.PropTypes.array,
+    // childComponents: React.PropTypes.array,
   },
   contextTypes: {
     router: React.PropTypes.func,
     //TODO flux: auth context - loggedIn: React.PropTypes.bool.isRequired
   },
-  mixins: [ImmutableRenderMixin, LinkedStateMixin, btnGroup, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
-  getInitialState: function() {
-    return { registry: { domainName: '', groupName: '' },
-             childElements: null,
-             childComponents: null,
-             errors: null,
-             isSaved: false,
-             isEdited: false,
-             editorComponents: "published"
-    };
-  },
+  mixins: [
+    //ImmutableRenderMixin,
+    LinkedStateMixin,
+    btnGroup, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
+  // getInitialState: function() {
+  //   return { registry: { domainName: '', groupName: '' },
+  //            childElements: null,
+  //            childComponents: null,
+  //            errors: null,
+  //            isSaved: false,
+  //            isEdited: false,
+  //            editorComponents: "published"
+  //   };
+  // },
   getDefaultProps: function() {
     return {
       domains: require('../../domains.js')

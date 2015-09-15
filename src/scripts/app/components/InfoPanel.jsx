@@ -13,7 +13,7 @@ var TabPane = require('react-bootstrap/lib/TabPane');
 var Panel = require('react-bootstrap/lib/Panel');
 
 //components
-var ComponentViewer = require('./ComponentViewer');
+var ComponentSpecView = require('./ComponentSpecView');
 
 require('../../../styles/InfoPanel.sass');
 
@@ -56,7 +56,7 @@ var InfoPanel = React.createClass({
       return null;
     else
       viewer = (
-        <ComponentViewer item={item} spec={this.props.spec} editMode={false} />
+        <ComponentSpecView item={item} spec={this.props.spec} />
       );
 
     // comments form and submission
