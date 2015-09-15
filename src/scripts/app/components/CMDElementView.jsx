@@ -25,7 +25,7 @@ require('../../../styles/CMDElement.sass');
 * @mixes ImmutableRenderMixin
 * @mixes LinkedStateMixin
 */
-var CMDElement = React.createClass({
+var CMDElementView = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin],
 
   propTypes: {
@@ -99,4 +99,4 @@ var CMDElement = React.createClass({
   }
 });
 
-module.exports = CMDElement;
+module.exports = CMDElementView;
