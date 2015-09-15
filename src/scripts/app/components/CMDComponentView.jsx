@@ -11,7 +11,7 @@ var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDElementView = require('./CMDElementView');
-var CMDAttribute = require('./CMDAttribute');
+var CMDAttributeView = require('./CMDAttributeView');
 
 //utils
 var update = React.addons.update;
@@ -126,8 +126,9 @@ var CMDComponentView = React.createClass({
     var viewClasses = classNames('componentBody', { 'hide': !this.props.open });
     var componentClasses = classNames('CMDComponent', { 'open': this.props.open, 'selected': this.props.isSelected });
 
-    var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
-    var addAttrLink = null;
+    if(comp.AttributeList != undefined) {
+      var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
+    }
     var attrList = (
       <div className="attrList">AttributeList:
         {
@@ -135,10 +136,7 @@ var CMDComponentView = React.createClass({
           ? $.map(attrSet, function(attr, index) {
             var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
             attr.attrId = attrId;
-            return (
-              //TODO <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self.props.viewer, attr, self)} />
-              <span>{attrId}</span>
-            );
+            return <CMDAttributeView key={attrId} spec={attr} />
           })
           : <span> No Attributes</span>
         }

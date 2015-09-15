@@ -10,7 +10,7 @@ var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var Input = require('react-bootstrap/lib/Input');
 
 //components
-var CMDAttribute = require('./CMDAttribute');
+var CMDAttributeView = require('./CMDAttributeView');
 
 //utils
 var update = React.addons.update;
@@ -70,7 +70,9 @@ var CMDElementView = React.createClass({
 
     var valueScheme = "{valueScheme}";//TODO flux: this.props.viewer.getValueScheme(elem, this);
 
-    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+    if(elem.AttributeList != undefined) {
+      var attrSet = $.isArray(elem.AttributeList.Attribute) ? elem.AttributeList.Attribute : [elem.AttributeList.Attribute];
+    }
     if(elem.AttributeList != undefined) {
       attrList = (
         <div className="attrList">AttributeList:
@@ -79,8 +81,7 @@ var CMDElementView = React.createClass({
             $.map(attrSet, function(attr, index) {
               var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
               attr.attrId = attrId;
-              //TODO return <CMDAttribute key={attrId} attr={attr} value={self.props.viewer.getValueScheme.bind(self.props.viewer, attr, self)} />;
-              <span>{attrId}</span>
+              return <CMDAttributeView key={attrId} spec={attr} />
             }) : <span>No Attributes</span>
           }
         </div>);
