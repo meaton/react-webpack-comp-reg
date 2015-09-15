@@ -30,7 +30,11 @@ require('../../../styles/CMDComponent.sass');
 var CMDComponentView = React.createClass({
   mixins: [ImmutableRenderMixin, LinkedStateMixin],
   propTypes: {
+    /* specification object (CMD_Component) */
     spec: React.PropTypes.object.isRequired,
+    /* determines whether 'envelope' with properties should be hidden */
+    hideProperties: React.PropTypes.bool,
+    /* determines whether the component should be shown in expanded state */
     open: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
@@ -38,6 +42,7 @@ var CMDComponentView = React.createClass({
   },
   getDefaultProps: function() {
     return {
+      hideProperties: false,
       open: true,
       openAll: false,
       closeAll: false
@@ -143,17 +148,27 @@ var CMDComponentView = React.createClass({
       </div>
     );
 
-    return (
-      <div className={componentClasses}>
-        <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
-        <div className="componentProps">{compProps}</div>
-        <div className={viewClasses}>
-          {attrList}
-          <div className="childElements">{compElems}</div>
-          <div ref="components" className="childComponents">{compComps}</div>
-        </div>
+    var children = (
+      <div className={viewClasses}>
+        {attrList}
+        <div className="childElements">{compElems}</div>
+        <div ref="components" className="childComponents">{compComps}</div>
       </div>
     );
+
+    if(this.props.hideProperties) {
+      //skip 'envelope', only show child components, elements, attributes
+      return children;
+    } else {
+      // envelope with properties and children
+      return (
+        <div className={componentClasses}>
+          <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
+          <div className="componentProps">{compProps}</div>
+          {children}
+        </div>
+      );
+    }
   }
 });
 

@@ -79,7 +79,7 @@ var ComponentSpec = React.createClass({
                 {conceptLink}
               </ul>
             </div>
-            <CMDComponentView spec={item.CMD_Component} />
+            <CMDComponentView spec={item.CMD_Component} hideProperties={true} />
           </div>
         );
     }
