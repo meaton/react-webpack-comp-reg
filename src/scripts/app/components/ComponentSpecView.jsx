@@ -54,7 +54,7 @@ var ComponentSpec = React.createClass({
       domains: require('../../domains.js')
     };
   },
-
+//TODO flux: get rid of 'parsing' (in this component)
   componentWillUpdate: function(nextProps, nextState) {
     console.log(this.constructor.displayName, 'will update');
     var self = this;
