@@ -23,8 +23,6 @@ var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 var DataTablesGrid = require('./DataGrid');
 var SpaceSelector = require('./SpaceSelector');
 var CMDComponentView = require('./CMDComponentView');
-var CMDElement = require('./CMDElement');
-var CMDAttribute = require('./CMDAttribute');
 
 //utils
 var update = React.addons.update;
@@ -49,6 +47,7 @@ var ComponentSpec = React.createClass({
   propTypes: {
     item: React.PropTypes.object.isRequired,
     spec: React.PropTypes.object.isRequired
+    //TODO: property to skip header (for root component)
   },
   contextTypes: {
     router: React.PropTypes.func,

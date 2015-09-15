@@ -10,7 +10,7 @@ var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var Input = require('react-bootstrap/lib/Input');
 
 //components
-var CMDElement = require('./CMDElement');
+var CMDElementView = require('./CMDElementView');
 var CMDAttribute = require('./CMDAttribute');
 
 //utils
@@ -37,13 +37,23 @@ var CMDComponentView = React.createClass({
     key: React.PropTypes.string
   },
   getDefaultProps: function() {
-      return {
-        open: true,
-        openAll: false,
-        closeAll: false
-      };
-    },
-
+    return {
+      open: true,
+      openAll: false,
+      closeAll: false
+    };
+  },
+  toggleComponent: function(evt) {
+    //TODO flux: action
+    // console.log('toggle component: ' + JSON.stringify(this.state.component));
+    // if((!this.state.component.hasOwnProperty('open') || !this.state.component.open) &&
+    //    this.state.component.hasOwnProperty('@ComponentId') && this.state.component.Header == undefined)
+    //    this.loadComponentData();
+    // else {
+    //   var isOpen = (this.state.component.hasOwnProperty('open')) ? !this.state.component.open : true;
+    //   this.setState({ component: update(this.state.component, { open: { $set: isOpen }}) });
+    // }
+  },
   render: function () {
     var self = this;
     var comp = this.props.spec;
@@ -81,8 +91,7 @@ var CMDComponentView = React.createClass({
         console.log('found elem (' + index + '): ' + elem);
         var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
         elem.elemId = elemId;
-        //TODO return <CMDElementView key={elemId} spec="elem" />
-        return <span>{elemId}</span>
+        return <CMDElementView key={elemId} spec={elem} />
       });
 
     if(!this.props.open && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
