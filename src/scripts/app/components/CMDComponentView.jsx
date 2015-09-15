@@ -43,29 +43,8 @@ var CMDComponentView = React.createClass({
         closeAll: false
       };
     },
-  getInitialState: function() {
-    return {
-            //  component: this.props.component,
-            //  componentName: (this.props.component.Header != undefined) ? this.props.component.Header.Name : null,
-            //  editMode: (this.props.editMode != undefined) ? this.props.editMode : false,
-            //  isInline: false,
-            //  isSelected: (this.props.component.selected != undefined) ? this.props.component.selected : false
-          };
-  },
-  toggleComponent: function(evt) {
-    // console.log('toggle component: ' + JSON.stringify(this.props.spec));
-    // if((!this.state.component.hasOwnProperty('open') || !this.state.component.open) &&
-    //    this.state.component.hasOwnProperty('@ComponentId') && this.state.component.Header == undefined)
-    //    this.loadComponentData();
-    // else {
-    //   var isOpen = (this.state.component.hasOwnProperty('open')) ? !this.state.component.open : true;
-    //   this.setState({ component: update(this.state.component, { open: { $set: isOpen }}) });
-    // }
-  },
 
   render: function () {
-    //console.log('comp inspect: ' + require('util').inspect(this.state.component, { showHidden: true, depth: null}));
-
     var self = this;
     var comp = this.props.spec;
 
@@ -90,9 +69,6 @@ var CMDComponentView = React.createClass({
 
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
-
-    // console.log('comp header: ', (header != undefined) ? JSON.stringify(header) : 'none');
-    // console.log('open: ', (this.state.component.open != undefined) ? this.state.component.open : 'false');
 
     var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
     var compElems = comp.CMD_Element;
@@ -143,7 +119,6 @@ var CMDComponentView = React.createClass({
 
     var attrSet = (comp.AttributeList != undefined && $.isArray(comp.AttributeList.Attribute)) ? comp.AttributeList.Attribute : comp.AttributeList;
     var addAttrLink = null;
-    //var selectionLink = (this.state.isInline) ? <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div> : null;
     var attrList = (
       <div className="attrList">AttributeList:
         {
@@ -173,81 +148,6 @@ var CMDComponentView = React.createClass({
       </div>
     );
   }
-  // componentWillReceiveProps: function(nextProps) {
-  //   console.log(this.constructor.displayName, 'will received new props');
-  //
-  //   var component = this.state.component;
-  //   //console.log('component props: ' + JSON.stringify(nextProps.component));
-  //
-  //   if(this.state.isInline &&
-  //      ((nextProps.component.open && nextProps.component.selected) ||
-  //       JSON.stringify(this.state.component) != JSON.stringify(nextProps.component))) // TODO require state update if new component added to nested inline child
-  //     this.setState({ component: update(nextProps.component, { open: { $set: (this.state.component != nextProps.component.open) ? nextProps.component.open : true } }) });
-  //   else if(nextProps.component.hasOwnProperty('open') && (this.state.component.open != nextProps.component.open)) { // open/close all
-  //     component = update(component, { open: { $set: nextProps.component.open }});
-  //     this.setState({ component: component });
-  //   }
-  // },
-  // componentWillMount: function() {
-  //   console.log(this.constructor.displayName, 'will mount');
-  //
-  //   var comp = this.state.component;
-  //   if(!comp.hasOwnProperty("@ComponentId") && comp.Header != undefined)
-  //     comp = comp.CMD_Component;
-  //
-  //   if(!comp.hasOwnProperty("@CardinalityMin")) comp = update(comp, { '@CardinalityMin': { $set: 1 } });
-  //   if(!comp.hasOwnProperty("@CardinalityMax")) comp = update(comp, { '@CardinalityMax': { $set:  1 } });
-  //
-  //   if(!comp.hasOwnProperty("@CardinalityMin") || !comp.hasOwnProperty("@CardinalityMax"))
-  //     this.setState({ component: update(this.state.component, { CMD_Component: { $set: comp } }) });
-  // },
-  // componentDidMount: function() {
-  //   console.log(this.constructor.displayName, 'did mount');
-  //
-  //   var self = this;
-  //   var component = this.state.component;
-  //
-  //   //TODO review single-object to array conversion - immutable data method
-  //   if(component.CMD_Element != undefined && !$.isArray(component.CMD_Element)) {
-  //     component.CMD_Element = [component.CMD_Element];
-  //     //component = update(component, { CMD_Element: { $set: [component.CMD_Element] } });
-  //   }
-  //
-  //   if(component.CMD_Component != undefined && !$.isArray(component.CMD_Component)) {
-  //     if(component.Header == undefined)
-  //       component.CMD_Component = [component.CMD_Component];
-  //       //component = update(component, { CMD_Component: { $set: [component.CMD_Component] } });
-  //     else if(component.CMD_Component.CMD_Element != undefined && !$.isArray(component.CMD_Component.CMD_Element))
-  //       component.CMD_Component.CMD_Element = [component.CMD_Component.CMD_Element];
-  //       //component = update(component, { CMD_Component: { CMD_Element: { $set: [component.CMD_Component.CMD_Element] } }});
-  //   }
-  //
-  //   if(component.AttributeList != undefined && !$.isArray(component.AttributeList.Attribute)) {
-  //     component = update(component, { AttributeList: { Attribute: { $set: [component.AttributeList.Attribute]} }});
-  //   } else if($.isArray(component.AttributeList))
-  //     component = update(component, { AttributeList: { Attribute: { $set: component.AttributeList } }});
-  //
-  //   if(!component.hasOwnProperty("@ComponentId") && component.inlineId != undefined)
-  //       this.setState({ isInline: true, component: update(component, { open: { $set: true }}) }, function() {
-  //         self.props.onInlineUpdate(component);
-  //       });
-  //   else
-  //     this.setState({ component: component });
-  //
-  //   //console.log('mounted component: ' + JSON.stringify(component));
-  // },
-  // componentDidUpdate: function(prevProps, prevState) {
-  //   console.log(this.constructor.displayName, 'did update: ', (this.state.isInline) ? this.state.component.inlineId : this.state.component['@ComponentId']);
-  //
-  //   var self = this;
-  //   if(!this.state.isInline && this.state.componentName == null && this.state.component.Header == undefined)
-  //     this.props.viewer.getItemName(this.state.component['@ComponentId'], function(name) {
-  //       self.setState({ component: update(self.state.component, { $merge: { "@name": name } }), componentName: name }, function() {
-  //         if(self.props.updateParent != undefined) self.props.updateParent(self.state.component);
-  //       });
-  //     });
-  // },
-
 });
 
 module.exports = CMDComponentView;
