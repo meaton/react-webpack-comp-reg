@@ -10,6 +10,9 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
+//components
+var ValueScheme = require('./ValueScheme');
+
 //require('../../styles/CMDAttribute.sass');
 
 /**
@@ -37,7 +40,7 @@ var CMDAttributeView = React.createClass({
   },
   render: function () {
     var attr = this.props.spec;
-    var attr_val = "{ValueScheme}"; //TODO flux
+    var attr_val = <ValueScheme obj={attr} enabled={false} />
     return (
       <div className="attrAttr">
         {attr.Name} {attr_val}

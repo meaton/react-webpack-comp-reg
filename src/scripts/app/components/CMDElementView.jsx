@@ -11,6 +11,7 @@ var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDAttributeView = require('./CMDAttributeView');
+var ValueScheme = require('./ValueScheme');
 
 //utils
 var update = React.addons.update;
@@ -68,7 +69,7 @@ var CMDElementView = React.createClass({
     var elemInspect = elem.elemId; // require('util').inspect(elem);
     console.log('rendering element: ',  elemInspect);
 
-    var valueScheme = "{valueScheme}";//TODO flux: this.props.viewer.getValueScheme(elem, this);
+    var valueScheme = <ValueScheme obj={elem} enabled={false} />
 
     if(elem.AttributeList != undefined) {
       var attrSet = $.isArray(elem.AttributeList.Attribute) ? elem.AttributeList.Attribute : [elem.AttributeList.Attribute];

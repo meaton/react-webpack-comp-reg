@@ -66,7 +66,7 @@ var CMDComponentView = React.createClass({
     else
       compId = null;
 
-    console.log('render', this.constructor.displayName, (compId != null) ? compId : 'inline');
+    //console.log('render', this.constructor.displayName, (compId != null) ? compId : 'inline');
 
     var header = comp.Header;
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
@@ -88,7 +88,7 @@ var CMDComponentView = React.createClass({
 
     if(compElems != undefined)
       compElems = compElems.map(function(elem, index) {
-        console.log('found elem (' + index + '): ' + elem);
+        //console.log('found elem (' + index + '): ' + elem);
         var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
         elem.elemId = elemId;
         return <CMDElementView key={elemId} spec={elem} />
@@ -106,7 +106,7 @@ var CMDComponentView = React.createClass({
 
     if(compComps != undefined)
       compComps = compComps.map(function(nestedComp, ncindex) {
-        console.log('found component (' + ncindex + '): ' + nestedComp);
+        //console.log('found component (' + ncindex + '): ' + nestedComp);
 
         var compId;
         if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
@@ -117,7 +117,7 @@ var CMDComponentView = React.createClass({
         if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
           newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
 
-        console.log('compId: ' + compId);
+        //console.log('compId: ' + compId);
 
         return <CMDComponentView key={compId} parent={self.props.spec} spec={nestedComp} />
       });
