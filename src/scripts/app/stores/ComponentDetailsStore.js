@@ -46,7 +46,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.loading = false;
     this.spec = spec;
     this.activeView = Constants.INFO_VIEW_SPEC;
-    this.expansionState = {expanded: true, children: {}}; //expand root
+    this.expansionState = {root: true};
     this.emit("change");
   },
 
@@ -65,13 +65,12 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleToggleItemExpansion: function(parentState, itemId) {
-    console.log("Toggle " + itemId + " in " + parentState);
-    if(ExpansionState.isChildExpanded(parentState, itemId)) {
-      ExpansionState.setChildState(parentState, itemId, true);
-    } else {
-      ExpansionState.setChildState(parentState, itemId, false);
-    }
+  handleToggleItemExpansion: function(itemId) {
+    console.log("Toggle " + itemId);
+    var currentState = ExpansionState.isExpanded(this.expansionState, itemId);
+    console.log("Current state: " + currentState);
+    this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
+    console.log("Expansion state: " + JSON.stringify(this.expansionState));
     this.emit("change");
   }
 

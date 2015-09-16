@@ -50,12 +50,10 @@ var CMDComponentView = React.createClass({
       closeAll: false
     };
   },
-  toggleComponent: function(itemId) {
-    this.props.onToggle(this.props.expansionState, itemId);
+  toggleComponent: function() {
+    this.props.onToggle(this.props.appId);
   },
   render: function () {
-    console.log("expansionState: " + JSON.stringify(this.props.expansionState))
-
     var self = this;
     var props = this.props;
     var comp = this.props.spec;
@@ -124,14 +122,12 @@ var CMDComponentView = React.createClass({
         var appId = props.appId + "_" + compId;
 
         // forward child expansion state
-        var childExpansionState = ExpansionState.getChildState(props.expansionState, appId);
-
         return <CMDComponentView
           appId={appId}
           key={compId}
-          parent={self.props.spec}
           spec={nestedComp}
-          expansionState={childExpansionState}
+          parent={props.spec}
+          expansionState={props.expansionState}
           onToggle={props.onToggle}
           />
       });
@@ -189,7 +185,7 @@ var CMDComponentView = React.createClass({
   },
 
   isOpen: function() {
-    return ExpansionState.isExpanded(this.props.expansionState);
+    return ExpansionState.isExpanded(this.props.expansionState, this.props.appId);
   }
 });
 
