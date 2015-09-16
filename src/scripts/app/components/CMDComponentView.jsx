@@ -61,6 +61,11 @@ var CMDComponentView = React.createClass({
     var appId = this.props.appId + "_" + elemId;
     return <CMDElementView appId={appId} key={elemId} spec={elem} />
   },
+  renderAttribute: function(attr, index) {
+    var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
+    attr.attrId = attrId;
+    return <CMDAttributeView key={attrId} spec={attr} />
+  },
   renderNestedComponent: function(nestedComp, ncindex) {
     var compId;
     if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
@@ -155,11 +160,7 @@ var CMDComponentView = React.createClass({
       <div className="attrList">AttributeList:
         {
           (attrSet != undefined && attrSet.length > 0)
-          ? $.map(attrSet, function(attr, index) {
-            var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
-            attr.attrId = attrId;
-            return <CMDAttributeView key={attrId} spec={attr} />
-          })
+          ? $.map(attrSet, self.renderAttribute)
           : <span> No Attributes</span>
         }
       </div>
