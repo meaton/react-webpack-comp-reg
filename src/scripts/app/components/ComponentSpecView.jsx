@@ -33,8 +33,9 @@ require('../../../styles/ComponentViewer.sass');
 var ComponentSpec = React.createClass({
   propTypes: {
     item: React.PropTypes.object.isRequired,
-    spec: React.PropTypes.object.isRequired
-    //TODO: property to skip header (for root component)
+    spec: React.PropTypes.object.isRequired,
+    expansionState: React.PropTypes.object,
+    onComponentToggle: React.PropTypes.func
   },
   contextTypes: {
     router: React.PropTypes.func,
@@ -54,7 +55,6 @@ var ComponentSpec = React.createClass({
       domains: require('../../domains.js')
     };
   },
-
   render: function() {
     var item = this.props.spec;
 
@@ -79,7 +79,13 @@ var ComponentSpec = React.createClass({
                 {conceptLink}
               </ul>
             </div>
-            <CMDComponentView spec={item.CMD_Component} hideProperties={true} />
+            <CMDComponentView
+              appId="root"
+              spec={item.CMD_Component}
+              hideProperties={true}
+              onToggle={this.props.onComponentToggle}
+              expansionState={this.props.expansionState}
+              />
           </div>
         );
     }

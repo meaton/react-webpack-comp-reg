@@ -29,7 +29,9 @@ var InfoPanel = React.createClass({
     loadSpecXml: React.PropTypes.func.isRequired,
     spec: React.PropTypes.object,
     specXml: React.PropTypes.string,
-    comments: React.PropTypes.array.isRequired
+    comments: React.PropTypes.array.isRequired,
+    expansionState: React.PropTypes.object.isRequired,
+    onComponentToggle: React.PropTypes.func
   },
 
   tabSelect: function(index) {
@@ -45,8 +47,6 @@ var InfoPanel = React.createClass({
       //TODO
     }
   },
-
-
   render: function () {
     var item = this.props.item;
     var xmlElement = null;
@@ -56,7 +56,12 @@ var InfoPanel = React.createClass({
       return null;
     else
       viewer = (
-        <ComponentSpecView item={item} spec={this.props.spec} />
+        <ComponentSpecView
+          item={item}
+          spec={this.props.spec}
+          onComponentToggle={this.props.onComponentToggle}
+          expansionState={this.props.expansionState}
+          />
       );
 
     // comments form and submission

@@ -34,7 +34,9 @@ var CMDElementView = React.createClass({
     open: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
-    key: React.PropTypes.string
+    key: React.PropTypes.string,
+    appId: React.PropTypes.string,
+    expansionState: React.PropTypes.object
   },
   getDefaultProps: function() {
     return {

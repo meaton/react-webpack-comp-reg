@@ -17,6 +17,9 @@ module.exports = {
   LOAD_COMMENTS_SUCCESS: "LOAD_COMMENTS_SUCCESS",
   LOAD_COMMENTS_FAILURE: "LOAD_COMMENTS_FAILURE",
 
+  /* component view */
+  TOGGLE_ITEM_EXPANSION: "TOGGLE_ITEM_EXPANSION",
+
   /* start editing an item */
   EDIT_ITEM: "EDIT_ITEM",
   /* toggle item selection in the browser */

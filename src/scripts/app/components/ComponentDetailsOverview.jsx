@@ -39,9 +39,11 @@ var ComponentDetailsOverview = React.createClass({
   loadXml: function () {
     this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
   },
+  toggleComponent: function(parentState, itemId) {
+    this.getFlux().actions.toggleItemExpansion(parentState, itemId);
+  },
 
   render: function() {
-
     var hideClass = (this.props.item != null) ? "show" : "hide";
     var infoPanel = (this.props.item != null) ?
       <InfoPanel  item={this.props.item}
@@ -53,6 +55,8 @@ var ComponentDetailsOverview = React.createClass({
                   loadSpec={this.loadSpec}
                   loadSpecXml={this.loadXml}
                   className={this.state.details.loading?" wait":""}
+                  expansionState={this.state.details.expansionState}
+                  onComponentToggle={this.toggleComponent}
       />
       : null;
 

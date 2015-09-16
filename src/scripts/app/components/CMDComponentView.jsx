@@ -13,6 +13,9 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
 
+//helpers
+var ExpansionState = require('../service/ExpansionState');
+
 //utils
 var update = React.addons.update;
 var classNames = require('classnames');
@@ -34,33 +37,27 @@ var CMDComponentView = React.createClass({
     spec: React.PropTypes.object.isRequired,
     /* determines whether 'envelope' with properties should be hidden */
     hideProperties: React.PropTypes.bool,
-    /* determines whether the component should be shown in expanded state */
-    open: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
-    key: React.PropTypes.string
+    appId: React.PropTypes.string,
+    expansionState: React.PropTypes.object,
+    onToggle: React.PropTypes.func
   },
   getDefaultProps: function() {
     return {
       hideProperties: false,
-      open: true,
       openAll: false,
       closeAll: false
     };
   },
-  toggleComponent: function(evt) {
-    //TODO flux: action
-    // console.log('toggle component: ' + JSON.stringify(this.state.component));
-    // if((!this.state.component.hasOwnProperty('open') || !this.state.component.open) &&
-    //    this.state.component.hasOwnProperty('@ComponentId') && this.state.component.Header == undefined)
-    //    this.loadComponentData();
-    // else {
-    //   var isOpen = (this.state.component.hasOwnProperty('open')) ? !this.state.component.open : true;
-    //   this.setState({ component: update(this.state.component, { open: { $set: isOpen }}) });
-    // }
+  toggleComponent: function(itemId) {
+    this.props.onToggle(this.props.expansionState, itemId);
   },
   render: function () {
+    console.log("expansionState: " + JSON.stringify(this.props.expansionState))
+
     var self = this;
+    var props = this.props;
     var comp = this.props.spec;
 
     var compId;
@@ -96,10 +93,11 @@ var CMDComponentView = React.createClass({
         //console.log('found elem (' + index + '): ' + elem);
         var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
         elem.elemId = elemId;
-        return <CMDElementView key={elemId} spec={elem} />
+        var appId = self.props.appId + "_" + elemId;
+        return <CMDElementView appId={appId} key={elemId} spec={elem} />
       });
 
-    if(!this.props.open && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
+    if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
        compName = this.props.componentName;
     else if(comp.hasOwnProperty("@name"))
       compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
@@ -122,14 +120,25 @@ var CMDComponentView = React.createClass({
         if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
           newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
 
-        //console.log('compId: ' + compId);
+        // id for the child (to look up expansion)
+        var appId = props.appId + "_" + compId;
 
-        return <CMDComponentView key={compId} parent={self.props.spec} spec={nestedComp} />
+        // forward child expansion state
+        var childExpansionState = ExpansionState.getChildState(props.expansionState, appId);
+
+        return <CMDComponentView
+          appId={appId}
+          key={compId}
+          parent={self.props.spec}
+          spec={nestedComp}
+          expansionState={childExpansionState}
+          onToggle={props.onToggle}
+          />
       });
 
     // classNames
-    var viewClasses = classNames('componentBody', { 'hide': !this.props.open });
-    var componentClasses = classNames('CMDComponent', { 'open': this.props.open, 'selected': this.props.isSelected });
+    var viewClasses = classNames('componentBody', { 'hide': !self.isOpen() });
+    var componentClasses = classNames('CMDComponent', { 'open': self.isOpen(), 'selected': this.props.isSelected });
 
     if(comp.AttributeList != undefined) {
       var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
@@ -156,19 +165,31 @@ var CMDComponentView = React.createClass({
       </div>
     );
 
-    if(this.props.hideProperties) {
-      //skip 'envelope', only show child components, elements, attributes
-      return children;
+    var title = (
+      <div><span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a></div>
+    );
+
+    if(!self.isOpen()) {
+      return title;
     } else {
-      // envelope with properties and children
-      return (
-        <div className={componentClasses}>
-          <span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a>
-          <div className="componentProps">{compProps}</div>
-          {children}
-        </div>
-      );
+      if(this.props.hideProperties) {
+        //skip 'envelope', only show child components, elements, attributes
+        return children;
+      } else {
+        // envelope with properties and children
+        return (
+          <div className={componentClasses}>
+            {title}
+            <div className="componentProps">{compProps}</div>
+            {children}
+          </div>
+        );
+      }
     }
+  },
+
+  isOpen: function() {
+    return ExpansionState.isExpanded(this.props.expansionState);
   }
 });
 

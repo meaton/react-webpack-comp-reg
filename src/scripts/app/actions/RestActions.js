@@ -22,6 +22,9 @@ module.exports = {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     ComponentRegistryClient.loadSpec(type, space, item.id, "json", function(spec){
         // success
+
+        //TODO: augment spec with IDs?
+
         this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, spec);
       }.bind(this),
       function(message) {

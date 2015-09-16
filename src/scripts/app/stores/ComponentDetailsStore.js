@@ -1,5 +1,6 @@
 var Fluxxor = require("fluxxor"),
-    Constants = require("../constants");
+    Constants = require("../constants"),
+    ExpansionState = require("../service/ExpansionState");
 
 var ComponentSpecStore = Fluxxor.createStore({
   initialize: function(options) {
@@ -9,12 +10,14 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.comments = [];
     this.errorMessage = null;
     this.activeView = Constants.INFO_VIEW_SPEC;
+    this.expansionState = {expanded: true};
 
     this.bindActions(
       Constants.LOAD_COMPONENT_SPEC, this.handleLoadSpec,
       Constants.LOAD_COMPONENT_SPEC_SUCCES, this.handleLoadSpecSuccess,
       Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, this.handleLoadSpecXmlSuccess,
-      Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure
+      Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
+      Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion
       //TODO: comments
     );
   },
@@ -26,7 +29,8 @@ var ComponentSpecStore = Fluxxor.createStore({
       spec: this.spec,
       xml: this.xml,
       comments: this.comments,
-      errorMessage: this.errorMessage
+      errorMessage: this.errorMessage,
+      expansionState: this.expansionState
     };
   },
 
@@ -42,6 +46,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.loading = false;
     this.spec = spec;
     this.activeView = Constants.INFO_VIEW_SPEC;
+    this.expansionState = {expanded: true, children: {}}; //expand root
     this.emit("change");
   },
 
@@ -57,6 +62,16 @@ var ComponentSpecStore = Fluxxor.createStore({
     // loading failed (XML or JSON)
     this.loading = false;
     this.errorMessage = message;
+    this.emit("change");
+  },
+
+  handleToggleItemExpansion: function(parentState, itemId) {
+    console.log("Toggle " + itemId + " in " + parentState);
+    if(ExpansionState.isChildExpanded(parentState, itemId)) {
+      ExpansionState.setChildState(parentState, itemId, true);
+    } else {
+      ExpansionState.setChildState(parentState, itemId, false);
+    }
     this.emit("change");
   }
 
