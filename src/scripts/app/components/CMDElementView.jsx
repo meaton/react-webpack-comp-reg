@@ -69,7 +69,6 @@ var CMDElementView = React.createClass({
 
     var elem = this.props.spec;
     var elemInspect = elem.elemId; // require('util').inspect(elem);
-    console.log('rendering element: ',  elemInspect);
 
     var valueScheme = <ValueScheme obj={elem} enabled={false} />
 

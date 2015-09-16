@@ -30,7 +30,7 @@ var ComponentSpecStore = Fluxxor.createStore({
       xml: this.xml,
       comments: this.comments,
       errorMessage: this.errorMessage,
-      expansionState: this.expansionState
+      expansionState: this.expansionState // object that has a boolean value for each component 'appId' to indicate expansion
     };
   },
 
@@ -66,11 +66,9 @@ var ComponentSpecStore = Fluxxor.createStore({
   },
 
   handleToggleItemExpansion: function(itemId) {
-    console.log("Toggle " + itemId);
+    // toggle boolean value in expansion state object (default when undefined is false)
     var currentState = ExpansionState.isExpanded(this.expansionState, itemId);
-    console.log("Current state: " + currentState);
     this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
-    console.log("Expansion state: " + JSON.stringify(this.expansionState));
     this.emit("change");
   }
 
