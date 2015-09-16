@@ -32,9 +32,7 @@ var ValueScheme = React.createClass({
 
   render: function() {
       var obj=this.props.obj;
-      console.log("rendering value scheme for " + obj.Name);
       var valueScheme = obj['@ValueScheme'];
-      console.log(typeof valueScheme);
 
       if(typeof valueScheme != "string") {
         valueScheme = obj.ValueScheme;
