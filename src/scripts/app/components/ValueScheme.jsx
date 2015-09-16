@@ -63,8 +63,6 @@ var ValueScheme = React.createClass({
             valueScheme = obj.Type;
       }
 
-      console.log("Value scheme: " + valueScheme);
-
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" readOnly />;
   }
 });
