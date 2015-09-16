@@ -26,10 +26,10 @@ window.flux = flux;
 /* Logging */
 
 // global log level
-log.setLevel("debug");
+log.setLevel("info");
 
 // register on dispatch events
-if(log.getLevel() == log.levels.DEBUG) {
+if(log.getLevel() <= log.levels.DEBUG) {
   log.info("Logging Flux events at debug level");
   flux.on("dispatch", function(type, payload) {
     if (console && console.log) {
@@ -41,4 +41,4 @@ if(log.getLevel() == log.levels.DEBUG) {
 /* Done! */
 React.render(<Application flux={flux} />, document.getElementById("app"));
 
-log.info("Application started")
+log.info("Application started");
