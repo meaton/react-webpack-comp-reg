@@ -10,7 +10,8 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.comments = [];
     this.errorMessage = null;
     this.activeView = Constants.INFO_VIEW_SPEC;
-    this.expansionState = {expanded: true};
+    this.expansionState = {};
+    this.linkedComponents = {};
 
     this.bindActions(
       Constants.LOAD_COMPONENT_SPEC, this.handleLoadSpec,
@@ -41,12 +42,22 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleLoadSpecSuccess: function(spec) {
+  handleLoadSpecSuccess: function(spec, linkedComponents) {
     // JSON spec loaded
     this.loading = false;
     this.spec = spec;
+
+    // reset view state
     this.activeView = Constants.INFO_VIEW_SPEC;
+    // reset expansion state
     this.expansionState = {root: true};
+    // reset linked components state
+    if(linkedComponents == undefined) {
+      this.linkedComponents = {};
+    } else {
+      this.linkedComponents = linkedComponents;
+    }
+
     this.emit("change");
   },
 
