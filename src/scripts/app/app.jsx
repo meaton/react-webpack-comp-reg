@@ -1,3 +1,5 @@
+var log = require('loglevel');
+
 var React = require("react"),
     Fluxxor = require("fluxxor");
 
@@ -11,6 +13,7 @@ var Application = require("./components/application.jsx"),
 require('../../styles/main.css');
 require('../../styles/normalize.css');
 
+/* Flux */
 var stores = {
   BrowserItemsStore: new BrowserItemsStore(),
   BrowserSelectionStore: new BrowserSelectionStore(),
@@ -20,10 +23,22 @@ var stores = {
 var flux = new Fluxxor.Flux(stores, actions);
 window.flux = flux;
 
-flux.on("dispatch", function(type, payload) {
-  if (console && console.log) {
-    console.log("[Dispatch]", type, payload);
-  }
-});
+/* Logging */
 
+// global log level
+log.setLevel("debug");
+
+// register on dispatch events
+if(log.getLevel() == log.levels.DEBUG) {
+  log.info("Logging Flux events at debug level");
+  flux.on("dispatch", function(type, payload) {
+    if (console && console.log) {
+      log.debug("[Dispatch]", type, payload);
+    }
+  });
+}
+
+/* Done! */
 React.render(<Application flux={flux} />, document.getElementById("app"));
+
+log.info("Application started")

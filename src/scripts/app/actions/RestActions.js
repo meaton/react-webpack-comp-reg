@@ -1,3 +1,5 @@
+var log = require('loglevel');
+
 var Constants = require("../constants"),
     /* mock */
     // ComponentRegistryClient = require("./service/ComponentRegistryMockClient")
@@ -43,7 +45,7 @@ function loadComponentsById(ids, space, collected, callback) {
   } else {
     // load current id
     ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENTS, space, id, "json", function(spec){
-        console.log("Loaded " + id + ": " + spec.Header.Name);
+        log.debug("Loaded " + id + ": " + spec.Header.Name);
         //success
         collected[id] = spec;
         // proceed
@@ -51,7 +53,7 @@ function loadComponentsById(ids, space, collected, callback) {
       },
       function(message) {
         // failure
-        console.log("FAILED to load child component with id " + id + ": " + message);
+        log.warn("Failed to load child component with id " + id + ": " + message);
         // proceed (nothing added)
         loadComponentsById(ids, space, collected, callback);
       }
