@@ -35,6 +35,7 @@ var ComponentSpec = React.createClass({
     item: React.PropTypes.object.isRequired,
     spec: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
+    linkedComponents: React.PropTypes.object,
     onComponentToggle: React.PropTypes.func
   },
   contextTypes: {
@@ -85,6 +86,7 @@ var ComponentSpec = React.createClass({
               hideProperties={true}
               onToggle={this.props.onComponentToggle}
               expansionState={this.props.expansionState}
+              linkedComponents={this.props.linkedComponents}
               />
           </div>
         );

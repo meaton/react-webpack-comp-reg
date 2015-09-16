@@ -56,6 +56,7 @@ var ComponentDetailsOverview = React.createClass({
                   loadSpecXml={this.loadXml}
                   className={this.state.details.loading?" wait":""}
                   expansionState={this.state.details.expansionState}
+                  linkedComponents={this.state.details.linkedComponents}
                   onComponentToggle={this.toggleComponent}
       />
       : null;

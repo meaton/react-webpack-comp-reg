@@ -31,7 +31,8 @@ var ComponentSpecStore = Fluxxor.createStore({
       xml: this.xml,
       comments: this.comments,
       errorMessage: this.errorMessage,
-      expansionState: this.expansionState // object that has a boolean value for each component 'appId' to indicate expansion
+      expansionState: this.expansionState, // object that has a boolean value for each component 'appId' to indicate expansion
+      linkedComponents : this.linkedComponents
     };
   },
 
@@ -42,7 +43,10 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleLoadSpecSuccess: function(spec, linkedComponents) {
+  handleLoadSpecSuccess: function(result) {
+    var spec = result.spec;
+    var linkedComponents = result.linkedComponents;
+
     // JSON spec loaded
     this.loading = false;
     this.spec = spec;

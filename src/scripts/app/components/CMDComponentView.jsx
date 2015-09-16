@@ -41,6 +41,7 @@ var CMDComponentView = React.createClass({
     closeAll: React.PropTypes.bool,
     appId: React.PropTypes.string,
     expansionState: React.PropTypes.object,
+    linkedComponents: React.PropTypes.object,
     onToggle: React.PropTypes.func
   },
   getDefaultProps: function() {
@@ -52,6 +53,43 @@ var CMDComponentView = React.createClass({
   },
   toggleComponent: function() {
     this.props.onToggle(this.props.appId);
+  },
+  renderElement: function(elem, index, props) {
+    //console.log('found elem (' + index + '): ' + elem);
+    var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
+    elem.elemId = elemId;
+    var appId = this.props.appId + "_" + elemId;
+    return <CMDElementView appId={appId} key={elemId} spec={elem} />
+  },
+  renderNestedComponent: function(nestedComp, ncindex) {
+    var compId;
+    if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
+    else if(nestedComp.Header != undefined) compId = nestedComp.Header.ID;
+    else compId = (nestedComp.inlineId != undefined) ? nestedComp.inlineId : "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
+
+    var newNestedComp = nestedComp;
+    if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
+      newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
+
+    // id for the child (to look up expansion)
+    var appId = this.props.appId + "_" + compId;
+
+    // use full spec for linked components if available (should have been preloaded)
+    var linkedSpecAvailable = nestedComp.hasOwnProperty("@ComponentId")
+                  && this.props.linkedComponents != undefined
+                  && this.props.linkedComponents.hasOwnProperty(compId);
+    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId] : nestedComp;
+
+    // forward child expansion state
+    return <CMDComponentView
+      appId={appId}
+      key={compId}
+      spec={spec}
+      parent={this.props.spec}
+      expansionState={this.props.expansionState}
+      linkedComponents={this.props.linkedComponents}
+      onToggle={this.props.onToggle}
+      />
   },
   render: function () {
     var self = this;
@@ -86,14 +124,10 @@ var CMDComponentView = React.createClass({
     if(!$.isArray(compElems) && compElems != undefined)
       compElems = [compElems];
 
-    if(compElems != undefined)
-      compElems = compElems.map(function(elem, index) {
-        //console.log('found elem (' + index + '): ' + elem);
-        var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
-        elem.elemId = elemId;
-        var appId = self.props.appId + "_" + elemId;
-        return <CMDElementView appId={appId} key={elemId} spec={elem} />
-      });
+    if(compElems != undefined) {
+      // render elements
+      compElems = compElems.map(self.renderElement);
+    }
 
     if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
        compName = this.props.componentName;
@@ -105,32 +139,10 @@ var CMDComponentView = React.createClass({
     if(!$.isArray(compComps) && compComps != undefined)
       compComps = [compComps];
 
-    if(compComps != undefined)
-      compComps = compComps.map(function(nestedComp, ncindex) {
-        //console.log('found component (' + ncindex + '): ' + nestedComp);
-
-        var compId;
-        if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
-        else if(nestedComp.Header != undefined) compId = nestedComp.Header.ID;
-        else compId = (nestedComp.inlineId != undefined) ? nestedComp.inlineId : "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
-
-        var newNestedComp = nestedComp;
-        if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
-          newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
-
-        // id for the child (to look up expansion)
-        var appId = props.appId + "_" + compId;
-
-        // forward child expansion state
-        return <CMDComponentView
-          appId={appId}
-          key={compId}
-          spec={nestedComp}
-          parent={props.spec}
-          expansionState={props.expansionState}
-          onToggle={props.onToggle}
-          />
-      });
+    if(compComps != undefined) {
+      // render nested components
+      compComps = compComps.map(self.renderNestedComponent);
+    }
 
     // classNames
     var viewClasses = classNames('componentBody', { 'hide': !self.isOpen() });

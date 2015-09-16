@@ -31,6 +31,7 @@ var InfoPanel = React.createClass({
     specXml: React.PropTypes.string,
     comments: React.PropTypes.array.isRequired,
     expansionState: React.PropTypes.object.isRequired,
+    linkedComponents: React.PropTypes.object.isRequired,
     onComponentToggle: React.PropTypes.func
   },
 
@@ -61,6 +62,7 @@ var InfoPanel = React.createClass({
           spec={this.props.spec}
           onComponentToggle={this.props.onComponentToggle}
           expansionState={this.props.expansionState}
+          linkedComponents={this.props.linkedComponents}
           />
       );
 

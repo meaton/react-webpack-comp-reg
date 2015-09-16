@@ -83,7 +83,7 @@ module.exports = {
         // their names for display purposes.
         loadLinkedComponents(spec.CMD_Component, space, function(linkedComponents) {
           // Loading of linked components done...
-          this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, spec, linkedComponents);
+          this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, {spec: spec, linkedComponents: linkedComponents});
         }.bind(this));
       }.bind(this),
       function(message) {
