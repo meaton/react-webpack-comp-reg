@@ -17,7 +17,10 @@ function loadLinkedComponents(component, space, callback) {
 
     // gather linked component IDs
     var linkedComponentIds = [];
-    if($.isArray(childComponents)) {
+    if(childComponents != undefined) {
+      if(!$.isArray(childComponents)) {
+        childComponents = [childComponents];
+      }
       childComponents.forEach(function(child){
         if(child['@ComponentId'] != undefined) {
           linkedComponentIds.push(child['@ComponentId']);
