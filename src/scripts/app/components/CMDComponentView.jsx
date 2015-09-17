@@ -1,5 +1,6 @@
 'use strict';
 
+var log = require('loglevel');
 var React = require('react/addons');
 
 //mixins
@@ -52,7 +53,7 @@ var CMDComponentView = React.createClass({
     };
   },
   toggleComponent: function() {
-    this.props.onToggle(this.props.appId);
+    this.props.onToggle(this.props.appId, this.props.spec);
   },
   renderElement: function(elem, index, props) {
     //console.log('found elem (' + index + '): ' + elem);
@@ -67,10 +68,19 @@ var CMDComponentView = React.createClass({
     return <CMDAttributeView key={attrId} spec={attr} />
   },
   renderNestedComponent: function(nestedComp, ncindex) {
+    var isLinked = nestedComp.hasOwnProperty("@ComponentId");
+
     var compId;
-    if(nestedComp.hasOwnProperty("@ComponentId")) compId = nestedComp['@ComponentId'];
-    else if(nestedComp.Header != undefined) compId = nestedComp.Header.ID;
-    else compId = (nestedComp.inlineId != undefined) ? nestedComp.inlineId : "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
+    if(isLinked) {
+      compId = nestedComp['@ComponentId'];
+    } else if(nestedComp.Header != undefined) {
+      compId = nestedComp.Header.ID;
+    } else {
+       compId =
+         (nestedComp.inlineId != undefined)
+           ? nestedComp.inlineId
+           : "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
+     }
 
     var newNestedComp = nestedComp;
     if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
@@ -80,21 +90,26 @@ var CMDComponentView = React.createClass({
     var appId = this.props.appId + "_" + compId;
 
     // use full spec for linked components if available (should have been preloaded)
-    var linkedSpecAvailable = nestedComp.hasOwnProperty("@ComponentId")
+    var linkedSpecAvailable = isLinked
                   && this.props.linkedComponents != undefined
                   && this.props.linkedComponents.hasOwnProperty(compId);
-    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId] : nestedComp;
 
-    // forward child expansion state
-    return <CMDComponentView
-      appId={appId}
-      key={compId}
-      spec={spec}
-      parent={this.props.spec}
-      expansionState={this.props.expansionState}
-      linkedComponents={this.props.linkedComponents}
-      onToggle={this.props.onToggle}
-      />
+    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].CMD_Component : nestedComp;
+
+    if(isLinked && !linkedSpecAvailable) {
+      return <div>Component {compId} loading...</div>
+    } else {
+      // forward child expansion state
+      return <CMDComponentView
+        appId={appId}
+        key={compId}
+        spec={spec}
+        parent={this.props.spec}
+        expansionState={this.props.expansionState}
+        linkedComponents={this.props.linkedComponents}
+        onToggle={this.props.onToggle}
+        />
+    }
   },
   render: function () {
     var self = this;

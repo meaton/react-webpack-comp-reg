@@ -1,6 +1,9 @@
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants"),
-    ExpansionState = require("../service/ExpansionState");
+    ExpansionState = require("../service/ExpansionState"),
+    React = require('react/addons');
+
+var update = React.addons.update;
 
 var ComponentSpecStore = Fluxxor.createStore({
   initialize: function(options) {
@@ -18,7 +21,8 @@ var ComponentSpecStore = Fluxxor.createStore({
       Constants.LOAD_COMPONENT_SPEC_SUCCES, this.handleLoadSpecSuccess,
       Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, this.handleLoadSpecXmlSuccess,
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
-      Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion
+      Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
+      Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded
       //TODO: comments
     );
   },
@@ -84,6 +88,12 @@ var ComponentSpecStore = Fluxxor.createStore({
     // toggle boolean value in expansion state object (default when undefined is false)
     var currentState = ExpansionState.isExpanded(this.expansionState, itemId);
     this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
+    this.emit("change");
+  },
+
+  handleLinkedComponentsLoaded: function(linkedComponents) {
+    // additional linked components have been loaded - merge with current set
+    this.linkedComponents = update(this.linkedComponents, {$merge: linkedComponents});
     this.emit("change");
   }
 

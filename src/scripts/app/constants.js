@@ -19,6 +19,7 @@ module.exports = {
 
   /* component view */
   TOGGLE_ITEM_EXPANSION: "TOGGLE_ITEM_EXPANSION",
+  LINKED_COMPONENTS_LOADED: "LINKED_COMPONENTS_LOADED",
 
   /* start editing an item */
   EDIT_ITEM: "EDIT_ITEM",

@@ -96,6 +96,13 @@ module.exports = {
     );
   },
 
+  loadLinkedComponentSpecs: function(parentSpec, space) {
+    console.debug("loadLinkedComponentSpecs" + JSON.stringify(parentSpec));
+    loadLinkedComponents(parentSpec, space, function(linkedComponents) {
+      this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
+    }.bind(this));
+  },
+
   loadComponentSpecXml: function(type, space, item) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     ComponentRegistryClient.loadSpec(type, space, item.id, "text", function(specXml){

@@ -1,5 +1,7 @@
 'use strict';
 
+var log = require('loglevel');
+
 var React = require('react/addons'),
     Constants = require("../constants");
 
@@ -36,7 +38,7 @@ var InfoPanel = React.createClass({
   },
 
   tabSelect: function(index) {
-    console.log('tabSelect: ' + index);
+    log.debug('tabSelect: ' + index);
 
     if(index === Constants.INFO_VIEW_SPEC) {
       this.props.loadSpec();

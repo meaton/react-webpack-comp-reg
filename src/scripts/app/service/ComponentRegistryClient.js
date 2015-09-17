@@ -1,5 +1,7 @@
 var clone = require('clone');
 
+var log = require('loglevel');
+
 //JSONIX
 var Jsonix = require('jsonix').Jsonix;
 var CMD = require('../../../mappings/Component').Component;
@@ -30,6 +32,7 @@ var ComponentRegistryClient = {
      data: { unique: new Date().getTime(), registrySpace: (space != null) ? space: "" },
      dataType: 'json',
      success: function(data) {
+       log.trace("Successfully loaded " + requestUrl);
        var _data = data;
        if(_data != null && _data != 'null') {
           if(_data.hasOwnProperty("componentDescription") && type == "components")
@@ -56,6 +59,7 @@ var ComponentRegistryClient = {
     url: requestUrl,
     dataType: (raw_type != undefined) ? raw_type : "json",
     success: function(data) {
+      log.trace("Successfully loaded " + requestUrl);
       handleSuccess(data);
     }.bind(this),
     error: function(xhr, status, err) {

@@ -39,8 +39,11 @@ var ComponentDetailsOverview = React.createClass({
   loadXml: function () {
     this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
   },
-  toggleComponent: function(parentState, itemId) {
-    this.getFlux().actions.toggleItemExpansion(parentState, itemId);
+  toggleComponent: function(itemId, spec) {
+    // expand view
+    this.getFlux().actions.toggleItemExpansion(itemId);
+    // load child components of expanded item
+    this.getFlux().actions.loadLinkedComponentSpecs(spec, this.props.space);
   },
 
   render: function() {
