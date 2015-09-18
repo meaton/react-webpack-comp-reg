@@ -25,9 +25,7 @@ function loadLinkedComponents(component, space, callback) {
       }
       childComponents.forEach(function(child){
         if(child['@ComponentId'] != undefined) {
-          var spec = child['@ComponentId'];
-          SpecAugmenter.augmentWithIds(spec);
-          linkedComponentIds.push(spec);
+          linkedComponentIds.push(child['@ComponentId']);
         }
       });
       loadComponentsById(linkedComponentIds, space, components, callback);
@@ -52,7 +50,14 @@ function loadComponentsById(ids, space, collected, callback) {
   } else {
     // load current id
     ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENTS, space, id, "json", function(spec){
-        log.debug("Loaded", id, ":", spec.Header.Name);
+        log.info("Loaded", id, ":", spec.Header.Name);
+
+        if(spec == undefined) {
+          log.warn("LoadSpec returned undefined. Id:", id);
+        }
+
+        SpecAugmenter.augmentWithIds(spec);
+
         //success
         collected[id] = spec;
         // proceed
@@ -103,7 +108,7 @@ module.exports = {
   },
 
   loadLinkedComponentSpecs: function(parentSpec, space) {
-    log.debug("loadLinkedComponentSpecs ", JSON.stringify(parentSpec));
+    log.debug("loadLinkedComponentSpecs ", parentSpec);
     loadLinkedComponents(parentSpec, space, function(linkedComponents) {
       this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
     }.bind(this));

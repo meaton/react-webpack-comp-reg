@@ -1,3 +1,8 @@
+/**
+ * This utility takes (part of) a component spec and recursively adds a unique
+ * '_appId' property to all CMD Component, Element and Attribute objects.
+ */
+
 var React = require('react/addons');
 var update = React.addons.update;
 
@@ -11,8 +16,9 @@ function needsId(element) {
 function updateChild(childName, childSpec, id) {
   if(needsId(childName)) {
     // should get an id
+
     log.trace("Augmenting " + childName + " with id " + id);
-    childSpec.appId = id;
+    childSpec['_appId'] = id;
   }
   augmentWithIds(childSpec, id);
 }
@@ -32,10 +38,12 @@ function augmentWithIds(spec, baseId) {
       // multiple children of a type show up as an array, loop over these
       for(var i=0; i<childSpec.length; i++) {
         var c = childSpec[i];
+        // build on the current id with increment to ensure uniqueness within document
         updateChild(name, c, (baseId + "/" + count++));
       }
     } else if(typeof childSpec == 'object') {
       // only a single child...
+      // build on the current id with increment to ensure uniqueness within document
       updateChild(child, childSpec, (baseId + "/" + count++));
     }
   }
@@ -43,10 +51,24 @@ function augmentWithIds(spec, baseId) {
 
 module.exports = {
   /**
-   * Augments all CMD_Component, CMD_Element and Attribute elements in a spec
-   * with a unique 'appId' property
+   * Augments all CMD_Component, CMD_Element and Attribute elements in the spec
+   * with a unique '_appId' property
    */
-  augmentWithIds: function(spec, baseId) {
+  augmentWithIds: function(spec) {
+    var baseId;
+
+    // Random numbers are appended to prevent expansion of multiple display
+    // instances of the same (linked) component. Uniqueness is the only purpose
+    // of these IDs, but including the component ID makes for nicer debugging.
+    baseId = Math.floor(Math.random()*1000);
+    if(spec.Header != undefined) {
+      // include ID from header
+      baseId = spec.Header.ID + "#" + baseId;
+    } else if(spec.hasOwnProperty('@ComponentId')) {
+      // include ID from attribute
+      baseId = spec['@ComponentId'] + "#" + baseId;
+    }
+
     augmentWithIds(spec, baseId);
   }
 }

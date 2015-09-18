@@ -40,7 +40,6 @@ var CMDComponentView = React.createClass({
     hideProperties: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
-    appId: React.PropTypes.string,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
     onToggle: React.PropTypes.func
@@ -53,14 +52,13 @@ var CMDComponentView = React.createClass({
     };
   },
   toggleComponent: function() {
-    this.props.onToggle(this.props.appId, this.props.spec);
+    this.props.onToggle(this.props.spec._appId, this.props.spec);
   },
   renderElement: function(elem, index, props) {
     //console.log('found elem (' + index + '): ' + elem);
     var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
     elem.elemId = elemId;
-    var appId = this.props.appId + "_" + elemId;
-    return <CMDElementView appId={appId} key={elemId} spec={elem} />
+    return <CMDElementView key={elemId} spec={elem} />
   },
   renderAttribute: function(attr, index) {
     var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
@@ -86,9 +84,6 @@ var CMDComponentView = React.createClass({
     if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
       newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
 
-    // id for the child (to look up expansion)
-    var appId = this.props.appId + "_" + compId;
-
     // use full spec for linked components if available (should have been preloaded)
     var linkedSpecAvailable = isLinked
                   && this.props.linkedComponents != undefined
@@ -101,7 +96,6 @@ var CMDComponentView = React.createClass({
     } else {
       // forward child expansion state
       return <CMDComponentView
-        appId={appId}
         key={compId}
         spec={spec}
         parent={this.props.spec}
@@ -112,7 +106,7 @@ var CMDComponentView = React.createClass({
     }
   },
   render: function () {
-    log.trace("Rendering", this.props.appId, (this.isOpen()?"open":"closed"));
+    log.trace("Rendering", this.props.spec._appId, (this.isOpen()?"open":"closed"));
 
     var self = this;
     var props = this.props;
@@ -215,7 +209,7 @@ var CMDComponentView = React.createClass({
   },
 
   isOpen: function() {
-    return ExpansionState.isExpanded(this.props.expansionState, this.props.appId);
+    return ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
   }
 });
 

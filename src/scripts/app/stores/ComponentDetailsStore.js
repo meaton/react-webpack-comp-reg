@@ -60,7 +60,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     // reset view state
     this.activeView = Constants.INFO_VIEW_SPEC;
     // reset expansion state
-    this.expansionState = {root: true};
+    this.expansionState = {[spec.CMD_Component._appId]: true};
     // reset linked components state
     if(linkedComponents == undefined) {
       this.linkedComponents = {};
@@ -89,9 +89,9 @@ var ComponentSpecStore = Fluxxor.createStore({
   handleToggleItemExpansion: function(itemId) {
     // toggle boolean value in expansion state object (default when undefined is false)
     var currentState = ExpansionState.isExpanded(this.expansionState, itemId);
-    console.trace("Toggling " + itemId + " currently " + currentState);
+    console.trace("Toggling", itemId, "currently", currentState);
     this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
-    console.trace("New expansion state: " + JSON.stringify(this.expansionState));
+    console.trace("New expansion state: ", this.expansionState);
     this.emit("change");
   },
 

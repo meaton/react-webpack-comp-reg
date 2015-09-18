@@ -81,7 +81,6 @@ var ComponentSpec = React.createClass({
               </ul>
             </div>
             <CMDComponentView
-              appId="root"
               spec={item.CMD_Component}
               hideProperties={true}
               onToggle={this.props.onComponentToggle}
