@@ -4,48 +4,48 @@ var update = React.addons.update;
 var log = require('loglevel');
 
 function needsId(element) {
+  // these XML elements should be augmented with an ID
   return element === "CMD_Component" || element === "CMD_Element" || element === "Attribute";
 }
 
-function updateChild(theChildName, theChildSpec, theId) {
-  if(needsId(theChildName)) {
+function updateChild(childName, childSpec, id) {
+  if(needsId(childName)) {
     // should get an id
-    log.debug("child gets id: " + theId);
-    theChildSpec.appId = theId;
+    log.trace("Augmenting " + childName + " with id " + id);
+    childSpec.appId = id;
   }
-  augmentWithIds(theChildSpec, theId);
+  augmentWithIds(childSpec, id);
 }
 
 function augmentWithIds(spec, baseId) {
   if(baseId == undefined) {
-    baseId = "/";
+    baseId = "0";
   }
 
-  //log.debug("looping over " + Object.keys(spec) + " " + spec['@ComponentId']);
-  log.debug("looping over " + JSON.stringify(spec) + " " + spec['@ComponentId']);
+  //loop over the spec's chilren
   var count = 0;
   for(var child in spec) {
     var name = child;
     // candidate for id augmentation
     var childSpec = spec[child];
     if(Array.isArray(childSpec)) {
-      log.debug("child: " + child + " = array " + childSpec + " length " + childSpec.length);
+      // multiple children of a type show up as an array, loop over these
       for(var i=0; i<childSpec.length; i++) {
         var c = childSpec[i];
-        log.debug("child spec '" + name + "' " + i + ": " + JSON.stringify(c));
         updateChild(name, c, (baseId + "/" + count++));
       }
     } else if(typeof childSpec == 'object') {
-      log.debug("NOT an array: " + childSpec + " " + typeof childSpec);
-      log.debug("child: " + child + " {" + Object.keys(childSpec) + "}");
+      // only a single child...
       updateChild(child, childSpec, (baseId + "/" + count++));
-    } else {
-      log.debug("child of type " + (typeof childSpec));
     }
   }
 }
 
 module.exports = {
+  /**
+   * Augments all CMD_Component, CMD_Element and Attribute elements in a spec
+   * with a unique 'appId' property
+   */
   augmentWithIds: function(spec, baseId) {
     augmentWithIds(spec, baseId);
   }

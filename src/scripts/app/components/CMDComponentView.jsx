@@ -112,6 +112,8 @@ var CMDComponentView = React.createClass({
     }
   },
   render: function () {
+    log.trace("Rendering", this.props.appId, (this.isOpen()?"open":"closed"));
+
     var self = this;
     var props = this.props;
     var comp = this.props.spec;

@@ -1,5 +1,7 @@
 var log = require('loglevel');
 
+var SpecAugmenter = require("../service/SpecAugmenter")
+
 var Constants = require("../constants"),
     /* mock */
     // ComponentRegistryClient = require("./service/ComponentRegistryMockClient")
@@ -23,7 +25,9 @@ function loadLinkedComponents(component, space, callback) {
       }
       childComponents.forEach(function(child){
         if(child['@ComponentId'] != undefined) {
-          linkedComponentIds.push(child['@ComponentId']);
+          var spec = child['@ComponentId'];
+          SpecAugmenter.augmentWithIds(spec);
+          linkedComponentIds.push(spec);
         }
       });
       loadComponentsById(linkedComponentIds, space, components, callback);
@@ -48,7 +52,7 @@ function loadComponentsById(ids, space, collected, callback) {
   } else {
     // load current id
     ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENTS, space, id, "json", function(spec){
-        log.debug("Loaded " + id + ": " + spec.Header.Name);
+        log.debug("Loaded", id, ":", spec.Header.Name);
         //success
         collected[id] = spec;
         // proceed
@@ -56,7 +60,7 @@ function loadComponentsById(ids, space, collected, callback) {
       },
       function(message) {
         // failure
-        log.warn("Failed to load child component with id " + id + ": " + message);
+        log.warn("Failed to load child component with id ", id, ": ", message);
         // proceed (nothing added)
         loadComponentsById(ids, space, collected, callback);
       }
@@ -86,6 +90,8 @@ module.exports = {
         // their names for display purposes.
         loadLinkedComponents(spec.CMD_Component, space, function(linkedComponents) {
           // Loading of linked components done...
+          SpecAugmenter.augmentWithIds(spec);
+          log.trace("Loaded and augmented spec: ", spec);
           this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, {spec: spec, linkedComponents: linkedComponents});
         }.bind(this));
       }.bind(this),
@@ -97,7 +103,7 @@ module.exports = {
   },
 
   loadLinkedComponentSpecs: function(parentSpec, space) {
-    console.debug("loadLinkedComponentSpecs" + JSON.stringify(parentSpec));
+    log.debug("loadLinkedComponentSpecs ", JSON.stringify(parentSpec));
     loadLinkedComponents(parentSpec, space, function(linkedComponents) {
       this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
     }.bind(this));

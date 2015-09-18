@@ -3,6 +3,8 @@ var Fluxxor = require("fluxxor"),
     ExpansionState = require("../service/ExpansionState"),
     React = require('react/addons');
 
+var log = require('loglevel');
+
 var update = React.addons.update;
 
 var ComponentSpecStore = Fluxxor.createStore({
@@ -87,7 +89,9 @@ var ComponentSpecStore = Fluxxor.createStore({
   handleToggleItemExpansion: function(itemId) {
     // toggle boolean value in expansion state object (default when undefined is false)
     var currentState = ExpansionState.isExpanded(this.expansionState, itemId);
+    console.trace("Toggling " + itemId + " currently " + currentState);
     this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
+    console.trace("New expansion state: " + JSON.stringify(this.expansionState));
     this.emit("change");
   },
 
