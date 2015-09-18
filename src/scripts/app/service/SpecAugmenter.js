@@ -7,31 +7,46 @@ function needsId(element) {
   return element === "CMD_Component" || element === "CMD_Element" || element === "Attribute";
 }
 
+function updateChild(theChildName, theChildSpec, theId) {
+  if(needsId(theChildName)) {
+    // should get an id
+    log.debug("child gets id: " + theId);
+    theChildSpec.appId = theId;
+  }
+  augmentWithIds(theChildSpec, theId);
+}
+
+function augmentWithIds(spec, baseId) {
+  if(baseId == undefined) {
+    baseId = "/";
+  }
+
+  //log.debug("looping over " + Object.keys(spec) + " " + spec['@ComponentId']);
+  log.debug("looping over " + JSON.stringify(spec) + " " + spec['@ComponentId']);
+  var count = 0;
+  for(var child in spec) {
+    var name = child;
+    // candidate for id augmentation
+    var childSpec = spec[child];
+    if(Array.isArray(childSpec)) {
+      log.debug("child: " + child + " = array " + childSpec + " length " + childSpec.length);
+      for(var i=0; i<childSpec.length; i++) {
+        var c = childSpec[i];
+        log.debug("child spec '" + name + "' " + i + ": " + JSON.stringify(c));
+        updateChild(name, c, (baseId + "/" + count++));
+      }
+    } else if(typeof childSpec == 'object') {
+      log.debug("NOT an array: " + childSpec + " " + typeof childSpec);
+      log.debug("child: " + child + " {" + Object.keys(childSpec) + "}");
+      updateChild(child, childSpec, (baseId + "/" + count++));
+    } else {
+      log.debug("child of type " + (typeof childSpec));
+    }
+  }
+}
+
 module.exports = {
   augmentWithIds: function(spec, baseId) {
-    if(baseId == undefined) {
-      baseId = "/";
-    }
-
-    log.debug("looping over " + Object.keys(spec) + " " + spec['@ComponentId']);
-    var count = 0;
-    for(child in spec) {
-      var childSpec = spec[child];
-      if(typeof childSpec == 'object') {
-        // candidate for id augmentation
-        var id = baseId + "/" + count++;
-        log.debug("child: " + child + " {" + Object.keys(childSpec) + "}");
-        if(needsId(child)) {
-          // should get an id
-          log.debug("child: " + child + " gets id: " + id);
-          spec = update(spec, {[child]: {appId: {$set: id}}})
-        }
-        spec = update(spec, {[child]: {$set: this.augmentWithIds(spec[child], id)}});
-      } else {
-        log.debug("child of type " + (typeof childSpec));
-      }
-    }
-
-    return spec;
+    augmentWithIds(spec, baseId);
   }
 }
