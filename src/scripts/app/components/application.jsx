@@ -1,3 +1,5 @@
+var log = require("loglevel");
+
 var React = require("react"),
     Constants = require("../constants"),
     Fluxxor = require("fluxxor"),
@@ -79,7 +81,15 @@ var Application = React.createClass({
   },
 
   componentDidMount: function() {
+    this.checkAuthState();
+    // check auth state every 30s
+    this.authInterval = setInterval(this.checkAuthState, 30*1000);
+
     this.loadItems();
+  },
+
+  componentWillUnmount: function() {
+    clearInterval(this.authInterval);
   },
 
   loadItems: function() {
@@ -110,6 +120,10 @@ var Application = React.createClass({
 
   handleLogin: function() {
     this.getFlux().actions.login();
+  },
+
+  checkAuthState: function() {
+    this.getFlux().actions.checkAuthState();
   }
 });
 

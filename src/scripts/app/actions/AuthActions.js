@@ -1,3 +1,5 @@
+var log = require("loglevel");
+
 var Constants = require("../constants");
 
 /**
@@ -12,6 +14,7 @@ module.exports = {
   },
 
   checkAuthState: function() {
+    log.trace("Checking authentication state...");
     var uid = "uid"; //TODO
     var displayName = "name"; //TODO
     this.dispatch(Constants.CHECK_AUTH_STATE, {uid: uid, displayName: displayName});

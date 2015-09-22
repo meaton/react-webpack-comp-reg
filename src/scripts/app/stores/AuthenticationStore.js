@@ -1,3 +1,5 @@
+var log = require("loglevel");
+
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants"),
     React = require('react/addons');
@@ -22,23 +24,30 @@ var AuthenticationStore = Fluxxor.createStore({
     };
   },
 
-  handleLoginState: function(newState) {
-    if(newState.uid != undefined && newState.uid != null) {
+  handleLoginState: function(newValues) {
+    var newState;
+    if(newValues.uid != undefined && newValues.uid != null) {
       // uid set -> user authenticated
-      this.authState = {
+      newState = {
         authenticated: true,
-        uid: newState.uid,
-        displayName: newState.displayName
+        uid: newValues.uid,
+        displayName: newValues.displayName
       };
     } else {
       // uid not set -> user not authenticated
-      this.authState = {
+      newState = {
         authenticated: false
       };
     }
 
     this.lastChecked = Date.now();
-    this.emit("change");
+
+    if(JSON.stringify(this.authState) !== JSON.stringify(newState)) {
+      log.info("Authentication state changed to", newState);
+
+      this.authState = newState;
+      this.emit("change");
+    }
   }
 
 });
