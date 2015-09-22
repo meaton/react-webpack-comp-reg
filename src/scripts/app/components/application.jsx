@@ -4,11 +4,14 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+// Components
+var AuthState = require("./AuthState.jsx");
 var DataGrid = require("./DataGrid.jsx");
 var SpaceSelector = require("./SpaceSelector.jsx");
-
 var ComponentDetails = require('./ComponentDetailsOverview');
-// var Component = require('./ComponentOverview');
+
+// Boostrap
+var PageHeader = require('react-bootstrap/lib/PageHeader');
 
 var Application = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore", "ComponentDetailsStore")],
@@ -25,6 +28,11 @@ var Application = React.createClass({
 
   render: function() {
     //TODO: get login state from UserStore/AuthStore -> validUserSession
+    var authState = {
+      authenticated: false,
+      displayName: "Twan"
+    };
+
     var item = this.state.selection.currentItem;
     var viewer =
      (!item)? null :
@@ -35,34 +43,44 @@ var Application = React.createClass({
           space={this.state.items.space}
           />
     return (
-      <section className="application-container">
-        <div className="main container-fluid">
-          <div className="browser row">
-            <SpaceSelector
-              type={this.state.items.type}
-              space={this.state.items.space}
-              multiSelect={this.state.selection.allowMultiple}
-              validUserSession={false}
-              onSpaceSelect={this.handleSpaceSelect}
-              onToggleMultipleSelect={this.handleToggleMultipleSelect}
-              onChange={this.clearInfo} />
-            {/*TODO: <DataTablesBtnGroup { ...this.getBtnGroupProps() } />*/}
-            <DataGrid
-              items={this.state.items.items}
-              selectedItems={this.state.selection.selectedItems}
-              loading={this.state.items.loading}
-              errorMessage={this.state.items.errorMessage}
-              multiSelect={this.state.selection.allowMultiple}
-              editMode={false}
-              onReload={this.loadItems}
-              onRowSelect={this.handleRowSelect}
-              />
-          </div>
-          <div className="viewer row">
-            {viewer}
-          </div>
-          <div id="alert-container" /></div>
-      </section>
+      <div>
+        <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
+
+        <div className="auth-login">
+          <AuthState
+            authState={authState}
+            onLogin={this.handleLogin} />
+        </div>
+
+        <section className="application-container">
+          <div className="main container-fluid">
+            <div className="browser row">
+              {/*TODO flux: pass auth state */}
+              <SpaceSelector
+                type={this.state.items.type}
+                space={this.state.items.space}
+                multiSelect={this.state.selection.allowMultiple}
+                validUserSession={false /*TODO flux: pass auth state */}
+                onSpaceSelect={this.handleSpaceSelect}
+                onToggleMultipleSelect={this.handleToggleMultipleSelect} />
+              {/*TODO: <DataTablesBtnGroup { ...this.getBtnGroupProps() } />*/}
+              <DataGrid
+                items={this.state.items.items}
+                selectedItems={this.state.selection.selectedItems}
+                loading={this.state.items.loading}
+                errorMessage={this.state.items.errorMessage}
+                multiSelect={this.state.selection.allowMultiple}
+                editMode={false}
+                onReload={this.loadItems}
+                onRowSelect={this.handleRowSelect}
+                />
+            </div>
+            <div className="viewer row">
+              {viewer}
+            </div>
+            <div id="alert-container" /></div>
+        </section>
+      </div>
     );
   },
 
@@ -94,6 +112,10 @@ var Application = React.createClass({
       this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, val);
     }
     //TODO flux: comments
+  },
+
+  handleLogin: function() {
+    //TODO flux: action
   }
 });
 
