@@ -40,6 +40,7 @@ var CMDComponentView = React.createClass({
     hideProperties: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
+    isLinked:  React.PropTypes.bool,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
     onToggle: React.PropTypes.func
@@ -94,6 +95,7 @@ var CMDComponentView = React.createClass({
         expansionState={this.props.expansionState}
         linkedComponents={this.props.linkedComponents}
         onToggle={this.props.onToggle}
+        isLinked={isLinked}
         />
     }
   },
@@ -111,8 +113,6 @@ var CMDComponentView = React.createClass({
       compId = comp.Header.ID;
     else
       compId = null;
-
-    //console.log('render', this.constructor.displayName, (compId != null) ? compId : 'inline');
 
     var header = comp.Header;
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
@@ -149,12 +149,12 @@ var CMDComponentView = React.createClass({
 
     if(compComps != undefined) {
       // render nested components
-      compComps = compComps.map(self.renderNestedComponent);
+      var nestedComponents = compComps.map(self.renderNestedComponent);
     }
 
     // classNames
     var viewClasses = classNames('componentBody', { 'hide': !self.isOpen() });
-    var componentClasses = classNames('CMDComponent', { 'open': self.isOpen(), 'selected': this.props.isSelected });
+    var componentClasses = classNames('CMDComponent', { 'open': self.isOpen(), 'selected': this.props.isSelected, 'linked': this.props.isLinked });
 
     if(comp.AttributeList != undefined) {
       var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
@@ -173,17 +173,24 @@ var CMDComponentView = React.createClass({
       <div className={viewClasses}>
         {attrList}
         <div className="childElements">{compElems}</div>
-        <div ref="components" className="childComponents">{compComps}</div>
+        <div ref="components" className="childComponents">{nestedComponents}</div>
       </div>
     );
 
-    var title = (
-      <div><span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a></div>
-    );
-
-    if(!self.isOpen()) {
-      return title;
+    var title;
+    if(this.props.isLinked) {
+      title = (
+        <div><span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a></div>
+      )
     } else {
+      title = (
+        <div><span>Component: </span><span className="componentName">{compName}</span></div>
+      )
+    }
+
+    // if(!self.isOpen()) {
+    //   return title;
+    // } else {
       if(this.props.hideProperties) {
         //skip 'envelope', only show child components, elements, attributes
         return children;
@@ -197,11 +204,11 @@ var CMDComponentView = React.createClass({
           </div>
         );
       }
-    }
+    // }
   },
 
   isOpen: function() {
-    return ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
+    return !this.props.isLinked || ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
   }
 });
 

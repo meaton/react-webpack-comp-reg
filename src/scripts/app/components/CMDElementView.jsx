@@ -91,7 +91,7 @@ var CMDElementView = React.createClass({
     return (
       <div className="CMDElement">
         <span>Element: </span>
-        <b>{elem['@name']}</b> { valueScheme }
+        <span className="elementName">{elem['@name']}</span> { valueScheme }
         <div className="elemAttrs">
           { React.addons.createFragment({ left: this.elemAttrs(elem) }) }
         </div>

@@ -1,7 +1,14 @@
 .CMDElement {
+  display: inline-block;
+  float: left;
+  clear: both;
+
+  min-width: 40em;
   padding: .5em;
   margin: .5em 2em;
-  border: 1px solid #f00;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 .CMDElement a.elementLink {
@@ -9,5 +16,9 @@
 }
 
 .CMDElement.open {
-  border: 1px dashed #f00;
+  border: 1px dashed #ccc;
+}
+
+.elementName {
+  font-weight: bold;
 }

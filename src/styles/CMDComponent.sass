@@ -1,15 +1,31 @@
 .CMDComponent {
+  display: inline-block;
+  float: left;
+  clear: both;
+
+  min-width: 40em;
   padding: .5em;
   margin: .5em 2em;
-  border: 1px solid blue;
+
   background-color: #fff;
+
+  border: 1px solid;
+  border-color: #ccc;
+  border-radius: 8px;
 }
 .CMDComponent a.componentLink {
   color: #000099;
 }
 .CMDComponent.open {
-  border: 1px dashed blue;
+  border-left-width: 4px;
 }
 .CMDComponent.selected {
   background-color: #eeffff;
+}
+.CMDComponent.linked {
+  border-width: 2px;
+  border-color: #00f;
+}
+.componentName {
+  font-weight: bold;
 }
