@@ -67,22 +67,9 @@ var CMDComponentView = React.createClass({
   },
   renderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
-
-    var compId;
     if(isLinked) {
-      compId = nestedComp['@ComponentId'];
-    } else if(nestedComp.Header != undefined) {
-      compId = nestedComp.Header.ID;
-    } else {
-       compId =
-         (nestedComp.inlineId != undefined)
-           ? nestedComp.inlineId
-           : "inline_" + md5.hash("inline_" + nestedComp['@name'] + "_" + ncindex + "_" + Math.floor(Math.random()*1000));
-     }
-
-    var newNestedComp = nestedComp;
-    if(compId.startsWith("inline") && nestedComp.inlineId == undefined)
-      newNestedComp = update(newNestedComp, { $merge: { inlineId: compId } });
+      var compId = nestedComp['@ComponentId'];
+    }
 
     // use full spec for linked components if available (should have been preloaded)
     var linkedSpecAvailable = isLinked
@@ -91,12 +78,17 @@ var CMDComponentView = React.createClass({
 
     var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].CMD_Component : nestedComp;
 
+    // component ID (for display purposes only)
+    if(!isLinked) {
+       var compId = spec._appId;
+    }
+
     if(isLinked && !linkedSpecAvailable) {
       return <div>Component {compId} loading...</div>
     } else {
       // forward child expansion state
       return <CMDComponentView
-        key={compId}
+        key={spec._appId}
         spec={spec}
         parent={this.props.spec}
         expansionState={this.props.expansionState}
