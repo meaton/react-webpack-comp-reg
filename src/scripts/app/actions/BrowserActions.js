@@ -1,5 +1,8 @@
 var Constants = require("../constants");
 
+/**
+ * Browser actions
+ */
 module.exports = {
 
   selectBrowserItem: function(item) {
@@ -10,8 +13,13 @@ module.exports = {
     this.dispatch(Constants.SWITCH_MULTIPLE_SELECT);
   },
 
-  switchSpace: function(type, registry) {
-    this.dispatch(Constants.SWITCH_SPACE, {type: type, registry: registry});
+  /**
+   * Switch to the space defined by type and registry
+   * @param  {string} type     Constants.TYPE_PROFILE or Constants.TYPE_COMPONENTS
+   * @param  {string} registry Constants.SPACE_PRIVATE, Constants.SPACE_PUBLISHED or Constants.SPACE_GROUP
+   */
+  switchSpace: function(type, space) {
+    this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space});
   },
 
   editItem: function(item) {

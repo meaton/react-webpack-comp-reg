@@ -43,24 +43,20 @@ var SpaceSelector = React.createClass({
   },
 
   spaceSelect: function(selection, event) {
-    //TODO: trigger space select action
-    log.debug('clicked:', selection.currentSpaceIdx);
-    log.debug('mstate:', selection.currentRegIdx);
-    //
-    // if(this.state.currentSpaceIdx != nextState.currentSpaceIdx || this.state.currentRegIndex != nextState.currentRegIdx) {
-      // var space = this.state.spaces[nextState.currentSpaceIdx]
-      // var registryName = ($.isArray(space.registry)) ? space.registry[nextState.currentRegIdx] : space.registry.filter;
-      //
-      // console.log('changed props: ' + registryName.filter);
-      //
-      // this.props.onSelect(registryName);
-      // this.setState(nextState);
-    //}
-    var space = this.state.spaces[selection.currentSpaceIdx];
-    var registryName = ($.isArray(space.registry)) ? space.registry[selection.currentRegIdx].filter : space.registry.filter;
-    var type = ($.isArray(space.registry)) ? space.registry[selection.currentRegIdx].type : space.registry.type;
-    log.debug("Selected", type, registryName);
-    this.props.onSpaceSelect(type, registryName);
+    log.trace('clicked type:', selection.currentSpaceIdx);
+    log.trace('mstate registry:', selection.currentRegIdx);
+
+    //select 'space-type' object depending on selected index
+    var spaceType = this.state.spaces[selection.currentSpaceIdx];
+    spaceType = ($.isArray(spaceType.registry))?spaceType.registry[selection.currentRegIdx]:spaceType.registry;
+
+    //private, published, group
+    var space = spaceType.filter;
+    //profile or components
+    var type = spaceType.type;
+
+    log.debug("Selected", space, type);
+    this.props.onSpaceSelect(type, space);
   },
 
   render: function() {

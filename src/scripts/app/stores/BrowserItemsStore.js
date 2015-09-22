@@ -45,9 +45,9 @@ var BrowserItemsStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleSwitchSpace: function(space) {
-    this.type = space.type;
-    this.space = space.registry;
+  handleSwitchSpace: function(spaceType) {
+    this.type = spaceType.type;
+    this.space = spaceType.space;
     this.emit("change");
   }
 

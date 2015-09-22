@@ -18,8 +18,8 @@ function loadLinkedComponents(component, space, callback) {
     var childComponents = component.CMD_Component;
 
     // gather linked component IDs
-    var linkedComponentIds = [];
     if(childComponents != undefined) {
+      var linkedComponentIds = [];
       if(!$.isArray(childComponents)) {
         childComponents = [childComponents];
       }

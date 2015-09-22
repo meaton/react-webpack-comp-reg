@@ -28,17 +28,12 @@ var Application = React.createClass({
     var item = this.state.selection.currentItem;
     var viewer =
      (!item)? null :
-     //TODO flux: component overview - merge?
-     //:<Component ref="component" componentId={item} />
-       (this.state.items.type == Constants.TYPE_PROFILE) ?
         <ComponentDetails
-          ref="profile"
+          ref="details"
           item={item}
           type={this.state.items.type}
           space={this.state.items.space}
           />
-        :null
-
     return (
       <section className="application-container">
         <div className="main container-fluid">
