@@ -27,6 +27,8 @@ module.exports = {
   SELECT_BROWSER_ITEM: "SELECT_BROWSER_ITEM",
   /* toggle selection mode */
   SWITCH_MULTIPLE_SELECT: "SWITCH_MULTIPLE_SELECT",
+  /* switch space (registry (private, public, group...) and type (components/profiles)) */
+  SWITCH_SPACE: "SWITCH_SPACE",
 
   /* ITEM TYPES */
   TYPE_PROFILE: "profiles",

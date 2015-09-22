@@ -83,8 +83,8 @@ var Application = React.createClass({
     this.getFlux().actions.switchMultipleSelect();
   },
 
-  handleSpaceSelect: function(space) {
-    //TODO
+  handleSpaceSelect: function(space, registry) {
+    this.getFlux().actions.switchSpace(space, registry);
   },
 
   handleRowSelect: function(val, target) {

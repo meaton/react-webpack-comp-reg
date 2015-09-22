@@ -1,5 +1,7 @@
 'use strict';
 
+var log = require('loglevel');
+
 var React = require('react');
 var {Route} = require('react-router');
 
@@ -30,7 +32,6 @@ var SpaceSelector = React.createClass({
 
   getInitialState: function() {
     return {
-             multiSelect: this.props.multiSelect.value,
              spaces: (this.props.type == "componentsOnly") ?
                 [{ label: "Public", registry: {type: "Components", filter: "published" }, loginRequired: false },
                  { label: "Private", registry: {type: "Components", filter: "private" }, loginRequired: true }] :
@@ -39,10 +40,10 @@ var SpaceSelector = React.createClass({
            };
   },
 
-  spaceSelect: function(nextState, event) {
+  spaceSelect: function(selection, event) {
     //TODO: trigger space select action
-    // console.log('clicked: ' + nextState.currentSpaceIdx);
-    // console.log('mstate: ' + nextState.currentRegIdx);
+    log.debug('clicked:', selection.currentSpaceIdx);
+    log.debug('mstate:', selection.currentRegIdx);
     //
     // if(this.state.currentSpaceIdx != nextState.currentSpaceIdx || this.state.currentRegIndex != nextState.currentRegIdx) {
       // var space = this.state.spaces[nextState.currentSpaceIdx]
@@ -53,6 +54,11 @@ var SpaceSelector = React.createClass({
       // this.props.onSelect(registryName);
       // this.setState(nextState);
     //}
+    var space = this.state.spaces[selection.currentSpaceIdx];
+    var registryName = ($.isArray(space.registry)) ? space.registry[selection.currentRegIdx].filter : space.registry.filter;
+    var type = ($.isArray(space.registry)) ? space.registry[selection.currentRegIdx].type : space.registry.type;
+    log.debug("Selected", type, registryName);
+    this.props.onSpaceSelect(type, registryName);
   },
 
   render: function() {
@@ -62,22 +68,23 @@ var SpaceSelector = React.createClass({
     var self = this;
     var list = this.state.spaces.map(function(d, sindex){
       var selectedClass = classNames({ active: (currentSpaceIdx == sindex) });
-        if(self.props.type == "componentsOnly")
+        if(self.props.type == "componentsOnly") {
           return (
             <Button className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession} onClick={self.spaceSelect.bind(self, {currentSpaceIdx: sindex, currentRegIdx: 0})} >
               {d.label}
             </Button>
           );
-        else
-        return (
-          <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession}>
-            {d.registry.map(function(reg, mindex) {
-              var selectedTypeClass = classNames({ selected: (selectedClass == "active" && currentRegIdx == mindex) });
-              return (
-                React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
-            ) })}
-          </DropdownButton>
-        );
+        } else {
+          return (
+            <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession}>
+              {d.registry.map(function(reg, mindex) {
+                var selectedTypeClass = classNames({ selected: (selectedClass == "active" && currentRegIdx == mindex) });
+                return (
+                  React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
+              ) })}
+            </DropdownButton>
+          );
+        }
     });
     var selectModeBtn = <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"} onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>;
     return (this.props.type == "componentsOnly") ?

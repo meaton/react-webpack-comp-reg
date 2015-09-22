@@ -10,6 +10,10 @@ module.exports = {
     this.dispatch(Constants.SWITCH_MULTIPLE_SELECT);
   },
 
+  switchSpace: function(type, registry) {
+    this.dispatch(Constants.SWITCH_SPACE, {type: type, registry: registry});
+  },
+
   editItem: function(item) {
     this.dispatch(Constants.EDIT_ITEM);
   }
