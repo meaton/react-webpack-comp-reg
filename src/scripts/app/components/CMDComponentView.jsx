@@ -5,7 +5,6 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -28,11 +27,10 @@ require('../../../styles/CMDComponent.sass');
 * CMDComponent - view display and editing form for a CMDI Component item.
 * @constructor
 * @mixes ImmutableRenderMixin
-* @mixes LinkedStateMixin
 * @mixes ActionButtonsMixin
 */
 var CMDComponentView = React.createClass({
-  mixins: [ImmutableRenderMixin, LinkedStateMixin],
+  mixins: [ImmutableRenderMixin],
   propTypes: {
     /* specification object (CMD_Component) */
     spec: React.PropTypes.object.isRequired,

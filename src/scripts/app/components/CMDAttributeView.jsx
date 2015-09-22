@@ -3,7 +3,6 @@
 var React = require('react/addons');
 
 //mixins
-var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //bootstrap
@@ -19,11 +18,10 @@ var ValueScheme = require('./ValueScheme');
 * CMDAttribute - view display and editing form for a CMDI Attribute item.
 * @constructor
 * @mixes ImmutableRenderMixin
-* @mixes LinkedStateMixin
 * @mixes ActionButtonsMixin
 */
 var CMDAttributeView = React.createClass({
-  mixins: [ImmutableRenderMixin, LinkedStateMixin],
+  mixins: [ImmutableRenderMixin],
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     open: React.PropTypes.bool,

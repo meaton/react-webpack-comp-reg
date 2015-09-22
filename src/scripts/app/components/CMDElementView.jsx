@@ -4,7 +4,6 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -24,10 +23,9 @@ require('../../../styles/CMDElement.sass');
 * CMDElement - view display and editing form for a CMDI Element item.
 * @constructor
 * @mixes ImmutableRenderMixin
-* @mixes LinkedStateMixin
 */
 var CMDElementView = React.createClass({
-  mixins: [ImmutableRenderMixin, LinkedStateMixin],
+  mixins: [ImmutableRenderMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,

@@ -5,9 +5,7 @@ var Router = require('react-router');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var btnGroup = require('../../mixins/BtnGroupEvents');
-var ValidationMixin = require('../../mixins/ValidationMixin');
 
 //components
 var CMDComponentView = require('./CMDComponentView');
@@ -23,10 +21,8 @@ require('../../../styles/ComponentViewer.sass');
 * ComponentViewer - view display for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
 * @constructor
 * @mixes ImmutableRenderMixin
-* @LinkedStateMixin
 * @BtnGroupEvents
 * @Loader
-* @ValidationMixin
 * @Router.Navigation
 * @Router.State
 */
@@ -47,9 +43,7 @@ var ComponentSpec = React.createClass({
     };
   },
   mixins: [
-    //ImmutableRenderMixin,
-    LinkedStateMixin,
-    btnGroup, ValidationMixin, Router.Navigation, Router.State],
+    ImmutableRenderMixin, Router.Navigation, Router.State],
 
   getDefaultProps: function() {
     return {
