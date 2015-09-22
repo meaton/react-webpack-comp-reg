@@ -55,17 +55,6 @@ var CMDComponentView = React.createClass({
   toggleComponent: function() {
     this.props.onToggle(this.props.spec._appId, this.props.spec);
   },
-  renderElement: function(elem, index, props) {
-    //console.log('found elem (' + index + '): ' + elem);
-    var elemId = (elem.elemId != undefined) ? elem.elemId : "comp_elem_" + md5.hash("comp_elem_" + elem['@name'] + "_" + index + "_" + Math.floor(Math.random()*1000));
-    elem.elemId = elemId;
-    return <CMDElementView key={elemId} spec={elem} />
-  },
-  renderAttribute: function(attr, index) {
-    var attrId = (attr.attrId != undefined) ? attr.attrId : "comp_attr_" + md5.hash("comp_attr_" + index + "_" + Math.floor(Math.random()*1000));
-    attr.attrId = attrId;
-    return <CMDAttributeView key={attrId} spec={attr} />
-  },
   renderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
     if(isLinked) {
@@ -85,10 +74,10 @@ var CMDComponentView = React.createClass({
     }
 
     if(isLinked && !linkedSpecAvailable) {
-      return <div>Component {compId} loading...</div>
+      return (<div key={compId}>Component {compId} loading...</div>);
     } else {
       // forward child expansion state
-      return <CMDComponentView
+      return (<CMDComponentView
         key={spec._appId}
         spec={spec}
         parent={this.props.spec}
@@ -96,7 +85,7 @@ var CMDComponentView = React.createClass({
         linkedComponents={this.props.linkedComponents}
         onToggle={this.props.onToggle}
         isLinked={isLinked}
-        />
+        />);
     }
   },
   render: function () {
@@ -134,7 +123,9 @@ var CMDComponentView = React.createClass({
 
     if(compElems != undefined) {
       // render elements
-      compElems = compElems.map(self.renderElement);
+      compElems = compElems.map(function(elem, index){
+        return (<CMDElementView key={elem._appId} spec={elem} />);
+      });
     }
 
     if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
@@ -163,15 +154,17 @@ var CMDComponentView = React.createClass({
       <div className="attrList">AttributeList:
         {
           (attrSet != undefined && attrSet.length > 0)
-          ? $.map(attrSet, self.renderAttribute)
-          : <span> No Attributes</span>
+          ? $.map(attrSet, function(attr, index) {
+            return (<CMDAttributeView key={attr._appId} spec={attr} />);
+          })
+          : <span>No Attributes</span>
         }
       </div>
     );
 
     var children = (
       <div className={viewClasses}>
-        {attrList}
+        <div>{attrList}</div>
         <div className="childElements">{compElems}</div>
         <div ref="components" className="childComponents">{nestedComponents}</div>
       </div>

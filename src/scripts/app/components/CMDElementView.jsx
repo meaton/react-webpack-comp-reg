@@ -80,9 +80,7 @@ var CMDElementView = React.createClass({
           {
             (attrSet != undefined && attrSet.length > 0) ?
             $.map(attrSet, function(attr, index) {
-              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
-              attr.attrId = attrId;
-              return <CMDAttributeView key={attrId} spec={attr} />
+              return <CMDAttributeView key={attr._appId} spec={attr} />
             }) : <span>No Attributes</span>
           }
         </div>);

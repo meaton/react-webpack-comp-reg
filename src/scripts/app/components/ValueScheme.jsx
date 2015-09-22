@@ -45,14 +45,14 @@ var ValueScheme = React.createClass({
             return (this.props.enabled) ? (
               <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
                 {$.map(enumItems, function(item, index) {
-                  return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
+                  return (<option key={obj._appId + index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>);
                 })}
               </Input>
             ) : (
               <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
                 {
                   $.map(enumItems, function(item, index) {
-                    return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
+                    return (<MenuItem key={obj._appId + index} eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>);
                   })
                 }
               </DropdownButton>
@@ -62,7 +62,6 @@ var ValueScheme = React.createClass({
         } else if(obj.Type != undefined) // attr
             valueScheme = obj.Type;
       }
-
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" readOnly />;
   }
 });
