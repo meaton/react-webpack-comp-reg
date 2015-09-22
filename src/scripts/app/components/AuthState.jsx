@@ -9,17 +9,18 @@ var adminUrl = require('../../config').adminUrl;
 // Mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
-
 /**
 * AuthState - shows login state and options to perform related actions
 * @constructor
 */
 var AuthState = React.createClass({
   mixins: [ImmutableRenderMixin],
+
   propTypes: {
     authState: React.PropTypes.object.isRequired,
     onLogin: React.PropTypes.func.isRequired
   },
+
   render: function () {
     var authState = this.props.authState;
 

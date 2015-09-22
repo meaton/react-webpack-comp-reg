@@ -14,7 +14,7 @@ var ComponentDetails = require('./ComponentDetailsOverview');
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 
 var Application = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore", "ComponentDetailsStore")],
+  mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore", "ComponentDetailsStore", "AuthenticationStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -22,17 +22,12 @@ var Application = React.createClass({
     return {
       items: flux.store("BrowserItemsStore").getState(),
       selection: flux.store("BrowserSelectionStore").getState(),
-      details: flux.store("ComponentDetailsStore").getState()
+      details: flux.store("ComponentDetailsStore").getState(),
+      auth: flux.store("AuthenticationStore").getState()
     };
   },
 
   render: function() {
-    //TODO: get login state from UserStore/AuthStore -> validUserSession
-    var authState = {
-      authenticated: false,
-      displayName: "Twan"
-    };
-
     var item = this.state.selection.currentItem;
     var viewer =
      (!item)? null :
@@ -48,14 +43,13 @@ var Application = React.createClass({
 
         <div className="auth-login">
           <AuthState
-            authState={authState}
+            authState={this.state.auth.authState}
             onLogin={this.handleLogin} />
         </div>
 
         <section className="application-container">
           <div className="main container-fluid">
             <div className="browser row">
-              {/*TODO flux: pass auth state */}
               <SpaceSelector
                 type={this.state.items.type}
                 space={this.state.items.space}
@@ -115,7 +109,7 @@ var Application = React.createClass({
   },
 
   handleLogin: function() {
-    //TODO flux: action
+    this.getFlux().actions.login();
   }
 });
 

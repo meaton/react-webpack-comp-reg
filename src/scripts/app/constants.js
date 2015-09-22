@@ -1,4 +1,8 @@
 module.exports = {
+  /* AUTH ACTIONS */
+  LOGIN_SUCCESS: "LOGIN_SUCCESS",
+  CHECK_AUTH_STATE: "CHECK_AUTH_STATE",
+
   /* BROWSER ACTIONS */
 
   /* loading of items (may fail or succeed) */

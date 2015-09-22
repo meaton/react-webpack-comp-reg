@@ -1,5 +1,6 @@
 module.exports = $.extend({},
   require("./actions/BrowserActions.js"),
   require("./actions/RestActions.js"),
-  require("./actions/ComponentViewActions.js")
+  require("./actions/ComponentViewActions.js"),
+  require("./actions/AuthActions.js")
 );
