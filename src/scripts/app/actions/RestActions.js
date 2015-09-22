@@ -47,11 +47,10 @@ function getComponentIds(childComponents) {
     if(child['@ComponentId'] != undefined) {
       linkedComponentIds.push(child['@ComponentId']);
     } else if(child.CMD_Component != undefined) {
-      //get child components in inline child
+      //add linked component IDs in inline children (recursively)
       Array.prototype.push.apply(linkedComponentIds, getComponentIds(child.CMD_Component));
     }
   });
-  log.debug("Linked component IDs:",linkedComponentIds)
   return linkedComponentIds;
 }
 
