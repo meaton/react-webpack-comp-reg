@@ -5,6 +5,8 @@ var log = require('loglevel');
 var React = require('react');
 var {Route} = require('react-router');
 
+var Constants = require("../constants");
+
 //bootstrap
 var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
@@ -33,10 +35,10 @@ var SpaceSelector = React.createClass({
   getInitialState: function() {
     return {
              spaces: (this.props.type == "componentsOnly") ?
-                [{ label: "Public", registry: {type: "Components", filter: "published" }, loginRequired: false },
-                 { label: "Private", registry: {type: "Components", filter: "private" }, loginRequired: true }] :
-                [{ label: "Public", registry: [{ type: "Profiles", filter: "published" }, { type: "Components", filter: "published" }], loginRequired: false },
-                 { label: "Private", registry: [{ type: "Profiles", filter: "private" }, { type: "Components", filter: "private" }], loginRequired: true }]
+                [{ label: "Public", registry: {type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PUBLISHED }, loginRequired: false },
+                 { label: "Private", registry: {type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }, loginRequired: true }] :
+                [{ label: "Public", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.SPACE_PUBLISHED }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PUBLISHED }], loginRequired: false },
+                 { label: "Private", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.PRIVATE }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }], loginRequired: true }]
            };
   },
 

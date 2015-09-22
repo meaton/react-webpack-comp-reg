@@ -12,7 +12,8 @@ var BrowserItemsStore = Fluxxor.createStore({
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
       Constants.LOAD_ITEMS_SUCCESS, this.handleLoadItemsSuccess,
-      Constants.LOAD_ITEMS_FAILURE, this.handleLoadItemsFailure
+      Constants.LOAD_ITEMS_FAILURE, this.handleLoadItemsFailure,
+      Constants.SWITCH_SPACE, this.handleSwitchSpace
     );
   },
 
@@ -41,6 +42,12 @@ var BrowserItemsStore = Fluxxor.createStore({
   handleLoadItemsFailure: function(message) {
     this.loading = false;
     this.errorMessage = message;
+    this.emit("change");
+  },
+
+  handleSwitchSpace: function(space) {
+    this.type = space.type;
+    this.space = space.registry;
     this.emit("change");
   }
 
