@@ -12,6 +12,9 @@ var Constants = require("../constants"),
  * Loads all linked components (with @ComponentId) that are a direct child
  * of the provided component (JSON spec). When done, the callback is called with
  * the result - this is guaranteed to happen.
+ * @param  {object}   component component specification to load linked components for
+ * @param  {string}   space     space to load components from
+ * @param  {Function} callback  will be called with the list of loaded components
  */
 function loadLinkedComponents(component, space, callback) {
     var components = {};
@@ -19,15 +22,7 @@ function loadLinkedComponents(component, space, callback) {
 
     // gather linked component IDs
     if(childComponents != undefined) {
-      var linkedComponentIds = [];
-      if(!$.isArray(childComponents)) {
-        childComponents = [childComponents];
-      }
-      childComponents.forEach(function(child){
-        if(child['@ComponentId'] != undefined) {
-          linkedComponentIds.push(child['@ComponentId']);
-        }
-      });
+      var linkedComponentIds = getComponentIds(childComponents);
       loadComponentsById(linkedComponentIds, space, components, callback);
     } else {
       // no child components, nothing to do so call callback immediately
@@ -36,8 +31,37 @@ function loadLinkedComponents(component, space, callback) {
 }
 
 /**
+ * recursively gets the IDs of all
+ * @param  {Array} childComponents child objects of type CMD_Component
+ * @return {Array}                 IDs of linked (non-inline) components
+ */
+function getComponentIds(childComponents) {
+  var linkedComponentIds = [];
+
+  //make sure we're dealing with an array
+  if(!$.isArray(childComponents)) {
+    childComponents = [childComponents];
+  }
+
+  childComponents.forEach(function(child){
+    if(child['@ComponentId'] != undefined) {
+      linkedComponentIds.push(child['@ComponentId']);
+    } else if(child.CMD_Component != undefined) {
+      //get child components in inline child
+      Array.prototype.push.apply(linkedComponentIds, getComponentIds(child.CMD_Component));
+    }
+  });
+  log.debug("Linked component IDs:",linkedComponentIds)
+  return linkedComponentIds;
+}
+
+/**
  * Loads components with specified ids. When done, the callback is called with
- * the result - this is guaranteed to happen.
+* the result - this is guaranteed to happen.
+ * @param  {[Array]}   ids       array with ids to load
+ * @param  {[string]}   space     space to load specs from
+ * @param  {[Object]}   collected collected specs thus far
+ * @param  {Function} callback  gets called with result when all components have been loaded
  */
 function loadComponentsById(ids, space, collected, callback) {
   var id = ids.pop();
