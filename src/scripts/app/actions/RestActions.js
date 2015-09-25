@@ -144,7 +144,6 @@ module.exports = {
    * @param  {Object} [currentset]     set of already loaded linked components (these will not be loaded again)
    */
   loadLinkedComponentSpecs: function(parentSpec, space, currentset) {
-    log.debug("loadLinkedComponentSpecs ", parentSpec);
     loadLinkedComponents(parentSpec, space, function(linkedComponents) {
       this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
     }.bind(this), currentset);
