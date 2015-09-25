@@ -9,6 +9,9 @@ var React = require("react"),
 //components
 var InfoPanel = require('./InfoPanel.jsx');
 
+//helpers
+var ExpansionState = require('../service/ExpansionState');
+
 /**
 * ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
 * @constructor
@@ -39,11 +42,17 @@ var ComponentDetailsOverview = React.createClass({
   loadXml: function () {
     this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
   },
+  
   toggleComponent: function(itemId, spec) {
+    var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId);
+
     // expand view
     this.getFlux().actions.toggleItemExpansion(itemId);
-    // load child components of expanded item
-    this.getFlux().actions.loadLinkedComponentSpecs(spec, this.props.space);
+
+    if(!wasExpanded) {
+      // load child components of expanded item
+      this.getFlux().actions.loadLinkedComponentSpecs(spec, this.props.space);
+    }
   },
 
   render: function() {

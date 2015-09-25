@@ -28,7 +28,7 @@ window.flux = flux;
 /* Logging */
 
 // global log level
-log.setLevel(log.levels.TRACE);
+log.setLevel(log.levels.DEBUG);
 
 // register on dispatch events
 if(log.getLevel() <= log.levels.DEBUG) {
