@@ -42,7 +42,7 @@ var ComponentDetailsOverview = React.createClass({
   loadXml: function () {
     this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
   },
-  
+
   toggleComponent: function(itemId, spec) {
     var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId);
 
@@ -51,7 +51,7 @@ var ComponentDetailsOverview = React.createClass({
 
     if(!wasExpanded) {
       // load child components of expanded item
-      this.getFlux().actions.loadLinkedComponentSpecs(spec, this.props.space);
+      this.getFlux().actions.loadLinkedComponentSpecs(spec, this.props.space, this.state.details.linkedComponents);
     }
   },
 

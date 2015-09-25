@@ -15,14 +15,18 @@ var Constants = require("../constants"),
  * @param  {object}   component component specification to load linked components for
  * @param  {string}   space     space to load components from
  * @param  {Function} callback  will be called with the list of loaded components
+ * @param  {Object} [currentset={}]  set of already loaded linked components (these will not be loaded again)
  */
-function loadLinkedComponents(component, space, callback) {
+function loadLinkedComponents(component, space, callback, currentset) {
     var components = {};
     var childComponents = component.CMD_Component;
+    if(currentset == undefined) {
+      currentset = {};
+    }
 
     // gather linked component IDs
     if(childComponents != undefined) {
-      var linkedComponentIds = getComponentIds(childComponents);
+      var linkedComponentIds = getComponentIds(childComponents, currentset);
       loadComponentsById(linkedComponentIds, space, components, callback);
     } else {
       // no child components, nothing to do so call callback immediately
@@ -33,9 +37,10 @@ function loadLinkedComponents(component, space, callback) {
 /**
  * recursively gets the IDs of all
  * @param  {Array} childComponents child objects of type CMD_Component
+ * @param  {Object} currentset     set of already loaded linked components (these will not be loaded again)
  * @return {Array}                 IDs of linked (non-inline) components
  */
-function getComponentIds(childComponents) {
+function getComponentIds(childComponents, currentset) {
   var linkedComponentIds = [];
 
   //make sure we're dealing with an array
@@ -43,12 +48,13 @@ function getComponentIds(childComponents) {
     childComponents = [childComponents];
   }
 
-  childComponents.forEach(function(child){
-    if(child['@ComponentId'] != undefined) {
-      linkedComponentIds.push(child['@ComponentId']);
+  childComponents.forEach(function(child) {
+    var childId = child['@ComponentId'];
+    if(childId != undefined && !currentset.hasOwnProperty(childId)) {
+      linkedComponentIds.push(childId);
     } else if(child.CMD_Component != undefined) {
       //add linked component IDs in inline children (recursively)
-      Array.prototype.push.apply(linkedComponentIds, getComponentIds(child.CMD_Component));
+      Array.prototype.push.apply(linkedComponentIds, getComponentIds(child.CMD_Component, currentset));
     }
   });
   return linkedComponentIds;
@@ -130,11 +136,18 @@ module.exports = {
     );
   },
 
-  loadLinkedComponentSpecs: function(parentSpec, space) {
+  /**
+   * Loads all linked components in the specified spec
+   * Dispatches Constants.LINKED_COMPONENTS_LOADED when done loading
+   * @param  {[type]} parentSpec spec to load linked components for
+   * @param  {[type]} space      space to load from
+   * @param  {Object} [currentset]     set of already loaded linked components (these will not be loaded again)
+   */
+  loadLinkedComponentSpecs: function(parentSpec, space, currentset) {
     log.debug("loadLinkedComponentSpecs ", parentSpec);
     loadLinkedComponents(parentSpec, space, function(linkedComponents) {
       this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
-    }.bind(this));
+    }.bind(this), currentset);
   },
 
   loadComponentSpecXml: function(type, space, item) {
