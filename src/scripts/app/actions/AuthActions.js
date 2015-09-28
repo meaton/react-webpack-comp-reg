@@ -10,12 +10,6 @@ var Constants = require("../constants"),
  */
 module.exports = {
 
-  login: function() {
-    var uid = "uid"; //TODO
-    var displayName = "name"; //TODO
-    this.dispatch(Constants.LOGIN_SUCCESS, {uid: uid, displayName: displayName});
-  },
-
   checkAuthState: function() {
     log.trace("Checking authentication state...");
     var authState = ComponentRegistryClient.getAuthState(function(authState){

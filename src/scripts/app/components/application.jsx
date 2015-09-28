@@ -44,9 +44,7 @@ var Application = React.createClass({
         <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
 
         <div className="auth-login">
-          <AuthState
-            authState={this.state.auth.authState}
-            onLogin={this.handleLogin} />
+          <AuthState authState={this.state.auth.authState} />
         </div>
 
         <section className="application-container">

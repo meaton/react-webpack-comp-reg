@@ -4,6 +4,7 @@
 var React = require('react/addons');
 
 // Config
+var Config = require('../../config').Config;
 var adminUrl = require('../../config').adminUrl;
 var restUrl = require('../../config').restUrl;
 var authUrl = restUrl + "/authentication"
@@ -19,8 +20,7 @@ var AuthState = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   propTypes: {
-    authState: React.PropTypes.object.isRequired,
-    onLogin: React.PropTypes.func.isRequired
+    authState: React.PropTypes.object.isRequired
   },
 
   render: function () {
@@ -34,7 +34,9 @@ var AuthState = React.createClass({
       );
     } else {
       return (
-        <a onClick={this.props.onLogin}>login</a>
+        <form className="login-form" ref="submitForm" action={authUrl + "?redirect=" + window.location.protocol + "//" + window.location.host + Config.deploy.path } method="POST">
+          <button type="submit">login</button>
+        </form>
       );
     }
   }
