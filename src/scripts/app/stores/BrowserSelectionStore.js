@@ -9,7 +9,8 @@ var BrowserSelectionStore = Fluxxor.createStore({
 
     this.bindActions(
       Constants.SELECT_BROWSER_ITEM, this.handleSelectItem,
-      Constants.SWITCH_MULTIPLE_SELECT, this.handleSwitchMultipleSelect
+      Constants.SWITCH_MULTIPLE_SELECT, this.handleSwitchMultipleSelect,
+      Constants.SWITCH_SPACE, this.handleSwitchSpace
     );
   },
 
@@ -44,6 +45,12 @@ var BrowserSelectionStore = Fluxxor.createStore({
 
   handleSwitchMultipleSelect: function() {
     this.allowMultiple = !this.allowMultiple;
+    this.emit("change");
+  },
+
+  handleSwitchSpace: function() {
+    // remove selection on space switch
+    this.selectedItems = {};
     this.emit("change");
   }
 });
