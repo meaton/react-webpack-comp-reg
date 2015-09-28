@@ -11,6 +11,7 @@ var marshaller = context.createMarshaller();
 var Constants = require("../constants");
 var Config = require('../../config').Config;
 var restUrl = require('../../config').restUrl;
+var authUrl = restUrl + "/authentication"
 
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
@@ -59,14 +60,35 @@ var ComponentRegistryClient = {
     url: requestUrl,
     dataType: (raw_type != undefined) ? raw_type : "json",
     success: function(data) {
-      log.trace("Successfully loaded " + requestUrl);
+      log.trace("Successfully loaded ", requestUrl);
       handleSuccess(data);
     }.bind(this),
     error: function(xhr, status, err) {
       handleFailure("Error loading spec for " + id + ": " + err);
     }.bind(this)
   }, corsRequestParams));
- }
+},
+
+getAuthState: function(handleSuccess, handleFailure) {
+  return $.ajax($.extend({
+   url: authUrl,
+   type: 'GET',
+   dataType: 'json',
+   success: function (result){
+     log.trace("Auth check result:", result);
+     isAuth = result.authenticated === 'true';
+     handleSuccess({
+       authenticated: isAuth,
+       uid: isAuth ? result.username : null,
+       displayName: isAuth ? result.displayName : null,
+       token: Math.random().toString(36).substring(7)
+     });
+   },
+   error: function(xhr, status, err) {
+     handleFailure("Could not check authentication state: " + err);
+   }
+  }, corsRequestParams));
+}
 
 };
 

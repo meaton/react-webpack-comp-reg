@@ -5,6 +5,8 @@ var React = require('react/addons');
 
 // Config
 var adminUrl = require('../../config').adminUrl;
+var restUrl = require('../../config').restUrl;
+var authUrl = restUrl + "/authentication"
 
 // Mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
