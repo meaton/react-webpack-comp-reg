@@ -4,9 +4,6 @@
 * @constructor
 */
 var DataTablesWrapper = React.createClass({
-  getInitialState: function() {
-    return { rows: [], redraw: false }
-  },
   componentDidMount: function() {
     var self = this;
     var id = this.getDOMNode().id;
