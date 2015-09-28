@@ -19,8 +19,8 @@ module.exports = {
   checkAuthState: function() {
     log.trace("Checking authentication state...");
     var authState = ComponentRegistryClient.getAuthState(function(authState){
-      if(trace != null) {
-        log.debug("Auth state:", authState);
+      if(authState != null) {
+        log.trace("Auth state:", authState);
         this.dispatch(Constants.CHECK_AUTH_STATE, authState);
       } else {
         this.dispatch(Constants.CHECK_AUTH_STATE, {uid: null});
