@@ -54,7 +54,7 @@ var Application = React.createClass({
                 type={this.state.items.type}
                 space={this.state.items.space}
                 multiSelect={this.state.selection.allowMultiple}
-                validUserSession={false /*TODO flux: pass auth state */}
+                validUserSession={this.state.auth.authState.uid != null}
                 onSpaceSelect={this.handleSpaceSelect}
                 onToggleMultipleSelect={this.handleToggleMultipleSelect} />
               {/*TODO: <DataTablesBtnGroup { ...this.getBtnGroupProps() } />*/}

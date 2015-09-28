@@ -38,7 +38,7 @@ var SpaceSelector = React.createClass({
                 [{ label: "Public", registry: {type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PUBLISHED }, loginRequired: false },
                  { label: "Private", registry: {type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }, loginRequired: true }] :
                 [{ label: "Public", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.SPACE_PUBLISHED }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PUBLISHED }], loginRequired: false },
-                 { label: "Private", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.PRIVATE }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }], loginRequired: true }]
+                 { label: "Private", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.SPACE_PRIVATE }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }], loginRequired: true }]
            };
   },
 
