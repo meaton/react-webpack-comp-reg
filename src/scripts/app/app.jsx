@@ -76,12 +76,13 @@ var routes = (
         <Route name="newEditor" path="new" handler={ComponentViewer} />
       </Route>
       */}
+      <Route name="browser" handler={Browser} />
       <Route name="import" handler={NotFound} />
       <Route path="editor" handler={NotFound}>
-        <Route name="component" path="component/:component" handler={NotFound} />
-        <Route name="newComponent" path="component/:component/new" handler={NotFound} />
-        <Route name="profile" path="profile/:profile" handler={NotFound} />
-        <Route name="newProfile" path="profile/:profile/new" handler={NotFound} />
+        <Route name="component" path="component/:id" handler={NotFound} />
+        <Route name="newComponent" path="component/:id/new" handler={NotFound} />
+        <Route name="profile" path="profile/:id" handler={NotFound} />
+        <Route name="newProfile" path="profile/:id/new" handler={NotFound} />
         <Route name="newEditor" path="new" handler={NotFound} />
       </Route>
       <DefaultRoute handler={Browser} />

@@ -47,14 +47,13 @@ var Browser = React.createClass({
               validUserSession={this.state.auth.authState.uid != null}
               onSpaceSelect={this.handleSpaceSelect}
               onToggleMultipleSelect={this.handleToggleMultipleSelect} />
-            {/*
             <BrowserMenuGroup
                 type={this.state.items.type}
                 space={this.state.items.space}
                 item={item}
                 loggedIn={this.state.auth.authState.uid != null}
+                multiSelect={this.state.selection.allowMultiple}
               />
-              */}
             <DataGrid
               items={this.state.items.items}
               selectedItems={this.state.selection.selectedItems}
