@@ -7,15 +7,12 @@ var React = require("react"),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 // Components
-var AuthState = require("./AuthState.jsx");
 var DataGrid = require("./DataGrid.jsx");
 var SpaceSelector = require("./SpaceSelector.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
+var BrowserMenuGroup = require('./BrowserMenuGroup');
 
-// Boostrap
-var PageHeader = require('react-bootstrap/lib/PageHeader');
-
-var Application = React.createClass({
+var Browser = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore", "ComponentDetailsStore", "AuthenticationStore")],
 
   // Required by StoreWatchMixin
@@ -40,54 +37,45 @@ var Application = React.createClass({
           space={this.state.items.space}
           />
     return (
-      <div>
-        <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
-
-        <div className="auth-login">
-          <AuthState authState={this.state.auth.authState} />
-        </div>
-
-        <section className="application-container">
-          <div className="main container-fluid">
-            <div className="browser row">
-              <SpaceSelector
+      <section className="application-container">
+        <div className="main container-fluid">
+          <div className="browser row">
+            <SpaceSelector
+              type={this.state.items.type}
+              space={this.state.items.space}
+              multiSelect={this.state.selection.allowMultiple}
+              validUserSession={this.state.auth.authState.uid != null}
+              onSpaceSelect={this.handleSpaceSelect}
+              onToggleMultipleSelect={this.handleToggleMultipleSelect} />
+            {/*
+            <BrowserMenuGroup
                 type={this.state.items.type}
                 space={this.state.items.space}
-                multiSelect={this.state.selection.allowMultiple}
-                validUserSession={this.state.auth.authState.uid != null}
-                onSpaceSelect={this.handleSpaceSelect}
-                onToggleMultipleSelect={this.handleToggleMultipleSelect} />
-              {/*TODO: <DataTablesBtnGroup { ...this.getBtnGroupProps() } />*/}
-              <DataGrid
-                items={this.state.items.items}
-                selectedItems={this.state.selection.selectedItems}
-                loading={this.state.items.loading}
-                errorMessage={this.state.items.errorMessage}
-                multiSelect={this.state.selection.allowMultiple}
-                editMode={false}
-                onReload={this.loadItems}
-                onRowSelect={this.handleRowSelect}
-                />
-            </div>
-            <div className="viewer row">
-              {viewer}
-            </div>
-            <div id="alert-container" /></div>
-        </section>
-      </div>
+                item={item}
+                loggedIn={this.state.auth.authState.uid != null}
+              />
+              */}
+            <DataGrid
+              items={this.state.items.items}
+              selectedItems={this.state.selection.selectedItems}
+              loading={this.state.items.loading}
+              errorMessage={this.state.items.errorMessage}
+              multiSelect={this.state.selection.allowMultiple}
+              editMode={false}
+              onReload={this.loadItems}
+              onRowSelect={this.handleRowSelect}
+              />
+          </div>
+          <div className="viewer row">
+            {viewer}
+          </div>
+          <div id="alert-container" /></div>
+      </section>
     );
   },
 
   componentDidMount: function() {
-    this.checkAuthState();
-    // check auth state every 30s
-    this.authInterval = setInterval(this.checkAuthState, 30*1000);
-
     this.loadItems();
-  },
-
-  componentWillUnmount: function() {
-    clearInterval(this.authInterval);
   },
 
   loadItems: function() {
@@ -114,15 +102,7 @@ var Application = React.createClass({
       this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, val);
     }
     //TODO flux: comments
-  },
-
-  handleLogin: function() {
-    this.getFlux().actions.login();
-  },
-
-  checkAuthState: function() {
-    this.getFlux().actions.checkAuthState();
   }
 });
 
-module.exports = Application;
+module.exports = Browser;
