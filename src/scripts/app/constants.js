@@ -3,6 +3,9 @@ module.exports = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
   CHECK_AUTH_STATE: "CHECK_AUTH_STATE",
 
+  /* MESSAGE ACTIONS */
+  DISMISS_MESSAGE: "DISMISS_MESSAGE",
+
   /* BROWSER ACTIONS */
 
   /* loading of items (may fail or succeed) */

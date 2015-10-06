@@ -37,8 +37,7 @@ var Browser = React.createClass({
           space={this.state.items.space}
           />
     return (
-      <section className="application-container">
-        <div className="main container-fluid">
+        <section id="browser">
           <div className="browser row">
             <SpaceSelector
               type={this.state.items.type}
@@ -70,8 +69,7 @@ var Browser = React.createClass({
           <div className="viewer row">
             {viewer}
           </div>
-          <div id="alert-container" /></div>
-      </section>
+        </section>
     );
   },
 

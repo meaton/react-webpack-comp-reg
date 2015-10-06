@@ -219,7 +219,7 @@ module.exports = {
       this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, ids);
     }.bind(this), function(message) {
       log.error(message);
-      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, {ids, message});
+      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, {ids: ids, message: message});
     }.bind(this));
   }
 

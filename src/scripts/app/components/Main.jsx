@@ -11,9 +11,11 @@ var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 
 // Components
 var AuthState = require("./AuthState.jsx");
+var AlertsView = require("./AlertsView.jsx");
 
 // Boostrap
 var PageHeader = require('react-bootstrap/lib/PageHeader');
+var Alert = require('react-bootstrap/lib/Alert');
 
 /***
 * Main - Default component and entry point to the application.
@@ -21,13 +23,14 @@ var PageHeader = require('react-bootstrap/lib/PageHeader');
 */
 var Main = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore")],
+  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
-      auth: flux.store("AuthenticationStore").getState()
+      auth: flux.store("AuthenticationStore").getState(),
+      messages: flux.store("MessageStore").getState()
     };
   },
 
@@ -45,8 +48,11 @@ var Main = React.createClass({
     this.getFlux().actions.checkAuthState();
   },
 
-  render: function() {
+  handleDismissMessage: function(id) {
+    this.getFlux().actions.dismissMessage(id);
+  },
 
+  render: function() {
     return (
         <div>
           <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
@@ -55,7 +61,12 @@ var Main = React.createClass({
             <AuthState authState={this.state.auth.authState} />
           </div>
 
-          <RouteHandler/>
+          <section className="application-container">
+            <div className="main container-fluid">
+              <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
+              <RouteHandler/>
+            </div>
+          </section>
         </div>
     );
   }

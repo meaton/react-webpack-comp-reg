@@ -12,7 +12,8 @@ var Browser = require("./components/Browser.jsx"),
 var BrowserItemsStore = require("./stores/BrowserItemsStore"),
     BrowserSelectionStore = require("./stores/BrowserSelectionStore"),
     ComponentDetailsStore = require("./stores/ComponentDetailsStore"),
-    AuthenticationStore = require("./stores/AuthenticationStore");
+    AuthenticationStore = require("./stores/AuthenticationStore"),
+    MessageStore = require("./stores/MessageStore");
 
 var actions = require("./actions");
 
@@ -27,7 +28,8 @@ var stores = {
   BrowserItemsStore: new BrowserItemsStore(),
   BrowserSelectionStore: new BrowserSelectionStore(),
   ComponentDetailsStore: new ComponentDetailsStore(),
-  AuthenticationStore: new AuthenticationStore()
+  AuthenticationStore: new AuthenticationStore(),
+  MessageStore: new MessageStore()
 };
 
 var flux = new Fluxxor.Flux(stores, actions);
