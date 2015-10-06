@@ -50,6 +50,8 @@ var MessageStore = Fluxxor.createStore({
 
     this.bindActions(
       Constants.DISMISS_MESSAGE, this.handleDismiss,
+      Constants.LOAD_ITEMS_FAILURE, this.handleError,
+      Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleError,
       Constants.DELETE_COMPONENTS_FAILURE, this.handleError
     );
   },

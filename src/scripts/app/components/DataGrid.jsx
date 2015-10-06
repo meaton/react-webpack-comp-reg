@@ -20,7 +20,6 @@ var DataGrid = React.createClass({
     editMode: React.PropTypes.bool.isRequired,
     deletedItems: React.PropTypes.object,
     onReload: React.PropTypes.func.isRequired,
-    errorMessage: React.PropTypes.string,
     onRowSelect: React.PropTypes.func
   },
 
@@ -66,7 +65,6 @@ var DataGrid = React.createClass({
 
         <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
           {this.props.loading ? <span>Loading...</span> : null}
-          {(this.props.errorMessage != null) ? <span className="error">{this.props.errorMessage}</span> : null}
           <DataTablesWrapper ref="wrapper" multiple={this.props.multiSelect} editMode={this.props.editMode} >
            {x}
           </DataTablesWrapper>

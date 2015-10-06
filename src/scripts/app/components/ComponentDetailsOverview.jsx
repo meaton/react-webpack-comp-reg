@@ -74,14 +74,9 @@ var ComponentDetailsOverview = React.createClass({
       : null;
 
 
-    var error = (this.state.details.errorMessage != null) ?
-      <p className="error">{this.state.details.errorMessage}</p>
-      :null;
-
     return (
       <div className={hideClass}>
         {infoPanel}
-        {error}
       </div>
     );
   }

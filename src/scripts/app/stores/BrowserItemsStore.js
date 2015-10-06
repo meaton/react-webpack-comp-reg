@@ -6,7 +6,6 @@ var BrowserItemsStore = Fluxxor.createStore({
     this.items = []; //items to be shown in browser
     this.deleted = {}; //items that have been deleted or are being deleted
     this.loading = false; //loading state
-    this.errorMessage = null; //error message
     this.type = Constants.TYPE_PROFILE; //components or profiles
     this.space = Constants.SPACE_PUBLISHED; //private, group, published
 
@@ -26,14 +25,12 @@ var BrowserItemsStore = Fluxxor.createStore({
       items: this.items,
       loading: this.loading,
       deleted: this.deleted,
-      errorMessage: this.errorMessage,
       type: this.type,
       space: this.space
     };
   },
 
   handleLoadItems: function() {
-    this.errorMessage = null;
     this.loading = true;
     this.emit("change");
   },
@@ -45,9 +42,8 @@ var BrowserItemsStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleLoadItemsFailure: function(message) {
+  handleLoadItemsFailure: function() {
     this.loading = false;
-    this.errorMessage = message;
     this.emit("change");
   },
 
@@ -77,7 +73,6 @@ var BrowserItemsStore = Fluxxor.createStore({
 
   handleDeleteItemsFailure: function(result) {
     this.loading = false;
-    this.errorMessage = result.message;
     for(var i=0; i<result.ids.length; i++) {
       var id=result.ids[i];
       delete this.deleted[id];

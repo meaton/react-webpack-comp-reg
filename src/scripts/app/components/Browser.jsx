@@ -59,7 +59,6 @@ var Browser = React.createClass({
               deletedItems={this.state.items.deleted}
               selectedItems={this.state.selection.selectedItems}
               loading={this.state.items.loading}
-              errorMessage={this.state.items.errorMessage}
               multiSelect={this.state.selection.allowMultiple}
               editMode={false}
               onReload={this.loadItems}
