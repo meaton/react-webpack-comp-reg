@@ -70,7 +70,8 @@ var ComponentRegistryClient = {
 },
 
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
-  handleSuccess();
+  setTimeout(function(){handleSuccess();}, 1000);
+  //setTimeout(function(){handleFailure("test error");}, 1000);
 },
 
 getAuthState: function(handleSuccess, handleFailure) {

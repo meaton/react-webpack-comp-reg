@@ -57,6 +57,7 @@ var Browser = React.createClass({
               />
             <DataGrid
               items={this.state.items.items}
+              deletedItems={this.state.items.deleted}
               selectedItems={this.state.selection.selectedItems}
               loading={this.state.items.loading}
               errorMessage={this.state.items.errorMessage}

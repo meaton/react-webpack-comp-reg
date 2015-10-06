@@ -1,4 +1,7 @@
+var log = require('loglevel');
+
 var React = require("react")
+    Constants = require("../constants");
     Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React),
     DataTablesWrapper = require("./DataTablesWrapper.jsx"),
@@ -15,6 +18,7 @@ var DataGrid = React.createClass({
     loading: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
+    deletedItems: React.PropTypes.object,
     onReload: React.PropTypes.func.isRequired,
     errorMessage: React.PropTypes.string,
     onRowSelect: React.PropTypes.func
@@ -27,6 +31,23 @@ var DataGrid = React.createClass({
     var multiSelect = this.props.multiSelect;
 
     var x = this.props.items.map(function(d, index){
+     var className = (index+1) % 2 ? "odd" : "even";
+
+     // deal with deletion
+     var deletedItems = self.props.deletedItems;
+     if(deletedItems != undefined) {
+       if(deletedItems.hasOwnProperty(d.id)) {
+         var deleteState = deletedItems[d.id];
+         if(deleteState === Constants.DELETE_STATE_DELETED) {
+           // don't show anything for the deleted item
+           return null;
+         }
+         if(deleteState === Constants.DELETE_STATE_DELETING) {
+           className += " deleting";
+         }
+       }
+     }
+
      return (
         <DataTablesRow
           data={d}
@@ -35,7 +56,7 @@ var DataGrid = React.createClass({
           buttonBefore={addButton}
           onClick={self.rowClick}
           selected={selectedContext[d.id]?true:false}
-          className={(index+1) % 2 ? "odd" : "even"} >
+          className={className} >
         </DataTablesRow>
      );
     });
