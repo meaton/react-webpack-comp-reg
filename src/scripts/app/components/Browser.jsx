@@ -50,9 +50,10 @@ var Browser = React.createClass({
             <BrowserMenuGroup
                 type={this.state.items.type}
                 space={this.state.items.space}
-                item={item}
+                items={this.state.selection.selectedItems}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
+                deleteComp={this.handleDelete}
               />
             <DataGrid
               items={this.state.items.items}
@@ -101,6 +102,10 @@ var Browser = React.createClass({
       this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, val);
     }
     //TODO flux: comments
+  },
+  handleDelete: function() {
+    var ids = Object.keys(this.state.selection.selectedItems);
+    this.getFlux().actions.deleteComponents(this.state.items.type, this.state.items.space, ids);
   }
 });
 

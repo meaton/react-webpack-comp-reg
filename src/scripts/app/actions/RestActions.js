@@ -102,6 +102,41 @@ function loadComponentsById(ids, space, collected, callback) {
   }
 }
 
+/**
+ * Deletes a number of components (by id) by means of tail recursion
+ * @param  {string} type      [description]
+ * @param  {string} space     [description]
+ * @param  {Array} ids       [description]
+ * @param  {function} success   success callback
+ * @param  {function} failure   failure callback
+ * @param  {Array} [remainder] [description]
+ */
+function deleteComponents(type, space, ids, success, failure, remainder) {
+  if(remainder == undefined) {
+    remainder = ids.slice();
+  }
+  if(remainder.length == 0) {
+    // done
+    log.trace("Nothing left to delete");
+    success(ids);
+  } else {
+    // some items left to delete... take first
+    var id = remainder.shift();
+    log.trace("Requesting deletion of", id);
+
+    // callback that wraps success callback, passing it with remainder to
+    // this function
+    var handleSuccess = function() {
+      //deleted
+      log.trace("Successfully deleted", id);
+      //process remainder
+      deleteComponents(type, space, ids, success, failure, remainder);
+    };
+
+    ComponentRegistryClient.deleteComponents(type, space, id, handleSuccess, failure);
+  }
+}
+
 module.exports = {
   loadItems: function(type, space) {
     this.dispatch(Constants.LOAD_ITEMS);
@@ -164,7 +199,7 @@ module.exports = {
 
   checkAuthState: function() {
     log.trace("Checking authentication state...");
-    var authState = ComponentRegistryClient.getAuthState(function(authState){
+    ComponentRegistryClient.getAuthState(function(authState){
       if(authState != null) {
         log.trace("Auth state:", authState);
         this.dispatch(Constants.CHECK_AUTH_STATE, authState);
@@ -175,6 +210,17 @@ module.exports = {
       //TODO: dispatch so that store knows auth state is not up to date?
       log.error(message);
     });
+  },
+
+  deleteComponents: function(type, space, ids) {
+    log.info("Requesting deletion of", ids);
+    this.dispatch(Constants.DELETE_COMPONENTS, ids);
+    deleteComponents(type, space, ids, function(){
+      this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, ids);
+    }.bind(this), function(message) {
+      log.error(message);
+      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, ids);
+    }.bind(this));
   }
 
 };

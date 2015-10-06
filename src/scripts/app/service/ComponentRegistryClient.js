@@ -69,6 +69,10 @@ var ComponentRegistryClient = {
   }, corsRequestParams));
 },
 
+deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
+  handleSuccess();
+},
+
 getAuthState: function(handleSuccess, handleFailure) {
   return $.ajax($.extend({
    url: authUrl,

@@ -27,26 +27,23 @@ var BrowserMenuGroup = React.createClass({
   propTypes: {
     type: React.PropTypes.string.isRequired,
     space: React.PropTypes.string.isRequired,
-    item: React.PropTypes.object,
+    items: React.PropTypes.object,
     loggedIn: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
     deleteComp: React.PropTypes.func,
   },
   getDefaultProps: function() {
-    return { item: null };
+    return { items: {} };
   },
   generateDeleteModal: function() {
-    var currentSelection = this.props.profile || this.props.component;
-    var selectedRows = $('#testtable tr.selected');
     var deleteIdList = [];
-    if(selectedRows.length > 0)
-      selectedRows.each(function() {
-        var id = $(this).data().reactid;
-        if(id != undefined && id.indexOf('clarin') > 0) {
-          id = id.substr(id.indexOf('$')+1, id.length).replace(/=1/g, '.').replace(/=2/g, ':')
-          deleteIdList.push(React.createElement('li', { key: id }, $(this).find('td.name').text()));
-        }
-      });
+    var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
+    if(selectionCount > 0)
+      Object.keys(this.props.items).forEach(function(id, index) {
+        var name = this.props.items[id].name;
+        deleteIdList.push(React.createElement('li', { key: id }, name));
+      }.bind(this));
+
     return (
       <div className="modal-desc">You will delete the following item(s):
         <ul>{deleteIdList}</ul>
@@ -55,15 +52,14 @@ var BrowserMenuGroup = React.createClass({
     );
   },
   render: function () {
-    //var selectedId = this.props.item.id;
-    // var componentType = this.props.type;
-    // var space = this.props.space;
-    var isPublished = this.props.space !== Constants.SPACE_PRIVATE;
+    var isPublished = this.props.space !== Constants.SPACE_PRIVATE; // TODO: or SPACE_GROUP
+    var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
 
     var editorLink = null;
     var editBtnLabel = isPublished ? "Edit as new" : "Edit";
 
-    if(this.props.item != null) {
+    if(selectionCount == 1) {
+      var itemId = Object.keys(this.props.items)[0];
       var editorRoute = null;
       if(this.props.type === Constants.TYPE_PROFILE) {
         editorRoute = (isPublished) ? "newProfile" : "profile";
@@ -71,13 +67,15 @@ var BrowserMenuGroup = React.createClass({
         editorRoute = (isPublished) ? "newComponent" : "component";
       }
 
+      log.info("Item", itemId, this.props.items[itemId]);
+
       if(editorRoute != null) {
         editorLink = (
           <ButtonLink
             to={editorRoute}
-            params={{id: this.props.item.id}}
+            params={{id: itemId}}
             bsStyle="primary"
-            disabled={this.props.multiSelect || this.props.item == null}>
+            disabled={this.props.multiSelect}>
               {editBtnLabel}
           </ButtonLink>
         );
@@ -91,10 +89,10 @@ var BrowserMenuGroup = React.createClass({
           <ButtonLink to="newEditor" disabled={!this.props.loggedIn}>Create new</ButtonLink>
           {editorLink}
           <ButtonLink to="import" disabled={!this.props.loggedIn}>Import</ButtonLink>
-          <ButtonModal {...this.props} action={this.props.deleteComp} disabled={this.props.item == null || isPublished}
+          <ButtonModal {...this.props} action={this.props.deleteComp} disabled={!this.props.loggedIn || selectionCount == 0 || isPublished}
             btnLabel="Delete"
             title="Delete items"
-            desc={this.generateDeleteModal()} />
+            desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
         </ButtonGroup>
     );
   }

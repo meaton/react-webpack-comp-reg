@@ -9,7 +9,7 @@ var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 var Browser = require("./components/Browser.jsx"),
     Main = require("./components/Main.jsx");
 
-var    BrowserItemsStore = require("./stores/BrowserItemsStore"),
+var BrowserItemsStore = require("./stores/BrowserItemsStore"),
     BrowserSelectionStore = require("./stores/BrowserSelectionStore"),
     ComponentDetailsStore = require("./stores/ComponentDetailsStore"),
     AuthenticationStore = require("./stores/AuthenticationStore");
@@ -93,8 +93,5 @@ var routes = (
 Router.run(routes, Router.HistoryLocation, function(Handler) {
   React.render(<Handler flux={flux} />, document.getElementById("app"));
 });
-
-// /* Done! */
-// React.render(<Application flux={flux} />, document.getElementById("app"));
 
 log.info("Application started");
