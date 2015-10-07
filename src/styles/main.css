@@ -54,12 +54,6 @@ a { cursor: pointer; color: #999; }
   padding: 16px;
 }
 
-.registry_item {
-  margin-top: 20px;
-  padding-left: 20px;
-  background: #eee;
-}
-
 .space_selector.btn-group {
   margin: 8px;
 }
@@ -81,7 +75,15 @@ a { cursor: pointer; color: #999; }
   overflow: visible;
 }
 
+/*
 .main .browser {
   max-height: 200px;
   overflow-y: auto;
 }
+
+
+.registry_item {
+  margin-top: 20px;
+  padding-left: 20px;
+  background: #eee;
+}*/

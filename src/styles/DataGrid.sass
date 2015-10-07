@@ -14,3 +14,48 @@ tr.odd.deleting, tr.even.deleting {
   color: #ddd;
   background: #eee !important;
 }
+
+// todo
+// http://stackoverflow.com/questions/17067294/html-table-with-100-width-with-vertical-scroll-inside-tbody
+// or http://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap
+
+table {
+    display: block;
+    /*height: 200px;*/
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+}
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 30px;
+
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 250px;
+    overflow-y: auto;
+}
+
+thead {
+    /* fallback */
+}
+
+tbody td, thead th {
+    width: 14.2%;
+    float: left;
+    height: 3em;
+    line-height: 3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

@@ -32,13 +32,13 @@ var DataTablesWrapper = React.createClass({
         <thead>
           <tr>
             {(this.props.multiple || this.props.editMode) ? <td/> : null}
-            <td>Name</td>
-            <td>Group Name</td>
-            <td>Domain Name</td>
-            <td>Creator</td>
-            <td>Description</td>
-            <td>Registration Date</td>
-            <td>Comments</td>
+            <th>Name</th>
+            <th>Group Name</th>
+            <th>Domain Name</th>
+            <th>Creator</th>
+            <th>Description</th>
+            <th>Registration Date</th>
+            <th>Comments</th>
           </tr>
         </thead>
         <tbody>

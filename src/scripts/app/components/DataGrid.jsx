@@ -69,8 +69,7 @@ var DataGrid = React.createClass({
            {x}
           </DataTablesWrapper>
         </div>
-
-        <a onClick={this.props.onReload}>reload</a>
+        {/*<a onClick={this.props.onReload}>reload</a>*/}
       </div>
    );
   },

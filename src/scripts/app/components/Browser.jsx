@@ -55,6 +55,7 @@ var Browser = React.createClass({
                 deleteComp={this.handleDelete}
               />
             <DataGrid
+              ref="dataGrid"
               items={this.state.items.items}
               deletedItems={this.state.items.deleted}
               selectedItems={this.state.selection.selectedItems}
