@@ -91,13 +91,9 @@ a { cursor: pointer; color: #999; }
 .main .viewer {
   height: 40%;
   overflow-y: hidden;
+  padding-top: .5em;
 }
 
 .main .viewer > div.show, .main .viewer > div.show > div {
   height: 100%;
-}
-
-div.tab-content {
-  height: 100%;
-  overflow-y: scroll;
 }
