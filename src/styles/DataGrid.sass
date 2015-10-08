@@ -35,15 +35,19 @@ tr:after {
     clear: both;
 }
 
+thead tr {
+    //compensate for scrollbar in tbody
+    margin-right: 1em;
+}
+
 thead th {
     height: 30px;
-
-    /*text-align: left;*/
+    text-align: left;
 }
 
 tbody {
     height: 250px;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 thead {
@@ -51,11 +55,19 @@ thead {
 }
 
 tbody td, thead th {
-    width: 14.2%;
+    width: 14%;
     float: left;
     height: 3em;
     line-height: 3em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+tbody td.name, thead th.name {
+  width: 20%;
+}
+
+tbody td.commentsCount, thead th.commentsCount {
+  width: 10%;
 }
