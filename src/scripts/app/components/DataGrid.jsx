@@ -61,15 +61,11 @@ var DataGrid = React.createClass({
     });
 
     return (
-      <div>
-
-        <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
-          {this.props.loading ? <span>Loading...</span> : null}
-          <DataTablesWrapper ref="wrapper" multiple={this.props.multiSelect} editMode={this.props.editMode} >
-           {x}
-          </DataTablesWrapper>
-        </div>
-        {/*<a onClick={this.props.onReload}>reload</a>*/}
+      <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
+        {this.props.loading ? <span>Loading...</span> : null}
+        <DataTablesWrapper ref="wrapper" multiple={this.props.multiSelect} editMode={this.props.editMode} >
+         {x}
+        </DataTablesWrapper>
       </div>
    );
   },

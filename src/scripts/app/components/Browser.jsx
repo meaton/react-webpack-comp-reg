@@ -12,6 +12,8 @@ var SpaceSelector = require("./SpaceSelector.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 
+require('../../../styles/Browser.sass');
+
 var Browser = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin("BrowserItemsStore", "BrowserSelectionStore", "ComponentDetailsStore", "AuthenticationStore")],
 

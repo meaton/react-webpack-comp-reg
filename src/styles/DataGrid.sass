@@ -1,73 +1,85 @@
-td.add .btn:focus {
-  outline: 0 none;
-}
+.browser .grid {
 
-tr.even.selected {
-  background-color: #b0bed9 !important;
-}
+  table {
+      position: relative;
+      display: block;
+      height: 100%;
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+  }
 
-tr.odd.selected {
-  background-color: #a0aec9 !important;
-}
+  thead {
+      position: absolute;
+      top: 0px;
+      height: 3em;
+      width: 100%;
 
-tr.odd.deleting, tr.even.deleting {
-  color: #ddd;
-  background: #eee !important;
-}
+      // prevent tbody scrolling over header
+      z-index: 10;
+      background: #fff;
+  }
 
-// todo
-// http://stackoverflow.com/questions/17067294/html-table-with-100-width-with-vertical-scroll-inside-tbody
-// or http://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap
+  tbody {
+      position: absolute;
+      top: 0px;
+      width: 100%;
+      padding-top: 3em; /* counter thead height */
+      height: 100%;
+      overflow-y: scroll;
+  }
 
-table {
-    display: block;
-    /*height: 200px;*/
-    width: 100%;
-    border-bottom: 1px solid #ccc;
-}
+  thead, tbody, tr, td, th { display: block; }
 
-thead, tbody, tr, td, th { display: block; }
+  td.add .btn:focus {
+    outline: 0 none;
+  }
 
-tr:after {
-    content: ' ';
-    display: block;
-    visibility: hidden;
-    clear: both;
-}
+  tr.even.selected {
+    background-color: #b0bed9 !important;
+  }
 
-thead tr {
-    //compensate for scrollbar in tbody
-    margin-right: 1em;
-}
+  tr.odd.selected {
+    background-color: #a0aec9 !important;
+  }
 
-thead th {
-    height: 30px;
-    text-align: left;
-}
+  tr.odd.deleting, tr.even.deleting {
+    color: #ddd;
+    background: #eee !important;
+  }
 
-tbody {
-    height: 250px;
-    overflow-y: scroll;
-}
+  tr:after {
+      content: ' ';
+      display: block;
+      visibility: hidden;
+      clear: both;
+  }
 
-thead {
-    /* fallback */
-}
+  thead tr {
+      //compensate for scrollbar in tbody
+      margin-right: 1em;
+  }
 
-tbody td, thead th {
-    width: 14%;
-    float: left;
-    height: 3em;
-    line-height: 3em;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
+  thead th {
+      height: 30px;
+      text-align: left;
+  }
 
-tbody td.name, thead th.name {
-  width: 20%;
-}
+  tbody td, thead th {
+      width: 14%;
+      float: left;
+      height: 3em;
+      line-height: 3em;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+  }
 
-tbody td.commentsCount, thead th.commentsCount {
-  width: 10%;
+  tbody td.name, thead th.name {
+    width: 20%;
+  }
+
+  tbody td.commentsCount, thead th.commentsCount {
+    width: 10%;
+  }
+
 }

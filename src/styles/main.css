@@ -1,9 +1,9 @@
 /* Stiziles */
 html {
-  height: 90%;  
+  height: 90%;
 }
 
-body, #app, #app-main, #app-root, .main {
+body, #app, #app-main, #app-root {
   background: #fff;
   height: 100%;
 }
@@ -36,12 +36,11 @@ a { cursor: pointer; color: #999; }
   margin: 0;
   margin-left: 8px;
   height: 60px;
-  height: 10%;
 }
 
 .main {
   height: 100%;
-  margin-top: 60px;
+  margin-top: 60px; /* filled by header */
   background: #fff;
   color: #999;
   overflow: hidden;
@@ -80,15 +79,25 @@ a { cursor: pointer; color: #999; }
   overflow: visible;
 }
 
-/*
-.main .browser {
-  max-height: 200px;
-  overflow-y: auto;
+#browser {
+  height: 100%;
 }
 
+.main .browser {
+  height: 60%;
+  overflow-y: hidden;
+}
 
-.registry_item {
-  margin-top: 20px;
-  padding-left: 20px;
-  background: #eee;
-}*/
+.main .viewer {
+  height: 40%;
+  overflow-y: hidden;
+}
+
+.main .viewer > div.show, .main .viewer > div.show > div {
+  height: 100%;
+}
+
+div.tab-content {
+  height: 100%;
+  overflow-y: scroll;
+}
