@@ -54,19 +54,20 @@ var Main = React.createClass({
 
   render: function() {
     return (
-        <div>
+        <div id="app-root">
           <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
 
           <div className="auth-login">
             <AuthState authState={this.state.auth.authState} />
           </div>
 
-          <section className="application-container">
             <div className="main container-fluid">
               <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
               <RouteHandler/>
             </div>
-          </section>
+            {/*
+            <section id="app-main" className="application-container">
+          </section>*/}
         </div>
     );
   }
