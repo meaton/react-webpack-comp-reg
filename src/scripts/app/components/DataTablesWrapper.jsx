@@ -1,3 +1,4 @@
+var React = require("react");
 
 /**
 * DataTablesWrapper - outputs a HTML static table layout and header coloums for rendering by the DataTables plugin.
