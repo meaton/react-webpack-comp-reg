@@ -23,8 +23,9 @@
       position: absolute;
       top: 0px;
       width: 100%;
-      padding-top: 3em; /* counter height of table head */
-      height: 100%;
+      margin-top: 3em; /* counter height of table head */
+      height: 90%; /* fallback */
+      height: calc(100% - 3em);
       overflow-y: scroll;
   }
 
