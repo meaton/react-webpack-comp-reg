@@ -10,7 +10,7 @@ var Browser = require("./components/Browser.jsx"),
     Main = require("./components/Main.jsx"),
     Editor = require("./components/Editor.jsx");
 
-var BrowserItemsStore = require("./stores/BrowserItemsStore"),
+var ItemsStore = require("./stores/ItemsStore"),
     BrowserSelectionStore = require("./stores/BrowserSelectionStore"),
     ComponentDetailsStore = require("./stores/ComponentDetailsStore"),
     AuthenticationStore = require("./stores/AuthenticationStore"),
@@ -26,7 +26,7 @@ require('../../styles/normalize.css');
 
 /* Flux */
 var stores = {
-  BrowserItemsStore: new BrowserItemsStore(),
+  ItemsStore: new ItemsStore(),
   BrowserSelectionStore: new BrowserSelectionStore(),
   ComponentDetailsStore: new ComponentDetailsStore(),
   AuthenticationStore: new AuthenticationStore(),
