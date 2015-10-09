@@ -3,7 +3,7 @@ var log = require("loglevel");
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
 
-var BrowserSelectionStore = Fluxxor.createStore({
+var SelectionStore = Fluxxor.createStore({
   initialize: function(options) {
     this.selectedItems = {};
     this.allowMultiple = false;
@@ -72,4 +72,4 @@ var BrowserSelectionStore = Fluxxor.createStore({
   }
 });
 
-module.exports = BrowserSelectionStore;
+module.exports = SelectionStore;

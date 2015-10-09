@@ -15,14 +15,14 @@ var BrowserMenuGroup = require('./BrowserMenuGroup');
 require('../../../styles/Browser.sass');
 
 var Browser = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ItemsStore", "BrowserSelectionStore", "ComponentDetailsStore", "AuthenticationStore")],
+  mixins: [FluxMixin, StoreWatchMixin("ItemsStore", "SelectionStore", "ComponentDetailsStore", "AuthenticationStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
       items: flux.store("ItemsStore").getState(),
-      selection: flux.store("BrowserSelectionStore").getState(),
+      selection: flux.store("SelectionStore").getState(),
       details: flux.store("ComponentDetailsStore").getState(),
       auth: flux.store("AuthenticationStore").getState()
     };
