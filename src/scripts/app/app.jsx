@@ -7,7 +7,8 @@ var Router = require('react-router');
 var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 
 var Browser = require("./components/Browser.jsx"),
-    Main = require("./components/Main.jsx");
+    Main = require("./components/Main.jsx"),
+    Editor = require("./components/Editor.jsx");
 
 var BrowserItemsStore = require("./stores/BrowserItemsStore"),
     BrowserSelectionStore = require("./stores/BrowserSelectionStore"),
@@ -66,26 +67,14 @@ var NotFound = React.createClass({
 var routes = (
     <Route handler={Main} path={Config.deploy.path} >
       <NotFoundRoute handler={NotFound}/>
-      {/*
-      <Route name="login" handler={Login} />
-      <Route name="logout" handler={Logout} />
-      <Route name="import" handler={Import} />
-      <Route path="editor" handler={ComponentEditor}>
-        <Route name="component" path="component/:component" handler={ComponentViewer} />
-        <Route name="newComponent" path="component/:component/new" handler={ComponentViewer} />
-        <Route name="profile" path="profile/:profile" handler={ComponentViewer} />
-        <Route name="newProfile" path="profile/:profile/new" handler={ComponentViewer} />
-        <Route name="newEditor" path="new" handler={ComponentViewer} />
-      </Route>
-      */}
       <Route name="browser" handler={Browser} />
-      <Route name="import" handler={NotFound} />
-      <Route path="editor" handler={NotFound}>
-        <Route name="component" path="component/:id" handler={NotFound} />
-        <Route name="newComponent" path="component/:id/new" handler={NotFound} />
-        <Route name="profile" path="profile/:id" handler={NotFound} />
-        <Route name="newProfile" path="profile/:id/new" handler={NotFound} />
-        <Route name="newEditor" path="new" handler={NotFound} />
+      <Route name="import" handler={NotFound /*Import*/} />
+      <Route path="editor" handler={Editor}>
+        <Route name="component" path="component/:id" handler={NotFound /*ComponentViewer*/} />
+        <Route name="newComponent" path="component/:id/new" handler={NotFound /*ComponentViewer*/} />
+        <Route name="profile" path="profile/:id" handler={NotFound /*ComponentViewer*/} />
+        <Route name="newProfile" path="profile/:id/new" handler={NotFound /*ComponentViewer*/} />
+        <Route name="newEditor" path="new" handler={NotFound /*ComponentViewer*/} />
       </Route>
       <DefaultRoute handler={Browser} />
     </Route>

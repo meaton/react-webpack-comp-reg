@@ -65,9 +65,6 @@ var Main = React.createClass({
               <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
               <RouteHandler/>
             </div>
-            {/*
-            <section id="app-main" className="application-container">
-          </section>*/}
         </div>
     );
   }
