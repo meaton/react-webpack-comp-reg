@@ -4,7 +4,7 @@ var Fluxxor = require("fluxxor"),
 var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
     // application mode the store will serve information for (browser or items in grid in editor)
-    this.mode = Constants.MODE_BROWSER; 
+    this.mode = Constants.MODE_BROWSER;
 
     this.state = {
       [Constants.MODE_BROWSER]: {
