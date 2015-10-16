@@ -36,7 +36,7 @@ var DataTablesWrapper = React.createClass({
       <table className={className} id="testtable">
         <thead>
           <tr>
-            {(this.props.multiple || this.props.editMode) ? <th className="checkbox"/> : null}
+            {(this.props.multiple || this.props.editMode) ? <th className="checkboxCell"/> : null}
             <th className="name">Name</th>
             <th>Group Name</th>
             <th>Domain Name</th>

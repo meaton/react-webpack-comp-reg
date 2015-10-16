@@ -55,14 +55,16 @@
       clear: both;
   }
 
-  thead tr {
+  thead {
+    tr {
       //compensate for scrollbar in tbody
       margin-right: 1em;
-  }
+    }
 
-  thead th {
-      height: 30px;
-      text-align: left;
+    th {
+        height: 30px;
+        text-align: left;
+    }
   }
 
   tbody td, thead th {
@@ -99,8 +101,9 @@
     tbody td, thead th {
       width: 13%;
 
-      &.checkbox {
+      &.checkboxCell {
         width: 5%;
+        text-align: center;
       }
     }
   }
