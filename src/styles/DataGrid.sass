@@ -66,7 +66,6 @@
   }
 
   tbody td, thead th {
-      width: 14%;
       float: left;
       height: 3em;
       line-height: 3em;
@@ -75,12 +74,35 @@
       text-overflow: ellipsis;
   }
 
-  tbody td.name, thead th.name {
-    width: 20%;
+  // Column widths - default
+  table {
+    tbody td, thead th {
+      width: 14%;
+    }
   }
 
-  tbody td.commentsCount, thead th.commentsCount {
-    width: 10%;
+  // Column widths - static
+  table, table.multipleSelection {
+    tbody td, thead th {
+      &.name {
+        width: 20%;
+      }
+
+      &.commentsCount {
+        width: 10%;
+      }
+    }
+  }
+
+  // Column widths - with multiple selection
+  table.multipleSelection {
+    tbody td, thead th {
+      width: 13%;
+
+      &.checkbox {
+        width: 5%;
+      }
+    }
   }
 
 }

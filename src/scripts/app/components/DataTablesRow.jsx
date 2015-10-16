@@ -40,7 +40,7 @@ var DataTablesRow = React.createClass({
     var data = this.props.data;
 
     // if multiple select, add a checkbox to visually indicate this mode - notice there's no event handler because the change bubbles up to the row click event
-    var checkbox = (this.props.multiple) ? <td><input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
+    var checkbox = (this.props.multiple) ? <td className="checkbox"><input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
 
     var button = (this.state.active) ? <Button ref="addButton" onClick={this.buttonClick} active>+</Button> : <Button ref="addButton" onClick={this.buttonClick}>+</Button>;
     var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
