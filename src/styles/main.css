@@ -6,6 +6,11 @@ html {
 body, #app, #app-main, #app-root {
   background: #fff;
   height: 100%;
+  font-size: 12px;
+}
+
+.btn {
+  font-size: 12px;  
 }
 
 .wait, .wait * {
@@ -84,12 +89,12 @@ a { cursor: pointer; color: #999; }
 }
 
 .main .browser {
-  height: 60%;
+  height: 50%;
   overflow-y: hidden;
 }
 
 .main .viewer {
-  height: 40%;
+  height: 50%;
   overflow-y: hidden;
   padding-top: .5em;
 }
