@@ -45,6 +45,8 @@ var DataTablesRow = React.createClass({
     var button = (this.state.active) ? <Button ref="addButton" onClick={this.buttonClick} active>+</Button> : <Button ref="addButton" onClick={this.buttonClick}>+</Button>;
     var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
 
+    //TODO: parse registration date
+    var registrationDate = data.registrationDate.substr(0,10);
     return (
       <tr onClick={this.rowClick.bind(this, this.props.data)} key={this.props.data.id} className={(this.props.selected) ? "selected " + this.props.className : this.props.className}>
         {checkbox}
@@ -54,7 +56,7 @@ var DataTablesRow = React.createClass({
         <td className="domainName">{data.domainName}</td>
         <td className="creatorName">{data.creatorName}</td>
         <td className="description">{data.description}</td>
-        <td className="registrationDate">{data.registrationDate}</td>
+        <td className="registrationDate">{registrationDate}</td>
         <td className="commentsCount">{data.commentsCount}</td>
       </tr>
     )
