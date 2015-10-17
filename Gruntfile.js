@@ -1,6 +1,6 @@
 'use strict';
 
-var serverPort = 9000;
+var serverPort = 8000;
 
 var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
