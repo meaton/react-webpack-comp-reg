@@ -58,22 +58,26 @@ var BrowserMenuGroup = React.createClass({
     var editorLink = null;
     var editBtnLabel = isPublished ? "Edit as new" : "Edit";
 
+    var params = {};
+
     if(selectionCount == 1) {
       var itemId = Object.keys(this.props.items)[0];
       var editorRoute = null;
       if(this.props.type === Constants.TYPE_PROFILE) {
         editorRoute = (isPublished) ? "newProfile" : "profile";
+        params.profileId = itemId;
       } else if(this.props.type === Constants.TYPE_COMPONENTS) {
         editorRoute = (isPublished) ? "newComponent" : "component";
+        params.componentId = itemId;
       }
 
-      log.info("Item", itemId, this.props.items[itemId]);
+      console.log("Edit route", editorRoute, params);
 
       if(editorRoute != null) {
         editorLink = (
           <ButtonLink
             to={editorRoute}
-            params={{id: itemId}}
+            params={params}
             bsStyle="primary"
             disabled={this.props.multiSelect}>
               {editBtnLabel}
@@ -84,9 +88,10 @@ var BrowserMenuGroup = React.createClass({
       editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
     }
 
+    log.debug("editorLink",editorLink);
     return (
         <ButtonGroup className="actionMenu">
-          <ButtonLink to="newEditor" disabled={!this.props.loggedIn}>Create new</ButtonLink>
+          <ButtonLink to="newEditor" params={{type: this.props.type}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
           {editorLink}
           <ButtonLink to="import" disabled={!this.props.loggedIn}>Import</ButtonLink>
           <ButtonModal {...this.props} action={this.props.deleteComp} disabled={!this.props.loggedIn || selectionCount == 0 || isPublished}

@@ -9,6 +9,7 @@ var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 var Browser = require("./components/Browser.jsx"),
     Main = require("./components/Main.jsx"),
     Editor = require("./components/Editor.jsx");
+    EditorForm = require("./components/EditorForm.jsx");
 
 var ItemsStore = require("./stores/ItemsStore"),
     SelectionStore = require("./stores/SelectionStore"),
@@ -70,11 +71,11 @@ var routes = (
       <Route name="browser" handler={Browser} />
       <Route name="import" handler={NotFound /*Import*/} />
       <Route path="editor" handler={Editor}>
-        <Route name="component" path="component/:id" handler={NotFound /*ComponentViewer*/} />
-        <Route name="newComponent" path="component/:id/new" handler={NotFound /*ComponentViewer*/} />
-        <Route name="profile" path="profile/:id" handler={NotFound /*ComponentViewer*/} />
-        <Route name="newProfile" path="profile/:id/new" handler={NotFound /*ComponentViewer*/} />
-        <Route name="newEditor" path="new" handler={NotFound /*ComponentViewer*/} />
+        <Route name="component" path="component/:componentId" handler={EditorForm} />
+        <Route name="newComponent" path="component/new/:componentId" handler={EditorForm} />
+        <Route name="profile" path="profile/:profileId" handler={EditorForm} />
+        <Route name="newProfile" path="profile/new/:profileId" handler={EditorForm} />
+        <Route name="newEditor" path="new/:type" handler={EditorForm} />
       </Route>
       <DefaultRoute handler={Browser} />
     </Route>
