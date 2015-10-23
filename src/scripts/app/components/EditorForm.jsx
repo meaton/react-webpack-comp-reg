@@ -10,13 +10,15 @@ var React = require("react"),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var ComponentSpecView = require("./ComponentSpecView");
+var ComponentViewMixin = require('../mixins/ComponentViewMixin');
 
 /**
 * ComponentEditor - main editor component and route handler for editor subroutes
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, Router.Navigation, Router.State, StoreWatchMixin("ComponentDetailsStore", "EditorStore")],
+  mixins: [FluxMixin, Router.Navigation, Router.State, ComponentViewMixin,
+    StoreWatchMixin("ComponentDetailsStore", "EditorStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -59,15 +61,16 @@ var EditorForm = React.createClass({
             spec={this.state.details.spec}
             expansionState={this.state.details.expansionState}
             linkedComponents={this.state.details.linkedComponents}
-            onComponentToggle={this.onComponentToggle}
+            onComponentToggle={this.toggleComponent}
             />
         </div>
       );
     }
   },
 
-  onComponentToggle: function() {
-    //TODO
+  toggleComponent: function(itemId, spec) {
+    // from ComponentViewMixin
+    this.doToggleComponent(this.getParams().space, itemId, spec);
   },
 
   isNew: function() {

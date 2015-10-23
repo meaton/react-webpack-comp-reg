@@ -11,6 +11,7 @@ var InfoPanel = require('./InfoPanel.jsx');
 
 //helpers
 var ExpansionState = require('../service/ExpansionState');
+var ComponentViewMixin = require('../mixins/ComponentViewMixin');
 
 /**
 * ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
@@ -19,7 +20,7 @@ var ExpansionState = require('../service/ExpansionState');
 * @mixes LoadingMixin
 */
 var ComponentDetailsOverview = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore")],
+  mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore"), ComponentViewMixin],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -44,15 +45,8 @@ var ComponentDetailsOverview = React.createClass({
   },
 
   toggleComponent: function(itemId, spec) {
-    var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId);
-
-    // expand view
-    this.getFlux().actions.toggleItemExpansion(itemId);
-
-    if(!wasExpanded) {
-      // load child components of expanded item
-      this.getFlux().actions.loadLinkedComponentSpecs(spec, this.props.space, this.state.details.linkedComponents);
-    }
+    // from ComponentViewMixin
+    this.doToggleComponent(this.props.space, itemId, spec);
   },
 
   render: function() {
