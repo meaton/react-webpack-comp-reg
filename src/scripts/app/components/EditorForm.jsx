@@ -13,7 +13,8 @@ var ComponentSpecView = require("./ComponentSpecView");
 var ComponentViewMixin = require('../mixins/ComponentViewMixin');
 
 /**
-* ComponentEditor - main editor component and route handler for editor subroutes
+* EditorForm - Form routing endpoint for spec editor, either new/existing component/profile
+* Params assumed: 'type' and 'componentId' OR 'profileId'
 * @constructor
 */
 var EditorForm = React.createClass({
@@ -30,32 +31,50 @@ var EditorForm = React.createClass({
   },
 
   componentDidMount: function() {
-    log.debug("Path", this.getPathname());
-    log.debug("Params", this.getParams());
+    var params = this.getParams();
+    log.debug("Editor - path:", this.getPathname(), "params:", params);
 
-    var id = this.getId();
-    var type = this.getType();
-    var space = this.getParams().space;
-    //todo: trigger load spec
+    // set application state through actions, after this avoid using params directly
+
+    // determine id - take either from componentId or profileId
+    // may be null in case of a new item
+    var id = params.componentId;
+    if(id == undefined) {
+      id = params.profileId;
+    }
+
+    // determine type
+    var type;
+    if(params.type != undefined) {
+      type = params.type;
+    } else if (params.componentId != undefined) {
+      type = Constants.TYPE_COMPONENTS;
+    } else if (params.profileId != undefined) {
+      type = Constants.TYPE_PROFILE;
+    } else {
+      log.error("Unknown type for editor", params);
+    }
+
+    var space = params.space;
+
     this.getFlux().actions.openEditor(type, space, id);
+    // load the spec for editing
     this.getFlux().actions.loadComponentSpec(type, space, id);
   },
 
   render: function () {
-    var content;
-
-    var id = this.getId();
-    var type = this.getType();
-    var newItem = this.isNew();
-
-    log.debug("Editor = type:", this.getParams().type, "id:", id, "spec:", this.state.details.spec);
-
     if(this.state.details.loading) {
       <div>Loading component...</div>
     } else {
+      var newItem = this.isNew();
       return (
         <div>
-          <h3>{type === Constants.TYPE_PROFILE ? (newItem?"New profile":"Edit profile"):(newItem?"New component":"Edit component")}</h3>
+          <h3>
+            {this.state.editor.type === Constants.TYPE_PROFILE
+              ? (newItem?"New profile":"Edit profile")
+              :(newItem?"New component":"Edit component")}
+
+              &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
           {/*TODO: replace with component spec form*/}
           <ComponentSpecView
             spec={this.state.details.spec}
@@ -70,7 +89,7 @@ var EditorForm = React.createClass({
 
   toggleComponent: function(itemId, spec) {
     // from ComponentViewMixin
-    this.doToggleComponent(this.getParams().space, itemId, spec);
+    this.doToggleComponent(this.state.editor.space, itemId, spec);
   },
 
   isNew: function() {
@@ -79,25 +98,6 @@ var EditorForm = React.createClass({
     return lastRoute.name === "newEditor"
             || lastRoute.name === "newComponent"
             || lastRoute.name === "newProfile";
-  },
-
-  getId: function() {
-    var compId = this.getParams().componentId;
-    if(compId != undefined) {
-      return compId;
-    } else {
-      return this.getParams().profileId;
-    }
-  },
-
-  getType: function() {
-    if(this.getParams().type != undefined) {
-      return this.getParams().type;
-    } else if (this.getParams().componentId != undefined) {
-      return Constants.TYPE_COMPONENTS;
-    } else if (this.getParams().profileId != undefined) {
-      return Constants.TYPE_PROFILE;
-    }
   }
 });
 
