@@ -23,8 +23,7 @@ var ComponentSpecStore = Fluxxor.createStore({
       Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, this.handleLoadSpecXmlSuccess,
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
       Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
-      Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded,
-      Constants.OPEN_EDITOR_SUCCESS, this.handleLoadSpecSuccess
+      Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded
       //TODO: comments
     );
   },

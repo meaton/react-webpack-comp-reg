@@ -21,8 +21,7 @@ var EditorStore = Fluxxor.createStore({
       // Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
       // Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
       // Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded
-      Constants.OPEN_EDITOR, this.handleOpenEditor,
-      Constants.OPEN_EDITOR_SUCCESS, this.handleOpenEditorSuccess
+      Constants.OPEN_EDITOR, this.handleOpenEditor
     );
   },
 
@@ -33,13 +32,12 @@ var EditorStore = Fluxxor.createStore({
     };
   },
 
-  handleOpenEditor: function() {
-  },
-
-  handleOpenEditorSuccess: function(obj) {
+  handleOpenEditor: function(obj) {
     var type = obj.type;
     var space = obj.space;
     var id = obj.id;
+
+    this.emit("change");
   }
 
 });

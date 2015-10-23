@@ -92,15 +92,15 @@ var Browser = React.createClass({
     this.getFlux().actions.loadItems(type, registry);
   },
 
-  handleRowSelect: function(val, target) {
-    this.getFlux().actions.selectBrowserItem(val);
+  handleRowSelect: function(item, target) {
+    this.getFlux().actions.selectBrowserItem(item);
 
     // update the info view
     if(this.state.details.activeView == Constants.INFO_VIEW_SPEC) {
-      this.getFlux().actions.loadComponentSpec(this.state.items.type, this.state.items.space, val);
+      this.getFlux().actions.loadComponentSpec(this.state.items.type, this.state.items.space, item.id);
     }
     if(this.state.details.activeView == Constants.INFO_VIEW_XML) {
-      this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, val);
+      this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, item);
     }
     //TODO flux: comments
   },

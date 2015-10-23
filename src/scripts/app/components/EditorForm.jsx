@@ -36,6 +36,7 @@ var EditorForm = React.createClass({
     var space = this.getParams().space;
     //todo: trigger load spec
     this.getFlux().actions.openEditor(type, space, id);
+    this.getFlux().actions.loadComponentSpec(type, space, id);
   },
 
   render: function () {

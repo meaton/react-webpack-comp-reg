@@ -36,7 +36,7 @@ var ComponentDetailsOverview = React.createClass({
   },
 
   loadSpec: function () {
-    this.getFlux().actions.loadComponentSpec(this.props.type, this.props.space, this.props.item);
+    this.getFlux().actions.loadComponentSpec(this.props.type, this.props.space, this.props.item.id);
   },
 
   loadXml: function () {

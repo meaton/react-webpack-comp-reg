@@ -149,10 +149,10 @@ module.exports = {
     );
   },
 
-  loadComponentSpec: function(type, space, item) {
+  loadComponentSpec: function(type, space, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     // load the (JSON) spec for this item
-    ComponentRegistryClient.loadSpec(type, space, item.id, "json", function(spec){
+    ComponentRegistryClient.loadSpec(type, space, itemId, "json", function(spec){
         // Success. Now also load linked child components at root level, we need
         // their names for display purposes.
         loadLinkedComponents(spec.CMD_Component, space, function(linkedComponents) {
