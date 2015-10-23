@@ -44,6 +44,9 @@ module.exports = {
   /* switch space (registry (private, public, group...) and type (components/profiles)) */
   SWITCH_SPACE: "SWITCH_SPACE",
 
+  OPEN_EDITOR: "OPEN_EDITOR",
+  OPEN_EDITOR_SUCCESS: "OPEN_EDITOR_SUCCESS",
+
   /* APP MODES */
   MODE_BROWSER: 'browser',
   MODE_EDITOR: 'editor',

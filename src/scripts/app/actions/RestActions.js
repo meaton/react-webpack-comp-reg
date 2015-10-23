@@ -3,8 +3,6 @@ var log = require('loglevel');
 var SpecAugmenter = require("../service/SpecAugmenter")
 
 var Constants = require("../constants"),
-    /* mock */
-    // ComponentRegistryClient = require("./service/ComponentRegistryMockClient")
     /* REST client */
     ComponentRegistryClient = require("../service/ComponentRegistryClient")
 

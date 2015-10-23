@@ -9,24 +9,33 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var ComponentSpecView = require("./ComponentSpecView");
+
 /**
 * ComponentEditor - main editor component and route handler for editor subroutes
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, Router.Navigation, Router.State, StoreWatchMixin("ComponentDetailsStore")],
+  mixins: [FluxMixin, Router.Navigation, Router.State, StoreWatchMixin("ComponentDetailsStore", "EditorStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
-      details: flux.store("ComponentDetailsStore").getState()
+      details: flux.store("ComponentDetailsStore").getState(),
+      editor: flux.store("EditorStore").getState()
     };
   },
 
   componentDidMount: function() {
     log.debug("Path", this.getPathname());
     log.debug("Params", this.getParams());
+
+    var id = this.getId();
+    var type = this.getType();
+    var space = this.getParams().space;
+    //todo: trigger load spec
+    this.getFlux().actions.openEditor(type, space, id);
   },
 
   render: function () {
@@ -34,45 +43,30 @@ var EditorForm = React.createClass({
 
     var id = this.getId();
     var type = this.getType();
+    var newItem = this.isNew();
 
-    if(this.isNew()) {
-      content = this.renderContentForNew(type, id);
+    log.debug("Editor = type:", this.getParams().type, "id:", id, "spec:", this.state.details.spec);
+
+    if(this.state.details.loading) {
+      <div>Loading component...</div>
     } else {
-      content = this.renderContentForEdit(type, id);
+      return (
+        <div>
+          <h3>{type === Constants.TYPE_PROFILE ? (newItem?"New profile":"Edit profile"):(newItem?"New component":"Edit component")}</h3>
+          {/*TODO: replace with component spec form*/}
+          <ComponentSpecView
+            spec={this.state.details.spec}
+            expansionState={this.state.details.expansionState}
+            linkedComponents={this.state.details.linkedComponents}
+            onComponentToggle={this.onComponentToggle}
+            />
+        </div>
+      );
     }
-
-    log.info("Editor = type:", this.getParams().type, "id:", id);
-
-    return(<div>
-      editor form
-      {content}
-    </div>);
   },
 
-  renderContentForNew: function(type, id) {
+  onComponentToggle: function() {
     //TODO
-    return (
-      <div>
-        <h2>New item</h2>
-        <ul>
-          <li>type: {type}</li>
-          <li>id: {id}</li>
-        </ul>
-      </div>
-    );
-  },
-
-  renderContentForEdit: function(type, id) {
-    //TODO
-    return (
-      <div>
-        <h2>Edit item</h2>
-        <ul>
-          <li>type: {type}</li>
-          <li>id: {id}</li>
-        </ul>
-      </div>
-    );
   },
 
   isNew: function() {

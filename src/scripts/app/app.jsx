@@ -16,6 +16,7 @@ var ItemsStore = require("./stores/ItemsStore"),
     ComponentDetailsStore = require("./stores/ComponentDetailsStore"),
     AuthenticationStore = require("./stores/AuthenticationStore"),
     MessageStore = require("./stores/MessageStore");
+    EditorStore = require("./stores/EditorStore");
 
 var actions = require("./actions");
 
@@ -31,7 +32,8 @@ var stores = {
   SelectionStore: new SelectionStore(),
   ComponentDetailsStore: new ComponentDetailsStore(),
   AuthenticationStore: new AuthenticationStore(),
-  MessageStore: new MessageStore()
+  MessageStore: new MessageStore(),
+  EditorStore: new EditorStore()
 };
 
 var flux = new Fluxxor.Flux(stores, actions);
@@ -71,11 +73,11 @@ var routes = (
       <Route name="browser" handler={Browser} />
       <Route name="import" handler={NotFound /*Import*/} />
       <Route path="editor" handler={Editor}>
-        <Route name="component" path="component/:componentId" handler={EditorForm} />
-        <Route name="newComponent" path="component/new/:componentId" handler={EditorForm} />
-        <Route name="profile" path="profile/:profileId" handler={EditorForm} />
-        <Route name="newProfile" path="profile/new/:profileId" handler={EditorForm} />
-        <Route name="newEditor" path="new/:type" handler={EditorForm} />
+        <Route name="component" path="component/:space/:componentId" handler={EditorForm} />
+        <Route name="newComponent" path="component/new/:space/:componentId" handler={EditorForm} />
+        <Route name="profile" path="profile/:space/:profileId" handler={EditorForm} />
+        <Route name="newProfile" path="profile/new/:space/:profileId" handler={EditorForm} />
+        <Route name="newEditor" path="new/:space/:type" handler={EditorForm} />
       </Route>
       <DefaultRoute handler={Browser} />
     </Route>

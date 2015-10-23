@@ -60,7 +60,6 @@ var InfoPanel = React.createClass({
     else
       viewer = (
         <ComponentSpecView
-          item={item}
           spec={this.props.spec}
           onComponentToggle={this.props.onComponentToggle}
           expansionState={this.props.expansionState}

@@ -28,7 +28,6 @@ require('../../../styles/ComponentViewer.sass');
 */
 var ComponentSpec = React.createClass({
   propTypes: {
-    item: React.PropTypes.object.isRequired,
     spec: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,

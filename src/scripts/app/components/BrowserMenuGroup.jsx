@@ -58,7 +58,7 @@ var BrowserMenuGroup = React.createClass({
     var editorLink = null;
     var editBtnLabel = isPublished ? "Edit as new" : "Edit";
 
-    var params = {};
+    var params = {space: this.props.space};
 
     if(selectionCount == 1) {
       var itemId = Object.keys(this.props.items)[0];
@@ -91,7 +91,7 @@ var BrowserMenuGroup = React.createClass({
     log.debug("editorLink",editorLink);
     return (
         <ButtonGroup className="actionMenu">
-          <ButtonLink to="newEditor" params={{type: this.props.type}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
+          <ButtonLink to="newEditor" params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
           {editorLink}
           <ButtonLink to="import" disabled={!this.props.loggedIn}>Import</ButtonLink>
           <ButtonModal {...this.props} action={this.props.deleteComp} disabled={!this.props.loggedIn || selectionCount == 0 || isPublished}
