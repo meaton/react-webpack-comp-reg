@@ -10,6 +10,9 @@ var React = require("react"),
 
 var {RouteHandler, Navigation} = require('react-router');
 
+//router bootstrap
+var ButtonLink = require('react-router-bootstrap').ButtonLink;
+
 require('../../../styles/ComponentEditor.sass');
 
 /**
@@ -43,13 +46,22 @@ var Editor = React.createClass({
   },
 
   render: function () {
+    return (
+      <section id="editor">
+        <ButtonLink to="browser">Back to component browser</ButtonLink>
+        {this.renderContent()}
+      </section>
+    );
+  },
+
+  renderContent: function() {
     if(this.isAuthenticated()) {
       return (
-        <section id="editor">
-          <h2>Component Editor</h2>
-          <RouteHandler/>
-          {/*grid*/}
-        </section>
+          <div>
+            <h2>Component Editor</h2>
+            <RouteHandler/>
+            {/*grid*/}
+          </div>
         );
     } else {
       // on mount, login should be triggered
