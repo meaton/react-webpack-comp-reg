@@ -1,33 +1,15 @@
 'use strict';
+var log = require('loglevel');
 
 var React = require('react/addons');
 var Router = require('react-router');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
-var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
-//var CompRegLoader = require('../mixins/Loader');
 var btnGroup = require('../../mixins/BtnGroupEvents');
-var ValidationMixin = require('../../mixins/ValidationMixin');
-
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
-var MenuItem = require('react-bootstrap/lib/MenuItem');
-var Alert = require('react-bootstrap/lib/Alert');
-var Modal = require('react-bootstrap/lib/Modal');
-var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
 
 //components
-var DataTablesGrid = require('./DataGrid');
-var SpaceSelector = require('./SpaceSelector');
-var CMDComponent = require('./CMDComponent');
-var CMDElement = require('./CMDElement');
-var CMDAttribute = require('./CMDAttribute');
-var EditorBtnGroup = require('./BtnMenuGroup');
-//TODO flux: var EditorDialog = require('./EditorDialog');
+var CMDComponentForm = require('./CMDComponentForm');
 
 //utils
 var update = React.addons.update;
@@ -48,84 +30,78 @@ require('../../../styles/ComponentViewer.sass');
 * @Router.Navigation
 * @Router.State
 */
-var ComponentSpec = React.createClass({
+var ComponentSpecForm = React.createClass({
   statics: {
     willTransitionTo: function(transition, params, query) {
-      console.log('attempting transition...' + transition.path);
+      log.debug('attempting transition...' + transition.path);
     },
     willTransitionFrom: function(transition, component) {
-      console.log('transition from...' + this.path);
-      if(component.state.editMode && !component.state.isSaved)
-        if(!confirm('You have unsaved work. Are you sure you want to cancel?'))
-          transition.abort();
+      log.debug('transition from...' + this.path);
+      // if(component.state.editMode && !component.state.isSaved)
+      //   if(!confirm('You have unsaved work. Are you sure you want to cancel?'))
+      //     transition.abort();
     }
   },
+
   propTypes: {
-    item: React.PropTypes.object.isRequired,
     spec: React.PropTypes.object.isRequired,
-    editMode: React.PropTypes.bool.isRequired
+    expansionState: React.PropTypes.object,
+    linkedComponents: React.PropTypes.object,
+    onComponentToggle: React.PropTypes.func
   },
   contextTypes: {
     router: React.PropTypes.func,
-    //TODO flux: auth context - loggedIn: React.PropTypes.bool.isRequired
+  },
+  getInitialState: function() {
+    return { childElements: null,
+             childComponents: null
+    };
   },
   mixins: [
-    //ImmutableRenderMixin,
-    LinkedStateMixin,
-    btnGroup, ActionButtonsMixin, ValidationMixin, Router.Navigation, Router.State],
+    ImmutableRenderMixin, Router.Navigation, Router.State],
 
   getDefaultProps: function() {
     return {
       domains: require('../../domains.js')
     };
   },
+  render: function() {
+    var item = this.props.spec;
 
-  parseComponent: function(item, state) {
-    console.log('parseComponent');
+    if(item == null)
+      return (
+        <div className="ComponentViewer loading" />
+      );
+    else {
+      var rootClasses = classNames({ ComponentViewer: true });
+      var rootComponent = item.CMD_Component;
 
-    var rootComponent = item.CMD_Component;
-    var childComponents = (!$.isArray(rootComponent.CMD_Component) && rootComponent.CMD_Component != null) ? [rootComponent.CMD_Component] : (rootComponent.CMD_Component||[]);
-    var childElements = (!$.isArray(rootComponent.CMD_Element) && rootComponent.CMD_Element != null) ? [rootComponent.CMD_Element] : (rootComponent.CMD_Element||[]);
+      // Display properties
+      var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
 
-    console.log('child item components: ' + childComponents.length);
-    console.log('child item elements: ' + childElements.length);
-
-    if(childElements.length >= 1)
-      console.log('first item element: ' + childElements[0]['@name']);
-
-    for(var i=0; i < childComponents.length; i++)
-      if(childComponents[i].hasOwnProperty("@ComponentId"))
-      {
-        //TODO flux: allow for expansion of linked component (through action)
-      }
-        // this.loadComponent(childComponents[i]["@ComponentId"], "json", function(data) {
-        //     console.log('data child comp: ' + (data.CMD_Component != null));
-        //     data.CMD_Component = update(data.CMD_Component, { $merge: {'@CardinalityMin': (childComponents[i].hasOwnProperty("@CardinalityMin")) ? childComponents[i]["@CardinalityMin"] : 1, '@CardinalityMax': (childComponents[i].hasOwnProperty("@CardinalityMax")) ? childComponents[i]["@CardinalityMax"] : 1}})
-        //     childComponents[i] = update(data, {open: {$set: state.editMode}});
-        // });
-      else {
-        var isInlineComponent = (childComponents[i].Header == undefined);
-        childComponents[i] = update(childComponents[i], {open: {$set: (state.editMode || isInlineComponent)}})
-        console.log('childComponent: ' + JSON.stringify(childComponents[i]));
-      }
-
-    this.setState({ childElements: childElements, childComponents: childComponents,
-      //profile: (item['@isProfile'] === "true") ? item : state.profile,
-      //component: (item['@isProfile'] === "true") ? state.component : item,
-      registry: state.registry });
+      return (
+          <div className={rootClasses}>
+            {/*errors*/}
+            <div className="rootProperties">
+              <ul>
+                <li><span>Name:</span> <b>{item.Header.Name}</b></li>
+                <li><span>Description:</span> {item.Header.Description}</li>
+                {conceptLink}
+              </ul>
+            </div>
+            <CMDComponentForm
+              spec={item.CMD_Component}
+              hideProperties={true}
+              onToggle={this.props.onComponentToggle}
+              expansionState={this.props.expansionState}
+              linkedComponents={this.props.linkedComponents}
+              />
+          </div>
+        );
+    }
   },
-  switchEditorComponents: function(filter) {
-    this.setState({ editorComponents: filter });
-  },
-  conceptRegistryBtn: function(container, target) {
-    if(container == undefined) container = this;
-    if(target == undefined) target = container;
-    //TODO flux:
-    // return (
-    //   <EditorDialog type="ConceptRegistry" label="Search in concept registry..." container={container} target={target} />
-    // );
-    return null;
-  },
+  
+  //below: old functions
   updateConceptLink: function(newValue) {
     console.log('update concept link - root component/profile: ' + newValue);
 
@@ -277,194 +253,6 @@ var ComponentSpec = React.createClass({
     else
       return "component";
   },
-  printProperties: function(item) {
-    var self = this;
-    var rootComponent = item.CMD_Component;
-
-    if(this.state.editMode) {
-      var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
-
-      console.log('has isProfile prop: ' + item.hasOwnProperty("@isProfile"));
-      console.log('isProfile: ' + isProfile);
-
-      // Linked state to data model
-      var isProfileLink = this.linkState(this.getLinkStateCompTypeStr() + '.@isProfile');
-      var handleIsProfileChange = function(e) {
-        console.log('linked state change: ' + e.target.value);
-        isProfileLink.requestChange(e.target.value);
-      };
-
-      var componentNameLink = this.linkState(this.getLinkStateCompTypeStr() + '.CMD_Component.@name');
-      var handleNameChange = function(e) {
-        console.log('name change: ' + e.target.value);
-        componentNameLink.requestChange(e.target.value);
-      };
-
-      var headerDescLink = this.linkState(this.getLinkStateCompTypeStr() + '.Header.Description');
-      var domainLink = this.linkState('registry.domainName');
-      var groupNameLink = this.linkState('registry.groupName');
-
-      // Registry Input fields
-      var groupNameInput = <Input type="text" ref="rootComponentGroupName" key={(this.state.registry.hasOwnProperty('id')) ? this.state.registry.id + "_groupName" : "root_groupName"} label="Group Name" defaultValue={groupNameLink.value} onChange={this.handleRegistryInputChange.bind(this, groupNameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />;
-      var domainNameInput = (
-        <Input type="select" ref="rootComponentDomain" key={(this.state.registry.hasOwnProperty('id')) ? this.state.registry.id + "_domainName" : "root_domainName"} label="Domain" defaultValue={domainLink.value} onChange={this.handleRegistryInputChange.bind(this, domainLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
-          <option value="">Select a domain...</option>
-          {this.props.domains.map(function(domain, index) {
-            return <option key={index} value={domain.data}>{domain.label}</option>
-          })}
-        </Input> );
-
-      // Edit properties form
-      return (
-        <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
-          <div className="form-group">
-            <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-            <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={handleIsProfileChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-          </div>
-          <Input type="text" ref="rootComponentName" label="Name" defaultValue={componentNameLink.value} onChange={handleNameChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          {groupNameInput}
-          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={headerDescLink.value} onChange={this.handleInputChange.bind(this, headerDescLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          {domainNameInput}
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
-        </form>
-      );
-
-    } else {
-      // Display properties
-      var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
-      return (
-        <ul>
-          <li><span>Name:</span> <b>{item.Header.Name}</b></li>
-          <li><span>Description:</span> {item.Header.Description}</li>
-          {conceptLink}
-        </ul>
-      );
-    }
-  },
-  printRootComponent: function(item) {
-    // Component hierarcy: expanded or non-expanded (@ComponentId)
-    var self = this,
-    rootComponent = item.CMD_Component,
-    editMode = this.state.editMode,
-    attrList = null,
-    childElem = null,
-    childComp = null,
-    errors = null;
-
-    var controlLinks = (this.state.editMode) ? ( <div className="controlLinks">
-      <a onClick={this.openCloseAll.bind(this, false)}>Collapse all</a> <a onClick={this.openCloseAll.bind(this, true)}>Expand all</a>
-    </div> ) : null;
-
-    var attrSet = (rootComponent && rootComponent.AttributeList != undefined && $.isArray(rootComponent.AttributeList.Attribute)) ? rootComponent.AttributeList.Attribute : rootComponent.AttributeList;
-    var addAttrLink = (editMode) ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, rootComponent)}>+Attribute</a></div> : null;
-
-    if(attrSet != undefined || this.state.editMode)
-      attrList = (
-        <div className="attrList">AttributeList:
-          {
-            (attrSet != undefined && attrSet.length > 0)
-            ? $.map(attrSet, function(attr, index) {
-              var attrId = (attr.attrId != undefined) ? attr.attrId : "root_attr_" + md5.hash("root_attr_" + index + "_" + Math.floor(Math.random()*1000));
-              attr.attrId = attrId;
-              //TODO attach dialogs to itself as container rather than viewer
-              return (
-                <CMDAttribute key={attrId} attr={attr} value={self.getValueScheme.bind(self, attr, self)} conceptRegistryBtn={self.conceptRegistryBtn.bind(self, self)} editMode={editMode} onUpdate={self.updateAttribute.bind(self, index)} onRemove={self.removeAttribute.bind(self, index)} />
-              );
-            })
-            : <span>No Attributes</span>
-          }
-          {addAttrLink}
-        </div>
-      );
-
-    var cmdAddElementSpecLink = (this.state.editMode) ? <div className="addElement controlLinks"><a onClick={this.addNewElement}>+Element</a></div> : null;
-    if(this.state.childElements != null)
-      childElem = (
-        <div ref="elements" className="childElements">{this.state.childElements.map(
-          function(elem, index) {
-            var elemId = (elem.elemId != undefined) ? elem.elemId : "elem_" + md5.hash("elem_" + elem['@name'] + index);
-            elem.elemId = elemId;
-            return <CMDElement key={elemId} elem={elem} viewer={self} editMode={editMode} onUpdate={self.updateElement.bind(self, index)} onRemove={self.removeElement.bind(self, index)} moveUp={self.moveElement.bind(self, index, index-1)} moveDown={self.moveElement.bind(self, index, index+1)} />;
-          }
-        )}
-          {cmdAddElementSpecLink}
-        </div>
-      );
-
-    var cmdAddComponentSpecLink = (this.state.editMode) ? <div className="addComponent controlLinks"><a onClick={self.addNewComponent}>+Component</a></div> : null;
-    if(this.state.childComponents != null)
-      childComp = (
-        // component key should be componentId (except for inline comps which use generated hash)
-        <div ref="components" className="childComponents">{this.state.childComponents.map(
-          function(comp, index) {
-            var compId;
-            if(comp.hasOwnProperty("@ComponentId")) compId = comp['@ComponentId'];
-            else if(comp.Header != undefined) compId = comp.Header.ID;
-            else compId = (comp.inlineId != undefined) ? comp.inlineId : "inline_" + md5.hash("inline_" + comp['@name'] + index);
-
-            var newComp = comp;
-            if(compId.startsWith("inline") && comp.inlineId == undefined)
-              newComp = update(newComp, { $merge: { inlineId: compId } });
-
-            return <CMDComponent key={compId} component={newComp} viewer={self} editMode={editMode} onInlineUpdate={self.updateInlineComponent.bind(self, index)} onUpdate={self.updateComponentSettings.bind(self, index)} onRemove={self.removeComponent.bind(self, index)} moveUp={self.moveComponent.bind(self, index, index-1)} moveDown={self.moveComponent.bind(self, index, index+1)} />
-          }
-        )}
-          {cmdAddComponentSpecLink}
-        </div>
-      );
-
-    if(this.state.errors != null) {
-      console.log('Render errors: ' + JSON.stringify(this.state.errors));
-      errors = ( <Alert bsStyle="danger"><h4>Errors found:</h4>
-                    { $.map(this.state.errors, function(error) { return <li>{error}</li> }) }
-                 </Alert> );
-    }
-
-    //TODO contain properties in its own component
-    var rootClasses = classNames({ ComponentViewer: true });
-    return (
-      <div className={rootClasses}>
-        {errors}
-        <div className="rootProperties">
-          {this.printProperties(item)}
-        </div>
-        {attrList}
-        {controlLinks}
-        {childElem}
-        {childComp}
-        {controlLinks}
-      </div>
-    );
-  },
-  render: function() {
-    var self = this;
-    var item = this.props.spec;
-    var editBtnGroup = (this.state.editMode) ? <EditorBtnGroup ref="editorBtnGroup" mode="editor" { ...this.getBtnGroupProps() } /> : null;
-
-    if(item == null)
-      return (
-        <div className="ComponentViewer loading" />
-      );
-    else {
-      var rootComponent = this.printRootComponent(item);
-      return (this.state.editMode) ? (
-        <div className="editor container-fluid">
-          <div className="component-edit-form row">
-            {editBtnGroup}
-            {rootComponent}
-          </div>
-          <div className="component-grid row">
-            {/* TODO flux: update props, see application.jsx */}
-            <DataTablesGrid ref="grid" type="components" filter={this.state.editorComponents} multiple={false} component={this.selectedComponent} profile={null} editMode={this.state.editMode}>
-              <SpaceSelector type="componentsOnly" filter={this.state.editorComponents} onSelect={this.switchEditorComponents} validUserSession={this.context.loggedIn} multiSelect={false} />
-            </DataTablesGrid>
-          </div>
-          <div id="alert-container"/>
-        </div>
-      ) : rootComponent;
-    }
-  },
-
   // componentWillReceiveProps: function(nextProps) {
   //   console.log(this.constructor.displayName, 'will receive props');
   //
@@ -671,4 +459,4 @@ var ComponentSpec = React.createClass({
   },
 });
 
-module.exports = ComponentSpec;
+module.exports = ComponentSpecForm;
