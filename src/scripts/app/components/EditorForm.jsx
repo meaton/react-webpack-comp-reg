@@ -9,7 +9,7 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var ComponentSpecView = require("./ComponentSpecView");
+var ComponentSpecForm = require("./ComponentSpecForm");
 var ComponentViewMixin = require('../mixins/ComponentViewMixin');
 
 /**
@@ -75,8 +75,7 @@ var EditorForm = React.createClass({
               :(newItem?"New component":"Edit component")}
 
               &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
-          {/*TODO: replace with component spec form*/}
-          <ComponentSpecView
+          <ComponentSpecForm
             spec={this.state.details.spec}
             expansionState={this.state.details.expansionState}
             linkedComponents={this.state.details.linkedComponents}
