@@ -8,6 +8,9 @@ var Router = require('react-router');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var btnGroup = require('../../mixins/BtnGroupEvents');
 
+//bootstrap
+var Input = require('react-bootstrap/lib/Input');
+
 //components
 var CMDComponentForm = require('./CMDComponentForm');
 
@@ -78,17 +81,32 @@ var ComponentSpecForm = React.createClass({
 
       // Display properties
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
+      var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
 
       return (
-          <div className={rootClasses}>
-            {/*errors*/}
-            <div className="rootProperties">
-              <ul>
-                <li><span>Name:</span> <b>{item.Header.Name}</b></li>
-                <li><span>Description:</span> {item.Header.Description}</li>
-                {conceptLink}
-              </ul>
-            </div>
+        <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
+          <div className="form-group">
+            <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={this.handleHeaderChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={this.handleHeaderChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+          </div>
+          <Input type="text" ref="rootComponentName" label="Name" defaultValue={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          {//groupNameInput}
+          }
+          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          {//domainNameInput}
+          //<Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
+          }
+          {
+          // <div className={rootClasses}>
+          //   {/*errors*/}
+          //   <div className="rootProperties">
+          //     <ul>
+          //       <li><span>Name:</span> <b>{item.Header.Name}</b></li>
+          //       <li><span>Description:</span> {item.Header.Description}</li>
+          //       {conceptLink}
+          //     </ul>
+          //   </div>
+          }
             <CMDComponentForm
               spec={item.CMD_Component}
               hideProperties={true}
@@ -96,11 +114,15 @@ var ComponentSpecForm = React.createClass({
               expansionState={this.props.expansionState}
               linkedComponents={this.props.linkedComponents}
               />
-          </div>
+          </form>
         );
     }
   },
-  
+
+  handleHeaderChange: function() {
+    //todo: call update header
+  },
+
   //below: old functions
   updateConceptLink: function(newValue) {
     console.log('update concept link - root component/profile: ' + newValue);
