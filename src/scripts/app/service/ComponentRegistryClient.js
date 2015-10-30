@@ -69,6 +69,21 @@ var ComponentRegistryClient = {
   }, corsRequestParams));
 },
 
+loadItem: function(id, handleSuccess, handleFailure) {
+  var requestUrl = restUrl + "/registry/items/" + id;
+  $.ajax($.extend({
+    url: requestUrl,
+    dataType: "json",
+    success: function(data) {
+      log.trace("Successfully loaded ", requestUrl);
+      handleSuccess(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      handleFailure("Error loading spec for " + id + ": " + err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
   //setTimeout(function(){handleSuccess();}, 1000);
   setTimeout(function(){handleFailure("deletion not implemented yet");}, 1000);

@@ -64,6 +64,8 @@ var EditorForm = React.createClass({
     this.getFlux().actions.openEditor(type, space, id);
     // load the spec for editing
     this.getFlux().actions.loadComponentSpec(type, space, id);
+    // load the item for editing
+    this.getFlux().actions.loadItem(type, space, id);
   },
 
   render: function () {
@@ -90,6 +92,7 @@ var EditorForm = React.createClass({
 
           <ComponentSpecForm
             spec={this.state.details.spec}
+            item={this.state.editor.item}
             expansionState={this.state.details.expansionState}
             linkedComponents={this.state.details.linkedComponents}
             onComponentToggle={this.toggleComponent}

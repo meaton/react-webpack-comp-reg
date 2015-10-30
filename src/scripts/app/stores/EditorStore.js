@@ -11,6 +11,7 @@ var EditorStore = Fluxxor.createStore({
   initialize: function(options) {
     this.type = Constants.TYPE_COMPONENTS; //components or profiles
     this.space = Constants.SPACE_PUBLISHED; //private, group, published
+    this.item = null;
 
     // component spec itself is stored in the component details store for the editor
 
@@ -21,15 +22,28 @@ var EditorStore = Fluxxor.createStore({
       // Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
       // Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
       // Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded
-      Constants.OPEN_EDITOR, this.handleOpenEditor
+      Constants.OPEN_EDITOR, this.handleOpenEditor,
+      Constants.LOAD_ITEM_SUCCESS, this.handleLoadItem,
+      Constants.LOAD_ITEM_FAILURE, this.handleLoadItemFailure
     );
   },
 
   getState: function() {
     return {
       type: this.type,
-      space: this.space
+      space: this.space,
+      item: this.item
     };
+  },
+
+  handleLoadItem: function(item) {
+    this.item = item
+    this.emit("change");
+  },
+
+  handleLoadItemFailure: function() {
+    this.item = null;
+    this.emit("change");
   },
 
   handleOpenEditor: function(obj) {

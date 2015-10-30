@@ -48,11 +48,12 @@ var ComponentSpecForm = React.createClass({
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
+    item: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
-    onComponentToggle: React.PropTypes.func,
-    onTypeChange: React.PropTypes.func,
-    onHeaderChange: React.PropTypes.func
+    onComponentToggle: React.PropTypes.func.isRequired,
+    onTypeChange: React.PropTypes.func.isRequired,
+    onHeaderChange: React.PropTypes.func.isRequired
   },
   contextTypes: {
     router: React.PropTypes.func,
@@ -72,12 +73,13 @@ var ComponentSpecForm = React.createClass({
   },
   render: function() {
     var spec = this.props.spec;
+    var item = this.props.item;
 
-    if(spec == null)
+    if(spec == null || item == null) {
       return (
         <div className="ComponentViewer loading" />
       );
-    else {
+    } else {
       var rootClasses = classNames({ ComponentViewer: true });
       var rootComponent = spec.CMD_Component;
 

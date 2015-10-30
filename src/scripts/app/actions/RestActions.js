@@ -149,6 +149,18 @@ module.exports = {
     );
   },
 
+  loadItem: function(type, space, itemId) {
+    ComponentRegistryClient.loadItem(itemId, function(item){
+        // Success
+        this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_ITEM_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
   loadComponentSpec: function(type, space, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     // load the (JSON) spec for this item
