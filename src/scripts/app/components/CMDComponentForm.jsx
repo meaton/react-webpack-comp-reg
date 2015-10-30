@@ -19,7 +19,6 @@ var CMDAttributeForm = require('./CMDAttributeForm');
 
 //utils
 var update = React.addons.update;
-var classNames = require('classnames');
 var md5 = require('spark-md5');
 
 require('../../../styles/CMDComponent.sass');
@@ -34,7 +33,7 @@ require('../../../styles/CMDComponent.sass');
 var CMDComponentForm = React.createClass({
   mixins: [ImmutableRenderMixin, CMDComponentMixin],
   propTypes: {
-    //spec: React.PropTypes.object.isRequired
+    onComponentChange: React.PropTypes.func.isRequired
   },
   renderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
@@ -81,69 +80,12 @@ var CMDComponentForm = React.createClass({
         />);
     }
   },
-  render: function () {
-    log.trace("Rendering", this.props.spec._appId, (this.isOpen()?"open":"closed"));
 
-    var self = this;
-    var props = this.props;
-    var comp = this.props.spec;
-
-    var compId;
-    if(comp.hasOwnProperty("@ComponentId"))
-      compId = comp["@ComponentId"];
-    else if(comp.Header != undefined)
-      compId = comp.Header.ID;
-    else
-      compId = null;
-
-    var header = comp.Header;
-    var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
-
-    if(header != undefined && comp.CMD_Component != undefined)
-      comp = comp.CMD_Component;
-
-    if($.isArray(comp) && comp.length == 1)
-      comp = comp[0];
-
-    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
-    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
-
-    var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
-    var compElems = comp.CMD_Element;
-
-    if(!$.isArray(compElems) && compElems != undefined)
-      compElems = [compElems];
-
-    if(compElems != undefined) {
-      // render elements
-      compElems = compElems.map(function(elem, index){
-        return (<CMDElementForm key={elem._appId} spec={elem} />);
-      });
-    }
-
-    if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
-       compName = this.props.componentName;
-    else if(comp.hasOwnProperty("@name"))
-      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-
-    var compComps = comp.CMD_Component;
-
-    if(!$.isArray(compComps) && compComps != undefined)
-      compComps = [compComps];
-
-    if(compComps != undefined) {
-      // render nested components
-      var nestedComponents = compComps.map(self.renderNestedComponent);
-    }
-
-    // classNames
-    var viewClasses = classNames('componentBody', { 'hide': !self.isOpen() });
-    var componentClasses = classNames('CMDComponent', { 'open': self.isOpen(), 'selected': this.props.isSelected, 'linked': this.props.isLinked });
-
+  renderAttributes: function(comp) {
     if(comp.AttributeList != undefined) {
       var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
     }
-    var attrList = (
+    return (
       <div className="attrList">AttributeList:
         {
           (attrSet != undefined && attrSet.length > 0)
@@ -154,14 +96,38 @@ var CMDComponentForm = React.createClass({
         }
       </div>
     );
+  },
 
-    var children = (
-      <div className={viewClasses}>
-        <div>{attrList}</div>
-        <div className="childElements">{compElems}</div>
-        <div ref="components" className="childComponents">{nestedComponents}</div>
-      </div>
-    );
+  renderElements: function(comp) {
+    var compElems = comp.CMD_Element;
+
+    if(!$.isArray(compElems) && compElems != undefined)
+      compElems = [compElems];
+
+    if(compElems != undefined) {
+      // render elements
+      return compElems.map(function(elem, index){
+        return (<CMDElementForm key={elem._appId} spec={elem} />);
+      });
+    }
+  },
+
+  renderComponentProperties: function(comp) {
+    var header = comp.Header;
+    var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
+
+    var compId;
+    if(comp.hasOwnProperty("@ComponentId"))
+      compId = comp["@ComponentId"];
+    else if(comp.Header != undefined)
+      compId = comp.Header.ID;
+    else
+      compId = null;
+
+    if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
+       compName = this.props.componentName;
+    else if(comp.hasOwnProperty("@name"))
+      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
     var title;
     if(this.props.isLinked) {
@@ -174,19 +140,17 @@ var CMDComponentForm = React.createClass({
       )
     }
 
-    if(this.props.hideProperties) {
-      //skip 'envelope', only show child components, elements, attributes
-      return children;
-    } else {
-      // envelope with properties and children
-      return (
-        <div className={componentClasses}>
-          {title}
-          <div className="componentProps">{compProps}</div>
-          {children}
-        </div>
-      );
-    }
+    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
+    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
+
+    var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
+
+    return (
+      <div>
+        {title}
+        <div className="componentProps">{compProps}</div>
+      </div>
+    );
   },
 
   //below: old functions
