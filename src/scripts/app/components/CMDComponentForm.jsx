@@ -5,6 +5,7 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var CMDComponentMixin = require('../mixins/CMDComponentMixin');
 // var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 // var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
@@ -12,11 +13,9 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var Input = require('react-bootstrap/lib/Input');
 
 //components
+var CMDComponentView = require('./CMDComponentView');
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
-
-//helpers
-var ExpansionState = require('../service/ExpansionState');
 
 //utils
 var update = React.addons.update;
@@ -33,28 +32,9 @@ require('../../../styles/CMDComponent.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDComponentForm = React.createClass({
-  mixins: [ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, CMDComponentMixin],
   propTypes: {
-    /* specification object (CMD_Component) */
-    spec: React.PropTypes.object.isRequired,
-    /* determines whether 'envelope' with properties should be hidden */
-    hideProperties: React.PropTypes.bool,
-    openAll: React.PropTypes.bool,
-    closeAll: React.PropTypes.bool,
-    isLinked:  React.PropTypes.bool,
-    expansionState: React.PropTypes.object,
-    linkedComponents: React.PropTypes.object,
-    onToggle: React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      hideProperties: false,
-      openAll: false,
-      closeAll: false
-    };
-  },
-  toggleComponent: function() {
-    this.props.onToggle(this.props.spec._appId, this.props.spec);
+    //spec: React.PropTypes.object.isRequired
   },
   renderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
@@ -74,8 +54,20 @@ var CMDComponentForm = React.createClass({
        var compId = spec._appId;
     }
 
-    if(isLinked && !linkedSpecAvailable) {
-      return (<div key={compId}>Component {compId} loading...</div>);
+    if(isLinked) {
+      if(linkedSpecAvailable) {
+        return (<CMDComponentView
+          key={spec._appId}
+          spec={spec}
+          parent={this.props.spec}
+          expansionState={this.props.expansionState}
+          linkedComponents={this.props.linkedComponents}
+          onToggle={this.props.onToggle}
+          isLinked={isLinked}
+          />);
+      } else {
+        return (<div key={compId}>Component {compId} loading...</div>);
+      }
     } else {
       // forward child expansion state
       return (<CMDComponentForm
@@ -182,27 +174,19 @@ var CMDComponentForm = React.createClass({
       )
     }
 
-    // if(!self.isOpen()) {
-    //   return title;
-    // } else {
-      if(this.props.hideProperties) {
-        //skip 'envelope', only show child components, elements, attributes
-        return children;
-      } else {
-        // envelope with properties and children
-        return (
-          <div className={componentClasses}>
-            {title}
-            <div className="componentProps">{compProps}</div>
-            {children}
-          </div>
-        );
-      }
-    // }
-  },
-
-  isOpen: function() {
-    return !this.props.isLinked || ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
+    if(this.props.hideProperties) {
+      //skip 'envelope', only show child components, elements, attributes
+      return children;
+    } else {
+      // envelope with properties and children
+      return (
+        <div className={componentClasses}>
+          {title}
+          <div className="componentProps">{compProps}</div>
+          {children}
+        </div>
+      );
+    }
   },
 
   //below: old functions

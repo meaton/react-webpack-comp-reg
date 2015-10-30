@@ -41,8 +41,7 @@ var ComponentSpec = React.createClass({
              childComponents: null
     };
   },
-  mixins: [
-    ImmutableRenderMixin, Router.Navigation, Router.State],
+  mixins: [ImmutableRenderMixin],
 
   getDefaultProps: function() {
     return {

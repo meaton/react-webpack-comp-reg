@@ -34,7 +34,8 @@ require('../../../styles/ComponentViewer.sass');
 * @Router.State
 */
 var ComponentSpecForm = React.createClass({
-  mixins: [ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, Router.Navigation, Router.State],
+
   statics: {
     willTransitionTo: function(transition, params, query) {
       log.debug('attempting transition...' + transition.path);

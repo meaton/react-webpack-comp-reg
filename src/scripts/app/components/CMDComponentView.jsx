@@ -5,6 +5,7 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var CMDComponentMixin = require('../mixins/CMDComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -12,9 +13,6 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
-
-//helpers
-var ExpansionState = require('../service/ExpansionState');
 
 //utils
 var update = React.addons.update;
@@ -30,29 +28,7 @@ require('../../../styles/CMDComponent.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDComponentView = React.createClass({
-  mixins: [ImmutableRenderMixin],
-  propTypes: {
-    /* specification object (CMD_Component) */
-    spec: React.PropTypes.object.isRequired,
-    /* determines whether 'envelope' with properties should be hidden */
-    hideProperties: React.PropTypes.bool,
-    openAll: React.PropTypes.bool,
-    closeAll: React.PropTypes.bool,
-    isLinked:  React.PropTypes.bool,
-    expansionState: React.PropTypes.object,
-    linkedComponents: React.PropTypes.object,
-    onToggle: React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      hideProperties: false,
-      openAll: false,
-      closeAll: false
-    };
-  },
-  toggleComponent: function() {
-    this.props.onToggle(this.props.spec._appId, this.props.spec);
-  },
+  mixins: [ImmutableRenderMixin, CMDComponentMixin],
   renderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
     if(isLinked) {
@@ -196,10 +172,6 @@ var CMDComponentView = React.createClass({
         );
       }
     // }
-  },
-
-  isOpen: function() {
-    return !this.props.isLinked || ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
   }
 });
 

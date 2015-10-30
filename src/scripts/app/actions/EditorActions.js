@@ -33,6 +33,7 @@ module.exports = {
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
 
     //TODO: in case of fields Name and Description, also update item..
+    //in case of Name, also update 'name' attribute of root component
   },
 
   updateItem: function(item, change) {
