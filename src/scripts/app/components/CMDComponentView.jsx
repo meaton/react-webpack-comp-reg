@@ -29,24 +29,7 @@ require('../../../styles/CMDComponent.sass');
 var CMDComponentView = React.createClass({
   mixins: [ImmutableRenderMixin, CMDComponentMixin],
 
-  renderNestedComponent: function(nestedComp, ncindex) {
-    var isLinked = nestedComp.hasOwnProperty("@ComponentId");
-    if(isLinked) {
-      var compId = nestedComp['@ComponentId'];
-    }
-
-    // use full spec for linked components if available (should have been preloaded)
-    var linkedSpecAvailable = isLinked
-                  && this.props.linkedComponents != undefined
-                  && this.props.linkedComponents.hasOwnProperty(compId);
-
-    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].CMD_Component : nestedComp;
-
-    // component ID (for display purposes only)
-    if(!isLinked) {
-       var compId = spec._appId;
-    }
-
+  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable) {
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);
     } else {

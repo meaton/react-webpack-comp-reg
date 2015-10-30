@@ -35,24 +35,8 @@ var CMDComponentForm = React.createClass({
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired
   },
-  renderNestedComponent: function(nestedComp, ncindex) {
-    var isLinked = nestedComp.hasOwnProperty("@ComponentId");
-    if(isLinked) {
-      var compId = nestedComp['@ComponentId'];
-    }
 
-    // use full spec for linked components if available (should have been preloaded)
-    var linkedSpecAvailable = isLinked
-                  && this.props.linkedComponents != undefined
-                  && this.props.linkedComponents.hasOwnProperty(compId);
-
-    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].CMD_Component : nestedComp;
-
-    // component ID (for display purposes only)
-    if(!isLinked) {
-       var compId = spec._appId;
-    }
-
+  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable) {
     if(isLinked) {
       if(linkedSpecAvailable) {
         return (<CMDComponentView

@@ -41,6 +41,27 @@ var CMDComponentMixin = {
     return !this.props.isLinked || ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
   },
 
+  callRenderNestedComponent: function(nestedComp, ncindex) {
+    var isLinked = nestedComp.hasOwnProperty("@ComponentId");
+    if(isLinked) {
+      var compId = nestedComp['@ComponentId'];
+    }
+
+    // use full spec for linked components if available (should have been preloaded)
+    var linkedSpecAvailable = isLinked
+                  && this.props.linkedComponents != undefined
+                  && this.props.linkedComponents.hasOwnProperty(compId);
+
+    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].CMD_Component : nestedComp;
+
+    // component ID (for display purposes only)
+    if(!isLinked) {
+       var compId = spec._appId;
+    }
+
+    return this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable);
+  },
+
   render: function () {
     log.trace("Rendering", this.props.spec._appId, (this.isOpen()?"open":"closed"));
 
@@ -62,7 +83,7 @@ var CMDComponentMixin = {
 
     if(compComps != undefined) {
       // render nested components
-      var nestedComponents = compComps.map(self.renderNestedComponent);
+      var nestedComponents = compComps.map(self.callRenderNestedComponent);
     }
 
     // classNames
