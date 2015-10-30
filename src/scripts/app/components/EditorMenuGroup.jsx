@@ -25,7 +25,6 @@ var Config = require('../../config');
 var EditorMenuGroup = React.createClass({
   mixins: [Router.State, Router.Navigation],
   propTypes: {
-    type: React.PropTypes.string,
     isNew: React.PropTypes.bool,
     onSave: React.PropTypes.func,
     onSaveNew: React.PropTypes.func,

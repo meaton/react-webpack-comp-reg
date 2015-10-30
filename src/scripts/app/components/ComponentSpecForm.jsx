@@ -180,65 +180,66 @@ var ComponentSpecForm = React.createClass({
         target.setState(updatedItem);
     }
   },
-  getValueScheme: function(obj, container, target) {
-    if(container == undefined) container = this;
-    if(target == undefined) target = container;
-    if(obj == undefined) return null;
-
-    // TODO flux
-    // var typeTrigger = (
-    //   <EditorDialog type="Type" label="Edit..." container={container} target={target} />
-    // );
-
-    var valueScheme = obj['@ValueScheme'];
-    console.log(typeof valueScheme);
-
-    if(typeof valueScheme != "string") {
-      valueScheme = obj.ValueScheme;
-
-      if(valueScheme != undefined) {
-        if(valueScheme.pattern != undefined) // attr or elem
-          valueScheme = valueScheme.pattern;
-        else { // elem
-          var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
-          return (this.state.editMode) ? (
-            <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)}>
-              {$.map(enumItems, function(item, index) {
-                return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
-              })}
-            </Input>
-          ) : (
-            <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
-              {
-                $.map(enumItems, function(item, index) {
-                  return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
-                })
-              }
-            </DropdownButton>
-          );
-        }
-
-      } else if(obj.Type != undefined) // attr
-          valueScheme = obj.Type;
-    }
-
-    return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} readOnly />;
-  },
-  handleInputChange: function(link, e) {
-    if(link != undefined && link != null)
-      link.requestChange(e.target.value);
-    else
-      console.log('Linked state variable is undefined: ' + e.target);
-  },
-  handleRegistryInputChange: function(link, e) {
-    if(link != undefined && link != null)
-      if(this.state.registry != null)
-        link.requestChange(e.target.value);
-      else
-        console.error('Registry data is empty: ' + this.state.registry);
-    else
-      console.log('Linked state variable is undefined: ' + e.target);
-  },
+  // ,
+  // getValueScheme: function(obj, container, target) {
+  //   if(container == undefined) container = this;
+  //   if(target == undefined) target = container;
+  //   if(obj == undefined) return null;
+  //
+  //   // TODO flux
+  //   // var typeTrigger = (
+  //   //   <EditorDialog type="Type" label="Edit..." container={container} target={target} />
+  //   // );
+  //
+  //   var valueScheme = obj['@ValueScheme'];
+  //   console.log(typeof valueScheme);
+  //
+  //   if(typeof valueScheme != "string") {
+  //     valueScheme = obj.ValueScheme;
+  //
+  //     if(valueScheme != undefined) {
+  //       if(valueScheme.pattern != undefined) // attr or elem
+  //         valueScheme = valueScheme.pattern;
+  //       else { // elem
+  //         var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
+  //         return (this.state.editMode) ? (
+  //           <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)}>
+  //             {$.map(enumItems, function(item, index) {
+  //               return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
+  //             })}
+  //           </Input>
+  //         ) : (
+  //           <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
+  //             {
+  //               $.map(enumItems, function(item, index) {
+  //                 return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
+  //               })
+  //             }
+  //           </DropdownButton>
+  //         );
+  //       }
+  //
+  //     } else if(obj.Type != undefined) // attr
+  //         valueScheme = obj.Type;
+  //   }
+  //
+  //   return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} readOnly />;
+  // },
+  // handleInputChange: function(link, e) {
+  //   if(link != undefined && link != null)
+  //     link.requestChange(e.target.value);
+  //   else
+  //     console.log('Linked state variable is undefined: ' + e.target);
+  // },
+  // handleRegistryInputChange: function(link, e) {
+  //   if(link != undefined && link != null)
+  //     if(this.state.registry != null)
+  //       link.requestChange(e.target.value);
+  //     else
+  //       console.error('Registry data is empty: ' + this.state.registry);
+  //   else
+  //     console.log('Linked state variable is undefined: ' + e.target);
+  // },
   handleUsageWarning: function(errors, cb) { // //TODO display components (non-profiles) that are linked?
     var self = this;
     var errors = this.processUsageErrors(errors);
@@ -275,12 +276,12 @@ var ComponentSpecForm = React.createClass({
       this.renderAlert(instance, "alert-container");
     } // else console.warn('Expect a single error result to display, value: ', errors);
   },
-  getLinkStateCompTypeStr: function() {
-    if(this.props.spec['@isProfile'] === "true")
-      return "profile";
-    else
-      return "component";
-  },
+  // getLinkStateCompTypeStr: function() {
+  //   if(this.props.spec['@isProfile'] === "true")
+  //     return "profile";
+  //   else
+  //     return "component";
+  // },
   // componentWillReceiveProps: function(nextProps) {
   //   console.log(this.constructor.displayName, 'will receive props');
   //

@@ -84,7 +84,6 @@ var EditorForm = React.createClass({
               &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
 
           <EditorMenuGroup
-          type={this.state.editor.type}
           isNew={newItem}
           onSave={this.handleSave}
           onSaveNew={this.handleSaveNew}
