@@ -48,7 +48,6 @@ var Editor = React.createClass({
   render: function () {
     return (
       <section id="editor">
-        <ButtonLink to="browser">Back to component browser</ButtonLink>
         {this.renderContent()}
       </section>
     );
@@ -58,7 +57,6 @@ var Editor = React.createClass({
     if(this.isAuthenticated()) {
       return (
           <div>
-            <h2>Component Editor</h2>
             <RouteHandler/>
             {/*grid*/}
           </div>

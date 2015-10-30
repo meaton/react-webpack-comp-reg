@@ -9,7 +9,11 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+//components
 var ComponentSpecForm = require("./ComponentSpecForm");
+var EditorMenuGroup = require("./EditorMenuGroup");
+
+//mixins
 var ComponentViewMixin = require('../mixins/ComponentViewMixin');
 
 /**
@@ -69,12 +73,21 @@ var EditorForm = React.createClass({
       var newItem = this.isNew();
       return (
         <div>
+
           <h3>
             {this.state.editor.type === Constants.TYPE_PROFILE
               ? (newItem?"New profile":"Edit profile")
               :(newItem?"New component":"Edit component")}
 
               &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
+
+          <EditorMenuGroup
+          type={this.state.editor.type}
+          isNew={newItem}
+          onSave={this.handleSave}
+          onSaveNew={this.handleSaveNew}
+          onPublish={this.handlePublish} />
+
           <ComponentSpecForm
             spec={this.state.details.spec}
             expansionState={this.state.details.expansionState}
@@ -91,6 +104,21 @@ var EditorForm = React.createClass({
   toggleComponent: function(itemId, spec) {
     // from ComponentViewMixin
     this.doToggleComponent(this.state.editor.space, itemId, spec);
+  },
+
+  handleSave: function() {
+    log.debug("Save", this.state.details.spec);
+    //TODO
+  },
+
+  handleSaveNew: function() {
+    log.debug("Save new", this.state.details.spec);
+    //TODO
+  },
+
+  handlePublish: function() {
+    log.debug("Publish", this.state.details.spec);
+    //TODO
   },
 
   setType: function(type) {

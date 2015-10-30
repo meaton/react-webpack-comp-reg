@@ -25,35 +25,22 @@ var Config = require('../../config');
 var EditorMenuGroup = React.createClass({
   mixins: [Router.State, Router.Navigation],
   propTypes: {
-    //mode: React.PropTypes.string
-  },
-  getDefaultProps: function() {
-    return {};
-  },
-  saveComp: function(isNew) {
-    this.props.saveComp(!isNew, isNew);
-  },
-  getCancelQueryParams: function() {
-    var cancelParams = null;
-    if((this.props.newActive && this.props.component != null) || !this.props.newActive)
-      cancelParams = { filter: (this.props.newActive) ? "published" : "private",
-             type: (this.props.profile != null) ? "profiles" : "components" };
-    return cancelParams;
+    type: React.PropTypes.string,
+    isNew: React.PropTypes.bool,
+    onSave: React.PropTypes.func,
+    onSaveNew: React.PropTypes.func,
+    onPublish: React.PropTypes.func
   },
   render: function () {
-    // var selectedId = this.props.selectedId;
-    // var componentType = this.props.type;
-    // var isPublished = !this.props.privateSelect;
-
     return (
       <ButtonGroup className="actionMenu">
-        <Button bsStyle={(!this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, false)} disabled={this.props.newActive}>Save</Button>
-        <Button bsStyle={(this.props.newActive) ? "primary" : "default" } onClick={this.saveComp.bind(this, true)}>Save new</Button>
-        <ButtonModal {...this.props} action={this.props.publishComp} disabled={this.props.newActive}
+        <Button bsStyle={(!this.props.isNew) ? "primary" : "default" } onClick={this.props.onSave} disabled={this.props.isNew}>Save</Button>
+        <Button bsStyle={(this.props.isNew) ? "primary" : "default" } onClick={this.props.onSaveNew}>Save new</Button>
+        <ButtonModal {...this.props} action={this.props.onPublish} disabled={this.props.isNew}
           btnLabel="Publish"
           title="Publish"
           desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-        <ButtonLink to={Config.deploy.path} query={this.getCancelQueryParams()}>Cancel</ButtonLink>
+        <ButtonLink to={'browser'}>Cancel</ButtonLink> {/*query={this.getCancelQueryParams()*/}
       </ButtonGroup>
     );
   }
