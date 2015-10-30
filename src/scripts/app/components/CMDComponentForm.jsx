@@ -97,47 +97,43 @@ var CMDComponentForm = React.createClass({
   },
 
   renderComponentProperties: function(comp) {
-    var header = comp.Header;
-    var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
-
-    var compId;
-    if(comp.hasOwnProperty("@ComponentId"))
-      compId = comp["@ComponentId"];
-    else if(comp.Header != undefined)
-      compId = comp.Header.ID;
-    else
-      compId = null;
-
-    if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
-       compName = this.props.componentName;
-    else if(comp.hasOwnProperty("@name"))
-      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-
-    var title;
-    if(this.props.isLinked) {
-      title = (
-        <div><span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a></div>
-      )
-    } else {
-      title = (
-        <div><span>Component: </span><span className="componentName">{compName}</span></div>
-      )
-    }
+    var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
-    var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
-
     return (
       <div>
-        {title}
-        <div className="componentProps">{compProps}</div>
+        <div>EDIT: <span>Component: </span><span className="componentName">{compName}</span></div>
+        <div className="componentProps">EDIT: Number of occurrences: {minC + " - " + maxC}</div>
       </div>
     );
   },
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   //below: old functions
+
+
   toggleSelection: function(evt) {
     if(this.state.isInline) { // selection inline components only
       var updatedComponent = update(this.state.component, { $merge: { selected: !this.state.isSelected } });
