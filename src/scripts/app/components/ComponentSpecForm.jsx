@@ -50,7 +50,9 @@ var ComponentSpecForm = React.createClass({
     spec: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
-    onComponentToggle: React.PropTypes.func
+    onComponentToggle: React.PropTypes.func,
+    onTypeChange: React.PropTypes.func,
+    onHeaderChange: React.PropTypes.func
   },
   contextTypes: {
     router: React.PropTypes.func,
@@ -86,26 +88,17 @@ var ComponentSpecForm = React.createClass({
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
           <div className="form-group">
-            <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={this.handleHeaderChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-            <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={this.handleHeaderChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
           </div>
-          <Input type="text" ref="rootComponentName" label="Name" defaultValue={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="text" name="name" label="Name" defaultValue={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//groupNameInput}
           }
-          <Input type="textarea" ref="rootComponentDesc" label="Description" defaultValue={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          {//domainNameInput}
-          //<Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
+          <Input type="textarea" name="description" label="Description" defaultValue={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          {//domainNameInput
           }
           {
-          // <div className={rootClasses}>
-          //   {/*errors*/}
-          //   <div className="rootProperties">
-          //     <ul>
-          //       <li><span>Name:</span> <b>{item.Header.Name}</b></li>
-          //       <li><span>Description:</span> {item.Header.Description}</li>
-          //       {conceptLink}
-          //     </ul>
-          //   </div>
+          //<Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
           }
             <CMDComponentForm
               spec={item.CMD_Component}
@@ -119,8 +112,17 @@ var ComponentSpecForm = React.createClass({
     }
   },
 
-  handleHeaderChange: function() {
-    //todo: call update header
+  handleTypeChange: function(e) {
+    //event target = input "isProfile"
+    var type = e.target.value ? Constants.TYPE_PROFILE : Constants.TYPE_COMPONENTS;
+    this.props.onTypeChange(type);
+  },
+
+  handleHeaderChange: function(e) {
+    //pass changes to handler, input name maps to field name
+    var field = e.target.name;
+    var value = e.target.value;
+    this.props.onHeaderChange({[field]: value});
   },
 
   //below: old functions

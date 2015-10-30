@@ -80,6 +80,8 @@ var EditorForm = React.createClass({
             expansionState={this.state.details.expansionState}
             linkedComponents={this.state.details.linkedComponents}
             onComponentToggle={this.toggleComponent}
+            onTypeChange={this.updateType}
+            onHeaderChange={this.updateHeader}
             />
         </div>
       );
@@ -89,6 +91,14 @@ var EditorForm = React.createClass({
   toggleComponent: function(itemId, spec) {
     // from ComponentViewMixin
     this.doToggleComponent(this.state.editor.space, itemId, spec);
+  },
+
+  updateType: function(type) {
+    //todo
+  },
+
+  updateHeader: function(change) {
+    //todo
   },
 
   isNew: function() {
