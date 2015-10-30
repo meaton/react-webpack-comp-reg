@@ -65,35 +65,12 @@ var CMDComponentForm = React.createClass({
     }
   },
 
-  renderAttributes: function(comp) {
-    if(comp.AttributeList != undefined) {
-      var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
-    }
-    return (
-      <div className="attrList">AttributeList:
-        {
-          (attrSet != undefined && attrSet.length > 0)
-          ? $.map(attrSet, function(attr, index) {
-            return (<CMDAttributeForm key={attr._appId} spec={attr} />);
-          })
-          : <span>No Attributes</span>
-        }
-      </div>
-    );
+  renderAttribute: function(attr) {
+    return (<CMDAttributeForm key={attr._appId} spec={attr} />);
   },
 
-  renderElements: function(comp) {
-    var compElems = comp.CMD_Element;
-
-    if(!$.isArray(compElems) && compElems != undefined)
-      compElems = [compElems];
-
-    if(compElems != undefined) {
-      // render elements
-      return compElems.map(function(elem, index){
-        return (<CMDElementForm key={elem._appId} spec={elem} />);
-      });
-    }
+  renderElement: function(elem) {
+    return (<CMDElementForm key={elem._appId} spec={elem} />);
   },
 
   renderComponentProperties: function(comp) {

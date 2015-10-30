@@ -41,6 +41,40 @@ var CMDComponentMixin = {
     return !this.props.isLinked || ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
   },
 
+  renderAttributes: function(comp) {
+    if(comp.AttributeList != undefined) {
+      var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
+    }
+
+    var self = this;
+    return (
+      <div className="attrList">AttributeList:
+        {
+          (attrSet != undefined && attrSet.length > 0)
+          ? $.map(attrSet, function(attr, index) {
+            return this.renderAttribute(attr); //(<CMDAttributeForm key={attr._appId} spec={attr} />);
+          })
+          : <span>No Attributes</span>
+        }
+      </div>
+    );
+  },
+
+  renderElements: function(comp) {
+    var compElems = comp.CMD_Element;
+
+    if(!$.isArray(compElems) && compElems != undefined)
+      compElems = [compElems];
+
+    if(compElems != undefined) {
+      var self = this;
+      // render elements
+      return compElems.map(function(elem, index){
+        return self.renderElement(elem); //(<CMDElementForm key={elem._appId} spec={elem} />);
+      });
+    }
+  },
+
   callRenderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
     if(isLinked) {
