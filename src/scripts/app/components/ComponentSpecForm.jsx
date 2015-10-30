@@ -71,21 +71,19 @@ var ComponentSpecForm = React.createClass({
     };
   },
   render: function() {
-    var item = this.props.spec;
+    var spec = this.props.spec;
 
-    if(item == null)
+    if(spec == null)
       return (
         <div className="ComponentViewer loading" />
       );
     else {
       var rootClasses = classNames({ ComponentViewer: true });
-      var rootComponent = item.CMD_Component;
+      var rootComponent = spec.CMD_Component;
 
       // Display properties
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
-      var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
-
-      log.debug("isProfile", isProfile, "spec:",item);
+      var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
 
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
@@ -93,17 +91,17 @@ var ComponentSpecForm = React.createClass({
             <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
             <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
           </div>
-          <Input type="text" name="Name" label="Name" value={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="text" name="Name" label="Name" value={spec.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//groupNameInput}
           }
-          <Input type="textarea" name="Description" label="Description" value={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="textarea" name="Description" label="Description" value={spec.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//domainNameInput
           }
           {
           //<Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
           }
             <CMDComponentForm
-              spec={item.CMD_Component}
+              spec={spec.CMD_Component}
               hideProperties={true}
               onToggle={this.props.onComponentToggle}
               expansionState={this.props.expansionState}
