@@ -23,7 +23,8 @@ var ComponentSpecStore = Fluxxor.createStore({
       Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, this.handleLoadSpecXmlSuccess,
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
       Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
-      Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded
+      Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded,
+      Constants.COMPONENT_SPEC_UPDATED, this.handleSpecUpdate
       //TODO: comments
     );
   },
@@ -65,6 +66,11 @@ var ComponentSpecStore = Fluxxor.createStore({
       this.linkedComponents = linkedComponents;
     }
 
+    this.emit("change");
+  },
+
+  handleSpecUpdate: function(spec) {
+    this.spec = spec;
     this.emit("change");
   },
 

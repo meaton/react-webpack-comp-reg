@@ -1,6 +1,9 @@
 var log = require("loglevel");
 var Constants = require("../constants");
 
+var React = require('react/addons');
+var update = React.addons.update;
+
 var ComponentRegistryClient = require("../service/ComponentRegistryClient");
 
 /**
@@ -13,11 +16,21 @@ module.exports = {
   },
 
   setType: function(spec, type) {
-    log.debug("setType", spec, type);
+    log.trace("setType", spec, type);
+
+    var isProfile = (type === Constants.TYPE_PROFILE);
+
+    //create updated spec with modified isProfile attribute
+    var newSpec = update(spec, {['@isProfile']: {$set: isProfile}});
+    this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },
 
   updateHeader: function(spec, change) {
-    log.debug("updateHeader", spec, "change:", change);
+    log.trace("updateHeader", spec, "change:", change);
+
+    //create updated spec, merging existing header with changes
+    var newSpec = update(spec, {Header: {$merge: change}});
+    this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   }
 
 };

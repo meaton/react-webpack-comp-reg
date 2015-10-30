@@ -35,8 +35,6 @@ module.exports = {
   TOGGLE_ITEM_EXPANSION: "TOGGLE_ITEM_EXPANSION",
   LINKED_COMPONENTS_LOADED: "LINKED_COMPONENTS_LOADED",
 
-  /* start editing an item */
-  EDIT_ITEM: "EDIT_ITEM",
   /* toggle item selection in the browser */
   SELECT_BROWSER_ITEM: "SELECT_BROWSER_ITEM",
   /* toggle selection mode */
@@ -44,7 +42,13 @@ module.exports = {
   /* switch space (registry (private, public, group...) and type (components/profiles)) */
   SWITCH_SPACE: "SWITCH_SPACE",
 
+  /* start editing an item */
+  EDIT_ITEM: "EDIT_ITEM",
+  /* open editor with item */
   OPEN_EDITOR: "OPEN_EDITOR",
+
+  /* spec updated for editor */
+  COMPONENT_SPEC_UPDATED: "COMPONENT_SPEC_UPDATED",
 
   /* APP MODES */
   MODE_BROWSER: 'browser',

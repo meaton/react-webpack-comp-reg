@@ -91,10 +91,10 @@ var ComponentSpecForm = React.createClass({
             <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
             <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
           </div>
-          <Input type="text" name="name" label="Name" defaultValue={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="text" name="Name" label="Name" defaultValue={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//groupNameInput}
           }
-          <Input type="textarea" name="description" label="Description" defaultValue={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="textarea" name="Description" label="Description" defaultValue={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//domainNameInput
           }
           {
