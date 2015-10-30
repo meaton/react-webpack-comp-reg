@@ -31,6 +31,16 @@ module.exports = {
     //create updated spec, merging existing header with changes
     var newSpec = update(spec, {Header: {$merge: change}});
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
+
+    //TODO: in case of fields Name and Description, also update item..
+  },
+
+  updateItem: function(item, change) {
+    log.trace("updateItem", item, "change:", change);
+
+    //create updated spec, merging existing header with changes
+    var newSpec = update(item, {$merge: change});
+    this.dispatch(Constants.ITEM_UPDATED, newSpec);
   }
 
 };

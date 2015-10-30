@@ -98,6 +98,7 @@ var EditorForm = React.createClass({
             onComponentToggle={this.toggleComponent}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
+            onItemChange={this.updateItem}
             />
         </div>
       );
@@ -130,6 +131,10 @@ var EditorForm = React.createClass({
 
   updateHeader: function(change) {
     this.getFlux().actions.updateHeader(this.state.details.spec, change);
+  },
+
+  updateItem: function(change) {
+    this.getFlux().actions.updateItem(this.state.editor.item, change);
   },
 
   isNew: function() {

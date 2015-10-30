@@ -53,6 +53,8 @@ module.exports = {
 
   /* spec updated for editor */
   COMPONENT_SPEC_UPDATED: "COMPONENT_SPEC_UPDATED",
+  /* item description updated for editor */
+  ITEM_UPDATED: "ITEM_UPDATED",
 
   /* APP MODES */
   MODE_BROWSER: 'browser',

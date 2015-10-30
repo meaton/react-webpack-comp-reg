@@ -53,7 +53,8 @@ var ComponentSpecForm = React.createClass({
     linkedComponents: React.PropTypes.object,
     onComponentToggle: React.PropTypes.func.isRequired,
     onTypeChange: React.PropTypes.func.isRequired,
-    onHeaderChange: React.PropTypes.func.isRequired
+    onHeaderChange: React.PropTypes.func.isRequired,
+    onItemChange: React.PropTypes.func.isRequired
   },
   contextTypes: {
     router: React.PropTypes.func,
@@ -94,8 +95,7 @@ var ComponentSpecForm = React.createClass({
             <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
           </div>
           <Input type="text" name="Name" label="Name" value={spec.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          {//groupNameInput}
-          }
+          <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input type="textarea" name="Description" label="Description" value={spec.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//domainNameInput
           }
@@ -117,6 +117,13 @@ var ComponentSpecForm = React.createClass({
   handleTypeChange: function(e) {
     //pass changes to handler, the event target is input "isProfile" (value either profile or component type constant)
     this.props.onTypeChange(e.target.value);
+  },
+
+  handleItemChange: function(e) {
+    //pass changes to handler, input name maps to field name
+    var field = e.target.name;
+    var value = e.target.value;
+    this.props.onItemChange({[field]: value});
   },
 
   handleHeaderChange: function(e) {
