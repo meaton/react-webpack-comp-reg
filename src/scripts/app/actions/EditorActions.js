@@ -18,7 +18,7 @@ module.exports = {
   setType: function(spec, type) {
     log.trace("setType", spec, type);
 
-    var isProfile = (type === Constants.TYPE_PROFILE);
+    var isProfile = (type === Constants.TYPE_PROFILE) ? "true":"false";
 
     //create updated spec with modified isProfile attribute
     var newSpec = update(spec, {['@isProfile']: {$set: isProfile}});

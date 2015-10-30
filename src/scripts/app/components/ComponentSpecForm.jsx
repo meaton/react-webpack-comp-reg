@@ -85,16 +85,18 @@ var ComponentSpecForm = React.createClass({
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       var isProfile = (item.hasOwnProperty("@isProfile")) ? (item['@isProfile']=="true") : false;
 
+      log.debug("isProfile", isProfile, "spec:",item);
+
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
           <div className="form-group">
-            <Input type="radio" name="isProfile" label="Profile" value={true} defaultChecked={isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-            <Input type="radio" name="isProfile" label="Component" value={false} defaultChecked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
           </div>
-          <Input type="text" name="Name" label="Name" defaultValue={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="text" name="Name" label="Name" value={item.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//groupNameInput}
           }
-          <Input type="textarea" name="Description" label="Description" defaultValue={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input type="textarea" name="Description" label="Description" value={item.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           {//domainNameInput
           }
           {
@@ -113,10 +115,8 @@ var ComponentSpecForm = React.createClass({
   },
 
   handleTypeChange: function(e) {
-    //event target = input "isProfile"
-    var isProfile = (e.target.value === "true") ;
-    var type = isProfile ? Constants.TYPE_PROFILE : Constants.TYPE_COMPONENTS;
-    this.props.onTypeChange(type);
+    //pass changes to handler, the event target is input "isProfile" (value either profile or component type constant)
+    this.props.onTypeChange(e.target.value);
   },
 
   handleHeaderChange: function(e) {
