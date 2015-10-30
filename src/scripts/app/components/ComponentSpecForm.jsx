@@ -34,6 +34,7 @@ require('../../../styles/ComponentViewer.sass');
 * @Router.State
 */
 var ComponentSpecForm = React.createClass({
+  mixins: [ImmutableRenderMixin],
   statics: {
     willTransitionTo: function(transition, params, query) {
       log.debug('attempting transition...' + transition.path);
@@ -56,22 +57,13 @@ var ComponentSpecForm = React.createClass({
     onHeaderChange: React.PropTypes.func.isRequired,
     onItemChange: React.PropTypes.func.isRequired
   },
-  contextTypes: {
-    router: React.PropTypes.func,
-  },
-  getInitialState: function() {
-    return { childElements: null,
-             childComponents: null
-    };
-  },
-  mixins: [
-    ImmutableRenderMixin, Router.Navigation, Router.State],
 
   getDefaultProps: function() {
     return {
       domains: require('../../domains.js')
     };
   },
+
   render: function() {
     var spec = this.props.spec;
     var item = this.props.item;
@@ -97,8 +89,12 @@ var ComponentSpecForm = React.createClass({
           <Input type="text" name="Name" label="Name" value={spec.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input type="textarea" name="Description" label="Description" value={spec.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          {//domainNameInput
-          }
+          <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+            <option value="">Select a domain...</option>
+            {this.props.domains.map(function(domain, index) {
+              return <option key={index} value={domain.data}>{domain.label}</option>
+            })}
+          </Input>
           {
           //<Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
           }
