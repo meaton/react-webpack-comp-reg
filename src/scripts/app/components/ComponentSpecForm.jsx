@@ -114,7 +114,8 @@ var ComponentSpecForm = React.createClass({
 
   handleTypeChange: function(e) {
     //event target = input "isProfile"
-    var type = e.target.value ? Constants.TYPE_PROFILE : Constants.TYPE_COMPONENTS;
+    var isProfile = (e.target.value === "true") ;
+    var type = isProfile ? Constants.TYPE_PROFILE : Constants.TYPE_COMPONENTS;
     this.props.onTypeChange(type);
   },
 

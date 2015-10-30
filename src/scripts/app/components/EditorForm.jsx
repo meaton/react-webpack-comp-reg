@@ -80,7 +80,7 @@ var EditorForm = React.createClass({
             expansionState={this.state.details.expansionState}
             linkedComponents={this.state.details.linkedComponents}
             onComponentToggle={this.toggleComponent}
-            onTypeChange={this.updateType}
+            onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             />
         </div>
@@ -93,12 +93,12 @@ var EditorForm = React.createClass({
     this.doToggleComponent(this.state.editor.space, itemId, spec);
   },
 
-  updateType: function(type) {
-    //todo
+  setType: function(type) {
+    this.getFlux().actions.setType(this.state.details.spec, type);
   },
 
   updateHeader: function(change) {
-    //todo
+    this.getFlux().actions.updateHeader(this.state.details.spec, change);
   },
 
   isNew: function() {
