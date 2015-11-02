@@ -106,7 +106,7 @@ var ComponentSpecForm = React.createClass({
               onToggle={this.props.onComponentToggle}
               expansionState={this.props.expansionState}
               linkedComponents={this.props.linkedComponents}
-              onComponentChange={this.handleComponentChange.bind(this, 0)}
+              onComponentChange={this.handleComponentChange}
               />
           </form>
         );
@@ -132,7 +132,7 @@ var ComponentSpecForm = React.createClass({
     this.props.onHeaderChange({[field]: value});
   },
 
-  handleComponentChange: function(n, change) {
+  handleComponentChange: function(change) {
     //an update of the root component has been pushed up
     var update = {CMD_Component: change};
     this.props.onComponentChange(update);
