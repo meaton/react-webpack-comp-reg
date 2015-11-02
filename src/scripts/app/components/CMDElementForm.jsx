@@ -15,9 +15,7 @@ var CMDAttributeForm = require('./CMDAttributeForm');
 var ValueScheme = require('./ValueScheme');
 
 //utils
-var update = React.addons.update;
 var classNames = require('classnames');
-var md5 = require('spark-md5');
 
 require('../../../styles/CMDElement.sass');
 
@@ -42,7 +40,8 @@ var CMDElementForm = React.createClass({
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
     key: React.PropTypes.string,
-    expansionState: React.PropTypes.object
+    expansionState: React.PropTypes.object,
+    onElementChange: React.PropTypes.func
   },
   getDefaultProps: function() {
     return {
@@ -69,41 +68,112 @@ var CMDElementForm = React.createClass({
 
     return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
-  render: function () {
-    var self = this;
-    var attrList = null;
 
-    var elem = this.props.spec;
-    var elemInspect = elem.elemId; // require('util').inspect(elem);
-
-    var valueScheme = <ValueScheme obj={elem} enabled={false} />
-
-    if(elem.AttributeList != undefined) {
-      var attrSet = $.isArray(elem.AttributeList.Attribute) ? elem.AttributeList.Attribute : [elem.AttributeList.Attribute];
-    }
-    if(elem.AttributeList != undefined) {
-      attrList = (
+  renderAttributes: function(elem) {
+    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+    if(attrSet != undefined) {
+      return (
         <div className="attrList">AttributeList:
           {
             (attrSet != undefined && attrSet.length > 0) ?
             $.map(attrSet, function(attr, index) {
+              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
+              attr.attrId = attrId;
+              log.debug("Attr", attr);
               return <CMDAttributeForm key={attr._appId} spec={attr} />
             }) : <span>No Attributes</span>
           }
         </div>);
+    } else {
+      return <span>oops</span>;
     }
-
-    return (
-      <div className="CMDElement">
-        <span>Element: </span>
-        <span className="elementName">{elem['@name']}</span> { valueScheme }
-        <div className="elemAttrs">
-          { React.addons.createFragment({ left: this.elemAttrs(elem) }) }
-        </div>
-        {attrList}
-      </div>
-      );
   },
+
+  render: function () {
+    var self = this;
+    var actionButtons = null;//TODO: this.getActionButtons();
+
+    var elem = this.props.spec;
+    var elemInspect = elem.elemId; // require('util').inspect(elem);
+
+    var valueScheme = null; //TODO: this.props.viewer.getValueScheme(elem, this);
+
+    var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
+    var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
+    var cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
+
+    // classNames
+    var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
+    var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
+
+    // elem props
+    var elemProps = (
+      <div className="elementProps">
+        <Input type="text" name="@name" label="Name" value={elem['@name']} onChange={this.updateElementValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}  onChange={this.updateElementValue}
+          labelClassName="col-xs-1" wrapperClassName="col-xs-3" readOnly /> {/*TODO buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
+        <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        {valueScheme}
+        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="col-xs-2 col-xs-offset-1" />
+      </div>
+    );
+
+    //for cardinality
+    var maxOccDisabled = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
+    var integerOpts = $.map($(Array(10)), function(item, index) {
+      return <option key={index} value={index}>{index}</option>
+    });
+
+    //putting it all together...
+    return (
+      <div className={elementClasses}>
+         {actionButtons}
+        <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
+        <div className="form-horizontal form-group">
+          {elemProps}
+          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateElementValue}>
+            {integerOpts /*TODO: max @CardinalityMax*/}
+          </Input>
+          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={maxOccDisabled} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateElementValue}>
+            {integerOpts /*TODO: min @CardinalityMin*/}
+            <option value="unbounded">unbounded</option>
+          </Input>
+        </div>
+        {this.renderAttributes(elem)}
+        <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div>
+      </div>
+    );
+  },
+
+  updateElementValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  updateElementSelectValue: function(e) {
+    var value = e.target.checked ? "true":"false";
+    this.propagateValue(e.target.name, value);
+  },
+
+  propagateValue: function(field, value) {
+    this.props.onElementChange({$merge: {[field]: value}});
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //below: old functions
   // componentWillReceiveProps: function(nextProps) {

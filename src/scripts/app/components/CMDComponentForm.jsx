@@ -18,8 +18,7 @@ var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 
 //utils
-var update = React.addons.update;
-var md5 = require('spark-md5');
+var classNames = require('classnames');
 
 require('../../../styles/CMDComponent.sass');
 
@@ -66,12 +65,15 @@ var CMDComponentForm = React.createClass({
     }
   },
 
-  renderAttribute: function(attr) {
+  renderAttribute: function(attr, index) {
     return (<CMDAttributeForm key={attr._appId} spec={attr} />);
   },
 
-  renderElement: function(elem) {
-    return (<CMDElementForm key={elem._appId} spec={elem} />);
+  renderElement: function(elem, index) {
+    return (<CMDElementForm
+              key={elem._appId}
+              spec={elem}
+              onElementChange={this.handleElementChange.bind(this, index)} />);
   },
 
   renderComponentProperties: function(comp) {
@@ -87,7 +89,7 @@ var CMDComponentForm = React.createClass({
     }
 
     var editClasses = null; //TODO determine classes?
-    var componentClasses = null; //TODO determine classes?
+    var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': this.isOpen(), 'selected': false /*TODO selection state*/ });
 
     return (
       <div className={componentClasses}>
@@ -134,6 +136,12 @@ var CMDComponentForm = React.createClass({
   handleComponentChange: function(index, change) {
     //an update of the child component at [index] has been requested, push up
     this.props.onComponentChange({CMD_Component: {[index]: change}});
+  },
+
+  handleElementChange: function(index, change) {
+    var update = {CMD_Element: {[index]: change}};
+    log.debug("Update element", update);
+    this.props.onComponentChange(update);
   },
 
   updateComponentValue: function(e) {

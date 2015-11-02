@@ -51,9 +51,7 @@ var CMDComponentMixin = {
       <div className="attrList">AttributeList:
         {
           (attrSet != undefined && attrSet.length > 0)
-          ? $.map(attrSet, function(attr, index) {
-            return this.renderAttribute(attr); //(<CMDAttributeForm key={attr._appId} spec={attr} />);
-          })
+          ? $.map(attrSet, this.renderAttribute)
           : <span>No Attributes</span>
         }
       </div>
@@ -69,9 +67,7 @@ var CMDComponentMixin = {
     if(compElems != undefined) {
       var self = this;
       // render elements
-      return compElems.map(function(elem, index){
-        return self.renderElement(elem); //(<CMDElementForm key={elem._appId} spec={elem} />);
-      });
+      return compElems.map(self.renderElement);
     }
   },
 
