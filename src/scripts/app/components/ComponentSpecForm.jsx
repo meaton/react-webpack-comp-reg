@@ -133,8 +133,8 @@ var ComponentSpecForm = React.createClass({
   },
 
   handleComponentChange: function(n, change) {
+    //an update of the root component has been pushed up
     var update = {CMD_Component: change};
-    log.debug("Update:", update);
     this.props.onComponentChange(update);
   },
 

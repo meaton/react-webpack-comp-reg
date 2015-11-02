@@ -74,21 +74,6 @@ var CMDComponentForm = React.createClass({
     return (<CMDElementForm key={elem._appId} spec={elem} />);
   },
 
-  renderComponentPropertiesOld: function(comp) {
-    var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-
-    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
-    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
-
-    return (
-      <div>
-        <Input type="text" label="Name" defaultValue={this.state.component['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-        <div>EDIT: <span>Component: </span><span className="componentName">{compName}</span></div>
-        <div className="componentProps">EDIT: Number of occurrences: {minC + " - " + maxC}</div>
-      </div>
-    );
-  },
-
   renderComponentProperties: function(comp) {
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
@@ -96,30 +81,18 @@ var CMDComponentForm = React.createClass({
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
     var cardOpt = null;
-    var minComponentLink = null;
-    var maxComponentLink = null;
 
-    if(this.isOpen()) {
-      // minComponentLink = (this.state.component.Header != undefined && comp.hasOwnProperty("@CardinalityMin")) ? this.linkState('component.CMD_Component.@CardinalityMin') : this.linkState('component.@CardinalityMin');
-      // maxComponentLink = (this.state.component.Header != undefined && comp.hasOwnProperty("@CardinalityMax")) ? this.linkState('component.CMD_Component.@CardinalityMax') : this.linkState('component.@CardinalityMax');
-    } else {
-        cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
+    if(!this.isOpen()) {
+      cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
     }
 
-    //var nameLink = this.linkState('component.@name');
-
-    // var cmdInlineBody = (this.props.isLinked) ? null :
-    //   (
-
-    //   );
-
-    var editClasses = null;
-    var componentClasses = null;
+    var editClasses = null; //TODO determine classes?
+    var componentClasses = null; //TODO determine classes?
 
     return (
       <div className={componentClasses}>
         {/* TODO: actionButtons (from ActionButtonsMixin) */}
-        {/* TODO: selectionLink 
+        {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}
         <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
@@ -158,37 +131,19 @@ var CMDComponentForm = React.createClass({
     );
   },
 
-  handleComponentChange: function(n, change) {
-    this.props.onComponentChange({CMD_Component: {[n]: change}});
+  handleComponentChange: function(index, change) {
+    //an update of the child component at [index] has been requested, push up
+    this.props.onComponentChange({CMD_Component: {[index]: change}});
   },
 
   updateComponentValue: function(e) {
-    this.props.onComponentChange({$merge: {[e.target.name]: e.target.value}});
+    //a property of this component has changed
+
+    //send 'command' to merge existing spec section with this delta
+    //(see https://facebook.github.io/react/docs/update.html)
+    var update = {$merge: {[e.target.name]: e.target.value}};
+    this.props.onComponentChange(update);
   },
-
-
-
-  // var handleOccMinChange = function(e) {
-  //     console.log('comp change: ' + e.target);
-  //     if(minComponentLink != null) {
-  //       minComponentLink.requestChange(e.target.value);
-  //
-  //       if(self.props.onUpdate)
-  //         self.props.onUpdate(e.target.value, null);
-  //     }
-  // };
-  //
-  // var handleOccMaxChange = function(e) {
-  //   console.log('comp change: ' + e.target);
-  //   if(maxComponentLink != null) {
-  //     maxComponentLink.requestChange(e.target.value);
-  //
-  //     if(self.props.onUpdate)
-  //       self.props.onUpdate(null, e.target.value);
-  //   }
-  // };
-
-
 
 
 
