@@ -98,6 +98,7 @@ var EditorForm = React.createClass({
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
+            onComponentChange={this.updateComponentSpec}
             />
         </div>
       );
@@ -134,6 +135,10 @@ var EditorForm = React.createClass({
 
   updateItem: function(change) {
     this.getFlux().actions.updateItem(this.state.editor.item, change);
+  },
+
+  updateComponentSpec: function(change) {
+    this.getFlux().actions.updateSpec(this.state.details.spec, change);
   },
 
   isNew: function() {

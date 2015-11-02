@@ -42,6 +42,11 @@ module.exports = {
     //create updated spec, merging existing header with changes
     var newSpec = update(item, {$merge: change});
     this.dispatch(Constants.ITEM_UPDATED, newSpec);
+  },
+
+  updateSpec: function(spec, change) {
+    var newSpec = update(spec, change);
+    this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   }
 
 };

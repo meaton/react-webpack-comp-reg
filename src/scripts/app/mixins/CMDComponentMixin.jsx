@@ -93,7 +93,7 @@ var CMDComponentMixin = {
        var compId = spec._appId;
     }
 
-    return this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable);
+    return this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable, ncindex);
   },
 
   render: function () {

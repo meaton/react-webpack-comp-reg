@@ -36,7 +36,7 @@ var CMDComponentForm = React.createClass({
     onComponentChange: React.PropTypes.func.isRequired
   },
 
-  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable) {
+  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked) {
       if(linkedSpecAvailable) {
         return (<CMDComponentView
@@ -61,6 +61,7 @@ var CMDComponentForm = React.createClass({
         linkedComponents={this.props.linkedComponents}
         onToggle={this.props.onToggle}
         isLinked={isLinked}
+        onComponentChange={this.handleComponentChange.bind(this, index)}
         />);
     }
   },
@@ -73,7 +74,7 @@ var CMDComponentForm = React.createClass({
     return (<CMDElementForm key={elem._appId} spec={elem} />);
   },
 
-  renderComponentProperties: function(comp) {
+  renderComponentPropertiesOld: function(comp) {
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
@@ -81,13 +82,111 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
+        <Input type="text" label="Name" defaultValue={this.state.component['@name']} onChange={this.props.viewer.handleInputChange.bind(this.props.viewer, nameLink)} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
         <div>EDIT: <span>Component: </span><span className="componentName">{compName}</span></div>
         <div className="componentProps">EDIT: Number of occurrences: {minC + " - " + maxC}</div>
       </div>
     );
   },
 
+  renderComponentProperties: function(comp) {
+    var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
+    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
+    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
+
+    var cardOpt = null;
+    var minComponentLink = null;
+    var maxComponentLink = null;
+
+    if(this.isOpen()) {
+      // minComponentLink = (this.state.component.Header != undefined && comp.hasOwnProperty("@CardinalityMin")) ? this.linkState('component.CMD_Component.@CardinalityMin') : this.linkState('component.@CardinalityMin');
+      // maxComponentLink = (this.state.component.Header != undefined && comp.hasOwnProperty("@CardinalityMax")) ? this.linkState('component.CMD_Component.@CardinalityMax') : this.linkState('component.@CardinalityMax');
+    } else {
+        cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
+    }
+
+    //var nameLink = this.linkState('component.@name');
+
+    // var cmdInlineBody = (this.props.isLinked) ? null :
+    //   (
+
+    //   );
+
+    var editClasses = null;
+    var componentClasses = null;
+
+    return (
+      <div className={componentClasses}>
+        {/* TODO: actionButtons (from ActionButtonsMixin) */}
+        {/* TODO: selectionLink 
+          <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
+        */}
+        <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
+        <div className={editClasses}>
+          <div>
+            <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            {/*TODO: concept link
+              <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.component['@ConceptLink']) ? this.state.component['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
+            */}
+          </div>
+          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateComponentValue}>
+            <option value="unbounded">unbounded</option>
+            {$.map($(Array(10)), function(item, index) {
+              return <option key={index} value={index}>{index}</option>
+            })}
+          </Input>
+          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateComponentValue}>
+            <option value="unbounded">unbounded</option>
+            {$.map($(Array(10)), function(item, index) {
+              return <option key={index} value={index}>{index}</option>
+            })}
+          </Input>
+          {/*TODO: add comp/element links
+                <div className="inline-body">
+                  {attrList}
+                  <div className="childElements">{compElems}
+                    <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
+                  </div>
+                  <div ref="components" className="childComponents">{compComps}
+                    <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>
+                  </div>
+                </div>
+            */}
+        </div>
+      </div>
+    );
+  },
+
+  handleComponentChange: function(n, change) {
+    this.props.onComponentChange({CMD_Component: {[n]: change}});
+  },
+
+  updateComponentValue: function(e) {
+    this.props.onComponentChange({$merge: {[e.target.name]: e.target.value}});
+  },
+
+
+
+  // var handleOccMinChange = function(e) {
+  //     console.log('comp change: ' + e.target);
+  //     if(minComponentLink != null) {
+  //       minComponentLink.requestChange(e.target.value);
+  //
+  //       if(self.props.onUpdate)
+  //         self.props.onUpdate(e.target.value, null);
+  //     }
+  // };
+  //
+  // var handleOccMaxChange = function(e) {
+  //   console.log('comp change: ' + e.target);
+  //   if(maxComponentLink != null) {
+  //     maxComponentLink.requestChange(e.target.value);
+  //
+  //     if(self.props.onUpdate)
+  //       self.props.onUpdate(null, e.target.value);
+  //   }
+  // };
 
 
 

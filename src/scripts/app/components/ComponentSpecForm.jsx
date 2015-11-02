@@ -56,7 +56,8 @@ var ComponentSpecForm = React.createClass({
     onComponentToggle: React.PropTypes.func.isRequired,
     onTypeChange: React.PropTypes.func.isRequired,
     onHeaderChange: React.PropTypes.func.isRequired,
-    onItemChange: React.PropTypes.func.isRequired
+    onItemChange: React.PropTypes.func.isRequired,
+    onComponentChange: React.PropTypes.func.isRequired
   },
 
   getDefaultProps: function() {
@@ -105,6 +106,7 @@ var ComponentSpecForm = React.createClass({
               onToggle={this.props.onComponentToggle}
               expansionState={this.props.expansionState}
               linkedComponents={this.props.linkedComponents}
+              onComponentChange={this.handleComponentChange.bind(this, 0)}
               />
           </form>
         );
@@ -128,6 +130,12 @@ var ComponentSpecForm = React.createClass({
     var field = e.target.name;
     var value = e.target.value;
     this.props.onHeaderChange({[field]: value});
+  },
+
+  handleComponentChange: function(n, change) {
+    var update = {CMD_Component: change};
+    log.debug("Update:", update);
+    this.props.onComponentChange(update);
   },
 
   //below: old functions
