@@ -11,7 +11,7 @@ var marshaller = context.createMarshaller();
 var Constants = require("../constants");
 var Config = require('../../config').Config;
 var restUrl = require('../../config').restUrl;
-var authUrl = restUrl + "/authentication"
+var authUrl = restUrl + "/authentication";
 
 var Validation = require('./Validation');
 
@@ -56,6 +56,7 @@ var ComponentRegistryClient = {
  },
 
  loadSpec: function(type, space, id, raw_type, handleSuccess, handleFailure) {
+  var self = this;
   var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles/':'/registry/components/';
   var requestUrl = restUrl + typepath + id;
   $.ajax($.extend({
@@ -63,7 +64,11 @@ var ComponentRegistryClient = {
     dataType: (raw_type != undefined) ? raw_type : "json",
     success: function(data) {
       log.trace("Successfully loaded ", requestUrl);
-      handleSuccess(data);
+
+      var normalised = self.normaliseSpec(data);
+      log.trace("Data:", data, "Normalised:", normalised);
+
+      handleSuccess(normalised);
     }.bind(this),
     error: function(xhr, status, err) {
       handleFailure("Error loading spec for " + id + ": " + err);
@@ -91,9 +96,8 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   var registry = item;
 
   var data = Validation.validate(spec);
-    //this.handlePostData(clone(spec), this.state.childElements, this.state.childComponents));
 
-  log.debug('data to save: ', data);
+  log.debug('data to save: ', data, item);
 
   if(data.errors != undefined)
     return handleFailure("Invalid specification", data); // return invalid
@@ -145,6 +149,46 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   //   }, corsRequestParams));
 
   handleFailure("test", data);
+},
+
+/**
+ * Turns all CMD_Component and CMD_Element properties into arrays
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+normaliseSpec: function(data) {
+  if (typeof data != 'object') {
+    return data;
+  }
+
+  //var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
+  if (data.Header != undefined) {
+    //root component
+    data.CMD_Component = this.normaliseSpec(data.CMD_Component);
+  } else {
+    var childElems = data.CMD_Element;
+    var childComps = data.CMD_Component;
+
+    if(childElems != undefined && childElems != null) {
+      if(!$.isArray(childElems)) {
+        data.CMD_Element = [childElems];
+      }
+    }
+
+    if(childComps != undefined && childComps != null) {
+      if(!$.isArray(childComps)) {
+        childComps = [childComps];
+      }
+
+      // normalise children
+      var self = this;
+      data.CMD_Component = childComps.map(function(comp, index) {
+        return self.normaliseSpec(comp);
+      });
+    }
+  }
+
+  return data;
 },
 
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
