@@ -95,11 +95,12 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   var actionType = (publish) ? "publish" : "update";
   var registry = item;
 
+  log.debug('Data to save: ', spec, item);
+
   var data = Validation.validate(spec);
 
-  log.debug('data to save: ', data, item);
-
   if(data.errors != undefined) {
+    log.debug("Validation failed:", data);
     var message = "Invalid specification:";
     for(i=0; i < data.errors.length; i++) {
       message += "\n" + data.errors[i].message;

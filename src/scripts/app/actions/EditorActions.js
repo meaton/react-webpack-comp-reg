@@ -10,7 +10,7 @@ var SpecAugmenter = require("../service/SpecAugmenter");
 /**
  * Browser actions
  */
-module.exports = {
+var EditorActions = {
 
   openEditor: function(type, space, id) {
     this.dispatch(Constants.OPEN_EDITOR, {type: type, space: space, id: id});
@@ -26,23 +26,36 @@ module.exports = {
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },
 
-  updateHeader: function(spec, change) {
+  updateHeader: function(spec, item, change) {
     log.trace("updateHeader", spec, "change:", change);
 
     //create updated spec, merging existing header with changes
     var newSpec = update(spec, {Header: {$merge: change}});
+
+    // some fields needs to be synced with item description and root component
+    var newItem;
+    if(change.Name) {
+      // also update name in item description and root component attribute
+      newSpec = update(newSpec, {CMD_Component: {["@name"]: {$set: change.Name}}});
+      newItem = update(item, {$merge: {name: change.Name}});
+    } else if(change.Description) {
+      // also update name in item description
+      newItem = update(item, {$merge: {description: change.Description}});
+    }
+
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
 
-    //TODO: in case of fields Name and Description, also update item..
-    //in case of Name, also update 'name' attribute of root component
+    if(newItem != undefined) {
+      this.dispatch(Constants.ITEM_UPDATED, newItem);
+    }
   },
 
   updateItem: function(item, change) {
     log.trace("updateItem", item, "change:", change);
 
     //create updated spec, merging existing header with changes
-    var newSpec = update(item, {$merge: change});
-    this.dispatch(Constants.ITEM_UPDATED, newSpec);
+    var newItem = update(item, {$merge: change});
+    this.dispatch(Constants.ITEM_UPDATED, newItem);
   },
 
   updateSpec: function(spec, change) {
@@ -86,3 +99,5 @@ module.exports = {
   }
 
 };
+
+module.exports = EditorActions;

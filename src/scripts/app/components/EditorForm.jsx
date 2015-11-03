@@ -141,7 +141,7 @@ var EditorForm = React.createClass({
   },
 
   updateHeader: function(change) {
-    this.getFlux().actions.updateHeader(this.state.details.spec, change);
+    this.getFlux().actions.updateHeader(this.state.details.spec, this.state.editor.item, change);
   },
 
   updateItem: function(change) {
