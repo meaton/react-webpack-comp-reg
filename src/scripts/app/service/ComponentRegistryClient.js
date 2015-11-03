@@ -176,7 +176,7 @@ normaliseSpec: function(data) {
     data.CMD_Component = this.normaliseSpec(data.CMD_Component);
   } else {
     if(data.hasOwnProperty("@ComponentId") && (data.CMD_Element || data.CMD_Component || data.AttributeList)) {
-      log.debug("Encountered component with id and children");
+      log.debug("Encountered component children despite component id (", data["@ComponentId"], ")");
       //linked component - strip children
       delete data.CMD_Element;
       delete data.CMD_Component;

@@ -62,10 +62,18 @@ var EditorForm = React.createClass({
     var space = params.space;
 
     this.getFlux().actions.openEditor(type, space, id);
-    // load the spec for editing
-    this.getFlux().actions.loadComponentSpec(type, space, id);
-    // load the item for editing
-    this.getFlux().actions.loadItem(type, space, id);
+
+    if(this.isNew() && id == undefined) {
+      // create new component
+      this.getFlux().actions.newComponentSpec(type, space);
+      // create new item description
+      this.getFlux().actions.newItem(type, space);
+    } else {
+      // load the spec for editing
+      this.getFlux().actions.loadComponentSpec(type, space, id);
+      // load the item for editing
+      this.getFlux().actions.loadItem(type, space, id);
+    }
   },
 
   render: function () {

@@ -60,13 +60,15 @@ module.exports = {
     // Random numbers are appended to prevent expansion of multiple display
     // instances of the same (linked) component. Uniqueness is the only purpose
     // of these IDs, but including the component ID makes for nicer debugging.
-    baseId = Math.floor(Math.random()*1000);
-    if(spec.Header != undefined) {
+    baseId = Math.floor(Math.random()*99999);
+    if(spec.Header != undefined && spec.Header.ID != undefined) {
       // include ID from header
       baseId = spec.Header.ID + "#" + baseId;
     } else if(spec.hasOwnProperty('@ComponentId')) {
       // include ID from attribute
       baseId = spec['@ComponentId'] + "#" + baseId;
+    } else {
+      baseId = "new_" + baseId;
     }
 
     augmentWithIds(spec, baseId);
