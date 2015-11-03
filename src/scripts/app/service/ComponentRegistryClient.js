@@ -140,7 +140,18 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
       contentType: false,
       dataType: "json",
       success: function(data) {
-        if(handleSuccess) handleSuccess(data);
+        //check response...
+
+        if(data['@registered'] == "false") {
+          log.error("Failed registration", data);
+          if(data.errors != undefined) {
+            handleFailure(data.errors.error);
+          } else {
+            handleFailure("Unknown error while registering component");
+          }
+        } else if(handleSuccess) {
+          handleSuccess(data);
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         log.trace("");
@@ -164,6 +175,16 @@ normaliseSpec: function(data) {
     //root component
     data.CMD_Component = this.normaliseSpec(data.CMD_Component);
   } else {
+
+    if(data.hasOwnProperty("@ComponentId") && (data.CMD_Element || data.CMD_Component || data.AttributeList)) {
+      log.debug("Encountered component with id and children");
+      //linked component - strip children
+      delete data.CMD_Element;
+      delete data.CMD_Component;
+      delete data.AttributeList
+      return data;
+    }
+
     var childElems = data.CMD_Element;
     var childComps = data.CMD_Component;
 
