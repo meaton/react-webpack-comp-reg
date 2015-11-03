@@ -78,7 +78,7 @@ var EditorForm = React.createClass({
 
   render: function () {
     if(this.state.details.loading) {
-      <div>Loading component...</div>
+      return (<div>Loading component...</div>);
     } else {
       var newItem = this.isNew();
       return (
