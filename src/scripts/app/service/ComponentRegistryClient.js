@@ -13,6 +13,8 @@ var Config = require('../../config').Config;
 var restUrl = require('../../config').restUrl;
 var authUrl = restUrl + "/authentication"
 
+var Validation = require('./Validation');
+
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
     password: Config.REST.auth.password,
@@ -82,6 +84,67 @@ loadItem: function(id, handleSuccess, handleFailure) {
       handleFailure("Error loading spec for " + id + ": " + err);
     }.bind(this)
   }, corsRequestParams));
+},
+
+saveComponent: function(spec, item, profileId, update, publish, handleSuccess, handleFailure) {
+  var actionType = (publish) ? "publish" : "update";
+  var registry = item;
+
+  var data = Validation.validate(spec);
+    //this.handlePostData(clone(spec), this.state.childElements, this.state.childComponents));
+
+  log.debug('data to save: ', data);
+
+  if(data.errors != undefined)
+    return handleFailure("Invalid specification", data); // return invalid
+
+  var cmd_schema_xml;
+  try {
+    cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
+    log.debug('cmd schema: ', cmd_schema_xml);
+  } catch(e) {
+    log.error("Failed to marshal spec", data, e);
+    handleFailure(e);
+    return;
+  }
+
+  var fd = new FormData();
+  fd.append('profileId', profileId);
+  fd.append('name', data.Header.Name);
+  fd.append('description', data.Header.Description);
+  fd.append('group', (item.groupName != undefined || item.groupName != null) ? item.groupName : "");
+  fd.append('domainName', item.domainName);
+  fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
+
+  var typeSpace = (spec["@isProfile"] == "true") ? "profiles" : "components";
+  var url = restUrl + '/registry/' + typeSpace;
+  if(update) url += '/' + profileId + '/' + actionType;
+
+  log.debug("POSTing to ", url);
+
+  // $.ajax($.extend({
+  //     type: 'POST',
+  //     url: url,
+  //     data: fd,
+  //     mimeType: 'multipart/form-data',
+  //     username: Config.REST.auth.username,
+  //     password: Config.REST.auth.password,
+  //     xhrFields: {
+  //       withCredentials: true
+  //     },
+  //     processData: false,
+  //     contentType: false,
+  //     dataType: "json",
+  //     success: function(data) {
+  //       if(handleSuccess) handleSuccess(data);
+  //     }.bind(this),
+  //     error: function(xhr, status, err) {
+  //       log.trace("");
+  //       handleFailure("Error saving spec: " + err, data);
+  //     }.bind(this)
+  //   }, corsRequestParams));
+
+  handleFailure("test", data);
 },
 
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {

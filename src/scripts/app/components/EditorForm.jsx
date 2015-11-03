@@ -74,7 +74,7 @@ var EditorForm = React.createClass({
     } else {
       var newItem = this.isNew();
       return (
-        <div>
+        <div className={this.state.editor.processing?"processing":""}>
 
           <h3>
             {this.state.editor.type === Constants.TYPE_PROFILE
@@ -111,8 +111,11 @@ var EditorForm = React.createClass({
   },
 
   handleSave: function() {
-    log.debug("Save", this.state.details.spec);
-    //TODO
+    var self = this;
+    this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space);
+    // , function(){
+    //     self.transitionTo("browser"); //or maybe better to do this in action??
+    // });
   },
 
   handleSaveNew: function() {

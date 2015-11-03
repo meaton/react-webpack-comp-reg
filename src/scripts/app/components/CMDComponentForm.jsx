@@ -101,9 +101,8 @@ var CMDComponentForm = React.createClass({
         <div className={editClasses}>
           <div>
             <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-            {/*TODO: concept link
-              <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(this.state.component['@ConceptLink']) ? this.state.component['@ConceptLink'] : ""} buttonAfter={this.props.viewer.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
-            */}
+            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+              labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly /> {/*buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
           </div>
           <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateComponentValue}>
             <option value="unbounded">unbounded</option>
@@ -117,7 +116,7 @@ var CMDComponentForm = React.createClass({
               return <option key={index} value={index}>{index}</option>
             })}
           </Input>
-          {/*TODO: add comp/element links
+          {/*TODO: add comp/element/attr links
                 <div className="inline-body">
                   {attrList}
                   <div className="childElements">{compElems}
@@ -151,6 +150,10 @@ var CMDComponentForm = React.createClass({
     //(see https://facebook.github.io/react/docs/update.html)
     var update = {$merge: {[e.target.name]: e.target.value}};
     this.props.onComponentChange(update);
+  },
+
+  updateConceptLink: function(e) {
+    //TODO
   },
 
 
@@ -284,13 +287,13 @@ var CMDComponentForm = React.createClass({
   updateInlineComponent: function(index, newComponent) {
     this.updateParent(index, newComponent);
   },
-  updateConceptLink: function(newValue) {
-    if(typeof newValue === "string" && this.state.component != null)
-      this.setState({ component: (this.state.component.Header != undefined) ?
-        update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
-        update(this.state.component, { $merge: {  '@ConceptLink': newValue } })
-      });
-  },
+  // updateConceptLink: function(newValue) {
+  //   if(typeof newValue === "string" && this.state.component != null)
+  //     this.setState({ component: (this.state.component.Header != undefined) ?
+  //       update(this.state.component, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
+  //       update(this.state.component, { $merge: {  '@ConceptLink': newValue } })
+  //     });
+  // },
   componentWillReceiveProps: function(nextProps) {
     // console.log(this.constructor.displayName, 'will received new props');
     //

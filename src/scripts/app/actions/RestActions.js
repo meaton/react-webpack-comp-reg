@@ -207,6 +207,24 @@ module.exports = {
     );
   },
 
+  saveComponentSpec: function(spec, item, space) {
+    this.dispatch(Constants.SAVE_COMPONENT_SPEC);
+
+    var update = true;
+    var publish = false;
+    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(specXml){
+        // success
+        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCES, specXml);
+        //TODO: transition
+      }.bind(this),
+      function(message, data) {
+        // failure
+        log.warn("Error while saving:", message, data);
+        this.dispatch(Constants.SAVE_COMPONENT_SPEC_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
   checkAuthState: function() {
     log.trace("Checking authentication state...");
     ComponentRegistryClient.getAuthState(function(authState){

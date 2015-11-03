@@ -56,18 +56,6 @@ var CMDElementForm = React.createClass({
     // var isOpen = (this.state.elem.hasOwnProperty('open')) ? !this.state.elem.open : true;
     // this.setState({ elem: update(this.state.elem, { open: { $set: isOpen }}) });
   },
-  elemAttrs: function(elem) {
-    var lb = React.createElement('br');
-    var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
-    var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1;
-    var docu_attr = (elem.hasOwnProperty("@Documentation")) ? [React.createElement("span", { className: "attrElem" }, "Documentation: " + elem['@Documentation']), lb] : null;
-    var display_attr = (elem.hasOwnProperty("@DisplayPriority")) ? [React.createElement("span", { className: "attrElem" }, "DisplayPriority: " + elem['@DisplayPriority']), lb] : null;
-    var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink")) ? [React.createElement("span", { className: "attrElem" }, "ConceptLink: ", new React.createElement("a", { href: elem['@ConceptLink'], target: "_blank" }, elem['@ConceptLink']) ), lb] : null;
-    var multilingual_attr = (elem.hasOwnProperty('@Multilingual')) ? [React.createElement("span", { className: "attrElem" }, "Multilingual: " + elem['@Multilingual']), lb]: null;
-    var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
-
-    return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
-  },
 
   renderAttributes: function(elem) {
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
@@ -85,7 +73,7 @@ var CMDElementForm = React.createClass({
           }
         </div>);
     } else {
-      return <span>oops</span>;
+      return null;
     }
   },
 
