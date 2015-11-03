@@ -71,8 +71,6 @@ var BrowserMenuGroup = React.createClass({
         params.componentId = itemId;
       }
 
-      console.log("Edit route", editorRoute, params);
-
       if(editorRoute != null) {
         editorLink = (
           <ButtonLink
@@ -88,7 +86,6 @@ var BrowserMenuGroup = React.createClass({
       editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
     }
 
-    log.debug("editorLink",editorLink);
     return (
         <ButtonGroup className="actionMenu">
           <ButtonLink to="newEditor" params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
