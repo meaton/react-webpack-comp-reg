@@ -46,6 +46,13 @@ var CMDComponentMixin = {
       var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
     }
 
+    var afterAttributes;
+    if(typeof this.renderAfterAttributes == "function") {
+      afterAttributes = this.renderAfterAttributes();
+    } else {
+      afterAttributes = null;
+    }
+
     var self = this;
     return (
       <div className="attrList">AttributeList:
@@ -54,6 +61,7 @@ var CMDComponentMixin = {
           ? $.map(attrSet, this.renderAttribute)
           : <span>No Attributes</span>
         }
+        {afterAttributes}
       </div>
     );
   },
@@ -64,11 +72,27 @@ var CMDComponentMixin = {
     if(!$.isArray(compElems) && compElems != undefined)
       compElems = [compElems];
 
+    var elements;
     if(compElems != undefined) {
-      var self = this;
       // render elements
-      return compElems.map(self.renderElement);
+      elements = compElems.map(this.renderElement);
+    } else {
+      elements = null;
     }
+
+    var afterElements;
+    if(typeof this.renderAfterElements == "function") {
+      afterElements = this.renderAfterElements();
+    } else {
+      afterElements = null;
+    }
+
+    return (
+      <div className="elements">
+        {elements}
+        {afterElements}
+      </div>
+    );
   },
 
   callRenderNestedComponent: function(nestedComp, ncindex) {
@@ -89,7 +113,21 @@ var CMDComponentMixin = {
        var compId = spec._appId;
     }
 
-    return this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable, ncindex);
+    var components = this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable, ncindex);
+
+    var afterComponents;
+    if(typeof this.renderAfterComponents == "function") {
+      afterComponents = this.renderAfterComponents();
+    } else {
+      afterComponents = null;
+    }
+
+    return (
+      <div className="components">
+        {components}
+        {afterComponents}
+      </div>
+    );
   },
 
   render: function () {

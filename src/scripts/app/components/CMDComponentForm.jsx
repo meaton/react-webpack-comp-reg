@@ -66,14 +66,26 @@ var CMDComponentForm = React.createClass({
   },
 
   renderAttribute: function(attr, index) {
-    return (<CMDAttributeForm key={attr._appId} spec={attr} />);
+    return <CMDAttributeForm key={attr._appId} spec={attr} />;
+  },
+
+  renderAfterAttributes: function() {
+    return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div>;
   },
 
   renderElement: function(elem, index) {
-    return (<CMDElementForm
+    return <CMDElementForm
               key={elem._appId}
               spec={elem}
-              onElementChange={this.handleElementChange.bind(this, index)} />);
+              onElementChange={this.handleElementChange.bind(this, index)} />;
+  },
+
+  renderAfterElements: function() {
+    return <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
+  },
+
+  renderAfterComponents: function() {
+    return <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>;
   },
 
   renderComponentProperties: function(comp) {
@@ -116,17 +128,6 @@ var CMDComponentForm = React.createClass({
               return <option key={index} value={index}>{index}</option>
             })}
           </Input>
-          {/*TODO: add comp/element/attr links
-                <div className="inline-body">
-                  {attrList}
-                  <div className="childElements">{compElems}
-                    <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
-                  </div>
-                  <div ref="components" className="childComponents">{compComps}
-                    <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>
-                  </div>
-                </div>
-            */}
         </div>
       </div>
     );
