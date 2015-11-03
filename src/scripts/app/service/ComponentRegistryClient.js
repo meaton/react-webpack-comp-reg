@@ -99,8 +99,13 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
 
   log.debug('data to save: ', data, item);
 
-  if(data.errors != undefined)
-    return handleFailure("Invalid specification", data); // return invalid
+  if(data.errors != undefined) {
+    var message = "Invalid specification:";
+    for(i=0; i < data.errors.length; i++) {
+      message += "\n" + data.errors[i].message;
+    }
+    return handleFailure(message, data); // return invalid
+  }
 
   var cmd_schema_xml;
   try {
