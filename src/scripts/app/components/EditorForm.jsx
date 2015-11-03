@@ -113,11 +113,7 @@ var EditorForm = React.createClass({
   },
 
   handleSave: function() {
-    var self = this;
-    this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space);
-    // , function(){
-    //     self.transitionTo("browser"); //or maybe better to do this in action??
-    // });
+    this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
   },
 
   handleSaveNew: function() {
@@ -128,6 +124,10 @@ var EditorForm = React.createClass({
   handlePublish: function() {
     log.debug("Publish", this.state.details.spec);
     //TODO
+  },
+
+  afterSuccess: function() {
+    this.transitionTo("browser");
   },
 
   setType: function(type) {

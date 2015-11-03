@@ -207,7 +207,7 @@ module.exports = {
     );
   },
 
-  saveComponentSpec: function(spec, item, space) {
+  saveComponentSpec: function(spec, item, space, successCb) {
     this.dispatch(Constants.SAVE_COMPONENT_SPEC);
 
     var update = true;
@@ -215,7 +215,9 @@ module.exports = {
     ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
         // success
         this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
-        //TODO: transition
+        if(successCb) {
+          successCb(spec);
+        }
       }.bind(this),
       function(message, data) {
         // failure
