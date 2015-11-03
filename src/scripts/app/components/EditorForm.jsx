@@ -117,13 +117,11 @@ var EditorForm = React.createClass({
   },
 
   handleSaveNew: function() {
-    log.debug("Save new", this.state.details.spec);
-    //TODO
+    this.getFlux().actions.saveNewComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
   },
 
   handlePublish: function() {
-    log.debug("Publish", this.state.details.spec);
-    //TODO
+    this.getFlux().actions.publishComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
   },
 
   afterSuccess: function() {

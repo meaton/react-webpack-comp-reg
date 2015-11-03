@@ -101,6 +101,7 @@ function loadComponentsById(ids, space, collected, callback) {
 }
 
 function saveSpec(spec, item, update, publish, successCb) {
+  log.debug("Save - update:", update, " publish:", publish);
   this.dispatch(Constants.SAVE_COMPONENT_SPEC);
   ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
       // success
@@ -227,6 +228,16 @@ module.exports = {
   saveComponentSpec: function(spec, item, space, successCb) {
     // do update, don't publish
     saveSpec.apply(this, [spec, item, true, false, successCb])
+  },
+
+  saveNewComponentSpec: function(spec, item, space, successCb) {
+    // new, don't update or publish
+    saveSpec.apply(this, [spec, item, false, false, successCb])
+  },
+
+  publishComponentSpec: function(spec, item, space, successCb) {
+    // do update and publish
+    saveSpec.apply(this, [spec, item, true, true, successCb])
   },
 
   checkAuthState: function() {
