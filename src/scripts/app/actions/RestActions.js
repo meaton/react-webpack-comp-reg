@@ -212,9 +212,9 @@ module.exports = {
 
     var update = true;
     var publish = false;
-    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(specXml){
+    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
         // success
-        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCES, specXml);
+        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
         //TODO: transition
       }.bind(this),
       function(message, data) {

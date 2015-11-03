@@ -126,29 +126,27 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
 
   log.debug("POSTing to ", url);
 
-  // $.ajax($.extend({
-  //     type: 'POST',
-  //     url: url,
-  //     data: fd,
-  //     mimeType: 'multipart/form-data',
-  //     username: Config.REST.auth.username,
-  //     password: Config.REST.auth.password,
-  //     xhrFields: {
-  //       withCredentials: true
-  //     },
-  //     processData: false,
-  //     contentType: false,
-  //     dataType: "json",
-  //     success: function(data) {
-  //       if(handleSuccess) handleSuccess(data);
-  //     }.bind(this),
-  //     error: function(xhr, status, err) {
-  //       log.trace("");
-  //       handleFailure("Error saving spec: " + err, data);
-  //     }.bind(this)
-  //   }, corsRequestParams));
-
-  handleFailure("test", data);
+  $.ajax($.extend({
+      type: 'POST',
+      url: url,
+      data: fd,
+      mimeType: 'multipart/form-data',
+      username: Config.REST.auth.username,
+      password: Config.REST.auth.password,
+      xhrFields: {
+        withCredentials: true
+      },
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success: function(data) {
+        if(handleSuccess) handleSuccess(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        log.trace("");
+        handleFailure("Error saving spec: " + err, data);
+      }.bind(this)
+    }, corsRequestParams));
 },
 
 /**
