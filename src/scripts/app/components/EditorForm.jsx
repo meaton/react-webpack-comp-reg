@@ -87,7 +87,9 @@ var EditorForm = React.createClass({
           isNew={newItem}
           onSave={this.handleSave}
           onSaveNew={this.handleSaveNew}
-          onPublish={this.handlePublish} />
+          onPublish={this.handlePublish}
+          disabled={this.state.editor.processing}
+          />
 
           <ComponentSpecForm
             spec={this.state.details.spec}

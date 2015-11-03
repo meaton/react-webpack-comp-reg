@@ -28,18 +28,26 @@ var EditorMenuGroup = React.createClass({
     isNew: React.PropTypes.bool,
     onSave: React.PropTypes.func,
     onSaveNew: React.PropTypes.func,
-    onPublish: React.PropTypes.func
+    onPublish: React.PropTypes.func,
+    disabled: React.PropTypes.bool
   },
+
+  getDefaultProps: function() {
+    return {
+      disabled: true
+    };
+  },
+
   render: function () {
     return (
       <ButtonGroup className="actionMenu">
-        <Button bsStyle={(!this.props.isNew) ? "primary" : "default" } onClick={this.props.onSave} disabled={this.props.isNew}>Save</Button>
-        <Button bsStyle={(this.props.isNew) ? "primary" : "default" } onClick={this.props.onSaveNew}>Save new</Button>
-        <ButtonModal {...this.props} action={this.props.onPublish} disabled={this.props.isNew}
+        <Button bsStyle={(!this.props.isNew) ? "primary" : "default" } onClick={this.props.onSave} disabled={this.props.disabled || this.props.isNew}>Save</Button>
+        <Button bsStyle={(this.props.isNew) ? "primary" : "default" } onClick={this.props.onSaveNew} disabled={this.props.disabled} >Save new</Button>
+        <ButtonModal {...this.props} action={this.props.onPublish} disabled={this.props.disabled || this.props.isNew}
           btnLabel="Publish"
           title="Publish"
           desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-        <ButtonLink to={'browser'}>Cancel</ButtonLink> {/*query={this.getCancelQueryParams()*/}
+        <ButtonLink to={'browser'} disabled={this.props.disabled}>Cancel</ButtonLink> {/*query={this.getCancelQueryParams()*/}
       </ButtonGroup>
     );
   }
