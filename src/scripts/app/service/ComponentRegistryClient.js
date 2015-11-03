@@ -175,35 +175,33 @@ normaliseSpec: function(data) {
     //root component
     data.CMD_Component = this.normaliseSpec(data.CMD_Component);
   } else {
-
     if(data.hasOwnProperty("@ComponentId") && (data.CMD_Element || data.CMD_Component || data.AttributeList)) {
       log.debug("Encountered component with id and children");
       //linked component - strip children
       delete data.CMD_Element;
       delete data.CMD_Component;
       delete data.AttributeList
-      return data;
-    }
+    } else {
+      var childElems = data.CMD_Element;
+      var childComps = data.CMD_Component;
 
-    var childElems = data.CMD_Element;
-    var childComps = data.CMD_Component;
-
-    if(childElems != undefined && childElems != null) {
-      if(!$.isArray(childElems)) {
-        data.CMD_Element = [childElems];
-      }
-    }
-
-    if(childComps != undefined && childComps != null) {
-      if(!$.isArray(childComps)) {
-        childComps = [childComps];
+      if(childElems != undefined && childElems != null) {
+        if(!$.isArray(childElems)) {
+          data.CMD_Element = [childElems];
+        }
       }
 
-      // normalise children
-      var self = this;
-      data.CMD_Component = childComps.map(function(comp, index) {
-        return self.normaliseSpec(comp);
-      });
+      if(childComps != undefined && childComps != null) {
+        if(!$.isArray(childComps)) {
+          childComps = [childComps];
+        }
+
+        // normalise children
+        var self = this;
+        data.CMD_Component = childComps.map(function(comp, index) {
+          return self.normaliseSpec(comp);
+        });
+      }
     }
   }
 
