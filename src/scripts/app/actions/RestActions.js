@@ -100,6 +100,23 @@ function loadComponentsById(ids, space, collected, callback) {
   }
 }
 
+function saveSpec(spec, item, update, publish, successCb) {
+  this.dispatch(Constants.SAVE_COMPONENT_SPEC);
+  ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
+      // success
+      this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
+      if(successCb) {
+        successCb(spec);
+      }
+    }.bind(this),
+    function(message, data) {
+      // failure
+      log.warn("Error while saving:", message, data);
+      this.dispatch(Constants.SAVE_COMPONENT_SPEC_FAILURE, message);
+    }.bind(this)
+  );
+}
+
 /**
  * Deletes a number of components (by id) by means of tail recursion
  * @param  {string} type      [description]
@@ -208,23 +225,8 @@ module.exports = {
   },
 
   saveComponentSpec: function(spec, item, space, successCb) {
-    this.dispatch(Constants.SAVE_COMPONENT_SPEC);
-
-    var update = true;
-    var publish = false;
-    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
-        // success
-        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
-        if(successCb) {
-          successCb(spec);
-        }
-      }.bind(this),
-      function(message, data) {
-        // failure
-        log.warn("Error while saving:", message, data);
-        this.dispatch(Constants.SAVE_COMPONENT_SPEC_FAILURE, message);
-      }.bind(this)
-    );
+    // do update, don't publish
+    saveSpec.apply(this, [spec, item, true, false, successCb])
   },
 
   checkAuthState: function() {
