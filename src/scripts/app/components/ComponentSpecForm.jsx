@@ -85,13 +85,13 @@ var ComponentSpecForm = React.createClass({
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
           <div className="form-group">
-            <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
-            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="col-xs-offset-1 col-xs-1" />
+            <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
+            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
           </div>
-          <Input type="text" name="Name" label="Name" value={spec.Header.Name} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="textarea" name="Description" label="Description" value={spec.Header.Description} onChange={this.handleHeaderChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
+          <Input type="text" name="Name" label="Name" value={spec.Header.Name} onChange={this.handleHeaderChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+          <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+          <Input type="textarea" name="Description" label="Description" value={spec.Header.Description} onChange={this.handleHeaderChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+          <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
             <option value="">Select a domain...</option>
             {this.props.domains.map(function(domain, index) {
               return <option key={index} value={domain.data}>{domain.label}</option>

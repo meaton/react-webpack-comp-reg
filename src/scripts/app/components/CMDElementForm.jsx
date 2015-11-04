@@ -97,13 +97,13 @@ var CMDElementForm = React.createClass({
     // elem props
     var elemProps = (
       <div className="elementProps">
-        <Input type="text" name="@name" label="Name" value={elem['@name']} onChange={this.updateElementValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <Input type="text" name="@name" label="Name" value={elem['@name']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}  onChange={this.updateElementValue}
-          labelClassName="col-xs-1" wrapperClassName="col-xs-3" readOnly /> {/*TODO buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
-        <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-        <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly /> {/*TODO buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
+        <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         {valueScheme}
-        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="col-xs-2 col-xs-offset-1" />
+        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
       </div>
     );
 
@@ -120,10 +120,10 @@ var CMDElementForm = React.createClass({
         <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
         <div className="form-horizontal form-group">
           {elemProps}
-          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateElementValue}>
+          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
             {integerOpts /*TODO: max @CardinalityMax*/}
           </Input>
-          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={maxOccDisabled} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateElementValue}>
+          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={maxOccDisabled} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
             {integerOpts /*TODO: min @CardinalityMin*/}
             <option value="unbounded">unbounded</option>
           </Input>

@@ -104,7 +104,7 @@ var CMDComponentForm = React.createClass({
     var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': this.isOpen(), 'selected': false /*TODO selection state*/ });
 
     return (
-      <div className={componentClasses}>
+      <div>
         {/* TODO: actionButtons (from ActionButtonsMixin) */}
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
@@ -112,17 +112,17 @@ var CMDComponentForm = React.createClass({
         <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
         <div className={editClasses}>
           <div>
-            <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+            <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
             <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-              labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly /> {/*buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
+              labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly /> {/*buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
           </div>
-          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateComponentValue}>
+          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
             <option value="unbounded">unbounded</option>
             {$.map($(Array(10)), function(item, index) {
               return <option key={index} value={index}>{index}</option>
             })}
           </Input>
-          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateComponentValue}>
+          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
             <option value="unbounded">unbounded</option>
             {$.map($(Array(10)), function(item, index) {
               return <option key={index} value={index}>{index}</option>
