@@ -95,6 +95,35 @@ var CMDComponentMixin = {
     );
   },
 
+  renderNestedComponents: function(comp) {
+      var compComps = comp.CMD_Component;
+
+      if(!$.isArray(compComps) && compComps != undefined)
+        compComps = [compComps];
+
+      var nestedComponents;
+      if(compComps != undefined) {
+        // render nested components
+        nestedComponents = compComps.map(this.callRenderNestedComponent);
+      } else {
+        nestedComponents = null;
+      }
+
+      var afterComponents;
+      if(typeof this.renderAfterComponents == "function") {
+        afterComponents = this.renderAfterComponents();
+      } else {
+        afterComponents = null;
+      }
+
+      return (
+        <div className="components">
+          {nestedComponents}
+          {afterComponents}
+        </div>
+      );
+  },
+
   callRenderNestedComponent: function(nestedComp, ncindex) {
     var isLinked = nestedComp.hasOwnProperty("@ComponentId");
     if(isLinked) {
@@ -113,27 +142,12 @@ var CMDComponentMixin = {
        var compId = spec._appId;
     }
 
-    var components = this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable, ncindex);
-
-    var afterComponents;
-    if(typeof this.renderAfterComponents == "function") {
-      afterComponents = this.renderAfterComponents();
-    } else {
-      afterComponents = null;
-    }
-
-    return (
-      <div className="components">
-        {components}
-        {afterComponents}
-      </div>
-    );
+    return this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable, ncindex);
   },
 
   render: function () {
     log.trace("Rendering", this.props.spec._appId, (this.isOpen()?"open":"closed"));
 
-    var self = this;
     var props = this.props;
     var comp = this.props.spec;
 
@@ -144,25 +158,15 @@ var CMDComponentMixin = {
     if($.isArray(comp) && comp.length == 1)
       comp = comp[0];
 
-    var compComps = comp.CMD_Component;
-
-    if(!$.isArray(compComps) && compComps != undefined)
-      compComps = [compComps];
-
-    if(compComps != undefined) {
-      // render nested components
-      var nestedComponents = compComps.map(self.callRenderNestedComponent);
-    }
-
     // classNames
-    var viewClasses = classNames('componentBody', { 'hide': !self.isOpen() });
-    var componentClasses = classNames('CMDComponent', { 'open': self.isOpen(), 'selected': this.props.isSelected, 'linked': this.props.isLinked });
+    var viewClasses = classNames('componentBody', { 'hide': !this.isOpen() });
+    var componentClasses = classNames('CMDComponent', { 'open': this.isOpen(), 'selected': this.props.isSelected, 'linked': this.props.isLinked });
 
     var children = (
       <div className={viewClasses}>
         <div>{this.renderAttributes(comp)}</div>
         <div className="childElements">{this.renderElements(comp)}</div>
-        <div ref="components" className="childComponents">{nestedComponents}</div>
+        <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>
       </div>
     );
 
