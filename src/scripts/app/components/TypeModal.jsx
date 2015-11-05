@@ -1,22 +1,16 @@
 'use strict';
 
 var React = require('react/addons');
-var Draggable = require('react-draggable');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
 //mixins
-var LinkedStateMixin = React.addons.LinkedStateMixin;
-var CompRegLoader = require('../mixins/Loader');
-
-//bootstrap mixins
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
+//var LinkedStateMixin = React.addons.LinkedStateMixin;
+//var CompRegLoader = require('../mixins/Loader');
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
 var Input = require('react-bootstrap/lib/Input');
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
-var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Button = require('react-bootstrap/lib/Button');
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
 var TabPane = require('react-bootstrap/lib/TabPane');
@@ -26,17 +20,7 @@ var TabPane = require('react-bootstrap/lib/TabPane');
 var update = React.addons.update;
 var classNames = require('classnames');
 
-require('../../styles/EditorDialog.sass');
-
-/**
-* EditorDialog - generic custom ModalTrigger utilising react-bootstrap OverlayMixin. Used in React components CMD
-* @constructor
-*/
-var EditorDialog = React.createClass({
-  render: function() {
-    return <ModalTrigger {...this.props} />
-  }
-});
+require('../../../styles/EditorDialog.sass');
 
 /**
 * TypeModal - Bootstrap Modal dialog used for setting the defined Type value, Pattern value or a custom-defined Vocabulary enum.
@@ -45,7 +29,7 @@ var EditorDialog = React.createClass({
 * @mixes React.addons.LinkedStateMixin
 */
 var TypeModal = React.createClass({
-  mixins: [CompRegLoader, LinkedStateMixin],
+  //mixins: [CompRegLoader, LinkedStateMixin],
   getInitialState: function() {
     return {
       basic_type: 'string',
@@ -240,6 +224,4 @@ var TypeModal = React.createClass({
   }
 });
 
-
-
-module.exports = EditorDialog;
+module.exports = TypeModal;

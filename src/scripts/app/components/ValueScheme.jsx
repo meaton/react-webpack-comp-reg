@@ -3,8 +3,12 @@
 var React = require('react/addons');
 
 //mixins
-var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
+//var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
+//components
+var ModalTrigger = require('./ModalTrigger');
+var TypeModal = require('./TypeModal');
 
 //boostrap
 var Input = require('react-bootstrap/lib/Input');
@@ -19,6 +23,7 @@ var ValueScheme = React.createClass({
   propTypes: {
     obj: React.PropTypes.object.isRequired,
     enabled: React.PropTypes.bool,
+    onChange: React.PropTypes.func,
     //TODO flux: setType: React.PropTypes.func,
     //TODO flux: setPattern: React.PropTypes.func,
     //TODO flux: setEnumeration: React.PropTypes.func,
@@ -31,6 +36,19 @@ var ValueScheme = React.createClass({
   },
 
   render: function() {
+
+      var typeTrigger = (
+        <ModalTrigger
+          ref="modalTrigger"
+          container={this}
+          label="Edit..."
+          modal={
+            <TypeModal
+              onClose={this.closeDialogue}
+              container={this} />
+          } />
+      );
+
       var obj=this.props.obj;
       var valueScheme = obj['@ValueScheme'];
 
@@ -62,8 +80,16 @@ var ValueScheme = React.createClass({
         } else if(obj.Type != undefined) // attr
             valueScheme = obj.Type;
       }
-      return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" readOnly />;
-  }
+      return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
+        <Input ref="typeInput" type="text" label="Type"
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          value={valueScheme} buttonAfter={typeTrigger}
+          onChange={this.props.onChange} readOnly />;
+    },
+
+    closeConceptLinkDialogue: function(evt) {
+      this.refs.modalTrigger.toggleModal(evt);
+    }
 });
 
 module.exports = ValueScheme;

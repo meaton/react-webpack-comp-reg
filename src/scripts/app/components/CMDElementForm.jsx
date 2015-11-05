@@ -78,8 +78,6 @@ var CMDElementForm = React.createClass({
     var elem = this.props.spec;
     var elemInspect = elem.elemId; // require('util').inspect(elem);
 
-    var valueScheme = null; //TODO: this.props.viewer.getValueScheme(elem, this);
-
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
     var cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
@@ -97,7 +95,7 @@ var CMDElementForm = React.createClass({
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        {valueScheme}
+        <ValueScheme obj={elem} enabled={true} />
         <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
       </div>
     );
