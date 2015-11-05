@@ -30,8 +30,7 @@ require('../../../styles/EditorDialog.sass');
 * @mixes React.addons.LinkedStateMixin
 */
 var ConceptRegistryModal = React.createClass({
-  mixins: [//CompRegLoader,
-    LinkedStateMixin],
+  mixins: [LinkedStateMixin],
   propTypes: {
     onSelect: React.PropTypes.func.isRequired,
     container: React.PropTypes.object.isRequired
@@ -90,9 +89,6 @@ var ConceptRegistryModal = React.createClass({
       tbody.children('.' + selectedClass).toggleClass(selectedClass);
       tbody.children().eq(this.state.currentLinkSelection).toggleClass(selectedClass);
     }
-
-    // if(prevState.data.length != this.state.data.length)
-    //   this.props.onChange(this.getDOMNode());
   },
   componentWillUnmount: function() {
     $(document.body).off('keydown', this.handleEnter);
@@ -181,14 +177,14 @@ var ConceptRegistryModal = React.createClass({
     return (
       <Modal ref="modal" id="ccrModal" key="ccrModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.close} container={this.props.container}>
         <div className='modal-body'>
-          <Input type="text" placeholder="Type keyword and press Enter to search" valueLink={this.linkState('inputSearch')} addonBefore={<Glyphicon glyph='search' />} buttonAfter={<Button onClick={this.inputSearchUpdate}>Search</Button>}/>
+          <Input type="text" placeholder="Type keyword (at least 2 characters) and press Enter to search" valueLink={this.linkState('inputSearch')} addonBefore={<Glyphicon glyph='search' />} buttonAfter={
+              <Button onClick={this.inputSearchUpdate} disabled={this.state.inputSearch.length <= 1}>Search</Button>
+            }/>
           <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
         </div>
         <div className="modal-footer">
           <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button>
-          <Button onClick={this.clear}
-            > {/*className={classNames({ 'hide': (this.props.target.refs.conceptRegInput == undefined) })}*/}
-            Clear Setting</Button>
+          <Button onClick={this.clear}>Clear Setting</Button>
           <Button onClick={this.close}>Cancel</Button>
         </div>
       </Modal>
