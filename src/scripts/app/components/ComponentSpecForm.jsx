@@ -13,6 +13,9 @@ var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDComponentForm = require('./CMDComponentForm');
+var ModalTrigger = require('./ModalTrigger');
+var ConceptRegistryModal = require('./ConceptRegistryModal');
+
 
 //utils
 var update = React.addons.update;
@@ -82,6 +85,9 @@ var ComponentSpecForm = React.createClass({
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
 
+      var conceptLinkModal = <ConceptRegistryModal onSelect="handleConceptLinkSelect" onSelect="handleConceptLinkSelect" container={this} />
+      var conceptLinkButton = <ModalTrigger modal={conceptLinkModal} container={this} label="Search in concept registry..." />
+
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
           <div className="form-group">
@@ -97,9 +103,10 @@ var ComponentSpecForm = React.createClass({
               return <option key={index} value={domain.data}>{domain.label}</option>
             })}
           </Input>
-          {
-          //<Input ref="conceptRegInput" type="text" label="ConceptLink" value={(rootComponent['@ConceptLink']) ? rootComponent['@ConceptLink'] : ""} buttonAfter={this.conceptRegistryBtn(this)} labelClassName="col-xs-1" wrapperClassName="col-xs-3" onChange={this.updateConceptLink} readOnly />
-          }
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
+            labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
+            buttonAfter={conceptLinkButton}
+            />
             <CMDComponentForm
               spec={spec.CMD_Component}
               hideProperties={true}
@@ -138,19 +145,23 @@ var ComponentSpecForm = React.createClass({
     this.props.onComponentChange(update);
   },
 
-  //below: old functions
-  updateConceptLink: function(newValue) {
-    console.log('update concept link - root component/profile: ' + newValue);
-
-    if(typeof newValue === "string") // TODO Remove @ConceptLink attr is empty or null value
-      if(this.props.spec['@isProfile'] !== "true")
-        this.setState({ component: (this.props.spec.Header != undefined) ?
-          update(this.props.spec, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
-          update(this.props.spec, { $merge: { '@ConceptLink': newValue } })
-        });
-      else if(this.props.spec['@isProfile'] === "true")
-        this.setState({ profile: update(this.props.spec, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) });
+  updateConceptLink: function(val) {
+    this.handleComponentChange({$merge: {['@ConceptLink']: val}});
   },
+
+  //below: old functions
+  // updateConceptLink: function(newValue) {
+  //   console.log('update concept link - root component/profile: ' + newValue);
+  //
+  //   if(typeof newValue === "string") // TODO Remove @ConceptLink attr is empty or null value
+  //     if(this.props.spec['@isProfile'] !== "true")
+  //       this.setState({ component: (this.props.spec.Header != undefined) ?
+  //         update(this.props.spec, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
+  //         update(this.props.spec, { $merge: { '@ConceptLink': newValue } })
+  //       });
+  //     else if(this.props.spec['@isProfile'] === "true")
+  //       this.setState({ profile: update(this.props.spec, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) });
+  // },
   updateValueScheme: function(target, prop, newValue) {
     console.log('update value scheme:' + target.constructor.displayName);
 
