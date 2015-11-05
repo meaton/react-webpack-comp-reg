@@ -18,6 +18,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Button = require('react-bootstrap/lib/Button');
 
 //utils
+var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 var update = React.addons.update;
 var classNames = require('classnames');
 
@@ -52,9 +53,13 @@ var ConceptRegistryModal = React.createClass({
     console.log('search query: ' + this.state.inputSearch);
     var self = this;
     this.setState({ data: [], currentLinkSelection: null });
-    this.queryCCR(this.state.inputSearch, function(data) {
-      if(data != null)
+    ComponentRegistryClient.queryCCR(this.state.inputSearch, function(data) {
+      if(data != null) {
+        log.debug("CCR response", data);
         self.setState({ data: data });
+      } else {
+        log.error("Failed to query CCR");
+      }
     });
   },
   handleEnter: function(evt) {
@@ -74,21 +79,9 @@ var ConceptRegistryModal = React.createClass({
   },
   close: function(evt) {
     this.props.onClose(evt);
-    // log.debug("Closing modal");
-    // if(evt) evt.stopPropagation();
-    // var elementId="ccrModal";
-    // var element = document.getElementById(elementId);
-    // log.debug("Element to unmount", element);
-    // if(elementId) React.unmountComponentAtNode(element);
-    // else log.error('Cannot unmount Alert dialog: ', elementId);
   },
   assignValue: function(value) {
     this.props.onSelect(value);
-    // var target = this.props.target;
-    // if(target.refs.conceptRegInput != undefined)
-    //   target.refs.conceptRegInput.props.onChange(value);
-    // else if(target.constructor.displayName === "TypeModal")
-    //   this.props.onClose(value)
   },
   componentDidUpdate: function(prevProps, prevState) {
     if(prevState.currentLinkSelection != this.state.currentLinkSelection) {
@@ -102,7 +95,6 @@ var ConceptRegistryModal = React.createClass({
     //   this.props.onChange(this.getDOMNode());
   },
   componentWillUnmount: function() {
-    log.debug("Modal will unmount");
     $(document.body).off('keydown', this.handleEnter);
   },
   componentWillMount: function() {

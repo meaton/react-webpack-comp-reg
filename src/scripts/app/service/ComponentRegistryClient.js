@@ -12,6 +12,7 @@ var Constants = require("../constants");
 var Config = require('../../config').Config;
 var restUrl = require('../../config').restUrl;
 var authUrl = restUrl + "/authentication";
+var ccrUrl = require('../../config').ccrUrl;
 
 var Validation = require('./Validation');
 
@@ -217,6 +218,26 @@ normaliseSpec: function(data) {
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
   //setTimeout(function(){handleSuccess();}, 1000);
   setTimeout(function(){handleFailure("deletion not implemented yet");}, 1000);
+},
+
+queryCCR: function(searchQuery, cb) {
+  var url = ccrUrl + '?type=container&keywords=' + searchQuery;
+
+  if(searchQuery != null || searchQuery != "")
+    $.ajax($.extend({
+      type: 'GET',
+      url: url,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success: function(data) {
+        if(cb)
+          cb(data);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        cb(null);
+      }.bind(this)
+    }, corsRequestParams));
 },
 
 getAuthState: function(handleSuccess, handleFailure) {

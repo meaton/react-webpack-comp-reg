@@ -39,7 +39,7 @@ var ModalTrigger = React.createClass({
     };
   },
   toggleModal: function(evt) {
-      log.debug('modal visible: ', this.state.isModalOpen, this.props.container);
+      log.trace('modal visible: ', this.state.isModalOpen, this.props.container);
 
       var offset = $(this.props.container.getDOMNode()).position();
       //TODO: correct offset

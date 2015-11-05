@@ -85,8 +85,8 @@ var ComponentSpecForm = React.createClass({
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
 
-      var conceptLinkModal = <ConceptRegistryModal onClose={this.closeConceptLinkModel} onSelect={this.handleConceptLinkSelect} container={this} />
-      var conceptLinkButton = <ModalTrigger ref="modalTrigger" modal={conceptLinkModal} container={this} label="Search in concept registry..." />
+      var conceptLinkDialogue = <ConceptRegistryModal onClose={this.closeConceptLinkDialogue} onSelect={this.updateConceptLink} container={this} />
+      var conceptLinkButton = <ModalTrigger ref="modalTrigger" modal={conceptLinkDialogue} container={this} label="Search in concept registry..." />
 
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
@@ -120,10 +120,6 @@ var ComponentSpecForm = React.createClass({
     }
   },
 
-  closeConceptLinkModel: function(evt) {
-    this.refs.modalTrigger.toggleModal(evt);
-  },
-
   handleTypeChange: function(e) {
     //pass changes to handler, the event target is input "isProfile" (value either profile or component type constant)
     this.props.onTypeChange(e.target.value);
@@ -151,6 +147,11 @@ var ComponentSpecForm = React.createClass({
 
   updateConceptLink: function(val) {
     this.handleComponentChange({$merge: {['@ConceptLink']: val}});
+  },
+
+  closeConceptLinkDialogue: function(evt) {
+    // assuming modal is visible, so simply toggle
+    this.refs.modalTrigger.toggleModal(evt);
   },
 
   //below: old functions
