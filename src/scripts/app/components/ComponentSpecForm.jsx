@@ -6,16 +6,13 @@ var Router = require('react-router');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var btnGroup = require('../../mixins/BtnGroupEvents');
+var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDComponentForm = require('./CMDComponentForm');
-var ModalTrigger = require('./ModalTrigger');
-var ConceptRegistryModal = require('./ConceptRegistryModal');
-
 
 //utils
 var update = React.addons.update;
@@ -37,7 +34,7 @@ require('../../../styles/ComponentViewer.sass');
 * @Router.State
 */
 var ComponentSpecForm = React.createClass({
-  mixins: [ImmutableRenderMixin, Router.Navigation, Router.State],
+  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin, Router.Navigation, Router.State],
 
   statics: {
     willTransitionTo: function(transition, params, query) {
@@ -85,9 +82,6 @@ var ComponentSpecForm = React.createClass({
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
 
-      var conceptLinkDialogue = <ConceptRegistryModal onClose={this.closeConceptLinkDialogue} onSelect={this.updateConceptLink} container={this} />
-      var conceptLinkButton = <ModalTrigger ref="modalTrigger" modal={conceptLinkDialogue} container={this} label="Search in concept registry..." />
-
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
           <div className="form-group">
@@ -105,7 +99,7 @@ var ComponentSpecForm = React.createClass({
           </Input>
           <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
             labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
-            buttonAfter={conceptLinkButton}
+            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)}
             />
             <CMDComponentForm
               spec={spec.CMD_Component}
@@ -149,24 +143,7 @@ var ComponentSpecForm = React.createClass({
     this.handleComponentChange({$merge: {['@ConceptLink']: val}});
   },
 
-  closeConceptLinkDialogue: function(evt) {
-    // assuming modal is visible, so simply toggle
-    this.refs.modalTrigger.toggleModal(evt);
-  },
-
   //below: old functions
-  // updateConceptLink: function(newValue) {
-  //   console.log('update concept link - root component/profile: ' + newValue);
-  //
-  //   if(typeof newValue === "string") // TODO Remove @ConceptLink attr is empty or null value
-  //     if(this.props.spec['@isProfile'] !== "true")
-  //       this.setState({ component: (this.props.spec.Header != undefined) ?
-  //         update(this.props.spec, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) :
-  //         update(this.props.spec, { $merge: { '@ConceptLink': newValue } })
-  //       });
-  //     else if(this.props.spec['@isProfile'] === "true")
-  //       this.setState({ profile: update(this.props.spec, { 'CMD_Component': { $merge: { '@ConceptLink': newValue } } }) });
-  // },
   updateValueScheme: function(target, prop, newValue) {
     console.log('update value scheme:' + target.constructor.displayName);
 
