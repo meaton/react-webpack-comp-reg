@@ -182,66 +182,6 @@ var ComponentSpecForm = React.createClass({
         target.setState(updatedItem);
     }
   },
-  // ,
-  // getValueScheme: function(obj, container, target) {
-  //   if(container == undefined) container = this;
-  //   if(target == undefined) target = container;
-  //   if(obj == undefined) return null;
-  //
-  //   // TODO flux
-  //   // var typeTrigger = (
-  //   //   <EditorDialog type="Type" label="Edit..." container={container} target={target} />
-  //   // );
-  //
-  //   var valueScheme = obj['@ValueScheme'];
-  //   console.log(typeof valueScheme);
-  //
-  //   if(typeof valueScheme != "string") {
-  //     valueScheme = obj.ValueScheme;
-  //
-  //     if(valueScheme != undefined) {
-  //       if(valueScheme.pattern != undefined) // attr or elem
-  //         valueScheme = valueScheme.pattern;
-  //       else { // elem
-  //         var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
-  //         return (this.state.editMode) ? (
-  //           <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)}>
-  //             {$.map(enumItems, function(item, index) {
-  //               return <option key={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>
-  //             })}
-  //           </Input>
-  //         ) : (
-  //           <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
-  //             {
-  //               $.map(enumItems, function(item, index) {
-  //                 return <MenuItem eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>
-  //               })
-  //             }
-  //           </DropdownButton>
-  //         );
-  //       }
-  //
-  //     } else if(obj.Type != undefined) // attr
-  //         valueScheme = obj.Type;
-  //   }
-  //
-  //   return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} readOnly />;
-  // },
-  // handleInputChange: function(link, e) {
-  //   if(link != undefined && link != null)
-  //     link.requestChange(e.target.value);
-  //   else
-  //     console.log('Linked state variable is undefined: ' + e.target);
-  // },
-  // handleRegistryInputChange: function(link, e) {
-  //   if(link != undefined && link != null)
-  //     if(this.state.registry != null)
-  //       link.requestChange(e.target.value);
-  //     else
-  //       console.error('Registry data is empty: ' + this.state.registry);
-  //   else
-  //     console.log('Linked state variable is undefined: ' + e.target);
-  // },
   handleUsageWarning: function(errors, cb) { // //TODO display components (non-profiles) that are linked?
     var self = this;
     var errors = this.processUsageErrors(errors);
@@ -278,61 +218,6 @@ var ComponentSpecForm = React.createClass({
       this.renderAlert(instance, "alert-container");
     } // else console.warn('Expect a single error result to display, value: ', errors);
   },
-  // getLinkStateCompTypeStr: function() {
-  //   if(this.props.spec['@isProfile'] === "true")
-  //     return "profile";
-  //   else
-  //     return "component";
-  // },
-  // componentWillReceiveProps: function(nextProps) {
-  //   console.log(this.constructor.displayName, 'will receive props');
-  //
-  //   if(this.props.editMode != nextProps.editMode)
-  //     this.setState({editMode: nextProps.editMode});
-  //
-  //   if(JSON.stringify(this.props.item) != JSON.stringify(nextProps.item))
-  //     this.setItemPropToState(nextProps.item);
-  // },
-  // componentDidUpdate: function(prevProps, prevState) {
-  //   var self = this;
-  //
-  //   var item = this.state.component || this.state.profile;
-  //   var prevItem = prevState.component || prevState.profile;
-  //
-  //   console.log(this.constructor.displayName, 'component did update: ' + JSON.stringify(item));
-  //
-  //   if(item != null && prevItem != null && item.Header != undefined) {
-  //     if(this.state.isSaved) this.refs.grid.setLoading(false);
-  //     if(this.state.isEdited) this.refs.grid.setLoading(false);
-  //     if(item.Header.Name != item.CMD_Component['@name'] ||
-  //       (item.hasOwnProperty('@isProfile') && (item['@isProfile'] != prevItem['@isProfile'])))
-  //       if(item['@isProfile'] == "true")
-  //         this.setState({ profile: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), component: null });
-  //       else
-  //         this.setState({ component: update(item, { Header: { $merge: { Name: item.CMD_Component['@name']  }}}), profile: null });
-  //   }
-  // },
-  // componentDidMount: function() {
-  //   var self = this;
-  //   var id = this.getParams().component || this.getParams().profile;
-  //
-  //   console.log(this.constructor.displayName, 'mounted: ' + id);
-  //   console.log('editmode: ' + this.state.editMode);
-  //
-  //   if(this.props.item != undefined || this.props.item != null)
-  //     this.setItemPropToState(this.props.item);
-  //
-  //   if(this.state.editMode)
-  //     if(id != undefined && id != null)
-  //       this.loadRegistryItem(id, function(regItem) {
-  //         console.log("regItem:" + JSON.stringify(regItem));
-  //         self.setState({registry: regItem});
-  //       });
-  //     else if(this.isActive('newEditor')) {
-  //       console.log('Setting up new component...');
-  //       this.setItemPropToState({ '@isProfile': "true", Header: { Name: "", Description: "" }, CMD_Component: { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1" } });
-  //     }
-  // },
   addNewAttribute: function(component, evt) {
     // var newAttrObj = { Name: "", Type: "string" }; //TODO check format
     //
@@ -437,57 +322,7 @@ var ComponentSpecForm = React.createClass({
   addNewComponent: function(evt) {
     // var components = update(this.state.childComponents, { $push: [ { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true } ] });
     // this.setState({ childComponents: components });
-  },
-  updateAttribute: function(index, newAttr) {
-    // console.log('attr update: ' + index);
-    // var item = this.state.component || this.state.profile;
-    // var attrSet = item.CMD_Component.AttributeList.Attribute;
-    // attrSet[index] = newAttr;
-    //
-    // if(this.state.profile != null)
-    //   this.setState({ profile: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
-    // else if(this.state.component != null)
-    //   this.setState({ component: update(item, { CMD_Component: { AttributeList: { $set: { Attribute: attrSet } }}  }) });
-  },
-  updateElement: function(index, newElement) {
-    // console.log('elem update: ' + index);
-    // var childElements = this.state.childElements;
-    // if(index >= 0 && index < childElements.length)
-    //   if((newElement.elemId == childElements[index].elemId) &&
-    //      (JSON.stringify(newElement) != JSON.stringify(childElements[index]))) {
-    //     childElements[index] = newElement;
-    //     this.setState({childElements: childElements});
-    //   }
-  },
-  updateInlineComponent: function(index, newComponent) {
-    // console.log('inline update: ' + index);
-    // var childComponents = this.state.childComponents;
-    // if(index >= 0 && index < childComponents.length)
-    //   if(newComponent != null) this.setState({ childComponents: update(childComponents, { $splice: [[index, 1, newComponent]] }) });
-  },
-  updateComponentSettings: function(index, newMin, newMax) {
-    // console.log('comp update: ' + index, ' new min: ' + newMin, ' new max: ' + newMax);
-    //
-    // var childComponents = this.state.childComponents;
-    // console.log('child to update: ' + JSON.stringify(childComponents[index]));
-    //
-    // if(newMin != null)
-    //   this.setChildComponentProperty(childComponents[index], '@CardinalityMin', newMin);
-    // if(newMax != null)
-    //   this.setChildComponentProperty(childComponents[index], '@CardinalityMax', newMax);
-    //
-    // this.setState({childComponents: childComponents});
-  },
-  setChildComponentProperty : function(childComp, prop, newValue) {
-    // if(childComp == null)
-    //   return;
-    //
-    // if(childComp.hasOwnProperty('prop'))
-    //   childComp[prop] = newValue;
-    // if(childComp.Header != undefined && childComp.CMD_Component != undefined)
-    //   if(!$.isArray(childComp.CMD_Component) && childComp.CMD_Component.hasOwnProperty(prop))
-    //     childComp.CMD_Component[prop] = newValue;
-  },
+  }
 });
 
 module.exports = ComponentSpecForm;
