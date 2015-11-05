@@ -4,8 +4,7 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-// var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
-// var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -27,12 +26,7 @@ require('../../../styles/CMDElement.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDElementForm = React.createClass({
-  // mixins: [ImmutableRenderMixin, LinkedStateMixin, ActionButtonsMixin],
-  // getInitialState: function() {
-  //   return { elem: this.props.elem, editMode: (this.props.editMode != undefined) ? this.props.editMode : false };
-  // },
-
-  mixins: [ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -99,7 +93,8 @@ var CMDElementForm = React.createClass({
       <div className="elementProps">
         <Input type="text" name="@name" label="Name" value={elem['@name']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}  onChange={this.updateElementValue}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly /> {/*TODO buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
+          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         {valueScheme}
@@ -134,6 +129,10 @@ var CMDElementForm = React.createClass({
     );
   },
 
+  propagateValue: function(field, value) {
+    this.props.onElementChange({$merge: {[field]: value}});
+  },
+
   updateElementValue: function(e) {
     this.propagateValue(e.target.name, e.target.value);
   },
@@ -143,8 +142,8 @@ var CMDElementForm = React.createClass({
     this.propagateValue(e.target.name, value);
   },
 
-  propagateValue: function(field, value) {
-    this.props.onElementChange({$merge: {[field]: value}});
+  updateConceptLink: function(val) {
+    this.propagateValue("@ConceptLink", val);
   },
 
 
@@ -227,10 +226,6 @@ var CMDElementForm = React.createClass({
     console.log('new item after attr add: ' + JSON.stringify(elem));
     if(this.state.elem != null)
       this.setState({ elem: elem });
-  },
-  updateConceptLink: function(link, newValue) {
-    if(typeof newValue === "string" && this.state.elem != null)
-      link.requestChange(newValue);
   },
   // render: function () {
   //   var self = this;

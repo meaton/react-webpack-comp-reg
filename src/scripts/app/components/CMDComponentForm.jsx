@@ -6,8 +6,7 @@ var React = require('react/addons');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../mixins/CMDComponentMixin');
-// var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
-// var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -30,7 +29,7 @@ require('../../../styles/CMDComponent.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDComponentForm = React.createClass({
-  mixins: [ImmutableRenderMixin, CMDComponentMixin],
+  mixins: [ImmutableRenderMixin, CMDComponentMixin, ConceptLinkDialogueMixin],
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired
   },
@@ -114,7 +113,9 @@ var CMDComponentForm = React.createClass({
           <div>
             <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
             <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-              labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly /> {/*buttonAfter={this.props.viewer.conceptRegistryBtn(this)} */}
+              labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
+              buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)}
+              />
           </div>
           <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
             <option value="unbounded">unbounded</option>
@@ -140,21 +141,24 @@ var CMDComponentForm = React.createClass({
 
   handleElementChange: function(index, change) {
     var update = {CMD_Element: {[index]: change}};
-    log.debug("Update element", update);
+    log.trace("Update element", update);
     this.props.onComponentChange(update);
+  },
+
+  propagateComponentValue: function(field, value) {
+    //send 'command' to merge existing spec section with this delta
+    //(see https://facebook.github.io/react/docs/update.html)
+    log.trace("Update component field:", field, "to:", value);
+    this.props.onComponentChange({$merge: {[field]: value}});
   },
 
   updateComponentValue: function(e) {
     //a property of this component has changed
-
-    //send 'command' to merge existing spec section with this delta
-    //(see https://facebook.github.io/react/docs/update.html)
-    var update = {$merge: {[e.target.name]: e.target.value}};
-    this.props.onComponentChange(update);
+    this.propagateComponentValue(e.target.name, e.target.value);
   },
 
-  updateConceptLink: function(e) {
-    //TODO
+  updateConceptLink: function(value) {
+    this.propagateComponentValue('@ConceptLink', value);
   },
 
 
