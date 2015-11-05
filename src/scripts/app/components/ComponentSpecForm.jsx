@@ -85,8 +85,8 @@ var ComponentSpecForm = React.createClass({
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
 
-      var conceptLinkModal = <ConceptRegistryModal onSelect="handleConceptLinkSelect" onSelect="handleConceptLinkSelect" container={this} />
-      var conceptLinkButton = <ModalTrigger modal={conceptLinkModal} container={this} label="Search in concept registry..." />
+      var conceptLinkModal = <ConceptRegistryModal onClose={this.closeConceptLinkModel} onSelect={this.handleConceptLinkSelect} container={this} />
+      var conceptLinkButton = <ModalTrigger ref="modalTrigger" modal={conceptLinkModal} container={this} label="Search in concept registry..." />
 
       return (
         <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
@@ -118,6 +118,10 @@ var ComponentSpecForm = React.createClass({
           </form>
         );
     }
+  },
+
+  closeConceptLinkModel: function(evt) {
+    this.refs.modalTrigger.toggleModal(evt);
   },
 
   handleTypeChange: function(e) {

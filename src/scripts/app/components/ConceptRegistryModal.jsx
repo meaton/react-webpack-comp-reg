@@ -1,4 +1,5 @@
 'use strict';
+var log = require('loglevel');
 
 var React = require('react/addons');
 var Table = require('reactabular').Table;
@@ -72,10 +73,14 @@ var ConceptRegistryModal = React.createClass({
     this.close();
   },
   close: function(evt) {
-    if(evt) evt.stopPropagation();
-    var elementId="";//TODO!
-    if(elementId) React.unmountComponentAtNode(document.getElementById(elementId));
-    else console.error('Cannot unmount Alert dialog: ', elementId);
+    this.props.onClose(evt);
+    // log.debug("Closing modal");
+    // if(evt) evt.stopPropagation();
+    // var elementId="ccrModal";
+    // var element = document.getElementById(elementId);
+    // log.debug("Element to unmount", element);
+    // if(elementId) React.unmountComponentAtNode(element);
+    // else log.error('Cannot unmount Alert dialog: ', elementId);
   },
   assignValue: function(value) {
     this.props.onSelect(value);
@@ -97,6 +102,7 @@ var ConceptRegistryModal = React.createClass({
     //   this.props.onChange(this.getDOMNode());
   },
   componentWillUnmount: function() {
+    log.debug("Modal will unmount");
     $(document.body).off('keydown', this.handleEnter);
   },
   componentWillMount: function() {
