@@ -138,7 +138,16 @@ var TypeModal = React.createClass({
   },
   removeRow: function(rowIndex) {
     log.debug('remove row: ' + rowIndex);
-    this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
+
+    if(this.state.enumeration != null && this.state.enumeration.item != null) {
+      if($.isArray(this.state.enumeration.item)) {
+        // splice existing array
+        this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
+      } else if(rowIndex === 0) {
+        // remove the one (last) item
+        this.setState({ enumeration: null});
+      }
+    }
   },
   render: function() {
     var self = this;
