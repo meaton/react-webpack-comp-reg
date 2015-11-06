@@ -6,6 +6,7 @@ var React = require('react/addons');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
+var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -27,7 +28,7 @@ require('../../../styles/CMDElement.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDElementForm = React.createClass({
-  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin],
+  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin, SpecFormUpdateMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -139,10 +140,6 @@ var CMDElementForm = React.createClass({
   updateElementSelectValue: function(e) {
     var value = e.target.checked ? "true":"false";
     this.propagateValue(e.target.name, value);
-  },
-
-  updateConceptLink: function(val) {
-    this.propagateValue("@ConceptLink", val);
   },
 
   updateValueScheme: function(val) {

@@ -7,6 +7,7 @@ var React = require('react/addons');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../mixins/CMDComponentMixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
+var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -29,7 +30,7 @@ require('../../../styles/CMDComponent.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDComponentForm = React.createClass({
-  mixins: [ImmutableRenderMixin, CMDComponentMixin, ConceptLinkDialogueMixin],
+  mixins: [ImmutableRenderMixin, CMDComponentMixin, ConceptLinkDialogueMixin, SpecFormUpdateMixin],
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired
   },
@@ -136,6 +137,13 @@ var CMDComponentForm = React.createClass({
 
   /* Methods that handle changes (in this component and its children) */
 
+  propagateValue: function(field, value) {
+    //send 'command' to merge existing spec section with this delta
+    //(see https://facebook.github.io/react/docs/update.html)
+    log.trace("Update component field:", field, "to:", value);
+    this.props.onComponentChange({$merge: {[field]: value}});
+  },
+
   handleComponentChange: function(index, change) {
     //an update of the child component at [index] has been requested, push up
     this.props.onComponentChange({CMD_Component: {[index]: change}});
@@ -147,33 +155,9 @@ var CMDComponentForm = React.createClass({
     this.props.onComponentChange(update);
   },
 
-  propagateComponentValue: function(field, value) {
-    //send 'command' to merge existing spec section with this delta
-    //(see https://facebook.github.io/react/docs/update.html)
-    log.trace("Update component field:", field, "to:", value);
-    this.props.onComponentChange({$merge: {[field]: value}});
-  },
-
   updateComponentValue: function(e) {
     //a property of this component has changed
-    this.propagateComponentValue(e.target.name, e.target.value);
-  },
-
-  updateConceptLink: function(value) {
-    this.propagateComponentValue('@ConceptLink', value);
-  },
-
-  /* Methods that add new children */
-  addNewComponent: function(evt) {
-    var spec = this.props.spec;
-    var appId = spec._appId + "/new_" + (spec.CMD_Component == null ? 0 : spec.CMD_Component.length);
-    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
-    log.debug("Adding new component to", spec._appId, newComp);
-    if(spec.CMD_Component == null) {
-      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
-    } else {
-      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
-    }
+    this.propagateValue(e.target.name, e.target.value);
   },
 
 
