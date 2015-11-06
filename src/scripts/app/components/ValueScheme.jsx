@@ -1,9 +1,9 @@
 'use strict';
+var log = require('loglevel');
 
 var React = require('react/addons');
 
 //mixins
-//var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //components
@@ -42,6 +42,8 @@ var ValueScheme = React.createClass({
       var type = (typeElem != undefined) ? typeElem : valueSchemeAttr;
       var enumeration = (valueSchemeElem != undefined) ? valueSchemeElem.enumeration : null;
       var pattern = (valueSchemeElem != undefined) ? valueSchemeElem.pattern : null;
+
+      log.trace("TypeModal params", {type: type, enumeration: enumeration, pattern: pattern});
 
       var typeTrigger = (
         <ModalTrigger

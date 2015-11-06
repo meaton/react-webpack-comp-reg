@@ -12,21 +12,29 @@ var ConceptRegistryModal = require('../components/ConceptRegistryModal');
 */
 var ConceptLinkDialogueMixin = {
 
-  newConceptLinkDialogueButton: function(changeHandler) {
+  newConceptLinkDialogueButton: function(changeHandler, closeHandler, label, ref) {
+    if(ref == null) {
+     ref = "modalTrigger";
+   }
+   if(closeHandler == null) {
+     closeHandler = this.closeConceptLinkDialogue.bind(this,ref);
+   }
+
     return <ModalTrigger
-      ref="modalTrigger"
+      ref={ref}
       container={this}
-      label="Search in concept registry..."
+      label={label != null ? label : "Search in concept registry..."}
       modal={
         <ConceptRegistryModal
-          onClose={this.closeConceptLinkDialogue}
+          onClose={closeHandler}
           onSelect={changeHandler}
           container={this} />
       } />
   },
 
-  closeConceptLinkDialogue: function(evt) {
-    this.refs.modalTrigger.toggleModal(evt);
+  closeConceptLinkDialogue: function(ref, evt) {
+    log.debug("Ref", this, ref);
+    this.refs[ref].toggleModal(evt);
   }
 
 }

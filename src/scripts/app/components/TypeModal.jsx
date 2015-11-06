@@ -1,4 +1,5 @@
 'use strict';
+var log = require('loglevel');
 
 var React = require('react/addons');
 var Table = require('reactabular').Table;
@@ -6,6 +7,7 @@ var sortColumn = require('reactabular').sortColumn;
 
 //mixins
 var LinkedStateMixin = React.addons.LinkedStateMixin;
+var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin')
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
@@ -32,7 +34,7 @@ var TypeModal = React.createClass({
     cb({elementType: ["string","int"]});
   },
 
-  mixins: [LinkedStateMixin],
+  mixins: [LinkedStateMixin, ConceptLinkDialogueMixin],
 
   propTypes: {
     container: React.PropTypes.object.isRequired,
@@ -44,9 +46,7 @@ var TypeModal = React.createClass({
   },
   getInitialState: function() {
     return {
-      basic_type: 'string',
       reg_types: [],
-      vocab: null,
       currentTabIdx: 0,
       changedTab: false,
       type: null,
@@ -83,9 +83,12 @@ var TypeModal = React.createClass({
     this.props.onClose(evt);
   },
   componentWillMount: function() {
-    this.state.type = this.props.type;
-    this.state.pattern = this.props.pattern;
-    this.state.enumeration = this.props.enumeration;
+    log.debug("Setting state to props", this.props);
+    this.setState({
+      type: this.props.type,
+      pattern: this.props.pattern,
+      enumeration: this.props.enumeration
+    });
   },
   componentDidMount: function() {
     var self = this;
@@ -99,10 +102,20 @@ var TypeModal = React.createClass({
     });
   },
   addConceptLink: function(rowIndex, newHdlValue) {
-    console.log('open concept link dialog: ' + rowIndex, newHdlValue);
+    log.debug('open concept link dialog:', rowIndex, newHdlValue);
     if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
-      var newRow = update(this.state.enumeration.item[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
-      var newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
+      var items = this.state.enumeration.item;
+      if(!$.isArray(items)) {
+        items = [items];
+      }
+      var newRow = update(items[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
+
+      var newEnum;
+      if($.isArray(this.state.enumeration.item)) {
+        newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
+      } else {
+        newEnum = update(this.state.enumeration, { item: {$set: newRow}});
+      }
       this.setState({ enumeration: newEnum });
     }
   },
@@ -121,6 +134,9 @@ var TypeModal = React.createClass({
     this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
   },
   render: function() {
+    // log.debug("Type modal state", this.state);
+    // log.debug("Type modal props", this.props);
+
     var self = this;
     var tableClasses = classNames('table','table-condensed');
 
@@ -134,7 +150,11 @@ var TypeModal = React.createClass({
         self.setState({ value: newValue });
     });
 
-    var vocabData = (this.state.enumeration != null) ? this.state.enumeration : [];
+    var vocabData = (this.state.enumeration != null && this.state.enumeration.item != undefined) ? this.state.enumeration.item : [];
+    if(!$.isArray(vocabData)) {
+      // single item, wrap
+      vocabData = [vocabData];
+    }
     var vocabCols = [
       {
         property: '$',
@@ -152,8 +172,21 @@ var TypeModal = React.createClass({
         property: '@ConceptLink',
         header: 'Concept link',
         cell: function(value, data, rowIndex) {
+          var modalRef;
+          var closeHandler = function(evt) {
+            modalRef.toggleModal();
+          }
+          var modal = self.newConceptLinkDialogueButton(self.addConceptLink.bind(self, rowIndex), closeHandler, "add link", function(modal) {
+            modalRef = modal;
+          });
+
           return {
-            value: (value) ? (<span><a href={value} target="_blank">{value}</a></span>) : (<span><ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self.props.container} target={self} onClose={self.addConceptLink.bind(self, rowIndex)} /></span>)
+            value: (value) ?
+            (<span><a href={value} target="_blank">{value}</a></span>) :
+            (<span>
+              {modal}
+              {/*<ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self.props.container} target={self} onClose={self.addConceptLink.bind(self, rowIndex)} />*/}
+            </span>)
           };
         }
       },
@@ -169,6 +202,8 @@ var TypeModal = React.createClass({
         }
       }
     ];
+
+    log.debug("Table data:", vocabData);
 
     return (
       <Modal ref="modal" id="typeModal" key="typeModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.close} container={this.props.container}>
