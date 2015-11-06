@@ -23,17 +23,52 @@ var classNames = require('classnames');
 require('../../../styles/CMDComponent.sass');
 
 /**
-* CMDComponent - view display and editing form for a CMDI Component item.
+* CMDComponentForm - editing form for a CMDI Component item, including (part of)
+* the root component
+*
 * @constructor
 * @mixes ImmutableRenderMixin
-* @mixes LinkedStateMixin
-* @mixes ActionButtonsMixin
+* @mixes CMDComponentMixin
+* @mixes SpecFormUpdateMixin
+* @mixes ConceptLinkDialogueMixin
 */
 var CMDComponentForm = React.createClass({
-  mixins: [ImmutableRenderMixin, CMDComponentMixin, ConceptLinkDialogueMixin, SpecFormUpdateMixin],
+  mixins: [ImmutableRenderMixin,
+            CMDComponentMixin,
+            ConceptLinkDialogueMixin,
+            SpecFormUpdateMixin],
+
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired
+    /* more props defined in CMDComponentMixin */
   },
+
+  /* Functions that handle changes (in this component and its children) */
+
+  propagateValue: function(field, value) {
+    //send 'command' to merge existing spec section with this delta
+    //(see https://facebook.github.io/react/docs/update.html)
+    log.trace("Update component field:", field, "to:", value);
+    this.props.onComponentChange({$merge: {[field]: value}});
+  },
+
+  handleComponentChange: function(index, change) {
+    //an update of the child component at [index] has been requested, push up
+    this.props.onComponentChange({CMD_Component: {[index]: change}});
+  },
+
+  handleElementChange: function(index, change) {
+    var update = {CMD_Element: {[index]: change}};
+    log.trace("Update element", update);
+    this.props.onComponentChange(update);
+  },
+
+  updateComponentValue: function(e) {
+    //a property of this component has changed
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  /* main render() function in CMDComponentMixin */
 
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked) {
@@ -135,90 +170,12 @@ var CMDComponentForm = React.createClass({
     );
   },
 
-  /* Methods that handle changes (in this component and its children) */
-
-  propagateValue: function(field, value) {
-    //send 'command' to merge existing spec section with this delta
-    //(see https://facebook.github.io/react/docs/update.html)
-    log.trace("Update component field:", field, "to:", value);
-    this.props.onComponentChange({$merge: {[field]: value}});
-  },
-
-  handleComponentChange: function(index, change) {
-    //an update of the child component at [index] has been requested, push up
-    this.props.onComponentChange({CMD_Component: {[index]: change}});
-  },
-
-  handleElementChange: function(index, change) {
-    var update = {CMD_Element: {[index]: change}};
-    log.trace("Update element", update);
-    this.props.onComponentChange(update);
-  },
-
-  updateComponentValue: function(e) {
-    //a property of this component has changed
-    this.propagateValue(e.target.name, e.target.value);
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //below: old functions
   toggleSelection: function(evt) {
     if(this.state.isInline) { // selection inline components only
       var updatedComponent = update(this.state.component, { $merge: { selected: !this.state.isSelected } });
       this.setState({ component: updatedComponent, isSelected: !this.state.isSelected });
     }
-  },
-  addNewAttribute: function(evt) {
-    console.log(this.constructor.displayName, 'new Attribute');
-    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
-
-    var comp = this.state.component;
-    if(comp != null)
-      if(comp.Header != undefined)
-        comp = comp.CMD_Component;
-
-    var attrList = comp.AttributeList;
-    if(attrList != undefined && $.isArray(attrList.Attribute)) attrList = attrList.Attribute;
-    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
-
-    //console.log('attrList: ' + attrList);
-
-    var item = (attrList == undefined) ?
-      update(comp, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
-      update(comp, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
-
-    //console.log('new item after attr add: ' + JSON.stringify(item));
-
-    if(this.state.component != null)
-      if(this.state.component.Header != undefined)
-        this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
-      else
-        this.setState({ component: item });
-  },
-  addNewElement: function(evt) {
-    console.log(this.constructor.displayName, 'new Element');
-
-    var component = this.state.component;
-    if(component.CMD_Element == undefined) component.CMD_Element = [];
-
-    var updatedComponent = update(component, { $merge: { CMD_Element: update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] }) }});
-
-    this.setState({ component: updatedComponent });
   }
 });
 

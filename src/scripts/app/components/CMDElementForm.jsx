@@ -21,7 +21,7 @@ var classNames = require('classnames');
 require('../../../styles/CMDElement.sass');
 
 /**
-* CMDElement - view display and editing form for a CMDI Element item.
+* CMDElementForm - editing form for a CMDI Element item
 * @constructor
 * @mixes ImmutableRenderMixin
 * @mixes LinkedStateMixin
@@ -46,6 +46,22 @@ var CMDElementForm = React.createClass({
       closeAll: false
     };
   },
+
+  /* Functions that handle changes (in this component and its children) */
+
+  propagateValue: function(field, value) {
+    this.props.onElementChange({$merge: {[field]: value}});
+  },
+
+  updateElementValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  updateElementSelectValue: function(e) {
+    var value = e.target.checked ? "true":"false";
+    this.propagateValue(e.target.name, value);
+  },
+
   toggleElement: function(evt) {
     //TODO flux: action
     // console.log('toggle elem: ' + JSON.stringify(this.state.elem));
@@ -129,50 +145,6 @@ var CMDElementForm = React.createClass({
     );
   },
 
-  propagateValue: function(field, value) {
-    this.props.onElementChange({$merge: {[field]: value}});
-  },
-
-  updateElementValue: function(e) {
-    this.propagateValue(e.target.name, e.target.value);
-  },
-
-  updateElementSelectValue: function(e) {
-    var value = e.target.checked ? "true":"false";
-    this.propagateValue(e.target.name, value);
-  },
-
-  updateValueScheme: function(val) {
-    //TODO
-    log.debug("Value scheme", val);
-
-    var type = null;
-    var valScheme = null;
-
-    if(val.type != undefined) {
-      type = val.type;
-    }
-
-    if(val.pattern != undefined) {
-      valScheme = {
-        pattern: val.pattern
-      }
-    }
-
-    if(val.enumeration != undefined) {
-      valScheme = {
-        enumeration: val.enumeration
-      }
-    }
-
-    log.debug("Update", {['@ValueScheme']: type, ValueScheme: valScheme});
-
-    this.props.onElementChange({$merge: {
-      ['@ValueScheme']: type,
-      ValueScheme: valScheme
-    }});
-  },
-
 
 
 
@@ -203,23 +175,6 @@ var CMDElementForm = React.createClass({
     if(elem != null)
       this.setState({ elem: update(elem, { AttributeList: { $set: { Attribute: attrSet } } }) });
   },
-  addNewAttribute: function(evt) {
-    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
-
-    var elem = this.state.elem;
-    var attrList = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-    if(attrList != undefined && !$.isArray(attrList))
-      attrList = [attrList];
-
-    console.log('attrList: ' + attrList);
-    var elem = (attrList == undefined) ?
-      update(elem, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
-      update(elem, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
-
-    console.log('new item after attr add: ' + JSON.stringify(elem));
-    if(this.state.elem != null)
-      this.setState({ elem: elem });
-  }
 });
 
 module.exports = CMDElementForm;
