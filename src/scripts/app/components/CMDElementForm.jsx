@@ -148,6 +148,32 @@ var CMDElementForm = React.createClass({
   updateValueScheme: function(val) {
     //TODO
     log.debug("Value scheme", val);
+
+    var type = null;
+    var valScheme = null;
+
+    if(val.type != undefined) {
+      type = val.type;
+    }
+
+    if(val.pattern != undefined) {
+      valScheme = {
+        pattern: val.pattern
+      }
+    }
+
+    if(val.enumeration != undefined) {
+      valScheme = {
+        enumeration: val.enumeration
+      }
+    }
+
+    log.debug("Update", {['@ValueScheme']: type, ValueScheme: valScheme});
+
+    this.props.onElementChange({$merge: {
+      ['@ValueScheme']: type,
+      ValueScheme: valScheme
+    }});
   },
 
 

@@ -29,7 +29,7 @@ require('../../../styles/EditorDialog.sass');
 var TypeModal = React.createClass({
   loadAllowedTypes: function(cb) {
     //TODO: replace with compregclient impl
-    cb(["string","int"]);
+    cb({elementType: ["string","int"]});
   },
 
   mixins: [LinkedStateMixin],
@@ -119,9 +119,6 @@ var TypeModal = React.createClass({
   removeRow: function(rowIndex) {
     console.log('remove row: ' + rowIndex);
     this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
-  },
-  componentDidUpdate: function() {
-    this.props.onChange(this.getDOMNode());
   },
   render: function() {
     var self = this;

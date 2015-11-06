@@ -86,9 +86,6 @@ var ModalTrigger = React.createClass({
     if(overlayNode == undefined) overlayNode = "#"
     $(this.getOverlayDOMNode()).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
   },
-  componentDidMount: function() {
-    console.log('container: ' + this.state.container);
-  },
   render: function() {
     if(this.props.useLink)
       return (
