@@ -5,8 +5,7 @@ var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
 //mixins
-//var LinkedStateMixin = React.addons.LinkedStateMixin;
-//var CompRegLoader = require('../mixins/Loader');
+var LinkedStateMixin = React.addons.LinkedStateMixin;
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
@@ -25,21 +24,34 @@ require('../../../styles/EditorDialog.sass');
 /**
 * TypeModal - Bootstrap Modal dialog used for setting the defined Type value, Pattern value or a custom-defined Vocabulary enum.
 * @constructor
-* @mixes Loader
 * @mixes React.addons.LinkedStateMixin
 */
 var TypeModal = React.createClass({
-  //mixins: [CompRegLoader, LinkedStateMixin],
+  loadAllowedTypes: function(cb) {
+    //TODO: replace with compregclient impl
+    cb(["string","int"]);
+  },
+
+  mixins: [LinkedStateMixin],
+
+  propTypes: {
+    container: React.PropTypes.object.isRequired,
+    type: React.PropTypes.string,
+    pattern: React.PropTypes.string,
+    enumeration: React.PropTypes.object,
+    onChange: React.PropTypes.func, //param: object {type/pattern/enumeration}
+    onClose: React.PropTypes.func
+  },
   getInitialState: function() {
     return {
       basic_type: 'string',
       reg_types: [],
-      pattern: null,
       vocab: null,
       currentTabIdx: 0,
       changedTab: false,
-      contextItem: null,
-      value: null
+      type: null,
+      pattern: null,
+      enumeration: null
     }
   },
   getDefaultProps: function() {
@@ -52,87 +64,61 @@ var TypeModal = React.createClass({
     this.setState({ currentTabIdx: index, changedTab: true });
   },
   setSimpleType: function(evt) {
-    var target = this.props.target;
-    var typeInput = target.refs.typeInput;
     var simpleVal = this.refs.simpleTypeInput.getValue();
-
-    if(target.state.attr != undefined)
-      typeInput.props.onChange("Type", simpleVal);
-    else if(target.state.elem != undefined)
-      typeInput.props.onChange("@ValueScheme", simpleVal);
-
-    this.close();
+    this.props.onChange({type: simpleVal});
+    this.close(evt);
   },
   setPattern: function(evt) {
-    this.props.target.refs.typeInput.props.onChange("pattern", this.refs.patternInput.getValue());
-    this.close();
+    var patternVal = this.refs.patternInput.getValue();
+    this.props.onChange({pattern: patternVal});
+    this.close(evt);
   },
   setControlVocab: function(evt) {
-    if(this.state.value.enumeration != undefined && $.isArray(this.state.value.enumeration.item))
-      this.props.target.refs.typeInput.props.onChange("enumeration", this.state.value.enumeration);
-    this.close();
+    if(this.state.enumeration != undefined && $.isArray(this.state.enumeration.item)){
+      this.props.onChange({enumeration: this.state.enumeration});
+    }
+    this.close(evt);
   },
   close: function(evt) {
-    this.props.onRequestHide();
+    this.props.onClose(evt);
   },
   componentWillMount: function() {
-    var contextItem = null;
-    var state = this.props.target.state;
-    if(state.attr != undefined)
-      contextItem = state.attr;
-    else if(state.elem != undefined)
-      contextItem = state.elem;
-    if(contextItem != null) {
-      var existingValue = contextItem['ValueScheme'];
-      if(contextItem.hasOwnProperty('@ValueScheme'))
-        existingValue = contextItem['@ValueScheme'];
-      else if(contextItem.hasOwnProperty('Type')) existingValue = contextItem['Type'];
-
-      if(contextItem.ValueScheme != undefined) {
-        if(contextItem['ValueScheme'].enumeration != undefined)
-          this.setState({ contextItem: contextItem, value: existingValue, currentTabIdx: 1 });
-        else if(contextItem['ValueScheme'].pattern != undefined)
-          this.setState({ contextItem: contextItem, value: existingValue, currentTabIdx: 2 });
-      } else
-        this.setState({ contextItem: contextItem, value: existingValue });
-    }
+    this.state.type = this.props.type;
+    this.state.pattern = this.props.pattern;
+    this.state.enumeration = this.props.enumeration;
   },
   componentDidMount: function() {
     var self = this;
-    console.log('value state:' + this.state.value);
     this.loadAllowedTypes(function(data) {
       if(data != null && data.elementType != undefined && $.isArray(data.elementType))
         self.setState({ reg_types: data.elementType }, function() {
           var simpleType = this.refs.simpleTypeInput;
           if(simpleType != undefined)
-            simpleType.refs.input.getDOMNode().selectedIndex = (typeof this.state.value === "string") ? $.inArray(this.state.value, data.elementType) : $.inArray("string", data.elementType);
+            simpleType.refs.input.getDOMNode().selectedIndex = this.state.type != null ? $.inArray(this.state.type, data.elementType) : $.inArray("string", data.elementType);
         });
     });
-
-    this.props.onChange(this.getDOMNode());
   },
   addConceptLink: function(rowIndex, newHdlValue) {
     console.log('open concept link dialog: ' + rowIndex, newHdlValue);
-    if(this.state.value != null && this.state.value.enumeration != undefined) {
-      var newRow = update(this.state.value.enumeration.item[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
-      var newValue = update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1, newRow]] } } });
-      this.setState({ value: newValue });
+    if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
+      var newRow = update(this.state.enumeration.item[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
+      var newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
+      this.setState({ enumeration: newEnum });
     }
   },
   addNewRow: function() {
-    var val = this.state.value;
-    if(val.enumeration == undefined)
-      if(typeof val === "string" || val.pattern != undefined)
-        val = { enumeration: "" };
+    var val = this.state.enumeration;
+    if(val == null)
+      val = {};
 
-    if(val.enumeration.item != undefined)
-      this.setState({ value: update(val, { enumeration: { item: { $push: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}}) });
+    if(val.item != undefined)
+      this.setState({ enumeration: update(val, { item: { $push: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}) });
     else
-      this.setState({ value: update(val, { enumeration: { $set: { item: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}}) });
+      this.setState({ enumeration: update(val, { $set: { item: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}) });
   },
   removeRow: function(rowIndex) {
     console.log('remove row: ' + rowIndex);
-    this.setState({ value: update(this.state.value, { enumeration: { item: { $splice: [[rowIndex, 1]] }}}) });
+    this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
   },
   componentDidUpdate: function() {
     this.props.onChange(this.getDOMNode());
@@ -147,11 +133,11 @@ var TypeModal = React.createClass({
         console.log('row data update: ' + value, celldata, rowIndex, property);
         var newData = celldata[rowIndex];
         newData[property] = value;
-        var newValue = update(self.state.value, { enumeration: { item: { $splice: [[rowIndex, 1, newData]] }} });
+        var newValue = update(self.state.enumeration, { item: { $splice: [[rowIndex, 1, newData]] } });
         self.setState({ value: newValue });
     });
 
-    var vocabData = (this.state.value.hasOwnProperty('enumeration')) ? this.state.value.enumeration.item : [];
+    var vocabData = (this.state.enumeration != null) ? this.state.enumeration : [];
     var vocabCols = [
       {
         property: '$',
@@ -188,7 +174,7 @@ var TypeModal = React.createClass({
     ];
 
     return (
-      <Modal ref="modal" id="typeModal" key="typeModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.props.onRequestHide} container={this.props.container}>
+      <Modal ref="modal" id="typeModal" key="typeModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.close} container={this.props.container}>
         <div className='modal-body'>
           <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <TabPane eventKey={0} tab="Type">
@@ -212,7 +198,7 @@ var TypeModal = React.createClass({
               <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
             </TabPane>
             <TabPane eventKey={2} tab="Pattern">
-              <Input ref="patternInput" type="text" defaultValue={(this.state.contextItem.hasOwnProperty('ValueScheme') && this.state.contextItem.ValueScheme.pattern != undefined) ? this.state.value.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
+              <Input ref="patternInput" type="text" defaultValue={(this.props.pattern != undefined) ? this.props.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
             </TabPane>
           </TabbedArea>
         </div>

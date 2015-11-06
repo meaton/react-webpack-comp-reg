@@ -1,4 +1,5 @@
 'use strict';
+var log = require('loglevel');
 
 var React = require('react/addons');
 
@@ -95,7 +96,7 @@ var CMDElementForm = React.createClass({
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <ValueScheme obj={elem} enabled={true} />
+        <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme} />
         <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
       </div>
     );
@@ -142,6 +143,11 @@ var CMDElementForm = React.createClass({
 
   updateConceptLink: function(val) {
     this.propagateValue("@ConceptLink", val);
+  },
+
+  updateValueScheme: function(val) {
+    //TODO
+    log.debug("Value scheme", val);
   },
 
 

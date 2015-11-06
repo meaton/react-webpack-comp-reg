@@ -23,10 +23,7 @@ var ValueScheme = React.createClass({
   propTypes: {
     obj: React.PropTypes.object.isRequired,
     enabled: React.PropTypes.bool,
-    onChange: React.PropTypes.func,
-    //TODO flux: setType: React.PropTypes.func,
-    //TODO flux: setPattern: React.PropTypes.func,
-    //TODO flux: setEnumeration: React.PropTypes.func,
+    onChange: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -45,6 +42,7 @@ var ValueScheme = React.createClass({
           modal={
             <TypeModal
               onClose={this.closeDialogue}
+              onChange={this.props.onChange}
               container={this} />
           } />
       );
@@ -84,10 +82,10 @@ var ValueScheme = React.createClass({
         <Input ref="typeInput" type="text" label="Type"
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           value={valueScheme} buttonAfter={typeTrigger}
-          onChange={this.props.onChange} readOnly />;
+          readOnly />;
     },
 
-    closeConceptLinkDialogue: function(evt) {
+    closeDialogue: function(evt) {
       this.refs.modalTrigger.toggleModal(evt);
     }
 });
