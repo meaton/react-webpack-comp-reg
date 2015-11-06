@@ -124,26 +124,33 @@ var TypeModal = React.createClass({
     if(val == null)
       val = {};
 
-    if(val.item != undefined)
-      this.setState({ enumeration: update(val, { item: { $push: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}) });
-    else
-      this.setState({ enumeration: update(val, { $set: { item: [{'$':'', '@AppInfo':'', '@ConceptLink':''}] }}) });
+    var newRow = {'$':'', '@AppInfo':'', '@ConceptLink':''};
+
+    if(val.item != undefined) {
+      if($.isArray(val.item)) {
+        // push new row to array
+        this.setState({ enumeration: update(val, { item: { $push: [newRow] }}) });
+      } else {
+        // turn into array and add new row
+        this.setState({ enumeration: update(val, {item: {$set: [val.item, newRow]}})});
+      }
+    } else {
+      // create new array with one row
+      this.setState({ enumeration: update(val, { $set: { item: [newRow] }}) });
+    }
   },
   removeRow: function(rowIndex) {
     console.log('remove row: ' + rowIndex);
     this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
   },
   render: function() {
-    // log.debug("Type modal state", this.state);
-    // log.debug("Type modal props", this.props);
-
     var self = this;
     var tableClasses = classNames('table','table-condensed');
 
     var cells = require('reactabular').cells;
     var editors = require('reactabular').editors;
     var editable = cells.edit.bind(this, 'editedCell', function(value, celldata, rowIndex, property) {
-        console.log('row data update: ' + value, celldata, rowIndex, property);
+        log.trace('row data update: ', value, celldata, rowIndex, property);
         var newData = celldata[rowIndex];
         newData[property] = value;
         var newValue = update(self.state.enumeration, { item: { $splice: [[rowIndex, 1, newData]] } });
