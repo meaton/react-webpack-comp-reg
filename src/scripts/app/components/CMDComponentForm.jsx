@@ -130,7 +130,7 @@ var CMDComponentForm = React.createClass({
   },
 
   renderAfterAttributes: function() {
-    return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div>;
+    return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
   },
 
   renderElement: function(elem, index) {

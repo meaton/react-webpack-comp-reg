@@ -77,9 +77,9 @@ var CMDElementForm = React.createClass({
           {
             (attrSet != undefined && attrSet.length > 0) ?
             $.map(attrSet, function(attr, index) {
-              var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
-              attr.attrId = attrId;
-              log.debug("Attr", attr);
+              // var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
+              // attr.attrId = attrId;
+              // log.debug("Attr", attr);
               return <CMDAttributeForm key={attr._appId} spec={attr} />
             }) : <span>No Attributes</span>
           }
@@ -140,7 +140,7 @@ var CMDElementForm = React.createClass({
           </Input>
         </div>
         {this.renderAttributes(elem)}
-        <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute}>+Attribute</a></div>
+        <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
       </div>
     );
   },

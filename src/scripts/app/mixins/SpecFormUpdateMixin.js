@@ -24,54 +24,50 @@ var SpecFormUpdateMixin = {
     this.propagateValue("@ConceptLink", val);
   },
 
-  addNewAttribute: function(evt) {
-    //TODO
-  },
+  addNewAttribute: function(onChange, evt) {
+    var spec = this.props.spec;
+    var attrList = spec.AttributeList;
 
-  addNewAttributeFromComponent: function(evt) {
-    console.log(this.constructor.displayName, 'new Attribute');
-    var newAttrObj = { Name: "", Type: "string" }; //TODO check format
+    var appId = this.generateAppIdForNew(spec._appId, (attrList == null) ? null : attrList.Attribute)
+    var newAttrObj = { Name: "", Type: "string", _appId: appId }; //TODO check format
 
-    var comp = this.state.component;
-    if(comp != null)
-      if(comp.Header != undefined)
-        comp = comp.CMD_Component;
-
-    var attrList = comp.AttributeList;
-    if(attrList != undefined && $.isArray(attrList.Attribute)) attrList = attrList.Attribute;
-    if(attrList != undefined && !$.isArray(attrList)) attrList = [attrList];
-
-    //console.log('attrList: ' + attrList);
-
-    var item = (attrList == undefined) ?
-      update(comp, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
-      update(comp, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
-
-    //console.log('new item after attr add: ' + JSON.stringify(item));
-
-    if(this.state.component != null)
-      if(this.state.component.Header != undefined)
-        this.setState({ component: update(this.state.component, { CMD_Component: { $set: item } }) });
-      else
-        this.setState({ component: item });
+    var update;
+    if(attrList == null) {
+      // create prepopulated attrlist
+      update = {$merge: {AttributeList: {Attribute: [newAttrObj]}}};
+    } else {
+      var attribute = attrList.Attribute;
+      if(attribute == null) {
+        // add first attribute wrapped in new array
+        update = {AttributeList: {Attribute: {$set: [newAttrObj]}}};
+      } else if($.isArray(attribute)) {
+        // push new to existing array
+        update = {AttributeList: {Attribute: {$push: [newAttrObj]}}};
+      } else {
+        // not an array, turn into array and add new
+        update = {AttributeList: {Attribute: {$set: [spec.AttributeList.Attribute, newAttrObj]}}};
+      }
+    }
+    log.debug("Update attribute:", update);
+    onChange(update);
   },
 
   addNewAttributeFromElement: function(evt) {
     var newAttrObj = { Name: "", Type: "string" }; //TODO check format
 
-    var elem = this.state.elem;
-    var attrList = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+    var spec = this.state.spec;
+
+    var attrList = (spec.AttributeList != undefined && $.isArray(spec.AttributeList.Attribute)) ? spec.AttributeList.Attribute : spec.AttributeList;
     if(attrList != undefined && !$.isArray(attrList))
       attrList = [attrList];
 
-    console.log('attrList: ' + attrList);
-    var elem = (attrList == undefined) ?
-      update(elem, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
-      update(elem, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
+    var spec = (attrList == undefined) ?
+      update(spec, { AttributeList: { $set: { Attribute: [newAttrObj] }} }) :
+      update(spec, { AttributeList: { $set: { Attribute: update(attrList, { $push: [newAttrObj] }) } } });
 
-    console.log('new item after attr add: ' + JSON.stringify(elem));
-    if(this.state.elem != null)
-      this.setState({ elem: elem });
+    console.log('new item after attr add: ' + JSON.stringify(spec));
+    if(this.state.spec != null)
+      this.setState({ spec: spec });
   },
 
   updateValueScheme: function(val) {
