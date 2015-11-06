@@ -2,10 +2,6 @@
 
 var log = require('loglevel');
 
-function generateAppIdForNew(parentId, childArray) {
-  var index = (childArray == null ? 0 : childArray.length);
-  return parentId + "/new_" + index;
-}
 
 /**
 * SpecFormUpdateMixin - Common functions and properties for the specification
@@ -18,31 +14,14 @@ function generateAppIdForNew(parentId, childArray) {
 */
 var SpecFormUpdateMixin = {
 
+  generateAppIdForNew: function(parentId, childArray) {
+    var index = (childArray == null ? 0 : childArray.length);
+    return parentId + "/new_" + index;
+  },
+
   /* Methods that handle changes (in this component and its children) */
   updateConceptLink: function(val) {
     this.propagateValue("@ConceptLink", val);
-  },
-
-  /* Methods that add new children */
-  addNewComponent: function(evt) {
-    var spec = this.props.spec;
-    var appId = generateAppIdForNew(spec._appId, spec.CMD_Component);
-    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
-    log.debug("Adding new component to", spec._appId, newComp);
-    if(spec.CMD_Component == null) {
-      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
-    } else {
-      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
-    }
-  },
-
-  addNewElement: function(evt) {
-    var component = this.state.component;
-    if(component.CMD_Element == undefined) component.CMD_Element = [];
-
-    var updatedComponent = update(component, { $merge: { CMD_Element: update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] }) }});
-
-    this.setState({ component: updatedComponent });
   },
 
   addNewAttribute: function(evt) {

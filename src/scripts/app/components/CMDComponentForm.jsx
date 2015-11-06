@@ -68,6 +68,31 @@ var CMDComponentForm = React.createClass({
     this.propagateValue(e.target.name, e.target.value);
   },
 
+  /* Functions that add new children */
+  addNewComponent: function(evt) {
+    var spec = this.props.spec;
+    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Component);
+    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
+    log.debug("Adding new component to", spec._appId, newComp);
+    if(spec.CMD_Component == null) {
+      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
+    } else {
+      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
+    }
+  },
+
+  addNewElement: function(evt) {
+    var spec = this.props.spec;
+    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Element);
+    var newElem = { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true };
+    log.debug("Adding new element to", spec._appId, newElem);
+    if(spec.CMD_Element == null) {
+      this.props.onComponentChange({$merge: {CMD_Element: [newElem]}});
+    } else {
+      this.props.onComponentChange({CMD_Element: {$push: [newElem]}});
+    }
+  },
+
   /* main render() function in CMDComponentMixin */
 
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
