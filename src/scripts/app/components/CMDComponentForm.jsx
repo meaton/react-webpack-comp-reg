@@ -134,6 +134,8 @@ var CMDComponentForm = React.createClass({
     );
   },
 
+  /* Methods that handle changes (in this component and its children) */
+
   handleComponentChange: function(index, change) {
     //an update of the child component at [index] has been requested, push up
     this.props.onComponentChange({CMD_Component: {[index]: change}});
@@ -161,6 +163,18 @@ var CMDComponentForm = React.createClass({
     this.propagateComponentValue('@ConceptLink', value);
   },
 
+  /* Methods that add new children */
+  addNewComponent: function(evt) {
+    var spec = this.props.spec;
+    var appId = spec._appId + "/new_" + (spec.CMD_Component == null ? 0 : spec.CMD_Component.length);
+    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
+    log.debug("Adding new component to", spec._appId, newComp);
+    if(spec.CMD_Component == null) {
+      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
+    } else {
+      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
+    }
+  },
 
 
 
@@ -221,18 +235,6 @@ var CMDComponentForm = React.createClass({
     var updatedComponent = update(component, { $merge: { CMD_Element: update(component.CMD_Element, { $push: [ { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", open: true } ] }) }});
 
     this.setState({ component: updatedComponent });
-  },
-  addNewComponent: function(evt) {
-    console.log(this.constructor.displayName, 'new Component');
-    this.addDefinedComponent({ "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", open: true });
-  },
-  addDefinedComponent: function(component) {
-    console.log('defined component: ' + JSON.stringify(component));
-    var existingComponent = this.state.component;
-    var newComponents = (existingComponent.CMD_Component == undefined) ? [component] : update(existingComponent.CMD_Component, { $push: [component] });
-    var updateComponent = update(existingComponent, { CMD_Component: { $set: newComponents } });
-
-    this.setState({ component: updateComponent });
   }
 });
 
