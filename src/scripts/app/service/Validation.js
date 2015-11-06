@@ -45,11 +45,11 @@ var testAttributeList = function(attrList, cb) {
 };
 
 var testValueScheme = function(item) {
-  if(item.Type != undefined && item['Type'].length <= 0) return false;
-  else if(item.hasOwnProperty('@ValueScheme') && item['@ValueScheme'].length <= 0) return false;
-  else if(item.ValueScheme != undefined) {
+  if(item.Type != null && item['Type'].length <= 0) return false;
+  else if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
+  else if(item.ValueScheme != null) {
     var fieldValue = item['ValueScheme'];
-    if((fieldValue.enumeration != undefined && fieldValue.enumeration.item != undefined) || (fieldValue.pattern != undefined && fieldValue.pattern.length > 0))
+    if((fieldValue.enumeration != null && fieldValue.enumeration.item != null) || (fieldValue.pattern != null && fieldValue.pattern.length > 0))
       return true;
     else
       return false;

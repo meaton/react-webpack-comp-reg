@@ -137,7 +137,7 @@ var TypeModal = React.createClass({
     }
   },
   removeRow: function(rowIndex) {
-    console.log('remove row: ' + rowIndex);
+    log.debug('remove row: ' + rowIndex);
     this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
   },
   render: function() {
