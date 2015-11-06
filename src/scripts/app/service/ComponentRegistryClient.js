@@ -220,6 +220,23 @@ deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
   setTimeout(function(){handleFailure("deletion not implemented yet");}, 1000);
 },
 
+loadAllowedTypes: function(cb) {
+  $.ajax($.extend({
+    type: 'GET',
+    url: restUrl + '/registry/AllowedTypes',
+    processData: false,
+    contentType: false,
+    dataType:'json',
+    success: function(data) {
+      if(cb) cb(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      log.error("Failed to retrieve allowed types", err);
+      cb(null);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
 queryCCR: function(searchQuery, cb) {
   var url = ccrUrl + '?type=container&keywords=' + searchQuery;
 

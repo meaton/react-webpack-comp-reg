@@ -16,6 +16,8 @@ var Button = require('react-bootstrap/lib/Button');
 var TabbedArea = require('react-bootstrap/lib/TabbedArea');
 var TabPane = require('react-bootstrap/lib/TabPane');
 
+//service
+var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 
 //utils
 var update = React.addons.update;
@@ -29,13 +31,7 @@ require('../../../styles/EditorDialog.sass');
 * @mixes React.addons.LinkedStateMixin
 */
 var TypeModal = React.createClass({
-  loadAllowedTypes: function(cb) {
-    //TODO: replace with compregclient impl
-    cb({elementType: ["string","int"]});
-  },
-
   mixins: [LinkedStateMixin, ConceptLinkDialogueMixin],
-
   propTypes: {
     container: React.PropTypes.object.isRequired,
     type: React.PropTypes.string,
@@ -93,7 +89,7 @@ var TypeModal = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    this.loadAllowedTypes(function(data) {
+    ComponentRegistryClient.loadAllowedTypes(function(data) {
       if(data != null && data.elementType != undefined && $.isArray(data.elementType))
         self.setState({ reg_types: data.elementType }, function() {
           var simpleType = this.refs.simpleTypeInput;
