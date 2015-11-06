@@ -60,7 +60,7 @@ var TypeModal = React.createClass({
     };
   },
   tabSelect: function(index) {
-    console.log('tabSelect: ' + index);
+    log.trace('tabSelect: ' + index);
     this.setState({ currentTabIdx: index, changedTab: true });
   },
   setSimpleType: function(evt) {
@@ -89,6 +89,7 @@ var TypeModal = React.createClass({
       pattern: this.props.pattern,
       enumeration: this.props.enumeration
     });
+    this.tabSelect(this.props.type != null ? 0 : this.props.enumeration != null ? 1 : 2);
   },
   componentDidMount: function() {
     var self = this;
