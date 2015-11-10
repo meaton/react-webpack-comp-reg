@@ -31,6 +31,12 @@
 </head>
 <body>
   <div id="app"></div>
+  <script type="text/javascript">
+    if(parent != null) {
+      //make react devtools work when app is embedded in iframe (as is the case with webpack-dev-server)
+      __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
+    }
+  </script>
   <script type="text/javascript" src="assets/main.js"></script>
 </body>
 </html>
