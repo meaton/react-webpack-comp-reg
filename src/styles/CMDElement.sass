@@ -1,4 +1,8 @@
 .CMDElement {
+  &.open {
+    border: 1px dashed #ccc;
+  }
+
   display: inline-block;
   float: left;
   clear: both;
@@ -9,15 +13,12 @@
 
   border: 1px solid #ccc;
   border-radius: 8px;
+
+  a.elementLink {
+    color: #000099;
+  }
 }
 
-.CMDElement a.elementLink {
-  color: #000099;
-}
-
-.CMDElement.open {
-  border: 1px dashed #ccc;
-}
 
 .elementName {
   font-weight: bold;

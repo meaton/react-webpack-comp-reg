@@ -4,8 +4,8 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-// var LinkedStateMixin = require('../../mixins/LinkedStateMixin');
-// var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
+var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -14,7 +14,10 @@ var Button = require('react-bootstrap/lib/Button');
 //components
 var ValueScheme = require('./ValueScheme');
 
-//require('../../styles/CMDAttribute.sass');
+//utils
+var classNames = require('classnames');
+
+require('../../../styles/CMDAttribute.sass');
 
 /**
 * CMDAttribute - view display and editing form for a CMDI Attribute item.
@@ -24,7 +27,7 @@ var ValueScheme = require('./ValueScheme');
 * @mixes ActionButtonsMixin
 */
 var CMDAttributeForm = React.createClass({
-  mixins: [ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin, SpecFormUpdateMixin],
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     open: React.PropTypes.bool,
@@ -40,14 +43,38 @@ var CMDAttributeForm = React.createClass({
     };
   },
   render: function () {
+    var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
+
     var attr = this.props.spec;
-    var attr_val = <ValueScheme obj={attr} enabled={false} />
+    var actionButtons = null;//TODO: this.getActionButtons(false);
+    return (
+      <div className={attrClasses}>
+        {actionButtons}
+        <form name="attrForm" className="form-horizontal form-group">
+          <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateName} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+          <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(attr['@ConceptLink']) ? attr['@ConceptLink'] : ""}  onChange={this.updateAttributeValue}
+            labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
+            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+          <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme} />
+        </form>
+      </div>
+    );
     return (
       <div className="attrAttr">
         {attr.Name} {attr_val}
       </div>
     );
-  }
+  },
+
+  propagateValue: function(field, value) {
+    //TODO
+    //this.props.onElementChange({$merge: {[field]: value}});
+  },
+
+  updateElementValue: function(e) {
+    //TODO
+    //this.propagateValue(e.target.name, e.target.value);
+  },
 
   //below: old functions
   // getInitialState: function() {
