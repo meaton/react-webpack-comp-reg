@@ -59,6 +59,7 @@ var EditorActions = {
   },
 
   updateSpec: function(spec, change) {
+    log.debug("Applying change", change, "to spec:", spec);
     var newSpec = update(spec, change);
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },

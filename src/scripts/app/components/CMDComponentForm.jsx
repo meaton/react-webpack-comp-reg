@@ -44,7 +44,6 @@ var CMDComponentForm = React.createClass({
   },
 
   /* Functions that handle changes (in this component and its children) */
-
   propagateValue: function(field, value) {
     //send 'command' to merge existing spec section with this delta
     //(see https://facebook.github.io/react/docs/update.html)
@@ -60,6 +59,12 @@ var CMDComponentForm = React.createClass({
   handleElementChange: function(index, change) {
     var update = {CMD_Element: {[index]: change}};
     log.trace("Update element", update);
+    this.props.onComponentChange(update);
+  },
+
+  handleAttributeChange: function(index, change) {
+    var update = {AttributeList: {Attribute: {[index]: change}}};
+    log.trace("Update attribute", update);
     this.props.onComponentChange(update);
   },
 
@@ -126,7 +131,10 @@ var CMDComponentForm = React.createClass({
   },
 
   renderAttribute: function(attr, index) {
-    return <CMDAttributeForm key={attr._appId} spec={attr} />;
+    return <CMDAttributeForm
+              key={attr._appId} spec={attr}
+              onAttributeChange={this.handleAttributeChange.bind(this, index)}
+       />;
   },
 
   renderAfterAttributes: function() {

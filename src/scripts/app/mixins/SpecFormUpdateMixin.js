@@ -70,7 +70,7 @@ var SpecFormUpdateMixin = {
       this.setState({ spec: spec });
   },
 
-  updateValueScheme: function(val) {
+  updateValueScheme: function(onChange, val) {
     log.debug("Value scheme", val);
 
     var type = null;
@@ -94,7 +94,7 @@ var SpecFormUpdateMixin = {
 
     log.debug("Update", {['@ValueScheme']: type, ValueScheme: valScheme});
 
-    this.props.onElementChange({$merge: {
+    onChange({$merge: {
       ['@ValueScheme']: type,
       ValueScheme: valScheme
     }});

@@ -33,7 +33,8 @@ var CMDAttributeForm = React.createClass({
     open: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
-    key: React.PropTypes.string
+    key: React.PropTypes.string,
+    onAttributeChange: React.PropTypes.func.isRequired
   },
   getDefaultProps: function() {
     return {
@@ -50,13 +51,14 @@ var CMDAttributeForm = React.createClass({
     return (
       <div className={attrClasses}>
         {actionButtons}
-        <form name="attrForm" className="form-horizontal form-group">
-          <Input type="text" label="Name" defaultValue={attr.Name} onChange={this.updateName} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <span>Attribute: <a className="attributeLink" onClick={this.toggleElement}>{attr.Name}</a></span>
+        <div className="form-horizontal form-group">
+          <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
           <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(attr['@ConceptLink']) ? attr['@ConceptLink'] : ""}  onChange={this.updateAttributeValue}
             labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
             buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
-          <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme} />
-        </form>
+          <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.props.onAttributeChange)} />
+        </div>
       </div>
     );
     return (
@@ -67,13 +69,11 @@ var CMDAttributeForm = React.createClass({
   },
 
   propagateValue: function(field, value) {
-    //TODO
-    //this.props.onElementChange({$merge: {[field]: value}});
+    this.props.onAttributeChange({$merge: {[field]: value}});
   },
 
-  updateElementValue: function(e) {
-    //TODO
-    //this.propagateValue(e.target.name, e.target.value);
+  updateAttributeValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
   },
 
   //below: old functions
