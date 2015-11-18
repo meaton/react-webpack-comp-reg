@@ -191,10 +191,20 @@ normaliseSpec: function(data) {
     } else {
       var childElems = data.CMD_Element;
       var childComps = data.CMD_Component;
+      var attrList = data.AttributeList;
 
       if(childElems != undefined && childElems != null) {
+        //if CMD_Element child exist, make sure it is an array
         if(!$.isArray(childElems)) {
           data.CMD_Element = [childElems];
+        }
+      }
+
+      if(attrList != null) {
+        //if AttributeList.Attribute exist, make sure it is an array
+        var attr = attrList.Attribute;
+        if(attr != undefined && !$.isArray(attr)) {
+          attrList.Attribute = [attr];
         }
       }
 
