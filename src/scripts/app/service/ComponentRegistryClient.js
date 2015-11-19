@@ -189,25 +189,31 @@ normaliseSpec: function(data) {
       delete data.CMD_Component;
       delete data.AttributeList
     } else {
-      log.debug("normalising", data);
+      log.trace("normalising", data);
       var childElems = data.CMD_Element;
       var childComps = data.CMD_Component;
 
       if(childElems != undefined && childElems != null) {
-        //if CMD_Element child exist, make sure it is an array
-        if(!$.isArray(childElems)) {
-          childElems = [childElems];
+        //if CMD_Element child(ren) exist, make sure it is an array
+        var elemsArray;
+        if($.isArray(childElems)) {
+          elemsArray = childElems;
+        } else {
+          elemsArray = [childElems];
         }
-        //normalise attribute lists of all elements
-        for(i=0; i<childElems.length; i++) {
-          this.normaliseAttributeList(childElems[i].AttributeList);
-          this.normaliseValueScheme(childElems[i].ValueScheme);
+
+        // normalise element children (attributes) and value scheme
+        for(i=0; i<elemsArray.length; i++) {
+          this.normaliseAttributeList(elemsArray[i].AttributeList);
+          this.normaliseValueScheme(elemsArray[i].ValueScheme);
         }
-        data.CMD_Element = childElems;
+        data.CMD_Element = elemsArray;
       }
 
+      // normalise attributes of this component
       this.normaliseAttributeList(data.AttributeList);
 
+      //if CMD_Component child(ren) exist, make sure it is an array
       if(childComps != undefined && childComps != null) {
         if(!$.isArray(childComps)) {
           childComps = [childComps];
@@ -227,21 +233,23 @@ normaliseSpec: function(data) {
 
 normaliseAttributeList: function(attrList) {
   if(attrList != null) {
-    log.debug("Normalise attribute list", attrList);
+    log.trace("Normalise attribute list", attrList);
+
     //if AttributeList.Attribute exist, make sure it is an array
     var attr = attrList.Attribute;
     if(attr != undefined) {
       var attrArray;
-      if (!$.isArray(attr)) {
-        attrArray = [attr];
-      } else {
+      if ($.isArray(attr)) {
         attrArray = attr;
+      } else {
+        attrArray = [attr];
       }
-      log.debug("Attr", attrArray);
+
+      // normalise all value schemes in the attributes
       for(j=0; j<attrArray.length; j++) {
-        log.debug("Attr[]", j, "of", attrArray.length, attrArray[j]);
         this.normaliseValueScheme(attrArray[j].ValueScheme);
       }
+      
       attrList.Attribute = attrArray;
     }
   }
@@ -249,11 +257,10 @@ normaliseAttributeList: function(attrList) {
 
 normaliseValueScheme: function(valueScheme) {
   if(valueScheme != null) {
-    log.debug("Normalise valueScheme", valueScheme);
+    log.trace("Normalise valueScheme", valueScheme);
     if(valueScheme.enumeration != null) {
       var item = valueScheme.enumeration.item;
       if(item != undefined && !$.isArray(item)) {
-        log.debug("item", item);
         valueScheme.enumeration.item = [item];
       }
     }
