@@ -97,8 +97,6 @@ var SpecFormUpdateMixin = {
       }
     }
 
-    log.debug("Update", {['@ValueScheme']: type, ValueScheme: valScheme});
-
     onChange(type, valScheme);
   },
 
