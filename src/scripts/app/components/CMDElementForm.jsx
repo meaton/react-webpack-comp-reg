@@ -7,6 +7,7 @@ var React = require('react/addons');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -14,6 +15,7 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDAttributeForm = require('./CMDAttributeForm');
 var ValueScheme = require('./ValueScheme');
+var ActionButtons = require('./ActionButtons');
 
 //utils
 var classNames = require('classnames');
@@ -28,7 +30,10 @@ require('../../../styles/CMDElement.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDElementForm = React.createClass({
-  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin, SpecFormUpdateMixin],
+  mixins: [ImmutableRenderMixin,
+            ConceptLinkDialogueMixin,
+            SpecFormUpdateMixin,
+            ActionButtonsMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -37,7 +42,7 @@ var CMDElementForm = React.createClass({
     closeAll: React.PropTypes.bool,
     key: React.PropTypes.string,
     expansionState: React.PropTypes.object,
-    onElementChange: React.PropTypes.func
+    onElementChange: React.PropTypes.func.isRequired
   },
   getDefaultProps: function() {
     return {
@@ -135,7 +140,12 @@ var CMDElementForm = React.createClass({
     //putting it all together...
     return (
       <div className={elementClasses}>
-         {actionButtons}
+        <ActionButtons
+          onMove={this.props.onMove}
+          onRemove={this.props.onRemove}
+          moveUpEnabled={!this.props.isFirst}
+          moveDownEnabled={!this.props.isLast}
+          />
         <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
         <div className="form-horizontal form-group">
           {elemProps}

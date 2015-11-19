@@ -42,10 +42,8 @@ var CMDComponentForm = React.createClass({
             ActionButtonsMixin],
 
   propTypes: {
-    onComponentChange: React.PropTypes.func.isRequired,
-    onMove: React.PropTypes.func.isRequired,
-    onRemove: React.PropTypes.func.isRequired,
-    /* more props defined in CMDComponentMixin */
+    onComponentChange: React.PropTypes.func.isRequired
+    /* more props defined in CMDComponentMixin and ActionButtonsMixin */
   },
 
   /* Functions that handle changes (in this component and its children) */
@@ -148,7 +146,12 @@ var CMDComponentForm = React.createClass({
     return <CMDElementForm
               key={elem._appId}
               spec={elem}
-              onElementChange={this.handleElementChange.bind(this, index)} />;
+              onElementChange={this.handleElementChange.bind(this, index)}
+              onMove={this.handleMoveElement.bind(this, this.props.onComponentChange, index)}
+              onRemove={this.handleRemoveElement.bind(this, this.props.onComponentChange, index)}
+              isFirst={index == 0}
+              isLast={index == this.props.spec.CMD_Element.length - 1}
+              />;
   },
 
   renderAfterElements: function() {
@@ -179,8 +182,8 @@ var CMDComponentForm = React.createClass({
         <ActionButtons
           onMove={this.props.onMove}
           onRemove={this.props.onRemove}
-          moveUpEnabled={!this.props.isFirst}
-          moveDownEnabled={!this.props.isLast}
+          moveUpEnabled={!this.props.isFirst /* from ActionButtonsMixin */}
+          moveDownEnabled={!this.props.isLast /* from ActionButtonsMixin */}
           />
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>

@@ -30,6 +30,20 @@ function move(direction, index, items) {
 */
 var ActionButtonsMixin = {
 
+  propTypes: {
+    onMove: React.PropTypes.func.isRequired,
+    onRemove: React.PropTypes.func.isRequired,
+    isFirst: React.PropTypes.bool,
+    isLast: React.PropTypes.bool
+  },
+
+  getDefaultProps: function() {
+    return {
+      isFirst: false,
+      isLast: false
+    };
+  },
+
   handleMoveComponent: function(changeHandler, index, direction) {
     log.debug("Move component",index,direction, "in", this.props.spec);
     changeHandler({CMD_Component: move(direction, index, this.props.spec.CMD_Component)});
@@ -38,6 +52,16 @@ var ActionButtonsMixin = {
   handleRemoveComponent: function(changeHandler, index) {
     log.debug("Remove component",index, "from", this.props.spec);
     changeHandler({CMD_Component: remove(index)});
+  },
+
+  handleMoveElement: function(changeHandler, index, direction) {
+    log.debug("Move element",index,direction, "in", this.props.spec);
+    changeHandler({CMD_Element: move(direction, index, this.props.spec.CMD_Element)});
+  },
+
+  handleRemoveElement: function(changeHandler, index) {
+    log.debug("Remove element",index, "from", this.props.spec);
+    changeHandler({CMD_Element: remove(index)});
   }
 };
 
