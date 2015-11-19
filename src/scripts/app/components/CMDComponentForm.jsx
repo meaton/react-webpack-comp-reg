@@ -127,6 +127,8 @@ var CMDComponentForm = React.createClass({
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
         onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
+        isFirst={index == 0}
+        isLast={index == this.props.spec.CMD_Component.length - 1}
         />);
     }
   },
@@ -174,7 +176,12 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
-        <ActionButtons onMove={this.props.onMove} onRemove={this.props.onRemove} />
+        <ActionButtons
+          onMove={this.props.onMove}
+          onRemove={this.props.onRemove}
+          moveUpEnabled={!this.props.isFirst}
+          moveDownEnabled={!this.props.isLast}
+          />
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}

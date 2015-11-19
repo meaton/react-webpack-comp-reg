@@ -12,23 +12,24 @@ var ActionButtons = React.createClass({
   propTypes: {
     onMove: React.PropTypes.func.isRequired,
     onRemove: React.PropTypes.func.isRequired,
-    moveEnabled: React.PropTypes.bool
+    moveUpEnabled: React.PropTypes.bool,
+    moveDownEnabled: React.PropTypes.bool
   },
   getDefaultProps: function() {
-    return { moveEnabled: true }
+    return {
+      moveUpEnabled: true,
+      moveDownEnabled: true
+    };
   },
   render: function() {
-    var moveButtons = (this.props.moveEnabled) ? (
-      <span className="posControl">
-        <a onClick={this.props.onMove.bind(this, "up")}>move up</a>
-        <a onClick={this.props.onMove.bind(this, "down")}>move down</a>
-      </span>
-      ) : null;
-
     return (
       <div className="controlLinks">
         <a onClick={this.props.onRemove}>click to remove</a>
-        {moveButtons}
+        {(this.props.moveUpEnabled || this.props.moveDownEnabled) ?
+          (<span className="posControl">
+            {this.props.moveUpEnabled ? (<a onClick={this.props.onMove.bind(this, "up")}>move up</a>): <span className="disabledAction">move up</span>}
+            {this.props.moveDownEnabled ? (<a onClick={this.props.onMove.bind(this, "down")}>move down</a>): <span className="disabledAction">move down</span>}
+          </span>) :null}
       </div>
     );
   }
