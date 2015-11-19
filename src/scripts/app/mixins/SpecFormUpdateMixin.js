@@ -70,6 +70,11 @@ var SpecFormUpdateMixin = {
       this.setState({ spec: spec });
   },
 
+ /**
+ * triggers an update of the value scheme of an element or attribute
+ * @param  {function} onChange function that takes two parameters: type, valueScheme, one of which is non-null
+ * @param  {object} val      [description]
+ */
   updateValueScheme: function(onChange, val) {
     log.debug("Value scheme", val);
 
@@ -94,10 +99,7 @@ var SpecFormUpdateMixin = {
 
     log.debug("Update", {['@ValueScheme']: type, ValueScheme: valScheme});
 
-    onChange({$merge: {
-      ['@ValueScheme']: type,
-      ValueScheme: valScheme
-    }});
+    onChange(type, valScheme);
   },
 
   handleAttributeChange: function(onChange, index, change) {

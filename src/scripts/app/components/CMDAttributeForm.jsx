@@ -57,7 +57,7 @@ var CMDAttributeForm = React.createClass({
           <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
             labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
             buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
-          <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.props.onAttributeChange)} />
+          <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
         </div>
       </div>
     );
@@ -66,6 +66,13 @@ var CMDAttributeForm = React.createClass({
         {attr.Name} {attr_val}
       </div>
     );
+  },
+
+  handleUpdateValueScheme: function(type, valScheme) {
+    this.props.onAttributeChange({$merge: {
+       Type: type,
+       ValueScheme: valScheme
+     }});
   },
 
   propagateValue: function(field, value) {

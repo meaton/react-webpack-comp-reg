@@ -62,6 +62,13 @@ var CMDElementForm = React.createClass({
     this.propagateValue(e.target.name, value);
   },
 
+  handleUpdateValueScheme: function(type, valScheme) {
+    this.props.onElementChange({$merge: {
+      ['@ValueScheme']: type,
+      ValueScheme: valScheme
+    }});
+  },
+
   toggleElement: function(evt) {
     //TODO flux: action
     // console.log('toggle elem: ' + JSON.stringify(this.state.elem));
@@ -114,7 +121,7 @@ var CMDElementForm = React.createClass({
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.props.onElementChange)} />
+        <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
         <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
       </div>
     );
