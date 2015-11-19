@@ -6,6 +6,7 @@ var React = require('react/addons');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -27,7 +28,10 @@ require('../../../styles/CMDAttribute.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDAttributeForm = React.createClass({
-  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin, SpecFormUpdateMixin],
+  mixins: [ImmutableRenderMixin,
+            ConceptLinkDialogueMixin,
+            SpecFormUpdateMixin,
+            ActionButtonsMixin],
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     open: React.PropTypes.bool,
@@ -47,10 +51,9 @@ var CMDAttributeForm = React.createClass({
     var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
 
     var attr = this.props.spec;
-    var actionButtons = null;//TODO: this.getActionButtons(false);
     return (
       <div className={attrClasses}>
-        {actionButtons}
+        {this.createActionButtons() /* from ActionButtonsMixin */}
         <span>Attribute: <a className="attributeLink" onClick={this.toggleElement}>{attr.Name}</a></span>
         <div className="form-horizontal form-group">
           <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />

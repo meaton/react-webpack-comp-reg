@@ -1,5 +1,7 @@
 var log = require('loglevel');
 
+var ActionButtons = require('../components/ActionButtons');
+
 function remove(index) {
   //update command: remove at index
   return {$splice: [[index, 1]]};
@@ -62,6 +64,26 @@ var ActionButtonsMixin = {
   handleRemoveElement: function(changeHandler, index) {
     log.debug("Remove element",index, "from", this.props.spec);
     changeHandler({CMD_Element: remove(index)});
+  },
+
+  handleMoveAttribute: function(changeHandler, index, direction) {
+    log.debug("Move attribute",index,direction, "in", this.props.spec);
+    changeHandler({AttributeList: {Attribute: move(direction, index, this.props.spec.AttributeList.Attribute)}});
+  },
+
+  handleRemoveAttribute: function(changeHandler, index) {
+    log.debug("Remove attribute",index, "from", this.props.spec);
+    changeHandler({AttributeList: {Attribute: remove(index)}});
+  },
+
+  createActionButtons: function() {
+    return (
+      <ActionButtons
+        onMove={this.props.onMove}
+        onRemove={this.props.onRemove}
+        moveUpEnabled={!this.props.isFirst}
+        moveDownEnabled={!this.props.isLast}
+      />);
   }
 };
 

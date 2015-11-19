@@ -17,7 +17,6 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDComponentView = require('./CMDComponentView');
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
-var ActionButtons = require('./ActionButtons');
 
 //utils
 var classNames = require('classnames');
@@ -135,6 +134,10 @@ var CMDComponentForm = React.createClass({
     return <CMDAttributeForm
               key={attr._appId} spec={attr}
               onAttributeChange={this.handleAttributeChange.bind(this, this.props.onComponentChange, index)}
+              onMove={this.handleMoveAttribute.bind(this, this.props.onComponentChange, index)}
+              onRemove={this.handleRemoveAttribute.bind(this, this.props.onComponentChange, index)}
+              isFirst={index == 0}
+              isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
        />;
   },
 
@@ -179,12 +182,7 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
-        <ActionButtons
-          onMove={this.props.onMove}
-          onRemove={this.props.onRemove}
-          moveUpEnabled={!this.props.isFirst /* from ActionButtonsMixin */}
-          moveDownEnabled={!this.props.isLast /* from ActionButtonsMixin */}
-          />
+        {this.createActionButtons() /* from ActionButtonsMixin */}
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}

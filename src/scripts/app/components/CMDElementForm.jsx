@@ -15,7 +15,6 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDAttributeForm = require('./CMDAttributeForm');
 var ValueScheme = require('./ValueScheme');
-var ActionButtons = require('./ActionButtons');
 
 //utils
 var classNames = require('classnames');
@@ -140,12 +139,7 @@ var CMDElementForm = React.createClass({
     //putting it all together...
     return (
       <div className={elementClasses}>
-        <ActionButtons
-          onMove={this.props.onMove}
-          onRemove={this.props.onRemove}
-          moveUpEnabled={!this.props.isFirst}
-          moveDownEnabled={!this.props.isLast}
-          />
+        {this.createActionButtons() /* from ActionButtonsMixin */}
         <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
         <div className="form-horizontal form-group">
           {elemProps}
