@@ -54,9 +54,9 @@ var CMDAttributeForm = React.createClass({
         <span>Attribute: <a className="attributeLink" onClick={this.toggleElement}>{attr.Name}</a></span>
         <div className="form-horizontal form-group">
           <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(attr['@ConceptLink']) ? attr['@ConceptLink'] : ""}  onChange={this.updateAttributeValue}
+          <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
             labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
-            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+            buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
           <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.props.onAttributeChange)} />
         </div>
       </div>
