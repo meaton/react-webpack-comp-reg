@@ -62,12 +62,6 @@ var CMDComponentForm = React.createClass({
     this.props.onComponentChange(update);
   },
 
-  handleAttributeChange: function(index, change) {
-    var update = {AttributeList: {Attribute: {[index]: change}}};
-    log.trace("Update attribute", update);
-    this.props.onComponentChange(update);
-  },
-
   updateComponentValue: function(e) {
     //a property of this component has changed
     this.propagateValue(e.target.name, e.target.value);
@@ -133,7 +127,7 @@ var CMDComponentForm = React.createClass({
   renderAttribute: function(attr, index) {
     return <CMDAttributeForm
               key={attr._appId} spec={attr}
-              onAttributeChange={this.handleAttributeChange.bind(this, index)}
+              onAttributeChange={this.handleAttributeChange.bind(this, this.props.onComponentChange, index)}
        />;
   },
 

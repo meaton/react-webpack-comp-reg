@@ -80,8 +80,12 @@ var CMDElementForm = React.createClass({
               // var attrId = (attr.attrId != undefined) ? attr.attrId : "attr_elem_" + md5.hash("attr_elem_" + index + "_" + Math.floor(Math.random()*1000));
               // attr.attrId = attrId;
               // log.debug("Attr", attr);
-              return <CMDAttributeForm key={attr._appId} spec={attr} />
-            }) : <span>No Attributes</span>
+              return <CMDAttributeForm
+                        key={attr._appId}
+                        spec={attr}
+                        onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
+                        />
+                    }.bind(this)) : <span>No Attributes</span>
           }
         </div>);
     } else {

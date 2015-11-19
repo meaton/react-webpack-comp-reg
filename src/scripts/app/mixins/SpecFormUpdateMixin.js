@@ -98,6 +98,12 @@ var SpecFormUpdateMixin = {
       ['@ValueScheme']: type,
       ValueScheme: valScheme
     }});
+  },
+
+  handleAttributeChange: function(onChange, index, change) {
+    var update = {AttributeList: {Attribute: {[index]: change}}};
+    log.trace("Update attribute", update);
+    onChange(update);
   }
 }
 
