@@ -191,22 +191,20 @@ normaliseSpec: function(data) {
     } else {
       var childElems = data.CMD_Element;
       var childComps = data.CMD_Component;
-      var attrList = data.AttributeList;
 
       if(childElems != undefined && childElems != null) {
         //if CMD_Element child exist, make sure it is an array
         if(!$.isArray(childElems)) {
-          data.CMD_Element = [childElems];
+          childElems = [childElems];
         }
+        //normalise attribute lists of all elements
+        for(i=0; i<childElems.length; i++) {
+          this.normaliseAttributeList(childElems[i].AttributeList);
+        }
+        data.CMD_Element = childElems;
       }
 
-      if(attrList != null) {
-        //if AttributeList.Attribute exist, make sure it is an array
-        var attr = attrList.Attribute;
-        if(attr != undefined && !$.isArray(attr)) {
-          attrList.Attribute = [attr];
-        }
-      }
+      this.normaliseAttributeList(data.AttributeList);
 
       if(childComps != undefined && childComps != null) {
         if(!$.isArray(childComps)) {
@@ -223,6 +221,16 @@ normaliseSpec: function(data) {
   }
 
   return data;
+},
+
+normaliseAttributeList(attrList) {
+  if(attrList != null) {
+    //if AttributeList.Attribute exist, make sure it is an array
+    var attr = attrList.Attribute;
+    if(attr != undefined && !$.isArray(attr)) {
+      attrList.Attribute = [attr];
+    }
+  }
 },
 
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
