@@ -8,6 +8,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../mixins/CMDComponentMixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
+var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -16,6 +17,7 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDComponentView = require('./CMDComponentView');
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
+var ActionButtons = require('./ActionButtons');
 
 //utils
 var classNames = require('classnames');
@@ -36,10 +38,13 @@ var CMDComponentForm = React.createClass({
   mixins: [ImmutableRenderMixin,
             CMDComponentMixin,
             ConceptLinkDialogueMixin,
-            SpecFormUpdateMixin],
+            SpecFormUpdateMixin,
+            ActionButtonsMixin],
 
   propTypes: {
-    onComponentChange: React.PropTypes.func.isRequired
+    onComponentChange: React.PropTypes.func.isRequired,
+    onMove: React.PropTypes.func.isRequired,
+    onRemove: React.PropTypes.func.isRequired,
     /* more props defined in CMDComponentMixin */
   },
 
@@ -120,6 +125,8 @@ var CMDComponentForm = React.createClass({
         onToggle={this.props.onToggle}
         isLinked={isLinked}
         onComponentChange={this.handleComponentChange.bind(this, index)}
+        onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
+        onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
         />);
     }
   },
@@ -167,7 +174,7 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
-        {/* TODO: actionButtons (from ActionButtonsMixin) */}
+        <ActionButtons onMove={this.props.onMove} onRemove={this.props.onRemove} />
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}
