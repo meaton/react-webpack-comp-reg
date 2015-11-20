@@ -44,11 +44,11 @@ var CMDComponentForm = React.createClass({
 
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired
-    /* more props defined in CMDComponentMixin and ActionButtonsMixin */
+    /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
 
   /**
-   * Components should always be closed (TODO...)
+   * Components should always be open (TODO...)
    * @return {boolean}
    */
   getDefaultOpenState: function() {
@@ -127,15 +127,14 @@ var CMDComponentForm = React.createClass({
         key={spec._appId}
         spec={spec}
         parent={this.props.spec}
-        expansionState={this.props.expansionState}
         linkedComponents={this.props.linkedComponents}
-        onToggle={this.props.onToggle}
         isLinked={isLinked}
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
         onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
         isFirst={index == 0}
         isLast={index == this.props.spec.CMD_Component.length - 1}
+        {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
         />);
     }
   },
@@ -164,6 +163,7 @@ var CMDComponentForm = React.createClass({
               onRemove={this.handleRemoveElement.bind(this, this.props.onComponentChange, index)}
               isFirst={index == 0}
               isLast={index == this.props.spec.CMD_Element.length - 1}
+              {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
               />;
   },
 
@@ -184,7 +184,7 @@ var CMDComponentForm = React.createClass({
     var cardOpt = null;
     var open = this.isOpen();
 
-    log.debug("Component", this.props.spec._appId, " open state:", open);
+    log.trace("Component", this.props.spec._appId, " open state:", open);
 
     if(!open) {
       cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );

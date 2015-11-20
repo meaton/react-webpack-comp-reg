@@ -13,8 +13,8 @@ var ToggleExpansionMixin = {
   propTypes: {
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
-    expansionState: React.PropTypes.object,
-    onToggle: React.PropTypes.func
+    expansionState: React.PropTypes.object.isRequired,
+    onToggle: React.PropTypes.func.isRequired
   },
 
   getDefaultProps: function() {
@@ -31,6 +31,13 @@ var ToggleExpansionMixin = {
   isOpen: function() {
     var defaultState = this.getDefaultOpenState();
     return ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId, defaultState);
+  },
+
+  getExpansionProps: function() {
+    return {
+      onToggle: this.props.onToggle,
+      expansionState: this.props.expansionState
+    }
   }
 }
 

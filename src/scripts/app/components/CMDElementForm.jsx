@@ -40,6 +40,15 @@ var CMDElementForm = React.createClass({
     spec: React.PropTypes.object.isRequired,
     key: React.PropTypes.string,
     onElementChange: React.PropTypes.func.isRequired
+    /* more props defined in ToggleExpansionMixin and ActionButtonsMixin */
+  },
+
+  /**
+   * Elements should always be open (TODO...)
+   * @return {boolean}
+   */
+  getDefaultOpenState: function() {
+    return true;
   },
 
   /* Functions that handle changes (in this component and its children) */
@@ -62,13 +71,6 @@ var CMDElementForm = React.createClass({
       ['@ValueScheme']: type,
       ValueScheme: valScheme
     }});
-  },
-
-  toggleElement: function(evt) {
-    //TODO flux: action
-    // console.log('toggle elem: ' + JSON.stringify(this.state.elem));
-    // var isOpen = (this.state.elem.hasOwnProperty('open')) ? !this.state.elem.open : true;
-    // this.setState({ elem: update(this.state.elem, { open: { $set: isOpen }}) });
   },
 
   renderAttributes: function(elem) {
@@ -127,21 +129,29 @@ var CMDElementForm = React.createClass({
       return <option key={index} value={index}>{index}</option>
     });
 
+    var open = this.isOpen();
+
+    log.debug("Element", this.props.spec._appId, " open state:", open);
+
+    var editableProps = open ? (
+      <div className="form-horizontal form-group">
+        {elemProps}
+        <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
+          {integerOpts /*TODO: max @CardinalityMax*/}
+        </Input>
+        <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={maxOccDisabled} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
+          {integerOpts /*TODO: min @CardinalityMin*/}
+          <option value="unbounded">unbounded</option>
+        </Input>
+      </div>
+    ): null;
+
     //putting it all together...
     return (
       <div className={elementClasses}>
         {this.createActionButtons() /* from ActionButtonsMixin */}
-        <span>Element: <a className="elementLink" onClick={this.toggleElement}>{elemName}</a></span> {cardOpt}
-        <div className="form-horizontal form-group">
-          {elemProps}
-          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
-            {integerOpts /*TODO: max @CardinalityMax*/}
-          </Input>
-          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={maxOccDisabled} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
-            {integerOpts /*TODO: min @CardinalityMin*/}
-            <option value="unbounded">unbounded</option>
-          </Input>
-        </div>
+        <span>Element: <a className="elementLink" onClick={this.toggleExpansionState}>{elemName}</a></span> {cardOpt}
+        {editableProps}
         {this.renderAttributes(elem)}
         <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
       </div>
