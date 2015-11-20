@@ -3,12 +3,11 @@
 var log = require('loglevel');
 
 //helpers
-var ExpansionState = require('../service/ExpansionState');
 var classNames = require('classnames');
 
 /**
 * CMDComponentMixin - Common functions and properties for the CMDComponent view
-* and form components, mostly related to expansion state
+* and form components
 * @mixin
 */
 var CMDComponentMixin = {
@@ -17,29 +16,14 @@ var CMDComponentMixin = {
     spec: React.PropTypes.object.isRequired,
     /* determines whether 'envelope' with properties should be hidden */
     hideProperties: React.PropTypes.bool,
-    openAll: React.PropTypes.bool,
-    closeAll: React.PropTypes.bool,
     isLinked:  React.PropTypes.bool,
-    expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
-    onToggle: React.PropTypes.func
   },
 
   getDefaultProps: function() {
     return {
-      hideProperties: false,
-      openAll: false,
-      closeAll: false
+      hideProperties: false
     };
-  },
-
-  toggleComponent: function() {
-    this.props.onToggle(this.props.spec._appId, this.props.spec, this.getDefaultOpenState());
-  },
-
-  isOpen: function() {
-    var defaultState = this.getDefaultOpenState();
-    return ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId, defaultState);
   },
 
   renderAttributes: function(comp) {

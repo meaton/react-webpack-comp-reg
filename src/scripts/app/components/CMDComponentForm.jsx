@@ -6,6 +6,7 @@ var React = require('react/addons');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../mixins/CMDComponentMixin');
+var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
@@ -36,6 +37,7 @@ require('../../../styles/CMDComponent.sass');
 var CMDComponentForm = React.createClass({
   mixins: [ImmutableRenderMixin,
             CMDComponentMixin,
+            ToggleExpansionMixin,
             ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],

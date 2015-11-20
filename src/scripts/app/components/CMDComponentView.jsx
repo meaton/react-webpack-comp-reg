@@ -6,6 +6,8 @@ var React = require('react/addons');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../mixins/CMDComponentMixin');
+var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
+
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -27,7 +29,7 @@ require('../../../styles/CMDComponent.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDComponentView = React.createClass({
-  mixins: [ImmutableRenderMixin, CMDComponentMixin],
+  mixins: [ImmutableRenderMixin, CMDComponentMixin, ToggleExpansionMixin],
 
   /**
    * Components should be closed by default iff they are linked
