@@ -1,4 +1,5 @@
 'use strict';
+var log = require('loglevel');
 
 var React = require('react/addons');
 
@@ -51,12 +52,33 @@ var CMDAttributeForm = React.createClass({
     return true;
   },
 
+  /* Functions that handle changes in this component */
+
+
+  propagateValue: function(field, value) {
+    this.props.onAttributeChange({$merge: {[field]: value}});
+  },
+
+  updateAttributeValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  handleUpdateValueScheme: function(type, valScheme) {
+    this.props.onAttributeChange({$merge: {
+       Type: type,
+       ValueScheme: valScheme
+     }});
+  },
+
   render: function () {
     var attr = this.props.spec;
     var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
     var attrName = (attr.Name == "") ? "[New Attribute]" : attr.Name;
 
-    var editableProps = this.isOpen()?(
+    var open = this.isOpen();
+    log.trace("Attribute", this.props.spec._appId, " open state:", open);
+
+    var editableProps = open?(
       <div className="form-horizontal form-group">
         <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
         <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
@@ -78,21 +100,6 @@ var CMDAttributeForm = React.createClass({
         {attr.Name} {attr_val}
       </div>
     );
-  },
-
-  handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onAttributeChange({$merge: {
-       Type: type,
-       ValueScheme: valScheme
-     }});
-  },
-
-  propagateValue: function(field, value) {
-    this.props.onAttributeChange({$merge: {[field]: value}});
-  },
-
-  updateAttributeValue: function(e) {
-    this.propagateValue(e.target.name, e.target.value);
   }
 });
 

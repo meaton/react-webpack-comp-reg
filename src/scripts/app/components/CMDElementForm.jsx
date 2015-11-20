@@ -103,6 +103,8 @@ var CMDElementForm = React.createClass({
     var self = this;
     var open = this.isOpen();
 
+    log.trace("Element", this.props.spec._appId, " open state:", open);
+
     var elem = this.props.spec;
     var elemInspect = elem.elemId; // require('util').inspect(elem);
 
@@ -133,9 +135,6 @@ var CMDElementForm = React.createClass({
     var integerOpts = $.map($(Array(10)), function(item, index) {
       return <option key={index} value={index}>{index}</option>
     });
-
-
-    log.debug("Element", this.props.spec._appId, " open state:", open);
 
     var editableProps = open ? (
       <div className="form-horizontal form-group">

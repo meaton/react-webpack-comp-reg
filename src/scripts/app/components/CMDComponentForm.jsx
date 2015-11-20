@@ -183,15 +183,15 @@ var CMDComponentForm = React.createClass({
   },
 
   renderComponentProperties: function(comp) {
+    var open = this.isOpen();
+    log.trace("Component", this.props.spec._appId, " open state:", open);
+
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
 
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
     var cardOpt = null;
-    var open = this.isOpen();
-
-    log.trace("Component", this.props.spec._appId, " open state:", open);
 
     if(!open) {
       cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
