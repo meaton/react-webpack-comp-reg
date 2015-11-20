@@ -145,16 +145,16 @@ var CMDComponentMixin = {
       comp = comp[0];
 
     // classNames
-    var viewClasses = classNames('componentBody', { 'hide': !open });
+    var viewClasses = classNames('componentBody');
     var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': this.props.isSelected, 'linked': this.props.isLinked });
 
-    var children = (
+    var children = (open || this.props.renderChildrenWhenCollapsed)?(
       <div className={viewClasses}>
         <div>{this.renderAttributes(comp)}</div>
         <div className="childElements">{this.renderElements(comp)}</div>
         <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>
       </div>
-    );
+    ):null;
 
     if(this.props.hideProperties) {
       //skip 'envelope', only show child components, elements, attributes

@@ -85,6 +85,10 @@ var CMDElementForm = React.createClass({
                         key={attr._appId}
                         spec={attr}
                         onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
+                        onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
+                        onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
+                        isFirst={index == 0}
+                        isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
                         />
                     }.bind(this)) : <span>No Attributes</span>
           }

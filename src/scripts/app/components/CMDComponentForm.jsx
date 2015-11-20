@@ -47,6 +47,12 @@ var CMDComponentForm = React.createClass({
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
 
+  getDefaultProps: function() {
+    return {
+      renderChildrenWhenCollapsed: true
+    };
+  },
+
   /**
    * Components should always be open (TODO...)
    * @return {boolean}
