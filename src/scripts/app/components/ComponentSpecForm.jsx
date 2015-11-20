@@ -83,7 +83,7 @@ var ComponentSpecForm = React.createClass({
       var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
 
       return (
-        <form ref="editComponentForm" name="editComponent" className="form-horizontal form-group">
+        <form ref="editComponentForm" name="editComponent" id="editComponent" className="form-horizontal form-group">
           <div className="form-group">
             <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
             <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />

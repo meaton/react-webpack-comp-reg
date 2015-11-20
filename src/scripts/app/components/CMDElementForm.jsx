@@ -100,14 +100,14 @@ var CMDElementForm = React.createClass({
 
   render: function () {
     var self = this;
-    var actionButtons = null;//TODO: this.getActionButtons();
+    var open = this.isOpen();
 
     var elem = this.props.spec;
     var elemInspect = elem.elemId; // require('util').inspect(elem);
 
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
-    var cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
+    var cardOpt = !open ? ( <span>Cardinality: {minC + " - " + maxC}</span> ) : null;
 
     // classNames
     var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
@@ -133,7 +133,6 @@ var CMDElementForm = React.createClass({
       return <option key={index} value={index}>{index}</option>
     });
 
-    var open = this.isOpen();
 
     log.debug("Element", this.props.spec._appId, " open state:", open);
 
@@ -160,38 +159,7 @@ var CMDElementForm = React.createClass({
         <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
       </div>
     );
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //below: old functions
-  updateAttribute: function(index, newAttr) {
-    console.log('attr update: ' + index);
-    var elem = this.state.elem;
-    var attrSet = ($.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-
-    if($.isArray(elem.AttributeList.Attribute))
-      attrSet[index] = newAttr;
-    else
-      attrSet = [newAttr];
-
-    if(elem != null)
-      this.setState({ elem: update(elem, { AttributeList: { $set: { Attribute: attrSet } } }) });
-  },
+  }
 });
 
 module.exports = CMDElementForm;

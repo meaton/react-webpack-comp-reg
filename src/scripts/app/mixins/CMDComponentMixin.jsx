@@ -40,12 +40,13 @@ var CMDComponentMixin = {
 
     var self = this;
     return (
-      <div className="attrList">AttributeList:
-        {
-          (attrSet != undefined && attrSet.length > 0)
-          ? $.map(attrSet, this.renderAttribute)
-          : <span>No Attributes</span>
-        }
+      <div>
+        {(attrSet != undefined && attrSet.length > 0)? (
+          <div className="attrList">
+            Attributes:
+            {$.map(attrSet, this.renderAttribute)}
+          </div>
+        ):null}
         {afterAttributes}
       </div>
     );
