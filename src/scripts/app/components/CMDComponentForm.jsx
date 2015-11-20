@@ -172,13 +172,40 @@ var CMDComponentForm = React.createClass({
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
     var cardOpt = null;
+    var open = this.isOpen();
 
-    if(!this.isOpen()) {
+    log.debug("Component", this.props.spec._appId, " open state:", open);
+
+    if(!open) {
       cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
     }
 
     var editClasses = null; //TODO determine classes?
-    var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': this.isOpen(), 'selected': false /*TODO selection state*/ });
+    var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': open, 'selected': false /*TODO selection state*/ });
+
+    var editableProps = open?(
+      <div className={editClasses}>
+        <div>
+          <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+            labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
+            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)}
+            />
+        </div>
+        <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
+          <option value="unbounded">unbounded</option>
+          {$.map($(Array(10)), function(item, index) {
+            return <option key={index} value={index}>{index}</option>
+          })}
+        </Input>
+        <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
+          <option value="unbounded">unbounded</option>
+          {$.map($(Array(10)), function(item, index) {
+            return <option key={index} value={index}>{index}</option>
+          })}
+        </Input>
+      </div>
+    ) : null;
 
     return (
       <div>
@@ -187,27 +214,7 @@ var CMDComponentForm = React.createClass({
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}
         <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
-        <div className={editClasses}>
-          <div>
-            <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-            <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-              labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
-              buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)}
-              />
-          </div>
-          <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
-            <option value="unbounded">unbounded</option>
-            {$.map($(Array(10)), function(item, index) {
-              return <option key={index} value={index}>{index}</option>
-            })}
-          </Input>
-          <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
-            <option value="unbounded">unbounded</option>
-            {$.map($(Array(10)), function(item, index) {
-              return <option key={index} value={index}>{index}</option>
-            })}
-          </Input>
-        </div>
+        {editableProps}
       </div>
     );
   },
