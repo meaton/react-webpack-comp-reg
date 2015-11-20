@@ -62,7 +62,8 @@ var CMDComponentForm = React.createClass({
     return true;
   },
 
-  /* Functions that handle changes (in this component and its children) */
+  /*=== Functions that handle changes (in this component and its children) ===*/
+
   propagateValue: function(field, value) {
     //send 'command' to merge existing spec section with this delta
     //(see https://facebook.github.io/react/docs/update.html)
@@ -86,7 +87,8 @@ var CMDComponentForm = React.createClass({
     this.propagateValue(e.target.name, e.target.value);
   },
 
-  /* Functions that add new children */
+  /*=== Functions that add new children ===*/
+
   addNewComponent: function(evt) {
     var spec = this.props.spec;
     var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Component);
@@ -111,7 +113,40 @@ var CMDComponentForm = React.createClass({
     }
   },
 
+  /*=== Render functions ===*/
+
   /* main render() function in CMDComponentMixin */
+
+  renderComponentProperties: function(comp) {
+    var open = this.isOpen();
+    log.trace("Component", this.props.spec._appId, " open state:", open);
+
+    var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
+    var cardOpt = !open? ( <span>Cardinality: {(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}</span> ) : null;
+    var editClasses = null; //TODO determine classes?
+    var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': open, 'selected': false /*TODO selection state*/ });
+
+    var editableProps = open?(
+      <div className={editClasses}>
+        <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
+          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+        <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
+      </div>
+    ) : null;
+
+    return (
+      <div>
+        {this.createActionButtons() /* from ActionButtonsMixin */}
+        {/* TODO: selectionLink
+          <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
+        */}
+        <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></span> {cardOpt}
+        {editableProps}
+      </div>
+    );
+  },
 
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked) {
@@ -146,22 +181,6 @@ var CMDComponentForm = React.createClass({
     }
   },
 
-  renderAttribute: function(attr, index) {
-    return <CMDAttributeForm
-              key={attr._appId} spec={attr}
-              onAttributeChange={this.handleAttributeChange.bind(this, this.props.onComponentChange, index)}
-              onMove={this.handleMoveAttribute.bind(this, this.props.onComponentChange, index)}
-              onRemove={this.handleRemoveAttribute.bind(this, this.props.onComponentChange, index)}
-              isFirst={index == 0}
-              isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
-              {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
-       />;
-  },
-
-  renderAfterAttributes: function() {
-    return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
-  },
-
   renderElement: function(elem, index) {
     return <CMDElementForm
               key={elem._appId}
@@ -175,44 +194,33 @@ var CMDComponentForm = React.createClass({
               />;
   },
 
-  renderAfterElements: function() {
-    return <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
+  renderAttribute: function(attr, index) {
+    return <CMDAttributeForm
+              key={attr._appId} spec={attr}
+              onAttributeChange={this.handleAttributeChange.bind(this, this.props.onComponentChange, index)}
+              onMove={this.handleMoveAttribute.bind(this, this.props.onComponentChange, index)}
+              onRemove={this.handleRemoveAttribute.bind(this, this.props.onComponentChange, index)}
+              isFirst={index == 0}
+              isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+              {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+       />;
   },
 
   renderAfterComponents: function() {
     return <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>;
   },
 
-  renderComponentProperties: function(comp) {
-    var open = this.isOpen();
-    log.trace("Component", this.props.spec._appId, " open state:", open);
-    
-    var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-    var cardOpt = !open? ( <span>Cardinality: {(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}</span> ) : null;
-    var editClasses = null; //TODO determine classes?
-    var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': open, 'selected': false /*TODO selection state*/ });
-
-    var editableProps = open?(
-      <div className={editClasses}>
-        <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
-          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
-        <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
-      </div>
-    ) : null;
-
-    return (
-      <div>
-        {this.createActionButtons() /* from ActionButtonsMixin */}
-        {/* TODO: selectionLink
-          <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
-        */}
-        <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></span> {cardOpt}
-        {editableProps}
-      </div>
-    );
+  renderAfterElements: function() {
+    return <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
   },
+
+  renderAfterAttributes: function() {
+    return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
+  },
+
+
+
+
 
   //below: old functions
   toggleSelection: function(evt) {

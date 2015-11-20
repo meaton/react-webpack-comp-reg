@@ -52,8 +52,7 @@ var CMDAttributeForm = React.createClass({
     return true;
   },
 
-  /* Functions that handle changes in this component */
-
+  /*=== Functions that handle changes in this component ====*/
 
   propagateValue: function(field, value) {
     this.props.onAttributeChange({$merge: {[field]: value}});
@@ -69,6 +68,8 @@ var CMDAttributeForm = React.createClass({
        ValueScheme: valScheme
      }});
   },
+
+  /*=== Render functions ===*/
 
   render: function () {
     var attr = this.props.spec;

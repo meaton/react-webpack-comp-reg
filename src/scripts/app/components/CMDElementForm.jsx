@@ -52,7 +52,7 @@ var CMDElementForm = React.createClass({
     return true;
   },
 
-  /* Functions that handle changes (in this component and its children) */
+  /*=== Functions that handle changes (in this component and its children) ===*/
 
   propagateValue: function(field, value) {
     this.props.onElementChange({$merge: {[field]: value}});
@@ -74,27 +74,7 @@ var CMDElementForm = React.createClass({
     }});
   },
 
-  renderAttributes: function(elem) {
-    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-    return (attrSet == undefined)?null:(
-      <div className="attrList">Attributes:
-        {
-          (attrSet != undefined && attrSet.length > 0) ?
-          $.map(attrSet, function(attr, index) {
-            return <CMDAttributeForm
-                      key={attr._appId}
-                      spec={attr}
-                      onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
-                      onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
-                      onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
-                      isFirst={index == 0}
-                      isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
-                      {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
-                      />
-                  }.bind(this)) : <span>No Attributes</span>
-        }
-      </div>);
-  },
+  /*=== Render functions ===*/
 
   render: function () {
     var self = this;
@@ -140,6 +120,28 @@ var CMDElementForm = React.createClass({
         <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
       </div>
     );
+  },
+
+  renderAttributes: function(elem) {
+    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+    return (attrSet == undefined)?null:(
+      <div className="attrList">Attributes:
+        {
+          (attrSet != undefined && attrSet.length > 0) ?
+          $.map(attrSet, function(attr, index) {
+            return <CMDAttributeForm
+                      key={attr._appId}
+                      spec={attr}
+                      onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
+                      onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
+                      onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
+                      isFirst={index == 0}
+                      isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+                      {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+                      />
+                  }.bind(this)) : <span>No Attributes</span>
+        }
+      </div>);
   }
 });
 
