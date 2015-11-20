@@ -73,7 +73,13 @@ var ActionButtonsMixin = {
 
   handleRemoveAttribute: function(changeHandler, index) {
     log.debug("Remove attribute",index, "from", this.props.spec);
-    changeHandler({AttributeList: {Attribute: remove(index)}});
+    var attrs = this.props.spec.AttributeList.Attribute;
+    if(index == 0 && $.isArray(attrs) && attrs.length == 1) {
+      // removal of last attribute: remove AttributeList
+      changeHandler({AttributeList: {$set: null}});
+    } else {
+      changeHandler({AttributeList: {Attribute: remove(index)}});
+    }
   },
 
   createActionButtons: function() {
