@@ -7,6 +7,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -28,40 +29,48 @@ require('../../../styles/CMDAttribute.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDAttributeForm = React.createClass({
+
   mixins: [ImmutableRenderMixin,
+            ToggleExpansionMixin,
             ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
+
   propTypes: {
     spec: React.PropTypes.object.isRequired,
-    open: React.PropTypes.bool,
-    openAll: React.PropTypes.bool,
-    closeAll: React.PropTypes.bool,
     key: React.PropTypes.string,
     onAttributeChange: React.PropTypes.func.isRequired
+    /* more props defined in ToggleExpansionMixin and ActionButtonsMixin */
   },
-  getDefaultProps: function() {
-    return {
-      open: true,
-      openAll: false,
-      closeAll: false
-    };
-  },
-  render: function () {
-    var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
 
+  /**
+   * Attributes should always be open by default
+   * @return {boolean}
+   */
+  getDefaultOpenState: function() {
+    return true;
+  },
+
+  render: function () {
     var attr = this.props.spec;
+    var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
+    var attrName = (attr.Name == "") ? "[New Attribute]" : attr.Name;
+
+    var editableProps = this.isOpen()?(
+      <div className="form-horizontal form-group">
+        <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
+          buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
+        <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
+      </div>
+    ) : null;
+
     return (
       <div className={attrClasses}>
         {this.createActionButtons() /* from ActionButtonsMixin */}
-        <span>Attribute: <a className="attributeLink" onClick={this.toggleElement}>{attr.Name}</a></span>
-        <div className="form-horizontal form-group">
-          <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
-          <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
-            labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
-            buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
-          <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
-        </div>
+        <span>Attribute: <a className="attributeLink" onClick={this.toggleExpansionState}>{attrName}</a></span>
+        {editableProps}
       </div>
     );
     return (

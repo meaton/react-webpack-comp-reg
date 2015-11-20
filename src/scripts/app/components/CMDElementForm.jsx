@@ -44,7 +44,7 @@ var CMDElementForm = React.createClass({
   },
 
   /**
-   * Elements should always be open (TODO...)
+   * Elements should always be open by default
    * @return {boolean}
    */
   getDefaultOpenState: function() {
@@ -77,7 +77,7 @@ var CMDElementForm = React.createClass({
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
     if(attrSet != undefined) {
       return (
-        <div className="attrList">AttributeList:
+        <div className="attrList">Attributes:
           {
             (attrSet != undefined && attrSet.length > 0) ?
             $.map(attrSet, function(attr, index) {
@@ -89,6 +89,7 @@ var CMDElementForm = React.createClass({
                         onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
                         isFirst={index == 0}
                         isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+                        {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
                         />
                     }.bind(this)) : <span>No Attributes</span>
           }

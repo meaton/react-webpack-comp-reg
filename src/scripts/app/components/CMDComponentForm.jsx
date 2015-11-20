@@ -54,7 +54,7 @@ var CMDComponentForm = React.createClass({
   },
 
   /**
-   * Components should always be open (TODO...)
+   * Components should always be open by default
    * @return {boolean}
    */
   getDefaultOpenState: function() {
@@ -153,6 +153,7 @@ var CMDComponentForm = React.createClass({
               onRemove={this.handleRemoveAttribute.bind(this, this.props.onComponentChange, index)}
               isFirst={index == 0}
               isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+              {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
        />;
   },
 
