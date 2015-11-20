@@ -223,7 +223,7 @@ var CMDComponentForm = React.createClass({
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}
-        <span>Component: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
+        <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></span> {cardOpt}
         {editableProps}
       </div>
     );

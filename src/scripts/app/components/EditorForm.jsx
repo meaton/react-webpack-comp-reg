@@ -104,7 +104,7 @@ var EditorForm = React.createClass({
             item={this.state.editor.item}
             expansionState={this.state.details.expansionState}
             linkedComponents={this.state.details.linkedComponents}
-            onComponentToggle={this.toggleComponent}
+            onComponentToggle={this.toggleItem}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
@@ -115,9 +115,9 @@ var EditorForm = React.createClass({
     }
   },
 
-  toggleComponent: function(itemId, spec, defaultState) {
+  toggleItem: function(itemId, spec, defaultState) {
     // from ComponentViewMixin
-    this.doToggleComponent(this.state.editor.space, itemId, spec, defaultState);
+    this.doToggle(this.state.editor.space, itemId, spec, defaultState);
   },
 
   handleSave: function() {

@@ -8,6 +8,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -30,25 +31,15 @@ require('../../../styles/CMDElement.sass');
 */
 var CMDElementForm = React.createClass({
   mixins: [ImmutableRenderMixin,
+            ToggleExpansionMixin,
             ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
-    open: React.PropTypes.bool,
-    openAll: React.PropTypes.bool,
-    closeAll: React.PropTypes.bool,
     key: React.PropTypes.string,
-    expansionState: React.PropTypes.object,
     onElementChange: React.PropTypes.func.isRequired
-  },
-  getDefaultProps: function() {
-    return {
-      open: true,
-      openAll: false,
-      closeAll: false
-    };
   },
 
   /* Functions that handle changes (in this component and its children) */

@@ -46,7 +46,7 @@ var ComponentDetailsOverview = React.createClass({
 
   toggleComponent: function(itemId, spec) {
     // from ComponentViewMixin
-    this.doToggleComponent(this.props.space, itemId, spec);
+    this.doToggle(this.props.space, itemId, spec);
   },
 
   render: function() {

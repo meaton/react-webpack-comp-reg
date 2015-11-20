@@ -84,7 +84,7 @@ var CMDComponentView = React.createClass({
     var title;
     if(this.props.isLinked) {
       title = (
-        <div><span>Component: </span><a className="componentLink" onClick={this.toggleComponent}>{compName}</a></div>
+        <div><span>Component: </span><a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></div>
       )
     } else {
       title = (

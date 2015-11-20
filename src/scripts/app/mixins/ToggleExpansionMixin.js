@@ -24,7 +24,7 @@ var ToggleExpansionMixin = {
     };
   },
 
-  toggleComponent: function() {
+  toggleExpansionState: function() {
     this.props.onToggle(this.props.spec._appId, this.props.spec, this.getDefaultOpenState());
   },
 

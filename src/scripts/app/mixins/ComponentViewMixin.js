@@ -16,7 +16,7 @@ var ComponentViewMixin = {
    * @param  {object} spec         [description]
    * @param  {boolean} defaultState state to assume if state is not stored explicitly
    */
-  doToggleComponent: function(space, itemId, spec, defaultState) {
+  doToggle: function(space, itemId, spec, defaultState) {
     var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId, defaultState);
 
     // expand view
