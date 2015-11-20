@@ -16,6 +16,7 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDAttributeForm = require('./CMDAttributeForm');
 var ValueScheme = require('./ValueScheme');
+var CardinalityInput = require('./CardinalityInput');
 
 //utils
 var classNames = require('classnames');
@@ -75,28 +76,24 @@ var CMDElementForm = React.createClass({
 
   renderAttributes: function(elem) {
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-    if(attrSet != undefined) {
-      return (
-        <div className="attrList">Attributes:
-          {
-            (attrSet != undefined && attrSet.length > 0) ?
-            $.map(attrSet, function(attr, index) {
-              return <CMDAttributeForm
-                        key={attr._appId}
-                        spec={attr}
-                        onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
-                        onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
-                        onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
-                        isFirst={index == 0}
-                        isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
-                        {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
-                        />
-                    }.bind(this)) : <span>No Attributes</span>
-          }
-        </div>);
-    } else {
-      return null;
-    }
+    return (attrSet == undefined)?null:(
+      <div className="attrList">Attributes:
+        {
+          (attrSet != undefined && attrSet.length > 0) ?
+          $.map(attrSet, function(attr, index) {
+            return <CMDAttributeForm
+                      key={attr._appId}
+                      spec={attr}
+                      onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
+                      onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
+                      onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
+                      isFirst={index == 0}
+                      isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+                      {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+                      />
+                  }.bind(this)) : <span>No Attributes</span>
+        }
+      </div>);
   },
 
   render: function () {
@@ -116,9 +113,11 @@ var CMDElementForm = React.createClass({
     var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
     var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
 
+    var multilingual = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
+
     // elem props
-    var elemProps = (
-      <div className="elementProps">
+    var editableProps = open ? (
+      <div className="form-horizontal form-group">
         <Input type="text" name="@name" label="Name" value={elem['@name']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}  onChange={this.updateElementValue}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
@@ -127,25 +126,7 @@ var CMDElementForm = React.createClass({
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
         <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
-      </div>
-    );
-
-    //for cardinality
-    var maxOccDisabled = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
-    var integerOpts = $.map($(Array(10)), function(item, index) {
-      return <option key={index} value={index}>{index}</option>
-    });
-
-    var editableProps = open ? (
-      <div className="form-horizontal form-group">
-        {elemProps}
-        <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
-          {integerOpts /*TODO: max @CardinalityMax*/}
-        </Input>
-        <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={maxOccDisabled} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateElementValue}>
-          {integerOpts /*TODO: min @CardinalityMin*/}
-          <option value="unbounded">unbounded</option>
-        </Input>
+        <CardinalityInput min={elem['@CardinalityMin']} max={elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
       </div>
     ): null;
 

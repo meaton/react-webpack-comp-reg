@@ -18,6 +18,7 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDComponentView = require('./CMDComponentView');
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
+var CardinalityInput = require('./CardinalityInput');
 
 //utils
 var classNames = require('classnames');
@@ -185,42 +186,19 @@ var CMDComponentForm = React.createClass({
   renderComponentProperties: function(comp) {
     var open = this.isOpen();
     log.trace("Component", this.props.spec._appId, " open state:", open);
-
+    
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-
-    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
-    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
-
-    var cardOpt = null;
-
-    if(!open) {
-      cardOpt = ( <span>Cardinality: {minC + " - " + maxC}</span> );
-    }
-
+    var cardOpt = !open? ( <span>Cardinality: {(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}</span> ) : null;
     var editClasses = null; //TODO determine classes?
     var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': open, 'selected': false /*TODO selection state*/ });
 
     var editableProps = open?(
       <div className={editClasses}>
-        <div>
-          <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-            labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
-            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)}
-            />
-        </div>
-        <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
-          <option value="unbounded">unbounded</option>
-          {$.map($(Array(10)), function(item, index) {
-            return <option key={index} value={index}>{index}</option>
-          })}
-        </Input>
-        <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateComponentValue}>
-          <option value="unbounded">unbounded</option>
-          {$.map($(Array(10)), function(item, index) {
-            return <option key={index} value={index}>{index}</option>
-          })}
-        </Input>
+        <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
+          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+        <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>
     ) : null;
 
