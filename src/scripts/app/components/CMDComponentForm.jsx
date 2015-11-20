@@ -45,6 +45,14 @@ var CMDComponentForm = React.createClass({
     /* more props defined in CMDComponentMixin and ActionButtonsMixin */
   },
 
+  /**
+   * Components should always be closed (TODO...)
+   * @return {boolean}
+   */
+  getDefaultOpenState: function() {
+    return true;
+  },
+
   /* Functions that handle changes (in this component and its children) */
   propagateValue: function(field, value) {
     //send 'command' to merge existing spec section with this delta
@@ -213,7 +221,7 @@ var CMDComponentForm = React.createClass({
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}
-        <span>ComponentId: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
+        <span>Component: <a className="componentLink" onClick={this.toggleComponent}>{compName}</a></span> {cardOpt}
         {editableProps}
       </div>
     );

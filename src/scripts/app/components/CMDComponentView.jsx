@@ -29,6 +29,14 @@ require('../../../styles/CMDComponent.sass');
 var CMDComponentView = React.createClass({
   mixins: [ImmutableRenderMixin, CMDComponentMixin],
 
+  /**
+   * Components should be closed by default iff they are linked
+   * @return {boolean}
+   */
+  getDefaultOpenState: function() {
+    return !this.props.isLinked;
+  },
+
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable) {
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);

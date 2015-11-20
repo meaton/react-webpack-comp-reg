@@ -88,9 +88,11 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleToggleItemExpansion: function(itemId) {
+  handleToggleItemExpansion: function(obj) {
+    var itemId = obj.itemId;
+    var defaultState = obj.defaultState;
     // toggle boolean value in expansion state object (default when undefined is false)
-    var currentState = ExpansionState.isExpanded(this.expansionState, itemId);
+    var currentState = ExpansionState.isExpanded(this.expansionState, itemId, defaultState);
     console.trace("Toggling", itemId, "currently", currentState);
     this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
     console.trace("New expansion state: ", this.expansionState);

@@ -9,11 +9,18 @@ var ExpansionState = require('../service/ExpansionState');
 */
 var ComponentViewMixin = {
 
-  doToggleComponent: function(space, itemId, spec) {
-    var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId);
+  /**
+   * [function description]
+   * @param  {string} space        [description]
+   * @param  {string} itemId       [description]
+   * @param  {object} spec         [description]
+   * @param  {boolean} defaultState state to assume if state is not stored explicitly
+   */
+  doToggleComponent: function(space, itemId, spec, defaultState) {
+    var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId, defaultState);
 
     // expand view
-    this.getFlux().actions.toggleItemExpansion(itemId);
+    this.getFlux().actions.toggleItemExpansion(itemId, defaultState);
 
     if(!wasExpanded) {
       // load child components of expanded item

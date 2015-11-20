@@ -34,11 +34,12 @@ var CMDComponentMixin = {
   },
 
   toggleComponent: function() {
-    this.props.onToggle(this.props.spec._appId, this.props.spec);
+    this.props.onToggle(this.props.spec._appId, this.props.spec, this.getDefaultOpenState());
   },
 
   isOpen: function() {
-    return !this.props.isLinked || ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId);
+    var defaultState = this.getDefaultOpenState();
+    return ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId, defaultState);
   },
 
   renderAttributes: function(comp) {
@@ -146,7 +147,8 @@ var CMDComponentMixin = {
   },
 
   render: function () {
-    log.trace("Rendering", this.props.spec._appId, (this.isOpen()?"open":"closed"));
+    var open = this.isOpen();
+    log.trace("Rendering", this.props.spec._appId, (open?"open":"closed"));
 
     var props = this.props;
     var comp = this.props.spec;
@@ -159,8 +161,8 @@ var CMDComponentMixin = {
       comp = comp[0];
 
     // classNames
-    var viewClasses = classNames('componentBody', { 'hide': !this.isOpen() });
-    var componentClasses = classNames('CMDComponent', { 'open': this.isOpen(), 'selected': this.props.isSelected, 'linked': this.props.isLinked });
+    var viewClasses = classNames('componentBody', { 'hide': !open });
+    var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': this.props.isSelected, 'linked': this.props.isLinked });
 
     var children = (
       <div className={viewClasses}>
