@@ -33,8 +33,8 @@ function move(direction, index, items) {
 var ActionButtonsMixin = {
 
   propTypes: {
-    onMove: React.PropTypes.func.isRequired,
-    onRemove: React.PropTypes.func.isRequired,
+    onMove: React.PropTypes.func,
+    onRemove: React.PropTypes.func,
     isFirst: React.PropTypes.bool,
     isLast: React.PropTypes.bool
   },
