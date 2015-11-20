@@ -30,26 +30,37 @@ var CardinalityInput = React.createClass({
     };
   },
 
+  /**
+   * Creates an array of values between two bounds
+   * @param  {number} min lower bound
+   * @param  {number} max upper bound
+   * @return {Array}     array with all values from min to max (including bouds)
+   */
+  integerOpts: function(min, max) {
+    return $.map($(Array(1+max-min)), function(item, index) {
+      var val = min+index;
+      return <option key={val} value={val}>{val}</option>
+    });
+  },
+
   render: function() {
     var minC = this.props.min == null ? 1 : this.props.min;
     var maxC = this.props.max == null ? 1 : this.props.max;
 
-    //TODO: replace options with discrete value selector (like display priority)
-    var integerOpts = $.map($(Array(10)), function(item, index) {
-      return <option key={index} value={index}>{index}</option>
-    });
+    var minUpperBound = maxC == 'unbounded'?10:parseInt(maxC);
+    var maxLowerBound = parseInt(minC);
 
-    log.debug("Rendering cardinality input",minC,maxC);
+    log.trace("Rendering cardinality input",minC,maxC);
 
     return(
       <div>
         <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.props.onValueChange}>
-          {integerOpts /*TODO: max @CardinalityMax*/}
+          {this.integerOpts(0, minUpperBound)}
         </Input>
         <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={!this.props.maxOccurrencesAllowed}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.props.onValueChange}>
-          {integerOpts /*TODO: min @CardinalityMin*/}
+          {this.integerOpts(maxLowerBound,10)}
           <option value="unbounded">unbounded</option>
         </Input>
       </div>
