@@ -19,6 +19,7 @@ var CMDComponentView = require('./CMDComponentView');
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
+var ActionButtons = require('./ActionButtons');
 
 //utils
 var classNames = require('classnames');
@@ -149,8 +150,18 @@ var CMDComponentForm = React.createClass({
   },
 
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
+    var isFirst = (index == 0);
+    var isLast = (index == this.props.spec.CMD_Component.length - 1);
+    var moveActions = {
+      onMove: this.handleMoveComponent.bind(this, this.props.onComponentChange, index),
+      onRemove: this.handleRemoveComponent.bind(this, this.props.onComponentChange, index),
+    };
+
     if(isLinked) {
       if(linkedSpecAvailable) {
+        var actionButtons =
+        (<ActionButtons {...moveActions} moveUpEnabled={!isFirst} moveDownEnabled={!isLast} />);
+
         return (<CMDComponentView
           key={spec._appId}
           spec={spec}
@@ -159,6 +170,7 @@ var CMDComponentForm = React.createClass({
           linkedComponents={this.props.linkedComponents}
           onToggle={this.props.onToggle}
           isLinked={isLinked}
+          actionButtons={actionButtons}
           />);
       } else {
         return (<div key={compId}>Component {compId} loading...</div>);
@@ -172,10 +184,9 @@ var CMDComponentForm = React.createClass({
         linkedComponents={this.props.linkedComponents}
         isLinked={isLinked}
         onComponentChange={this.handleComponentChange.bind(this, index)}
-        onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
-        onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
-        isFirst={index == 0}
-        isLast={index == this.props.spec.CMD_Component.length - 1}
+        isFirst={isFirst}
+        isLast={isLast}
+        {... moveActions}
         {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
         />);
     }
