@@ -139,7 +139,6 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
-        {this.createActionButtons() /* from ActionButtonsMixin */}
         {/* TODO: selectionLink
           <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
         */}
@@ -150,44 +149,38 @@ var CMDComponentForm = React.createClass({
   },
 
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
-    var isFirst = (index == 0);
-    var isLast = (index == this.props.spec.CMD_Component.length - 1);
-    var moveActions = {
-      onMove: this.handleMoveComponent.bind(this, this.props.onComponentChange, index),
-      onRemove: this.handleRemoveComponent.bind(this, this.props.onComponentChange, index),
+    // component to render depends on whether it is linked (view) or inline (form)
+
+    // common properties (for both view and form)
+    var componentProperties = {
+      key: spec._appId,
+      spec: spec,
+      parent: this.props.spec,
+      linkedComponents: this.props.linkedComponents,
+      isLinked: isLinked,
+      actionButtons: (<ActionButtons
+        onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
+        onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
+        moveUpEnabled={index != 0}
+        moveDownEnabled={index != this.props.spec.CMD_Component.length - 1} />)
     };
 
     if(isLinked) {
       if(linkedSpecAvailable) {
-        var actionButtons =
-        (<ActionButtons {...moveActions} moveUpEnabled={!isFirst} moveDownEnabled={!isLast} />);
-
+        // linked components do not get a form
         return (<CMDComponentView
-          key={spec._appId}
-          spec={spec}
-          parent={this.props.spec}
-          expansionState={this.props.expansionState}
-          linkedComponents={this.props.linkedComponents}
-          onToggle={this.props.onToggle}
-          isLinked={isLinked}
-          actionButtons={actionButtons}
+          {... componentProperties}
+          {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
           />);
       } else {
         return (<div key={compId}>Component {compId} loading...</div>);
       }
     } else {
-      // forward child expansion state
+      // inline child components do get a form
       return (<CMDComponentForm
-        key={spec._appId}
-        spec={spec}
-        parent={this.props.spec}
-        linkedComponents={this.props.linkedComponents}
-        isLinked={isLinked}
-        onComponentChange={this.handleComponentChange.bind(this, index)}
-        isFirst={isFirst}
-        isLast={isLast}
-        {... moveActions}
+        {... componentProperties}
         {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+        onComponentChange={this.handleComponentChange.bind(this, index)}
         />);
     }
   },

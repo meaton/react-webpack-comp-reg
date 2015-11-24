@@ -31,15 +31,8 @@ require('../../../styles/CMDComponent.sass');
 var CMDComponentView = React.createClass({
   mixins: [ImmutableRenderMixin, CMDComponentMixin, ToggleExpansionMixin],
   propTypes: {
-    onComponentChange: React.PropTypes.func.isRequired,
-    actionButtons: React.PropTypes.object
+    onComponentChange: React.PropTypes.func.isRequired
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
-  },
-
-  getDefaultProps: function() {
-    return {
-      actionButtons: null
-    };
   },
 
   /**
@@ -110,7 +103,6 @@ var CMDComponentView = React.createClass({
 
     return (
       <div>
-        {this.props.actionButtons}
         {title}
         <div className="componentProps">{compProps}</div>
       </div>

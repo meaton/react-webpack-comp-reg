@@ -18,11 +18,13 @@ var CMDComponentMixin = {
     hideProperties: React.PropTypes.bool,
     isLinked:  React.PropTypes.bool,
     linkedComponents: React.PropTypes.object,
+    actionButtons: React.PropTypes.object
   },
 
   getDefaultProps: function() {
     return {
-      hideProperties: false
+      hideProperties: false,
+      actionButtons: null
     };
   },
 
@@ -61,6 +63,7 @@ var CMDComponentMixin = {
       // envelope with properties and children
       return (
         <div className={componentClasses}>
+          {this.props.actionButtons}
           {this.renderComponentProperties(comp)}
           {children}
         </div>
