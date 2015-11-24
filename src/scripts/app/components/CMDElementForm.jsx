@@ -105,8 +105,8 @@ var CMDElementForm = React.createClass({
         <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
-        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={(elem.hasOwnProperty('@Multilingual')) ? elem['@Multilingual'] == "true" : false} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
-        <CardinalityInput min={elem['@CardinalityMin']} max={elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
+        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
+        <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
       </div>
     ): null;
 
