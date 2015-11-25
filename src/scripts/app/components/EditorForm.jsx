@@ -126,7 +126,7 @@ var EditorForm = React.createClass({
           </div>
           <div className="browserGroup">
             <SpaceSelector
-              type={Constants.TYPE_COMPONENTS}
+              type="componentsOnly"
               allowMultiSelect={false}
               validUserSession={true}
               space={this.state.editor.grid.space}
