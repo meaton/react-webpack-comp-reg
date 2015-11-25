@@ -56,14 +56,14 @@ module.exports = {
   /* open editor with item */
   OPEN_EDITOR: "OPEN_EDITOR",
 
+  LOAD_EDITOR_ITEMS: "LOAD_EDITOR_ITEMS",
+  LOAD_EDITOR_ITEMS_SUCCESS: "LOAD_EDITOR_ITEMS_SUCCESS",
+  LOAD_EDITOR_ITEMS_FAILURE: "LOAD_EDITOR_ITEMS_FAILURE",
+
   /* spec updated for editor */
   COMPONENT_SPEC_UPDATED: "COMPONENT_SPEC_UPDATED",
   /* item description updated for editor */
   ITEM_UPDATED: "ITEM_UPDATED",
-
-  /* APP MODES */
-  MODE_BROWSER: 'browser',
-  MODE_EDITOR: 'editor',
 
   /* ITEM TYPES */
   TYPE_PROFILE: "profiles",

@@ -3,6 +3,7 @@ var log = require('loglevel');
 
 var React = require('react/addons');
 var Router = require('react-router');
+var Constants = require("../constants");
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');

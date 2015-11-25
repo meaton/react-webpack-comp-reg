@@ -1,16 +1,20 @@
 var log = require('loglevel');
 
-var React = require("react")
+//react
+var React = require("react"),
     Constants = require("../constants");
-    Fluxxor = require("fluxxor"),
-    FluxMixin = Fluxxor.FluxMixin(React),
-    DataTablesWrapper = require("./DataTablesWrapper.jsx"),
+
+//components
+var DataTablesWrapper = require("./DataTablesWrapper.jsx"),
     DataTablesRow = require("./DataTablesRow.jsx")
+
+//mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 require('../../../styles/DataGrid.sass');
 
 var DataGrid = React.createClass({
-  mixins: [FluxMixin],
+  mixins: [ImmutableRenderMixin],
 
   propTypes: {
     items: React.PropTypes.array.isRequired,

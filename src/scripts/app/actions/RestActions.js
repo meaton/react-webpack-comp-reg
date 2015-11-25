@@ -167,6 +167,19 @@ module.exports = {
     );
   },
 
+  loadEditorGridItems: function(space) {
+    this.dispatch(Constants.LOAD_EDITOR_ITEMS);
+    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, function(items){
+        // Success
+        this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_EDITOR_ITEMS_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
   loadItem: function(type, space, itemId) {
     ComponentRegistryClient.loadItem(itemId, function(item){
         // Success

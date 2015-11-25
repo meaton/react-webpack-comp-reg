@@ -28,7 +28,10 @@ var EditorStore = Fluxxor.createStore({
       Constants.ITEM_UPDATED, this.handleLoadItem,
       Constants.SAVE_COMPONENT_SPEC, this.handleSave,
       Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleSaveDone,
-      Constants.SAVE_COMPONENT_SPEC_FAILURE, this.handleSaveDone
+      Constants.SAVE_COMPONENT_SPEC_FAILURE, this.handleSaveDone,
+      Constants.LOAD_EDITOR_ITEMS, this.handleLoadGridItems,
+      Constants.LOAD_EDITOR_ITEMS_SUCCESS, this.handleLoadGridItemsSuccess,
+      Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure
     );
   },
 
@@ -72,6 +75,22 @@ var EditorStore = Fluxxor.createStore({
 
   handleSaveDone: function() {
     this.processing = false;
+    this.emit("change");
+  },
+
+  handleLoadGridItems: function() {
+    this.gridLoading = true;
+    this.emit("change");
+  },
+
+  handleLoadGridItemsFailure: function() {
+    this.gridLoading = false;
+    this.emit("change");
+  },
+
+  handleLoadGridItemsSuccess: function(items) {
+    this.gridLoading = false;
+    this.gridItems = items;
     this.emit("change");
   }
 

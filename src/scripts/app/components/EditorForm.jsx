@@ -79,6 +79,8 @@ var EditorForm = React.createClass({
       // load the item for editing
       this.getFlux().actions.loadItem(type, space, id);
     }
+
+    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space);
   },
 
   render: function () {
