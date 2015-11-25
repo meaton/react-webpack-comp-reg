@@ -10,11 +10,16 @@ var React = require("react"),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 //components
-var ComponentSpecForm = require("./ComponentSpecForm");
-var EditorMenuGroup = require("./EditorMenuGroup");
+var ComponentSpecForm = require("./ComponentSpecForm"),
+    EditorMenuGroup = require("./EditorMenuGroup"),
+    DataGrid = require("./DataGrid.jsx"),
+    SpaceSelector = require("./SpaceSelector.jsx");
 
 //mixins
 var ComponentViewMixin = require('../mixins/ComponentViewMixin');
+
+//utils
+var classNames = require('classnames');
 
 /**
 * EditorForm - Form routing endpoint for spec editor, either new/existing component/profile
@@ -81,38 +86,71 @@ var EditorForm = React.createClass({
       return (<div>Loading component...</div>);
     } else {
       var newItem = this.isNew();
+      var editorClasses = classNames('editorGroup',
+      {
+        'processing': this.state.editor.processing,
+        'open': true
+      });
       return (
-        <div className={this.state.editor.processing?"processing":""}>
+        <div className="editorContainer">
+          <div className={editorClasses}>
 
-          <h3>
-            {this.state.editor.type === Constants.TYPE_PROFILE
-              ? (newItem?"New profile":"Edit profile")
-              :(newItem?"New component":"Edit component")}
+            <h3>
+              {this.state.editor.type === Constants.TYPE_PROFILE
+                ? (newItem?"New profile":"Edit profile")
+                :(newItem?"New component":"Edit component")}
 
-              &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
+                &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
 
-          <EditorMenuGroup
-          isNew={newItem}
-          onSave={this.handleSave}
-          onSaveNew={this.handleSaveNew}
-          onPublish={this.handlePublish}
-          disabled={this.state.editor.processing}
-          />
-
-          <ComponentSpecForm
-            spec={this.state.details.spec}
-            item={this.state.editor.item}
-            expansionState={this.state.details.expansionState}
-            linkedComponents={this.state.details.linkedComponents}
-            onComponentToggle={this.toggleItem}
-            onTypeChange={this.setType}
-            onHeaderChange={this.updateHeader}
-            onItemChange={this.updateItem}
-            onComponentChange={this.updateComponentSpec}
+            <EditorMenuGroup
+              isNew={newItem}
+              onSave={this.handleSave}
+              onSaveNew={this.handleSaveNew}
+              onPublish={this.handlePublish}
+              disabled={this.state.editor.processing}
             />
+
+            <ComponentSpecForm
+              spec={this.state.details.spec}
+              item={this.state.editor.item}
+              expansionState={this.state.details.expansionState}
+              linkedComponents={this.state.details.linkedComponents}
+              onComponentToggle={this.toggleItem}
+              onTypeChange={this.setType}
+              onHeaderChange={this.updateHeader}
+              onItemChange={this.updateItem}
+              onComponentChange={this.updateComponentSpec}
+              />
+          </div>
+          <div className="browserGroup">
+            <SpaceSelector
+              type={Constants.TYPE_COMPONENTS}
+              allowMultiSelect={false}
+              validUserSession={true}
+              space={this.state.editor.grid.space}
+              onSpaceSelect={this.handleGridSpaceSelect}
+              onToggleMultipleSelect={null /*this.handleToggleMultipleSelect*/} />
+            <DataGrid
+              multiSelect={false}
+              editMode={true}
+              items={this.state.editor.grid.items}
+              selectedItems={this.state.editor.grid.selectedItems}
+              loading={this.state.editor.grid.loading}
+              onRowSelect={this.handleGidRowSelect}
+              />
+            {/*deletedItems={this.state.items.deleted}*/}
+          </div>
         </div>
       );
     }
+  },
+
+  handleGridSpaceSelect: function() {
+    //TODO
+  },
+
+  handleGidRowSelect: function() {
+    //TODO
   },
 
   toggleItem: function(itemId, spec, defaultState) {

@@ -14,6 +14,11 @@ var EditorStore = Fluxxor.createStore({
     this.item = null;
     this.processing = false;
 
+    this.gridSpace = Constants.SPACE_PUBLISHED;
+    this.gridItems = [];
+    this.selectedGridItems = {};
+    this.gridLoading = false;
+
     // component spec itself is stored in the component details store for the editor
 
     this.bindActions(
@@ -32,7 +37,13 @@ var EditorStore = Fluxxor.createStore({
       type: this.type,
       space: this.space,
       item: this.item,
-      processing: this.processing
+      processing: this.processing,
+      grid: {
+        space: this.gridSpace,
+        items: this.gridItems,
+        selectedItems: this.selectedGridItems,
+        loading: this.gridLoading
+      }
     };
   },
 

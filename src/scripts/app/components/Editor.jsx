@@ -56,7 +56,7 @@ var Editor = React.createClass({
   renderContent: function() {
     if(this.isAuthenticated()) {
       return (
-          <div>
+          <div className="editorContainer">
             <RouteHandler/>
             {/*grid*/}
           </div>

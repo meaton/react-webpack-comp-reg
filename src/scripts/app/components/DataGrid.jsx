@@ -19,7 +19,6 @@ var DataGrid = React.createClass({
     multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
     deletedItems: React.PropTypes.object,
-    onReload: React.PropTypes.func.isRequired,
     onRowSelect: React.PropTypes.func
   },
 

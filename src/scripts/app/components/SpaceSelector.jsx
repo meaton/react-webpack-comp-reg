@@ -26,10 +26,18 @@ var SpaceSelector = React.createClass({
   propTypes: {
     space: React.PropTypes.string,
     type: React.PropTypes.string,
-    multiSelect: React.PropTypes.bool.isRequired,
+    multiSelect: React.PropTypes.bool,
+    allowMultiSelect: React.PropTypes.bool,
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
     onToggleMultipleSelect: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      allowMultiSelect: true,
+      multiSelect: false
+    };
   },
 
   getInitialState: function() {
@@ -84,7 +92,10 @@ var SpaceSelector = React.createClass({
           );
         }
     });
-    var selectModeBtn = <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"} onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>;
+    var selectModeBtn = this.props.allowMultiSelect ? (
+            <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"} 
+                    onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>
+          ):null;
     return (this.props.type == "componentsOnly") ?
     (
       <div className="left">

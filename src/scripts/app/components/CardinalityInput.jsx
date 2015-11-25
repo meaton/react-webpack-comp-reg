@@ -18,8 +18,8 @@ var CardinalityInput = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   propTypes: {
-    min: React.PropTypes.number.isRequired,
-    max: React.PropTypes.number.isRequired,
+    min: React.PropTypes.string.isRequired,
+    max: React.PropTypes.string.isRequired,
     onValueChange: React.PropTypes.func.isRequired,
     maxOccurrencesAllowed: React.PropTypes.bool
   },
@@ -44,8 +44,8 @@ var CardinalityInput = React.createClass({
   },
 
   render: function() {
-    var minC = this.props.min == null ? 1 : this.props.min;
-    var maxC = this.props.max == null ? 1 : this.props.max;
+    var minC = this.props.min == null ? "1" : this.props.min;
+    var maxC = this.props.max == null ? "1" : this.props.max;
 
     var minUpperBound = maxC == 'unbounded'?10:parseInt(maxC);
     var maxLowerBound = parseInt(minC);
