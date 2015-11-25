@@ -8,14 +8,9 @@ var React = require("react"),
 var DataTablesWrapper = require("./DataTablesWrapper.jsx"),
     DataTablesRow = require("./DataTablesRow.jsx")
 
-//mixins
-var ImmutableRenderMixin = require('react-immutable-render-mixin');
-
 require('../../../styles/DataGrid.sass');
 
 var DataGrid = React.createClass({
-  mixins: [ImmutableRenderMixin],
-
   propTypes: {
     items: React.PropTypes.array.isRequired,
     selectedItems: React.PropTypes.object.isRequired,
