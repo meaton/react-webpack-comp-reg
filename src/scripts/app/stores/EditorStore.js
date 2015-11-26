@@ -16,7 +16,6 @@ var EditorStore = Fluxxor.createStore({
 
     this.gridSpace = Constants.SPACE_PUBLISHED;
     this.gridItems = [];
-    this.selectedGridItems = {};
     this.gridLoading = false;
 
     // component spec itself is stored in the component details store for the editor
@@ -31,11 +30,14 @@ var EditorStore = Fluxxor.createStore({
       Constants.SAVE_COMPONENT_SPEC_FAILURE, this.handleSaveDone,
       Constants.LOAD_EDITOR_ITEMS, this.handleLoadGridItems,
       Constants.LOAD_EDITOR_ITEMS_SUCCESS, this.handleLoadGridItemsSuccess,
-      Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure
+      Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
+      Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace
     );
   },
 
   getState: function() {
+    // 'singleton' selectedItem associative array
+    var selectedItems = (this.selectedGridItem == null) ? {} : {[this.selectedGridItem.id]: this.selectedGridItem}
     return {
       type: this.type,
       space: this.space,
@@ -44,10 +46,17 @@ var EditorStore = Fluxxor.createStore({
       grid: {
         space: this.gridSpace,
         items: this.gridItems,
-        selectedItems: this.selectedGridItems,
         loading: this.gridLoading
       }
     };
+  },
+
+  handleSelectGridItem: function(item) {
+    this.selectedGridItem = item;
+  },
+
+  handleSwitchGridSpace: function(space) {
+    this.gridSpace = space;
   },
 
   handleLoadItem: function(item) {

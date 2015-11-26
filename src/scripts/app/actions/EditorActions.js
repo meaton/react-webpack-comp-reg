@@ -97,6 +97,10 @@ var EditorActions = {
       groupName: "",
     };
     this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
+  },
+
+  switchEditorGridSpace: function(space) {
+    this.dispatch(Constants.SWITCH_EDITOR_GRID_SPACE, space);
   }
 
 };

@@ -13,12 +13,18 @@ require('../../../styles/DataGrid.sass');
 var DataGrid = React.createClass({
   propTypes: {
     items: React.PropTypes.array.isRequired,
-    selectedItems: React.PropTypes.object.isRequired,
+    selectedItems: React.PropTypes.object,
     loading: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
     deletedItems: React.PropTypes.object,
     onRowSelect: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      selectedItems: {}
+    };
   },
 
   render: function() {

@@ -136,7 +136,6 @@ var EditorForm = React.createClass({
               multiSelect={false}
               editMode={true}
               items={this.state.editor.grid.items}
-              selectedItems={this.state.editor.grid.selectedItems}
               loading={this.state.editor.grid.loading}
               onRowSelect={this.handleGidRowSelect}
               />
@@ -147,12 +146,12 @@ var EditorForm = React.createClass({
     }
   },
 
-  handleGridSpaceSelect: function() {
-    //TODO
+  handleGridSpaceSelect: function(type, space) {
+    this.getFlux().actions.switchEditorGridSpace(space);
   },
 
-  handleGidRowSelect: function() {
-    //TODO
+  handleGidRowSelect: function(item) {
+    //todo: add item to selected component
   },
 
   toggleItem: function(itemId, spec, defaultState) {
