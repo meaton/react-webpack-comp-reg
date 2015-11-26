@@ -54,6 +54,37 @@ var EditorStore = Fluxxor.createStore({
     };
   },
 
+  handleOpenEditor: function(obj) {
+    var type = obj.type;
+    var space = obj.space;
+    var id = obj.id;
+
+    // reset component selection state
+    this.selectedComponentId = null;
+
+    this.emit("change");
+  },
+
+  handleLoadItem: function(item) {
+    this.item = item
+    this.emit("change");
+  },
+
+  handleLoadItemFailure: function() {
+    this.item = null;
+    this.emit("change");
+  },
+
+  handleSave: function() {
+    this.processing = true;
+    this.emit("change");
+  },
+
+  handleSaveDone: function() {
+    this.processing = false;
+    this.emit("change");
+  },
+
   handleSelectGridItem: function(item) {
     this.selectedGridItem = item;
     this.emit("change");
@@ -72,34 +103,6 @@ var EditorStore = Fluxxor.createStore({
       log.debug("Select", id, "instead of", this.selectedComponentId);
       this.selectedComponentId = id;
     }
-    this.emit("change");
-  },
-
-  handleLoadItem: function(item) {
-    this.item = item
-    this.emit("change");
-  },
-
-  handleLoadItemFailure: function() {
-    this.item = null;
-    this.emit("change");
-  },
-
-  handleOpenEditor: function(obj) {
-    var type = obj.type;
-    var space = obj.space;
-    var id = obj.id;
-
-    this.emit("change");
-  },
-
-  handleSave: function() {
-    this.processing = true;
-    this.emit("change");
-  },
-
-  handleSaveDone: function() {
-    this.processing = false;
     this.emit("change");
   },
 
