@@ -36,7 +36,7 @@ var SelectionStore = Fluxxor.createStore({
 
     if(this.allowMultiple) {
       // we may already have a selection, check if we want to unselect
-      if(this.selectedItems[item.id]) {
+      if(this.selectedItems[item.id] != null) {
           //special case: unselect
           this.selectedItems = remove(this.selectedItems, item.id);
           this.emit("change");
