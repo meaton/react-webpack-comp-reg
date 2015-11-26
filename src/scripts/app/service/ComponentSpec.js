@@ -56,13 +56,13 @@ var ComponentSpec = {
    * @return {[type]}              the updated spec (or original spec if the command could not be executed)
    */
   updateInComponent(spec, appId, innerCommand) {
-    log.debug("Updating", appId, "in", spec, "with", innerCommand);
+    log.trace("Updating", appId, "in", spec, "with", innerCommand);
     var command = updateCommandInComponent(spec.CMD_Component, appId, innerCommand);
     if(command == null) {
       log.warn("Could not perform command, no component with appId", appId, "found:", innerCommand);
       return spec;
     } else {
-      log.debug("Generated top level command", command);
+      log.debug("Updating", spec, "with derived", command);
       return update(spec, {CMD_Component: command});
     }
   }

@@ -156,7 +156,7 @@ var CMDComponentForm = React.createClass({
 
     // common properties (for both view and form)
     var componentProperties = {
-      key: spec._appId,
+      key: spec._appId + "_" +index,
       spec: spec,
       parent: this.props.spec,
       linkedComponents: this.props.linkedComponents,
@@ -176,7 +176,7 @@ var CMDComponentForm = React.createClass({
           {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
           />);
       } else {
-        return (<div key={compId + "_" + index}>Component {compId} loading...</div>);
+        return (<div className="CMDComponent" key={compId + "_" + index}>Component {compId} loading...</div>);
       }
     } else {
       // inline child components do get a form

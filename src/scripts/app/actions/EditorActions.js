@@ -68,9 +68,10 @@ var EditorActions = {
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },
 
-  insertComponentById: function(spec, componentAppId, itemId) {
-    // we want to insert a new component (by reference with itemId) in spec's child component with the matching component 'appId'
-    log.debug("Insert", itemId, "in", componentAppId, "of", spec);
+  insertComponentById: function(spec, componentAppId, itemId, cb) {
+    // We want to insert a new component (by reference with itemId) in spec's
+    // child component with the matching component 'appId'
+
     // create a new specification using immutability utils...
     var newSpec = updateInComponent(spec, componentAppId, {$apply: function(comp){
       // return a modified component that has a new component declaration...
@@ -78,6 +79,8 @@ var EditorActions = {
       // first we need a new unique appId
       var appId = generateAppIdForNew(comp._appId, comp.CMD_Component);
       var newComponent = {'@ComponentId': itemId, '_appId': appId};
+
+      log.debug("New child component in", comp, ":", newComponent);
 
       // either add to existing CMD_Component or create a new child component array
       if($.isArray(comp.CMD_Component)) {
@@ -89,6 +92,9 @@ var EditorActions = {
       }
     }});
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
+    if(cb != null) {
+      cb(newSpec);
+    }
   },
 
   newComponentSpec: function(type, space) {

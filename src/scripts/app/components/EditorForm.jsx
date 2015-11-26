@@ -156,7 +156,14 @@ var EditorForm = React.createClass({
 
   handleGridRowSelect: function(itemId) {
     // row selected means item should be added to selected component
-    this.getFlux().actions.insertComponentById(this.state.details.spec, this.state.editor.selectedComponentId, itemId);
+    this.getFlux().actions.insertComponentById(this.state.details.spec, this.state.editor.selectedComponentId, itemId,
+      function(newSpec) {
+        // make sure the newly added linked component is loaded
+        this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.editor.space, this.state.details.linkedComponents);
+      }.bind(this)
+    );
+
+
   },
 
   handleToggleSelection: function(id) {
