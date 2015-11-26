@@ -140,7 +140,6 @@ var EditorForm = React.createClass({
               items={this.state.editor.grid.items}
               loading={this.state.editor.grid.loading}
               onRowSelect={this.handleGridRowSelect}
-              rowSelectAllowed={this.state.editor.selectedComponentId != null}
               />
             {/*deletedItems={this.state.items.deleted}*/}
           </div>
@@ -155,14 +154,18 @@ var EditorForm = React.createClass({
   },
 
   handleGridRowSelect: function(itemId) {
+    var targetComponentId = this.state.editor.selectedComponentId;
+    if(targetComponentId == null) {
+      //no selection? add to root component
+      targetComponentId = this.state.details.spec.CMD_Component._appId;
+    }
     // row selected means item should be added to selected component
-    this.getFlux().actions.insertComponentById(this.state.details.spec, this.state.editor.selectedComponentId, itemId,
+    this.getFlux().actions.insertComponentById(this.state.details.spec, targetComponentId, itemId,
       function(newSpec) {
         // make sure the newly added linked component is loaded
         this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.editor.space, this.state.details.linkedComponents);
       }.bind(this)
     );
-
 
   },
 

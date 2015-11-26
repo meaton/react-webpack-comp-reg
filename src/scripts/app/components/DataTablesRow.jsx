@@ -38,14 +38,14 @@ var DataTablesRow = React.createClass({
 
     // if multiple select, add a checkbox to visually indicate this mode - notice there's no event handler because the change bubbles up to the row click event
     var checkbox = (this.props.multiple) ? <td className="checkboxCell"><input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
-    var buttonProps = {
-      disabled: !this.props.rowSelectAllowed,
-      title: (this.props.rowSelectAllowed)
-          ?"Click to link this component to the seleceted component in the editor"
-          :"Select a component in the editor to link an existing component" //TODO: tooltip not rendered for disabled buttons (at least in Chrome), work around this
-    };
-    var button = (<Button ref="addButton" onClick={this.buttonClick} {...buttonProps}>+</Button>);
-    var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
+    var buttonBefore = (this.props.buttonBefore) ? (
+      <td className="add">
+        <Button
+          ref="addButton"
+          title="Click to link this component to the seleceted component in the editor"
+          onClick={this.buttonClick}
+          disabled={!this.props.rowSelectAllowed}>+</Button>
+      </td>): null;
 
     //TODO: parse registration date
     var registrationDate = data.registrationDate.substr(0,10);
