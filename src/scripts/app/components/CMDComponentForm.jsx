@@ -176,7 +176,7 @@ var CMDComponentForm = React.createClass({
           {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
           />);
       } else {
-        return (<div key={compId}>Component {compId} loading...</div>);
+        return (<div key={compId + "_" + index}>Component {compId} loading...</div>);
       }
     } else {
       // inline child components do get a form

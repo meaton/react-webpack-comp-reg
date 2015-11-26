@@ -139,7 +139,7 @@ var EditorForm = React.createClass({
               editMode={true}
               items={this.state.editor.grid.items}
               loading={this.state.editor.grid.loading}
-              onRowSelect={this.handleGidRowSelect}
+              onRowSelect={this.handleGridRowSelect}
               rowSelectAllowed={this.state.editor.selectedComponentId != null}
               />
             {/*deletedItems={this.state.items.deleted}*/}
@@ -154,8 +154,9 @@ var EditorForm = React.createClass({
     this.getFlux().actions.loadEditorGridItems(space);
   },
 
-  handleGidRowSelect: function(item) {
-    //todo: add item to selected component
+  handleGridRowSelect: function(itemId) {
+    // row selected means item should be added to selected component
+    this.getFlux().actions.insertComponentById(this.state.details.spec, this.state.editor.selectedComponentId, itemId);
   },
 
   handleToggleSelection: function(id) {

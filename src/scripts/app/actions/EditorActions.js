@@ -7,6 +7,10 @@ var update = React.addons.update;
 var ComponentRegistryClient = require("../service/ComponentRegistryClient");
 var SpecAugmenter = require("../service/SpecAugmenter");
 
+var ComponentSpec = require('../service/ComponentSpec');
+var updateInComponent = ComponentSpec.updateInComponent;
+var generateAppIdForNew = ComponentSpec.generateAppIdForNew;
+
 /**
  * Browser actions
  */
@@ -61,6 +65,29 @@ var EditorActions = {
   updateSpec: function(spec, change) {
     log.debug("Applying change", change, "to spec:", spec);
     var newSpec = update(spec, change);
+    this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
+  },
+
+  insertComponentById: function(spec, componentAppId, itemId) {
+    // we want to insert a new component (by reference with itemId) in spec's child component with the matching component 'appId'
+    log.debug("Insert", itemId, "in", componentAppId, "of", spec);
+    // create a new specification using immutability utils...
+    var newSpec = updateInComponent(spec, componentAppId, {$apply: function(comp){
+      // return a modified component that has a new component declaration...
+      //
+      // first we need a new unique appId
+      var appId = generateAppIdForNew(comp._appId, comp.CMD_Component);
+      var newComponent = {'@ComponentId': itemId, '_appId': appId};
+
+      // either add to existing CMD_Component or create a new child component array
+      if($.isArray(comp.CMD_Component)) {
+        // add to existing
+        return update(comp, {CMD_Component: {$push: [newComponent]}});
+      } else {
+        // first child, create new array
+        return update(comp, {CMD_Component: {$set: [newComponent]}});
+      }
+    }});
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },
 

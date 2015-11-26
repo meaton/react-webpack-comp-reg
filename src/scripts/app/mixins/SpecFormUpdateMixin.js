@@ -1,6 +1,7 @@
 'use strict';
 
 var log = require('loglevel');
+var ComponentSpec = require('../service/ComponentSpec');
 
 /**
 * SpecFormUpdateMixin - Common functions and properties for the specification
@@ -13,12 +14,7 @@ var log = require('loglevel');
 */
 var SpecFormUpdateMixin = {
 
-  generateAppIdForNew: function(parentId, childArray) {
-    //has to be unique, and robust against removal of other newly created children
-    //combination of index and current time in ms assumed to be safe
-    var index = (childArray == null ? 0 : childArray.length);
-    return parentId + "/new_" + index + "_" + new Date().getTime();
-  },
+  generateAppIdForNew: ComponentSpec.generateAppIdForNew,
 
   /* Methods that handle changes (in this component and its children) */
   updateConceptLink: function(val) {
