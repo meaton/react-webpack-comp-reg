@@ -18,12 +18,14 @@ var DataGrid = React.createClass({
     multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
     deletedItems: React.PropTypes.object,
-    onRowSelect: React.PropTypes.func
+    onRowSelect: React.PropTypes.func,
+    rowSelectAllowed: React.PropTypes.bool
   },
 
   getDefaultProps: function() {
     return {
-      selectedItems: {}
+      selectedItems: {},
+      rowSelectAllowed: true
     };
   },
 
@@ -59,7 +61,9 @@ var DataGrid = React.createClass({
           buttonBefore={addButton}
           onClick={self.rowClick}
           selected={selectedContext[d.id]?true:false}
-          className={className} >
+          className={className}
+          rowSelectAllowed={self.props.rowSelectAllowed}
+          >
         </DataTablesRow>
      );
     });

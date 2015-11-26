@@ -13,6 +13,7 @@ var EditorStore = Fluxxor.createStore({
     this.space = Constants.SPACE_PUBLISHED; //private, group, published
     this.item = null;
     this.processing = false;
+    this.selectedComponentId = null;
 
     this.gridSpace = Constants.SPACE_PUBLISHED;
     this.gridItems = [];
@@ -31,7 +32,8 @@ var EditorStore = Fluxxor.createStore({
       Constants.LOAD_EDITOR_ITEMS, this.handleLoadGridItems,
       Constants.LOAD_EDITOR_ITEMS_SUCCESS, this.handleLoadGridItemsSuccess,
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
-      Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace
+      Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace,
+      Constants.TOGGLE_COMPONENT_SELECTION, this.handleToggleComponentSelection
     );
   },
 
@@ -42,6 +44,7 @@ var EditorStore = Fluxxor.createStore({
       type: this.type,
       space: this.space,
       item: this.item,
+      selectedComponentId: this.selectedComponentId,
       processing: this.processing,
       grid: {
         space: this.gridSpace,
@@ -53,10 +56,23 @@ var EditorStore = Fluxxor.createStore({
 
   handleSelectGridItem: function(item) {
     this.selectedGridItem = item;
+    this.emit("change");
   },
 
   handleSwitchGridSpace: function(space) {
     this.gridSpace = space;
+    this.emit("change");
+  },
+
+  handleToggleComponentSelection: function(id) {
+    if(id === this.selectedComponentId) {
+      log.debug("Unselected", id);
+      this.selectedComponentId = null;
+    } else {
+      log.debug("Select", id, "instead of", this.selectedComponentId);
+      this.selectedComponentId = id;
+    }
+    this.emit("change");
   },
 
   handleLoadItem: function(item) {

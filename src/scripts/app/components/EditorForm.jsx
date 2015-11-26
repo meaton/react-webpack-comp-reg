@@ -122,6 +122,8 @@ var EditorForm = React.createClass({
               onHeaderChange={this.updateHeader}
               onItemChange={this.updateItem}
               onComponentChange={this.updateComponentSpec}
+              onToggleSelection={this.handleToggleSelection}
+              selectedComponentId={this.state.editor.selectedComponentId}
               />
           </div>
           <div className="browserGroup">
@@ -138,6 +140,7 @@ var EditorForm = React.createClass({
               items={this.state.editor.grid.items}
               loading={this.state.editor.grid.loading}
               onRowSelect={this.handleGidRowSelect}
+              rowSelectAllowed={this.state.editor.selectedComponentId != null}
               />
             {/*deletedItems={this.state.items.deleted}*/}
           </div>
@@ -152,6 +155,10 @@ var EditorForm = React.createClass({
 
   handleGidRowSelect: function(item) {
     //todo: add item to selected component
+  },
+
+  handleToggleSelection: function(id) {
+    this.getFlux().actions.toggleComponentSelection(id);
   },
 
   toggleItem: function(itemId, spec, defaultState) {

@@ -1,5 +1,5 @@
 'use strict';
-
+var log = require('loglevel');
 var React = require('react');
 
 //bootstrap
@@ -14,11 +14,12 @@ var DataTablesRow = React.createClass({
     data: React.PropTypes.object.isRequired,
     multiple: React.PropTypes.bool.isRequired,
     selected: React.PropTypes.bool.isRequired,
+    rowSelectAllowed: React.PropTypes.bool,
     onClick: React.PropTypes.func,
-    className: React.PropTypes.string,
+    className: React.PropTypes.string
   },
   getDefaultProps: function() {
-    return { buttonBefore: false, className: "unknown" };
+    return { buttonBefore: false, className: "unknown", rowSelectAllowed: true };
   },
   rowClick: function(val, evt) {
     evt.stopPropagation();
@@ -37,8 +38,13 @@ var DataTablesRow = React.createClass({
 
     // if multiple select, add a checkbox to visually indicate this mode - notice there's no event handler because the change bubbles up to the row click event
     var checkbox = (this.props.multiple) ? <td className="checkboxCell"><input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} /></td> : null;
-
-    var button = (this.props.selected) ? <Button ref="addButton" onClick={this.buttonClick} active>+</Button> : <Button ref="addButton" onClick={this.buttonClick}>+</Button>;
+    var buttonProps = {
+      disabled: !this.props.rowSelectAllowed,
+      title: (this.props.rowSelectAllowed)
+          ?"Click to link this component to the seleceted component in the editor"
+          :"Select a component in the editor to link an existing component" //TODO: tooltip not rendered for disabled buttons (at least in Chrome), work around this
+    };
+    var button = (<Button ref="addButton" onClick={this.buttonClick} {...buttonProps}>+</Button>);
     var buttonBefore = (this.props.buttonBefore) ? <td className="add">{button}</td> : null;
 
     //TODO: parse registration date

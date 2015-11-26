@@ -46,7 +46,7 @@ var CMDComponentMixin = {
 
     // classNames
     var viewClasses = classNames('componentBody');
-    var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': this.props.isSelected, 'linked': this.props.isLinked });
+    var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': (this.isSelected && this.isSelected()), 'linked': this.props.isLinked });
 
     var children = (open || this.props.renderChildrenWhenCollapsed)?(
       <div className={viewClasses}>

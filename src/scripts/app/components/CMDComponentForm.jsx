@@ -45,7 +45,9 @@ var CMDComponentForm = React.createClass({
             ActionButtonsMixin],
 
   propTypes: {
-    onComponentChange: React.PropTypes.func.isRequired
+    onComponentChange: React.PropTypes.func.isRequired,
+    onToggleSelection: React.PropTypes.func.isRequired,
+    selectedComponentId: React.PropTypes.string
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
 
@@ -53,6 +55,10 @@ var CMDComponentForm = React.createClass({
     return {
       renderChildrenWhenCollapsed: true
     };
+  },
+
+  isSelected: function() {
+    return this.props.spec._appId === this.props.selectedComponentId;
   },
 
   /**
@@ -125,7 +131,6 @@ var CMDComponentForm = React.createClass({
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
     var cardOpt = !open? ( <span>Cardinality: {(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}</span> ) : null;
     var editClasses = null; //TODO determine classes?
-    var componentClasses = classNames('CMDComponent', { 'edit-mode': true, 'open': open, 'selected': false /*TODO selection state*/ });
 
     var editableProps = open?(
       <div className={editClasses}>
@@ -139,9 +144,7 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
-        {/* TODO: selectionLink
-          <div className="controlLinks"><a onClick={this.toggleSelection}>{(this.state.isSelected) ? "unselect" : "select"}</a></div>
-        */}
+        <div className="controlLinks"><a onClick={this.props.onToggleSelection.bind(null, this.props.spec._appId)}>{this.isSelected() ? "unselect" : "select"}</a></div>
         <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></span> {cardOpt}
         {editableProps}
       </div>
@@ -180,7 +183,9 @@ var CMDComponentForm = React.createClass({
       return (<CMDComponentForm
         {... componentProperties}
         {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+        selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
+        onToggleSelection={this.props.onToggleSelection}
         />);
     }
   },
@@ -220,18 +225,6 @@ var CMDComponentForm = React.createClass({
 
   renderAfterAttributes: function() {
     return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
-  },
-
-
-
-
-
-  //below: old functions
-  toggleSelection: function(evt) {
-    if(this.state.isInline) { // selection inline components only
-      var updatedComponent = update(this.state.component, { $merge: { selected: !this.state.isSelected } });
-      this.setState({ component: updatedComponent, isSelected: !this.state.isSelected });
-    }
   }
 });
 

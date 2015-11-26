@@ -101,6 +101,10 @@ var EditorActions = {
 
   switchEditorGridSpace: function(space) {
     this.dispatch(Constants.SWITCH_EDITOR_GRID_SPACE, space);
+  },
+
+  toggleComponentSelection: function(id) {
+    this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id);
   }
 
 };
