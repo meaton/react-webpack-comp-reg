@@ -3,25 +3,11 @@ var Fluxxor = require("fluxxor"),
 
 var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
-    // application mode the store will serve information for (browser or items in grid in editor)
-    this.mode = Constants.MODE_BROWSER;
-
-    this.state = {
-      [Constants.MODE_BROWSER]: {
-        items: [], //items to be shown in browser
-        deleted: {}, //items that have been deleted or are being deleted
-        loading: false, //loading state
-        type: Constants.TYPE_PROFILE, //components or profiles
-        space: Constants.SPACE_PUBLISHED //private, group, published
-      },
-      [Constants.MODE_EDITOR]: {
-          items: [], //items to be shown in browser
-          deleted: {}, //items that have been deleted or are being deleted
-          loading: false, //loading state
-          type: Constants.TYPE_COMPONENTS, //components or profiles
-          space: Constants.SPACE_PUBLISHED //private, group, published
-      }
-    }
+      this.items = [], //items to be shown in browser
+      this.deleted = {}, //items that have been deleted or are being deleted
+      this.loading = false, //loading state
+      this.type = Constants.TYPE_PROFILE, //components or profiles
+      this.space = Constants.SPACE_PUBLISHED //private, group, published
 
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
@@ -35,55 +21,61 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   getState: function() {
-    return this.state[this.mode];
+    return {
+      items: this.items,
+      deleted: this.deleted,
+      loading: this.loading,
+      type: this.type,
+      space: this.space
+    };
   },
 
   handleLoadItems: function() {
-    this.getState().loading = true;
+    this.loading = true;
     this.emit("change");
   },
 
   handleLoadItemsSuccess: function(items) {
-    this.getState().items = items;
-    this.getState().loading = false;
-    this.getState().deleted = {};
+    this.items = items;
+    this.loading = false;
+    this.deleted = {};
     this.emit("change");
   },
 
   handleLoadItemsFailure: function() {
-    this.getState().loading = false;
+    this.loading = false;
     this.emit("change");
   },
 
   handleSwitchSpace: function(spaceType) {
-    this.getState().type = spaceType.type;
-    this.getState().space = spaceType.space;
+    this.type = spaceType.type;
+    this.space = spaceType.space;
     this.emit("change");
   },
 
   handleDeleteItems: function(ids) {
-    this.getState().loading = true;
+    this.loading = true;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.getState().deleted[id] = Constants.DELETE_STATE_DELETING;
+      this.deleted[id] = Constants.DELETE_STATE_DELETING;
     }
     this.emit("change");
   },
 
   handleDeleteItemsSuccess: function(ids) {
-    this.getState().loading = false;
+    this.loading = false;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.getState().deleted[id] = Constants.DELETE_STATE_DELETED;
+      this.deleted[id] = Constants.DELETE_STATE_DELETED;
     }
     this.emit("change");
   },
 
   handleDeleteItemsFailure: function(result) {
-    this.getState().loading = false;
+    this.loading = false;
     for(var i=0; i<result.ids.length; i++) {
       var id=result.ids[i];
-      delete this.getState().deleted[id];
+      delete this.deleted[id];
     }
     this.emit("change");
   }

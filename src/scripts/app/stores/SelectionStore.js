@@ -5,21 +5,9 @@ var Fluxxor = require("fluxxor"),
 
 var SelectionStore = Fluxxor.createStore({
   initialize: function(options) {
-    // application mode the store will serve information for (browser or items in grid in editor)
-    this.mode = Constants.MODE_BROWSER;
-
-    this.state = {
-      [Constants.MODE_BROWSER]: {
-        selectedItems: {},
-        allowMultiple: false,
-        currentItem: null
-      },
-      [Constants.MODE_EDITOR]: {
-        selectedItems: {},
-        allowMultiple: false,
-        currentItem: null
-      }
-    }
+    this.selectedItems = {};
+    this.allowMultiple = false;
+    this.currentItem = null;
 
     this.bindActions(
       Constants.SELECT_BROWSER_ITEM, this.handleSelectItem,
@@ -30,38 +18,42 @@ var SelectionStore = Fluxxor.createStore({
   },
 
   getState: function() {
-    return this.state[this.mode];
+    return {
+      selectedItems: this.selectedItems,
+      allowMultiple: this.allowMultiple,
+      currentItem: this.currentItem
+    };
   },
 
   handleSelectItem: function(item) {
-    this.getState().currentItem = item;
+    this.currentItem = item;
 
-    if(this.getState().allowMultiple) {
+    if(this.allowMultiple) {
       // we may already have a selection, check if we want to unselect
-      if(this.getState().selectedItems[item.id]) {
+      if(this.selectedItems[item.id]) {
           //special case: unselect
-          delete this.getState().selectedItems[item.id];
+          delete this.selectedItems[item.id];
           this.emit("change");
           return
       }
     } else {
       // only one item can be selected, erase existing selection
-      this.getState().selectedItems = {};
+      this.selectedItems = {};
     }
 
     // select identified item
-    this.getState().selectedItems[item.id] = item;
+    this.selectedItems[item.id] = item;
     this.emit("change");
   },
 
   handleSwitchMultipleSelect: function() {
-    this.getState().allowMultiple = !this.getState().allowMultiple;
+    this.allowMultiple = !this.allowMultiple;
     this.emit("change");
   },
 
   handleSwitchSpace: function() {
     // remove selection on space switch
-    this.getState().selectedItems = {};
+    this.selectedItems = {};
     this.emit("change");
   },
 
@@ -71,9 +63,9 @@ var SelectionStore = Fluxxor.createStore({
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
       log.debug("Checking" ,id);
-      if(this.getState().selectedItems[id]) {
+      if(this.selectedItems[id]) {
         log.debug("Removing" ,id);
-        delete this.getState().selectedItems[id];
+        delete this.selectedItems[id];
       }
     }
     this.emit("change");
