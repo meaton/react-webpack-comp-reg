@@ -151,6 +151,7 @@ var EditorForm = React.createClass({
 
   handleGridSpaceSelect: function(type, space) {
     this.getFlux().actions.switchEditorGridSpace(space);
+    this.getFlux().actions.loadEditorGridItems(space);
   },
 
   handleGidRowSelect: function(item) {
