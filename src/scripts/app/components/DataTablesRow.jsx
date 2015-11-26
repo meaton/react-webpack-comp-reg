@@ -5,11 +5,16 @@ var React = require('react');
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 
+//mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
 /**
 * DataTablesRow - manages the table-row selection state and display of the table-rows in the DataTablesGrid.
 * @constructor
 */
 var DataTablesRow = React.createClass({
+  mixins: [ImmutableRenderMixin],
+  
   propTypes: {
     data: React.PropTypes.object.isRequired,
     multiple: React.PropTypes.bool.isRequired,

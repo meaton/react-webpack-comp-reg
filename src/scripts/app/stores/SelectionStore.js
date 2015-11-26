@@ -1,7 +1,13 @@
+'use strict';
+
 var log = require("loglevel");
 
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
+
+var ImmutabilityUtil = require('../service/ImmutabilityUtil');
+var remove = ImmutabilityUtil.remove,
+    update = ImmutabilityUtil.update;
 
 var SelectionStore = Fluxxor.createStore({
   initialize: function(options) {
@@ -32,7 +38,7 @@ var SelectionStore = Fluxxor.createStore({
       // we may already have a selection, check if we want to unselect
       if(this.selectedItems[item.id]) {
           //special case: unselect
-          delete this.selectedItems[item.id];
+          this.selectedItems = remove(this.selectedItems, item.id);
           this.emit("change");
           return
       }
@@ -42,7 +48,7 @@ var SelectionStore = Fluxxor.createStore({
     }
 
     // select identified item
-    this.selectedItems[item.id] = item;
+    this.selectedItems = update(this.selectedItems, {[item.id]: {$set: item}});
     this.emit("change");
   },
 
@@ -65,7 +71,7 @@ var SelectionStore = Fluxxor.createStore({
       log.debug("Checking" ,id);
       if(this.selectedItems[id]) {
         log.debug("Removing" ,id);
-        delete this.selectedItems[id];
+        this.selectedItems = remove(this.selectedItems, id);
       }
     }
     this.emit("change");

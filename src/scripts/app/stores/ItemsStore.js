@@ -1,5 +1,11 @@
+'use strict';
+
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
+
+var ImmutabilityUtil = require('../service/ImmutabilityUtil');
+var remove = ImmutabilityUtil.remove,
+    update = ImmutabilityUtil.update;
 
 var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
@@ -57,7 +63,7 @@ var ItemsStore = Fluxxor.createStore({
     this.loading = true;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.deleted[id] = Constants.DELETE_STATE_DELETING;
+      this.deleted = update(this.deleted, {[id]: {$set: Constants.DELETE_STATE_DELETING}});
     }
     this.emit("change");
   },
@@ -66,7 +72,7 @@ var ItemsStore = Fluxxor.createStore({
     this.loading = false;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.deleted[id] = Constants.DELETE_STATE_DELETED;
+      this.deleted = update(this.deleted, {[id]: {$set: Constants.DELETE_STATE_DELETED}});
     }
     this.emit("change");
   },
@@ -75,7 +81,7 @@ var ItemsStore = Fluxxor.createStore({
     this.loading = false;
     for(var i=0; i<result.ids.length; i++) {
       var id=result.ids[i];
-      delete this.deleted[id];
+      this.deleted = remove(this.deleted, id);
     }
     this.emit("change");
   }

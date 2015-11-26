@@ -1,10 +1,14 @@
 var React = require("react");
 
+//mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
 /**
 * DataTablesWrapper - outputs a HTML static table layout and header coloums for rendering by the DataTables plugin.
 * @constructor
 */
 var DataTablesWrapper = React.createClass({
+  mixins: [ImmutableRenderMixin],
   componentDidMount: function() {
     var self = this;
     var id = this.getDOMNode().id;
