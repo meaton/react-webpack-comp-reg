@@ -66,14 +66,7 @@ var SelectionStore = Fluxxor.createStore({
   handleDeleteItemsSuccess: function(ids) {
     log.debug("Removing deleted items from selection");
     // remove deleted items from selection
-    for(var i=0; i<ids.length; i++) {
-      var id=ids[i];
-      log.debug("Checking" ,id);
-      if(this.selectedItems[id]) {
-        log.debug("Removing" ,id);
-        this.selectedItems = remove(this.selectedItems, id);
-      }
-    }
+    this.selectedItems = remove(this.selectedItems, ids);
     this.emit("change");
   }
 });

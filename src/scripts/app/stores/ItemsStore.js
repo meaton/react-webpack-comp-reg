@@ -79,10 +79,8 @@ var ItemsStore = Fluxxor.createStore({
 
   handleDeleteItemsFailure: function(result) {
     this.loading = false;
-    for(var i=0; i<result.ids.length; i++) {
-      var id=result.ids[i];
-      this.deleted = remove(this.deleted, id);
-    }
+    // remove items from list of deleted items
+    this.deleted = remove(this.deleted, result.ids);
     this.emit("change");
   }
 
