@@ -92,18 +92,8 @@ var Browser = React.createClass({
 
   handleRowSelect: function(item, target) {
     this.getFlux().actions.selectBrowserItem(item);
-
-    // update the info view
-    if(this.state.details.activeView == Constants.INFO_VIEW_SPEC) {
-      this.getFlux().actions.loadComponentSpec(this.state.items.type, this.state.items.space, item.id);
-    }
-    if(this.state.details.activeView == Constants.INFO_VIEW_XML) {
-      this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, item);
-    }
-    if(this.state.details.activeView == Constants.INFO_VIEW_COMMENTS) {
-      this.getFlux().actions.loadComments(this.state.items.type, this.state.items.space, item.id);
-    }
   },
+  
   handleDelete: function() {
     var ids = Object.keys(this.state.selection.selectedItems);
     this.getFlux().actions.deleteComponents(this.state.items.type, this.state.items.space, ids);

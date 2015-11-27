@@ -41,9 +41,27 @@ var InfoPanel = React.createClass({
     onComponentToggle: React.PropTypes.func
   },
 
-  tabSelect: function(index) {
-    log.debug('tabSelect: ' + index);
+  componentDidMount: function() {
+    // component appears for the first time, load the current tab
+    this.refreshTab(this.props.activeView);
+  },
 
+  shouldComponentUpdate: function(nextProps, nextState) {
+    // component props have been updated, could be an item change
+    if(this.props.item != nextProps.item) {
+      // item changed, reload current tab
+      log.trace("Item changed!", this.props.item, nextProps.item);
+      this.refreshTab(this.props.activeView);
+      // don't update now, reload should already trigger an update
+      return false;
+    } else {
+      // something else has changed, update normally
+      return true;
+    }
+  },
+
+  refreshTab: function(index) {
+    // do a reload depending on selected tab
     if(index === Constants.INFO_VIEW_SPEC) {
       this.props.loadSpec();
     }
@@ -54,6 +72,7 @@ var InfoPanel = React.createClass({
       this.props.loadComments();
     }
   },
+
   render: function () {
     var item = this.props.item;
     var xmlElement = null;
@@ -82,7 +101,7 @@ var InfoPanel = React.createClass({
     );
 
     return (
-      <TabbedArea activeKey={this.props.activeView} onSelect={this.tabSelect} className={ComponentSpec.isProfile(item)?"profile":"component"}>
+      <TabbedArea activeKey={this.props.activeView} onSelect={this.refreshTab} className={ComponentSpec.isProfile(item)?"profile":"component"}>
         <TabPane eventKey={Constants.INFO_VIEW_SPEC} tab="view">
           {viewer}
         </TabPane>

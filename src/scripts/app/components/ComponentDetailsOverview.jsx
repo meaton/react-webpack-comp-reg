@@ -48,8 +48,10 @@ var ComponentDetailsOverview = React.createClass({
     this.getFlux().actions.loadComments(this.props.type, this.props.space, this.props.item.id);
   },
 
+  /**
+   * from ComponentViewMixin
+   */
   toggleComponent: function(itemId, spec) {
-    // from ComponentViewMixin
     this.doToggle(this.props.space, itemId, spec);
   },
 
