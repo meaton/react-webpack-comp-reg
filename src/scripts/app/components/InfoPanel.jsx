@@ -110,7 +110,7 @@ var InfoPanel = React.createClass({
             <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
               : null }
         </TabPane>
-        <TabPane eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + this.props.item.commentsCount + ")"}>
+        <TabPane id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + this.props.item.commentsCount + ")"}>
             {this.renderComments()}
             {commentsForm}
         </TabPane>
