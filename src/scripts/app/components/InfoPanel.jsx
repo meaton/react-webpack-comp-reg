@@ -36,6 +36,7 @@ var InfoPanel = React.createClass({
     spec: React.PropTypes.object,
     specXml: React.PropTypes.string,
     comments: React.PropTypes.array.isRequired,
+    loggedIn: React.PropTypes.bool,
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
     onComponentToggle: React.PropTypes.func
@@ -120,8 +121,8 @@ var InfoPanel = React.createClass({
 
   renderComments: function() {
     var comments = this.props.comments;
+    var isLoggedIn = this.props.loggedIn;
     var commentSubmit = this.commentSubmit;
-    var isLoggedIn = this.context.loggedIn;
 
     if(comments != null && comments.length > 0)
       return (
@@ -129,17 +130,17 @@ var InfoPanel = React.createClass({
           var deleteForm = (isLoggedIn && comment.canDelete === "true") ? (
             <form name={"comment-" + index} onSubmit={commentSubmit}>
               <input type="hidden" name="id" value={comment.id} />
-              <ButtonInput type='submit' value='Delete Comment' />
+              <ButtonInput className="delete" type='submit' value='Delete Comment' />
             </form>
           ) : null;
 
           return (
             <div key={"comment-" + index} className="comment">
+              {deleteForm}
               <span className="comment-name">{comment.userName}
               </span><span> - </span>
               <span className="comment-date">{ moment(comment.commentDate).format('LLL') }</span>
               <p className="comment-comments">{comment.comments}</p>
-              {deleteForm}
             </div>
           );
         })

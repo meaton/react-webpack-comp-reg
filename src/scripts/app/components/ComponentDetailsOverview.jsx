@@ -26,7 +26,8 @@ var ComponentDetailsOverview = React.createClass({
   getStateFromFlux: function() {
     var flux = this.getFlux();
     return {
-      details: flux.store("ComponentDetailsStore").getState()
+      details: flux.store("ComponentDetailsStore").getState(),
+      auth: flux.store("AuthenticationStore").getState()
     };
   },
 
@@ -70,6 +71,7 @@ var ComponentDetailsOverview = React.createClass({
                   expansionState={this.state.details.expansionState}
                   linkedComponents={this.state.details.linkedComponents}
                   onComponentToggle={this.toggleComponent}
+                  loggedIn={this.state.auth.authState}
       />
       : null;
 
