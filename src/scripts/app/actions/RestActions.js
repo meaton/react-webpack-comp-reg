@@ -4,7 +4,9 @@ var SpecAugmenter = require("../service/SpecAugmenter")
 
 var Constants = require("../constants"),
     /* REST client */
-    ComponentRegistryClient = require("../service/ComponentRegistryClient")
+    ComponentRegistryClient = require("../service/ComponentRegistryClient"),
+    /* Component spec utils */
+    ComponentSpec = require("../service/ComponentSpec");
 
 /**
  * Loads all linked components (with @ComponentId) that are a direct child
@@ -100,22 +102,56 @@ function loadComponentsById(ids, space, collected, callback) {
   }
 }
 
-function saveSpec(spec, item, update, publish, successCb) {
+function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
   log.debug("Save - update:", update, " publish:", publish);
   this.dispatch(Constants.SAVE_COMPONENT_SPEC);
-  ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
-      // success
-      this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
-      if(successCb) {
-        successCb(spec);
-      }
-    }.bind(this),
-    function(message, data) {
-      // failure
-      log.warn("Error while saving:", message, data);
-      this.dispatch(Constants.SAVE_COMPONENT_SPEC_FAILURE, message);
-    }.bind(this)
-  );
+
+  // to be called when save is eventually safe and/or confirmed
+  var save = function() {
+    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
+        // success
+        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
+        if(successCb) {
+          successCb(spec);
+        }
+      }.bind(this),
+      function(message, data) {
+        // failure
+        log.warn("Error while saving:", message, data);
+        this.dispatch(Constants.SAVE_COMPONENT_SPEC_FAILURE, message);
+      }.bind(this)
+    );
+  }.bind(this);
+
+  // to be called when the user aborts the save action (i.e. does not confirm after usage warning)
+  var abort = function() {
+    log.debug("Saving of component aborted after usage check");
+    this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec); //TODO: other event?
+  }.bind(this);
+
+  // Almost ready to try saving...
+  if(componentInUsageCb == null // No callback means no usage check
+    || ComponentSpec.isProfile(spec)) { // Profile, no usage check required so save
+    save();
+  } else {
+      // Component, may be in use so check
+      ComponentRegistryClient.usageCheck(item.id, function(result) {
+        // result is null if not in use, otherwise has a list of profile and component descriptions
+        if(result == null) {
+          log.debug("Component not in use, saving without confirmation...");
+          save();
+        } else {
+          log.debug("Component", item.id, "is in use:", result);
+
+          var resultObj = [];
+          if(result.profileDescription)
+            resultObj.push({ componentId: item.id, result: result.profileDescription });
+          if(result.componentDescription)
+            resultObj.push({ componentId: item.id, result: result.componentDescription });
+          componentInUsageCb(resultObj, save, abort);
+        }
+      });
+  }
 }
 
 /**
@@ -238,9 +274,9 @@ module.exports = {
     );
   },
 
-  saveComponentSpec: function(spec, item, space, successCb) {
+  saveComponentSpec: function(spec, item, space, successCb, componentInUsageCb) {
     // do update, don't publish
-    saveSpec.apply(this, [spec, item, true, false, successCb])
+    saveSpec.apply(this, [spec, item, true, false, successCb, componentInUsageCb])
   },
 
   saveNewComponentSpec: function(spec, item, space, successCb) {

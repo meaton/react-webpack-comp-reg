@@ -49,7 +49,7 @@ var AlertsView = React.createClass({
 
     // display messages if present
     if(messages == undefined || Object.keys(messages).length == 0) {
-      return null;
+      return <div id="alert-container"></div>;
     } else {
       var alerts = Object.keys(messages).map(this.renderAlert);
 

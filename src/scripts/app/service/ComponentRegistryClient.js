@@ -249,7 +249,7 @@ normaliseAttributeList: function(attrList) {
       for(j=0; j<attrArray.length; j++) {
         this.normaliseValueScheme(attrArray[j].ValueScheme);
       }
-      
+
       attrList.Attribute = attrArray;
     }
   }
@@ -284,6 +284,24 @@ loadAllowedTypes: function(cb) {
     }.bind(this),
     error: function(xhr, status, err) {
       log.error("Failed to retrieve allowed types", err);
+      cb(null);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
+usageCheck: function(componentId, cb) {
+  var url = restUrl +'/registry/components/usage/' + componentId;
+
+  $.ajax($.extend({
+    type: 'GET',
+    url: url,
+    dataType: "json",
+    success: function(data) {
+      log.trace('return usage check: ' + data);
+      cb(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      log.error("Failed to perform usage check", err);
       cb(null);
     }.bind(this)
   }, corsRequestParams));

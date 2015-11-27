@@ -65,7 +65,12 @@ var ComponentSpec = {
       log.debug("Updating", spec, "with derived", command);
       return update(spec, {CMD_Component: command});
     }
+  },
+
+  isProfile(spec) {
+    return spec['@isProfile']=="true";
   }
+
 }
 
 module.exports = ComponentSpec;
