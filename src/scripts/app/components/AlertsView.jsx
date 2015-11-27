@@ -36,29 +36,17 @@ var AlertsView = React.createClass({
       style = 'info';
     }
 
-    // // what to do on dismiss...
-    // var handleDismiss = function() {
-    //   this.props.onDismiss(msgId);
-    // }
-
     return (<Alert key={msgId} bsStyle={style} onDismiss={this.props.onDismiss.bind(null, msgId)}>{msg.message}</Alert>);
   },
 
   render: function() {
     var messages = this.props.messages;
-
-    // display messages if present
-    if(messages == undefined || Object.keys(messages).length == 0) {
-      return <div id="alert-container"></div>;
-    } else {
-      var alerts = Object.keys(messages).map(this.renderAlert);
-
-      return (
-        <div id="alert-container">
-          {alerts}
-        </div>
-      );
-    }
+    var alerts = (messages == undefined || Object.keys(messages).length == 0) ? null : Object.keys(messages).map(this.renderAlert);
+    return (
+      <div id="alert-container">
+        {alerts}
+      </div>
+    );
   }
 });
 
