@@ -313,6 +313,19 @@ module.exports = {
       log.error(message);
       this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, {ids: ids, message: message});
     }.bind(this));
+  },
+
+  loadComments: function(type, space, componentId) {
+    this.dispatch(Constants.LOAD_COMMENTS);
+    ComponentRegistryClient.loadComments(componentId, type, function(comments){
+        // Success
+        this.dispatch(Constants.LOAD_COMMENTS_SUCCESS, comments);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_COMMENTS_FAILURE, message);
+      }.bind(this)
+    );
   }
 
 };

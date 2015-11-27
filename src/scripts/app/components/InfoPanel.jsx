@@ -32,6 +32,7 @@ var InfoPanel = React.createClass({
     item: React.PropTypes.object.isRequired,
     loadSpec: React.PropTypes.func.isRequired,
     loadSpecXml: React.PropTypes.func.isRequired,
+    loadComments: React.PropTypes.func.isRequired,
     spec: React.PropTypes.object,
     specXml: React.PropTypes.string,
     comments: React.PropTypes.array.isRequired,
@@ -50,7 +51,7 @@ var InfoPanel = React.createClass({
       this.props.loadSpecXml();
     }
     if(index == Constants.INFO_VIEW_COMMENTS) {
-      //TODO
+      this.props.loadComments();
     }
   },
   render: function () {
@@ -90,15 +91,15 @@ var InfoPanel = React.createClass({
             <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
               : null }
         </TabPane>
-        <TabPane eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + this.props.comments.length + ")"}>
-            {this.processComments()}
+        <TabPane eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + this.props.item.commentsCount + ")"}>
+            {this.renderComments()}
             {commentsForm}
         </TabPane>
       </TabbedArea>
     );
   },
 
-  processComments: function() {
+  renderComments: function() {
     var comments = this.props.comments;
     var commentSubmit = this.commentSubmit;
     var isLoggedIn = this.context.loggedIn;
@@ -126,23 +127,23 @@ var InfoPanel = React.createClass({
       );
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
-  },
-
-  commentSubmit: function(evt) {
-    evt.preventDefault();
-
-    console.log('comment form submit: ' + evt.currentTarget.name)
-    if(evt.currentTarget.name === "commentsBox") {
-      var commentText = $(evt.currentTarget).find('textarea#commentText');
-      var comments = commentText.val();
-
-      this.props.commentsHandler().save(comments);
-      commentText.val('');
-    } else if(evt.currentTarget.name.indexOf("comment-") > -1)
-      this.props.commentsHandler().delete($(evt.currentTarget).find("input:hidden[name=id]").val());
-
-    return false;
   }
+  //
+  // commentSubmit: function(evt) {
+  //   evt.preventDefault();
+  //
+  //   console.log('comment form submit: ' + evt.currentTarget.name)
+  //   if(evt.currentTarget.name === "commentsBox") {
+  //     var commentText = $(evt.currentTarget).find('textarea#commentText');
+  //     var comments = commentText.val();
+  //
+  //     this.props.commentsHandler().save(comments);
+  //     commentText.val('');
+  //   } else if(evt.currentTarget.name.indexOf("comment-") > -1)
+  //     this.props.commentsHandler().delete($(evt.currentTarget).find("input:hidden[name=id]").val());
+  //
+  //   return false;
+  // }
 });
 
 /* GIST kurtsson/3f1c8efc0ccd549c9e31 */

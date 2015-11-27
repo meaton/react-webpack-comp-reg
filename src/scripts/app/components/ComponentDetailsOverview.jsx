@@ -44,6 +44,10 @@ var ComponentDetailsOverview = React.createClass({
     this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
   },
 
+  loadComments: function() {
+    this.getFlux().actions.loadComments(this.props.type, this.props.space, this.props.item.id);
+  },
+
   toggleComponent: function(itemId, spec) {
     // from ComponentViewMixin
     this.doToggle(this.props.space, itemId, spec);
@@ -57,9 +61,9 @@ var ComponentDetailsOverview = React.createClass({
                   spec={this.state.details.spec}
                   specXml={this.state.details.xml}
                   comments={this.state.details.comments}
-                  commentsHandler={this.commentsHandler}
                   loadSpec={this.loadSpec}
                   loadSpecXml={this.loadXml}
+                  loadComments={this.loadComments}
                   className={this.state.details.loading?" wait":""}
                   expansionState={this.state.details.expansionState}
                   linkedComponents={this.state.details.linkedComponents}

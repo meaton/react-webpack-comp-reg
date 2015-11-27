@@ -100,7 +100,9 @@ var Browser = React.createClass({
     if(this.state.details.activeView == Constants.INFO_VIEW_XML) {
       this.getFlux().actions.loadComponentSpecXml(this.state.items.type, this.state.items.space, item);
     }
-    //TODO flux: comments
+    if(this.state.details.activeView == Constants.INFO_VIEW_COMMENTS) {
+      this.getFlux().actions.loadComments(this.state.items.type, this.state.items.space, item.id);
+    }
   },
   handleDelete: function() {
     var ids = Object.keys(this.state.selection.selectedItems);

@@ -163,7 +163,6 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
         }
       }.bind(this),
       error: function(xhr, status, err) {
-        log.trace("");
         handleFailure("Error saving spec: " + err, data);
       }.bind(this)
     }, corsRequestParams));
@@ -272,6 +271,29 @@ normaliseValueScheme: function(valueScheme) {
 deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
   //setTimeout(function(){handleSuccess();}, 1000);
   setTimeout(function(){handleFailure("deletion not implemented yet");}, 1000);
+},
+
+loadComments: function(componentId, space, success, failure) {
+  var reg_type = (space === Constants.TYPE_PROFILE) ? "profiles" : "components";
+
+  $.ajax($.extend({
+    url: restUrl + '/registry/' + reg_type + '/' + componentId + '/comments',
+    dataType: "json",
+    success: function(data) {
+      if(success && data != null) {
+        if(data.comment != null) {
+          success(data.comment);
+        } else {
+          success(data);
+        }
+      } else {
+        success([]);
+      }
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
 },
 
 loadAllowedTypes: function(cb) {

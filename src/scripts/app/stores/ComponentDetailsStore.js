@@ -24,8 +24,10 @@ var ComponentSpecStore = Fluxxor.createStore({
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
       Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
       Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded,
-      Constants.COMPONENT_SPEC_UPDATED, this.handleSpecUpdate
-      //TODO: comments
+      Constants.COMPONENT_SPEC_UPDATED, this.handleSpecUpdate,
+      Constants.LOAD_COMMENTS, this.handleLoadComments,
+      Constants.LOAD_COMMENTS_SUCCESS, this.handleLoadCommentsSuccess,
+      Constants.LOAD_COMMENTS_FAILURE, this.handleLoadCommentsFailure
     );
   },
 
@@ -103,6 +105,29 @@ var ComponentSpecStore = Fluxxor.createStore({
     // additional linked components have been loaded - merge with current set
     this.linkedComponents = update(this.linkedComponents, {$merge: linkedComponents});
     this.emit("change");
+  },
+
+  handleLoadComments: function() {
+    this.loading = true;
+    this.comments = [];
+    this.emit("change");
+  },
+
+  handleLoadCommentsSuccess: function(comments) {
+    this.loading = false;
+
+    if($.isArray(comments)) {
+      this.comments = comments;
+    } else {
+      this.comments = [comments];
+    }
+    
+    this.activeView = Constants.INFO_VIEW_COMMENTS;
+    this.emit("change");
+  },
+
+  handleLoadCommentsFailure: function() {
+    this.loading = false;
   }
 
 });
