@@ -16,6 +16,7 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDComponentForm = require('./CMDComponentForm');
 
 //utils
+var ComponentSpec = require('../service/ComponentSpec');
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
@@ -83,7 +84,7 @@ var ComponentSpecForm = React.createClass({
 
       // Display properties
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
-      var isProfile = (spec.hasOwnProperty("@isProfile")) ? (spec['@isProfile']=="true") : false;
+      var isProfile = ComponentSpec.isProfile(spec);
 
       return (
         <form ref="editComponentForm" name="editComponent" id="editComponent" className="form-horizontal form-group">

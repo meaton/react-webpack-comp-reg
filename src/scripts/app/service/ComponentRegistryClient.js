@@ -16,6 +16,8 @@ var ccrUrl = require('../../config').ccrUrl;
 
 var Validation = require('./Validation');
 
+var ComponentSpec = require('../service/ComponentSpec');
+
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
     password: Config.REST.auth.password,
@@ -127,7 +129,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   fd.append('domainName', item.domainName);
   fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
-  var typeSpace = (spec["@isProfile"] == "true") ? "profiles" : "components";
+  var typeSpace = ComponentSpec.isProfile(spec) ? "profiles" : "components";
   var url = restUrl + '/registry/' + typeSpace;
   if(update) url += '/' + profileId + '/' + actionType;
 

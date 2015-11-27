@@ -17,6 +17,9 @@ var Panel = require('react-bootstrap/lib/Panel');
 //components
 var ComponentSpecView = require('./ComponentSpecView');
 
+//utils
+var ComponentSpec = require('../service/ComponentSpec');
+
 require('../../../styles/InfoPanel.sass');
 
 /**
@@ -78,7 +81,7 @@ var InfoPanel = React.createClass({
     );
 
     return (
-      <TabbedArea activeKey={this.props.activeView} onSelect={this.tabSelect} className={(item['@isProfile'] === "true") ? "profile" : "component"}>
+      <TabbedArea activeKey={this.props.activeView} onSelect={this.tabSelect} className={ComponentSpec.isProfile(item)?"profile":"component"}>
         <TabPane eventKey={Constants.INFO_VIEW_SPEC} tab="view">
           {viewer}
         </TabPane>
