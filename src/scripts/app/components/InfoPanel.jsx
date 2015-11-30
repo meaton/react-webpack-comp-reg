@@ -122,32 +122,34 @@ var InfoPanel = React.createClass({
   renderComments: function() {
     var comments = this.props.comments;
     var isLoggedIn = this.props.loggedIn;
-    var commentSubmit = this.commentSubmit;
+    var commentDelete = this.deleteComment;
 
     if(comments != null && comments.length > 0)
       return (
         comments.map(function(comment, index) {
-          var deleteForm = (isLoggedIn && comment.canDelete === "true") ? (
-            <form name={"comment-" + index} onSubmit={commentSubmit}>
-              <input type="hidden" name="id" value={comment.id} />
-              <ButtonInput className="delete" type='submit' value='Delete Comment' />
-            </form>
+          var deleteLink = (isLoggedIn && comment.canDelete === "true") ? (
+            <span>&nbsp;<a className="delete" onClick={commentDelete.bind(this, comment)}>[delete]</a></span>
           ) : null;
 
           return (
             <div key={"comment-" + index} className="comment">
-              {deleteForm}
               <span className="comment-name">{comment.userName}
               </span><span> - </span>
               <span className="comment-date">{ moment(comment.commentDate).format('LLL') }</span>
+              {deleteLink}
               <p className="comment-comments">{comment.comments}</p>
             </div>
           );
-        })
+        }.bind(this))
       );
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
-  }
+  },
+
+  deleteComment: function(comment) {
+    //TODO
+    log.debug("Delete comment", comment.id, comment);
+  },
   //
   // commentSubmit: function(evt) {
   //   evt.preventDefault();
