@@ -268,9 +268,20 @@ normaliseValueScheme: function(valueScheme) {
   }
 },
 
-deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
-  //setTimeout(function(){handleSuccess();}, 1000);
-  setTimeout(function(){handleFailure("deletion not implemented yet");}, 1000);
+deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
+  var url = restUrl + '/registry/' + type + '/' + itemId;
+
+  $.ajax($.extend({
+    type: 'DELETE', // 'POST' // Note testing locally with CORS enable DELETE method in init-config accepted methods
+    url: url,
+    //data: { method: 'DELETE' }, // used for POST method of deletion
+    success: function(data) {
+      handleSuccess(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      handleFailure(err);
+    }.bind(this)
+  }, corsRequestParams));
 },
 
 loadComments: function(componentId, type, success, failure) {

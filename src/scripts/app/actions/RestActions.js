@@ -163,7 +163,7 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
  * @param  {function} failure   failure callback
  * @param  {Array} [remainder] [description]
  */
-function deleteComponents(type, space, ids, success, failure, remainder) {
+function deleteComponents(type, ids, success, failure, remainder) {
   if(remainder == undefined) {
     remainder = ids.slice();
   }
@@ -182,10 +182,10 @@ function deleteComponents(type, space, ids, success, failure, remainder) {
       //deleted
       log.trace("Successfully deleted", id);
       //process remainder
-      deleteComponents(type, space, ids, success, failure, remainder);
+      deleteComponents(type, ids, success, failure, remainder);
     };
 
-    ComponentRegistryClient.deleteComponents(type, space, id, handleSuccess, failure);
+    ComponentRegistryClient.deleteComponent(type, id, handleSuccess, failure);
   }
 }
 
@@ -304,10 +304,10 @@ module.exports = {
     });
   },
 
-  deleteComponents: function(type, space, ids) {
+  deleteComponents: function(type, ids) {
     log.info("Requesting deletion of", ids);
     this.dispatch(Constants.DELETE_COMPONENTS, ids);
-    deleteComponents(type, space, ids, function(){
+    deleteComponents(type, ids, function(){
       this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, ids);
     }.bind(this), function(message) {
       log.error(message);

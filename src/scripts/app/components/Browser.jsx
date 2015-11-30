@@ -93,10 +93,10 @@ var Browser = React.createClass({
   handleRowSelect: function(item, target) {
     this.getFlux().actions.selectBrowserItem(item);
   },
-  
+
   handleDelete: function() {
     var ids = Object.keys(this.state.selection.selectedItems);
-    this.getFlux().actions.deleteComponents(this.state.items.type, this.state.items.space, ids);
+    this.getFlux().actions.deleteComponents(this.state.items.type, ids);
   }
 });
 
