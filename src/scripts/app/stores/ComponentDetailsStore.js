@@ -141,9 +141,12 @@ var ComponentSpecStore = Fluxxor.createStore({
   },
 
   handleSaveComment: function(comments) {
-    this.newComment = comments;
     log.debug("Saving comment", comments);
 
+    //store form value (in case save action fails)
+    this.newComment = comments;
+
+    //push temporary comment (optimistic update)
     var comment = {
       canDelete: false,
       userName: "Posting...",
@@ -160,7 +163,10 @@ var ComponentSpecStore = Fluxxor.createStore({
 
   handleSaveCommentSuccess: function(comment) {
     log.debug("Saved comment", comment);
-    this.newComment = null;
+
+    //form value can be removed, form should be blank
+    this.newComment = "";
+
     //replace temporary comment with actual result
     comment = update(comment, {$merge: {canDelete: "true"}});
     this.comments = update(this.comments, {$splice: [[this.comments.length-1, 1, comment]]});

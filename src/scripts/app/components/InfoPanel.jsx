@@ -45,6 +45,10 @@ var InfoPanel = React.createClass({
     onComponentToggle: React.PropTypes.func
   },
 
+  getInitialState: function() {
+    return {comment: ''};
+  },
+
   componentDidMount: function() {
     // component appears for the first time, load the current tab
     this.refreshTab(this.props.activeView);
@@ -58,10 +62,13 @@ var InfoPanel = React.createClass({
       this.refreshTab(this.props.activeView);
       // don't update now, reload should already trigger an update
       return false;
-    } else {
-      // something else has changed, update normally
-      return true;
+    } //else something else has changed, update normally
+
+    if(this.props.newComment != nextProps.newComment) {
+      this.setState({comment: nextProps.newComment});
     }
+
+    return true;
   },
 
   refreshTab: function(index) {
@@ -97,7 +104,7 @@ var InfoPanel = React.createClass({
     // comments form and submission
     var commentsForm = (this.props.loggedIn) ? (
       <form name="commentsBox" onSubmit={this.saveComment}>
-        <Input onChange={this.handleChangeComment} ref="commentText" value={this.props.newComment} id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
+        <Input onChange={this.handleChangeComment} ref="commentText" value={this.state.comment} id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
         <ButtonInput type='submit' value='Submit' />
       </form>
     ) : (
