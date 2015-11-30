@@ -49,6 +49,14 @@ var ComponentDetailsOverview = React.createClass({
     this.getFlux().actions.loadComments(this.props.type, this.props.space, this.props.item.id);
   },
 
+  saveComment: function(comment) {
+    this.getFlux().actions.saveComment(this.props.type, this.props.item.id, comment);
+  },
+
+  deleteComment: function(commentId) {
+    this.getFlux().actions.deleteComment(this.props.type, this.props.item.id, commentId);
+  },
+
   /**
    * from ComponentViewMixin
    */
@@ -64,6 +72,7 @@ var ComponentDetailsOverview = React.createClass({
                   spec={this.state.details.spec}
                   specXml={this.state.details.xml}
                   comments={this.state.details.comments}
+                  newComment={this.state.details.newComment}
                   loadSpec={this.loadSpec}
                   loadSpecXml={this.loadXml}
                   loadComments={this.loadComments}
@@ -71,6 +80,8 @@ var ComponentDetailsOverview = React.createClass({
                   expansionState={this.state.details.expansionState}
                   linkedComponents={this.state.details.linkedComponents}
                   onComponentToggle={this.toggleComponent}
+                  deleteComment={this.deleteComment}
+                  saveComment={this.saveComment}
                   loggedIn={this.state.auth.authState}
       />
       : null;

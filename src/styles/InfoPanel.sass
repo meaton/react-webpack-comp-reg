@@ -1,29 +1,38 @@
 #commentsTab {
 
   .comment {
-  padding: .5em 1em;
-  max-width: 80em;
+    padding: .5em 1em;
+    max-width: 80em;
 
-  .comment-name, .comment-date {
-    font-weight: bold;
-  }
-
-  .comment-comments {
-    max-width: 60em;
-    border-top: 1px solid;
-    margin: 0;
-    padding-top: .5em;
-    font-size: 110%;
-  }
-
-  a.delete {
-    color: red;
-    text-decoration: none;
-
-    &:hover {
-      color: black;
+    .comment-name, .comment-date {
+      font-weight: bold;
     }
+
+    .comment-comments {
+      max-width: 60em;
+      border-top: 1px solid;
+      margin: 0;
+      padding-top: .5em;
+      font-size: 110%;
+    }
+
+    a.delete {
+      color: red;
+      text-decoration: none;
+
+      &:hover {
+        color: black;
+      }
   }
 
+  }
+
+  form {
+    max-width: 60%;
+    margin-left: 1em;
+
+    textarea {
+      height: 6em;
+    }
   }
 }

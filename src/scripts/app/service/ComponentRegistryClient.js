@@ -273,8 +273,8 @@ deleteComponents: function(type, space, id, handleSuccess, handleFailure) {
   setTimeout(function(){handleFailure("deletion not implemented yet");}, 1000);
 },
 
-loadComments: function(componentId, space, success, failure) {
-  var reg_type = (space === Constants.TYPE_PROFILE) ? "profiles" : "components";
+loadComments: function(componentId, type, success, failure) {
+  var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
 
   $.ajax($.extend({
     url: restUrl + '/registry/' + reg_type + '/' + componentId + '/comments',
@@ -289,6 +289,68 @@ loadComments: function(componentId, space, success, failure) {
       } else {
         success([]);
       }
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
+saveComment: function(componentId, type, comment, success, failure) {
+  //POST
+  /*<comment>
+    <comments>test comment</comments>
+    <commentDate/>
+    <componentId>clarin.eu:cr1:p_1433928406468</componentId>
+    <userName/>
+  </comment>*/
+  var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
+  var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
+  var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/';
+
+  var fd = new FormData();
+
+  if(type === Constants.TYPE_PROFILE) {
+    comments_xml += "<componentId>" + componentId + "</componentId>";
+  } else if (type === Constants.TYPE_COMPONENTS) {
+    comments_xml += "<componentId>" + componentId + "</componentId>";
+  }
+
+  comments_xml += "<userName/></comment>";
+
+  fd.append('data', new Blob([ comments_xml ], { type: "application/xml" }));
+
+  $.ajax($.extend({
+    type: 'POST',
+    url: url,
+    data: fd,
+    processData: false,
+    contentType: false,
+    dataType: "json",
+    success: function(data) {
+      log.trace('comment saved: ', data);
+      if(data['@registered'] == 'true') {
+        success(data.comment);
+      } else {
+        failure(data.errors);
+      }
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
+deleteComment: function(componentId, type, commentId, success, failure) {
+  var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
+  var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/' + commentId;
+
+  $.ajax($.extend({
+    type: 'POST',
+    url: url,
+    data: { method: 'DELETE' }, // used for POST method of deletion
+    success: function(data) {
+      success(commentId, data);
     }.bind(this),
     error: function(xhr, status, err) {
       failure(err);

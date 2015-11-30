@@ -326,6 +326,31 @@ module.exports = {
         this.dispatch(Constants.LOAD_COMMENTS_FAILURE, message);
       }.bind(this)
     );
+  },
+
+  saveComment(type, componentId, comment) {
+    this.dispatch(Constants.SAVE_COMMENT, comment);
+    ComponentRegistryClient.saveComment(componentId, type, comment, function(result){
+        // Success
+        this.dispatch(Constants.SAVE_COMMENT_SUCCESS, result);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.SAVE_COMMENT_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  deleteComment(type, componentId, commentId) {
+    ComponentRegistryClient.deleteComment(componentId, type, commentId, function(id, result){
+        // Success
+        this.dispatch(Constants.DELETE_COMMENT_SUCCESS, id);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.DELETE_COMMENT_FAILURE, message);
+      }.bind(this)
+    );
   }
 
 };

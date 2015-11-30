@@ -33,9 +33,12 @@ var InfoPanel = React.createClass({
     loadSpec: React.PropTypes.func.isRequired,
     loadSpecXml: React.PropTypes.func.isRequired,
     loadComments: React.PropTypes.func.isRequired,
+    deleteComment: React.PropTypes.func.isRequired,
+    saveComment: React.PropTypes.func.isRequired,
     spec: React.PropTypes.object,
     specXml: React.PropTypes.string,
     comments: React.PropTypes.array.isRequired,
+    newComment: React.PropTypes.string,
     loggedIn: React.PropTypes.bool,
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
@@ -92,9 +95,9 @@ var InfoPanel = React.createClass({
       );
 
     // comments form and submission
-    var commentsForm = (this.context.loggedIn) ? (
-      <form name="commentsBox" onSubmit={this.commentSubmit}>
-        <Input id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
+    var commentsForm = (this.props.loggedIn) ? (
+      <form name="commentsBox" onSubmit={this.saveComment}>
+        <Input onChange={this.handleChangeComment} ref="commentText" value={this.props.newComment} id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
         <ButtonInput type='submit' value='Submit' />
       </form>
     ) : (
@@ -127,7 +130,7 @@ var InfoPanel = React.createClass({
     if(comments != null && comments.length > 0)
       return (
         comments.map(function(comment, index) {
-          var deleteLink = (isLoggedIn && comment.canDelete === "true") ? (
+          var deleteLink = (isLoggedIn && comment.canDelete === "true" && comment.id != null) ? (
             <span>&nbsp;<a className="delete" onClick={commentDelete.bind(this, comment)}>[delete]</a></span>
           ) : null;
 
@@ -135,7 +138,7 @@ var InfoPanel = React.createClass({
             <div key={"comment-" + index} className="comment">
               <span className="comment-name">{comment.userName}
               </span><span> - </span>
-              <span className="comment-date">{ moment(comment.commentDate).format('LLL') }</span>
+              <span className="comment-date">{ (comment.commentDate == null) ? null: moment(comment.commentDate).format('LLL') }</span>
               {deleteLink}
               <p className="comment-comments">{comment.comments}</p>
             </div>
@@ -146,26 +149,20 @@ var InfoPanel = React.createClass({
       return React.createElement('div', {className: "comment empty"}, "No Comments");
   },
 
-  deleteComment: function(comment) {
-    //TODO
-    log.debug("Delete comment", comment.id, comment);
+  handleChangeComment: function(evt) {
+    this.setState({comment: evt.target.value});
   },
-  //
-  // commentSubmit: function(evt) {
-  //   evt.preventDefault();
-  //
-  //   console.log('comment form submit: ' + evt.currentTarget.name)
-  //   if(evt.currentTarget.name === "commentsBox") {
-  //     var commentText = $(evt.currentTarget).find('textarea#commentText');
-  //     var comments = commentText.val();
-  //
-  //     this.props.commentsHandler().save(comments);
-  //     commentText.val('');
-  //   } else if(evt.currentTarget.name.indexOf("comment-") > -1)
-  //     this.props.commentsHandler().delete($(evt.currentTarget).find("input:hidden[name=id]").val());
-  //
-  //   return false;
-  // }
+
+  saveComment: function(evt) {
+    evt.preventDefault();
+    log.debug("Post comment", this.state.comment);
+    this.props.saveComment(this.state.comment);
+  },
+
+  deleteComment: function(comment) {
+    log.debug("Delete comment", comment.id, comment);
+    this.props.deleteComment(comment.id);
+  }
 });
 
 /* GIST kurtsson/3f1c8efc0ccd549c9e31 */

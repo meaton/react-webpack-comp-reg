@@ -16,18 +16,27 @@ var ComponentSpecStore = Fluxxor.createStore({
     this.activeView = Constants.INFO_VIEW_SPEC;
     this.expansionState = {};
     this.linkedComponents = {};
+    this.newComment = null;
 
     this.bindActions(
       Constants.LOAD_COMPONENT_SPEC, this.handleLoadSpec,
       Constants.LOAD_COMPONENT_SPEC_SUCCES, this.handleLoadSpecSuccess,
       Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, this.handleLoadSpecXmlSuccess,
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
+
       Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
       Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded,
       Constants.COMPONENT_SPEC_UPDATED, this.handleSpecUpdate,
+
       Constants.LOAD_COMMENTS, this.handleLoadComments,
       Constants.LOAD_COMMENTS_SUCCESS, this.handleLoadCommentsSuccess,
-      Constants.LOAD_COMMENTS_FAILURE, this.handleLoadCommentsFailure
+      Constants.LOAD_COMMENTS_FAILURE, this.handleLoadCommentsFailure,
+
+      Constants.SAVE_COMMENT, this.handleSaveComment,
+      Constants.SAVE_COMMENT_SUCCESS, this.handleSaveCommentSuccess,
+      Constants.SAVE_COMMENT_FAILURE, this.handleSaveCommentFailure,
+
+      Constants.DELETE_COMMENT_SUCCESS, this.handleDeleteCommentSuccess
     );
   },
 
@@ -38,6 +47,7 @@ var ComponentSpecStore = Fluxxor.createStore({
       spec: this.spec,
       xml: this.xml,
       comments: this.comments,
+      newComment: this.newComment,
       expansionState: this.expansionState, // object that has a boolean value for each component 'appId' to indicate expansion
       linkedComponents : this.linkedComponents
     };
@@ -121,13 +131,66 @@ var ComponentSpecStore = Fluxxor.createStore({
     } else {
       this.comments = [comments];
     }
-    
+
     this.activeView = Constants.INFO_VIEW_COMMENTS;
     this.emit("change");
   },
 
   handleLoadCommentsFailure: function() {
     this.loading = false;
+  },
+
+  handleSaveComment: function(comments) {
+    this.newComment = comments;
+    log.debug("Saving comment", comments);
+
+    var comment = {
+      canDelete: false,
+      userName: "Posting...",
+      commentDate: null,
+      comments: comments
+    };
+    if($.isArray(this.comments)) {
+      this.comments = update(this.comments, {$push: [comment]});
+    } else {
+      this.comments = [comments];
+    }
+    this.emit("change");
+  },
+
+  handleSaveCommentSuccess: function(comment) {
+    log.debug("Saved comment", comment);
+    this.newComment = null;
+    //replace temporary comment with actual result
+    comment = update(comment, {$merge: {canDelete: "true"}});
+    this.comments = update(this.comments, {$splice: [[this.comments.length-1, 1, comment]]});
+    this.emit("change");
+  },
+
+  handleSaveCommentFailure: function() {
+    //remove temporary comment
+    this.comments = update(this.comments, {$splice: [[this.comments.length-1, 1]]});
+    this.emit("change");
+  },
+
+  handleDeleteCommentSuccess: function(id) {
+    // look up the comment in the current comments list
+    var index = -1;
+    if($.isArray(this.comments)) {
+      for(i=0;i<this.comments.length;i++) {
+        if(this.comments[i].id == id) {
+          index = i;
+        }
+      }
+    }
+
+    // and remove it (if found)
+    if(index >=0) {
+      this.comments = update(this.comments, {$splice: [[index, 1]]});
+    } else {
+      log.warn("Did not find comment with id", id, "to remove, display state may be inaccurate");
+    }
+    this.emit("change");
   }
 
 });
