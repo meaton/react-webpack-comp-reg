@@ -52,7 +52,7 @@ var InfoPanel = React.createClass({
 
   shouldComponentUpdate: function(nextProps, nextState) {
     // component props have been updated, could be an item change
-    if(this.props.item != nextProps.item) {
+    if(getId(this.props.item) != getId(nextProps.item)) {
       // item changed, reload current tab
       log.trace("Item changed!", this.props.item, nextProps.item);
       this.refreshTab(this.props.activeView);
@@ -104,6 +104,15 @@ var InfoPanel = React.createClass({
       <span>Login to enter a comment</span>
     );
 
+    var commentsCount;
+    if(this.props.activeView == Constants.INFO_VIEW_COMMENTS) {
+      // most accurate IF the current tab is the comments tab (which means that the comments have been loaded)
+      commentsCount = this.props.comments.length;
+    } else {
+      // we got this from the item listing
+      commentsCount = this.props.item.commentsCount;
+    }
+
     return (
       <TabbedArea activeKey={this.props.activeView} onSelect={this.refreshTab} className={ComponentSpec.isProfile(item)?"profile":"component"}>
         <TabPane eventKey={Constants.INFO_VIEW_SPEC} tab="view">
@@ -114,7 +123,7 @@ var InfoPanel = React.createClass({
             <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
               : null }
         </TabPane>
-        <TabPane id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + this.props.item.commentsCount + ")"}>
+        <TabPane id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + commentsCount + ")"}>
             {this.renderComments()}
             {commentsForm}
         </TabPane>
@@ -196,6 +205,14 @@ function formatXml(xml) {
     pad += indent;
   }
   return formatted; //.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
+}
+
+function getId(item) {
+  if(item == null) {
+    return null;
+  } else {
+    return item.id;
+  }
 }
 
 module.exports = InfoPanel;
