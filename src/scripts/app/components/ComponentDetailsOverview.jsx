@@ -82,7 +82,7 @@ var ComponentDetailsOverview = React.createClass({
                   onComponentToggle={this.toggleComponent}
                   deleteComment={this.deleteComment}
                   saveComment={this.saveComment}
-                  loggedIn={this.state.auth.authState}
+                  loggedIn={this.state.auth.authState.authenticated}
       />
       : null;
 

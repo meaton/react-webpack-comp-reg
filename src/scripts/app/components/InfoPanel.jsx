@@ -108,7 +108,7 @@ var InfoPanel = React.createClass({
         <ButtonInput type='submit' value='Submit' />
       </form>
     ) : (
-      <span>Login to enter a comment</span>
+      <p className="loginToPost">Login to enter a comment</p>
     );
 
     var commentsCount;
