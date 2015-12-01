@@ -16,6 +16,9 @@ var ButtonModal = require('./ButtonModal');
 var Constants = require('../constants');
 var Config = require('../../config');
 
+//mixins
+var ComponentUsageMixin = require('../mixins/ComponentUsageMixin');
+
 /**
 * BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.
 * @constructor
@@ -23,7 +26,7 @@ var Config = require('../../config');
 * @mixes Router.Navigation
 */
 var BrowserMenuGroup = React.createClass({
-  mixins: [Router.State, Router.Navigation],
+  mixins: [Router.State, Router.Navigation, ComponentUsageMixin],
   propTypes: {
     type: React.PropTypes.string.isRequired,
     space: React.PropTypes.string.isRequired,
@@ -101,11 +104,29 @@ var BrowserMenuGroup = React.createClass({
           <ButtonLink to="newEditor" params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
           {editorLink}
           <ButtonLink to="import" disabled={!this.props.loggedIn}>Import</ButtonLink>
-          <ButtonModal {...this.props} action={this.props.deleteComp} disabled={!this.props.loggedIn || selectionCount == 0 }
+          <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
         </ButtonGroup>
+    );
+  },
+
+  renderUsageModalContent: function(errors, doContinue, doAbort) {
+    return(
+      <div>
+        <div className="modal-body">
+          <div className="modal-desc">
+            <div>One of the component you are trying to delete is used by the following component(s) and/or profile(s):
+              <ul>{errors}</ul>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <div>One or more components have not been deleted. Pleas first delete the components and/or profiles listed above.</div>
+          <Button onClick={doAbort}>Ok</Button>
+        </div>
+      </div>
     );
   }
 });

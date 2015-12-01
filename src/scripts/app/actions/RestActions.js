@@ -155,15 +155,18 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
 }
 
 /**
- * Deletes a number of components (by id) by means of tail recursion
+ * Deletes a number of components (by id) by means of tail recursion. It
+ * performs a usage check for components (not profiles) iff a componentInUsageCb
+ * is provided
  * @param  {string} type      [description]
  * @param  {string} space     [description]
  * @param  {Array} ids       [description]
  * @param  {function} success   success callback
  * @param  {function} failure   failure callback
+ * @param  {function} componentInUsageCb component in use callback
  * @param  {Array} [remainder] [description]
  */
-function deleteComponents(type, ids, success, failure, remainder) {
+function deleteComponents(type, ids, success, failure, componentInUsageCb, remainder) {
   if(remainder == undefined) {
     remainder = ids.slice();
   }
@@ -182,10 +185,51 @@ function deleteComponents(type, ids, success, failure, remainder) {
       //deleted
       log.trace("Successfully deleted", id);
       //process remainder
-      deleteComponents(type, ids, success, failure, remainder);
+      deleteComponents(type, ids, success, failure, componentInUsageCb, remainder);
     };
 
-    ComponentRegistryClient.deleteComponent(type, id, handleSuccess, failure);
+    var handleFailure = function(msg) {
+      remainder.push(id);
+      var removed = $(ids).not(remainder).get();
+      log.debug("Abort deletion",ids, remainder, "- Removed:", removed);
+      if(removed.length != 0) {
+        success(removed);
+      }
+      failure({
+        message: msg,
+        ids: remainder
+      });
+    };
+
+    tryDeleteComponent(type, id, componentInUsageCb,
+      ComponentRegistryClient.deleteComponent.bind(null, type, id, handleSuccess, handleFailure),
+      handleFailure.bind(null, null));
+  }
+}
+
+function tryDeleteComponent(type, id, componentInUsageCb, doDelete, doAbort) {
+  // Almost ready to try saving...
+  if(componentInUsageCb == null // No callback means no usage check
+    || type == Constants.TYPE_PROFILE) { // Profile, no usage check required so save
+    doDelete();
+  } else {
+      // Component, may be in use so check
+      ComponentRegistryClient.usageCheck(id, function(result) {
+        // result is null if not in use, otherwise has a list of profile and component descriptions
+        if(result == null) {
+          log.debug("Component not in use, can be deleted...");
+          doDelete();
+        } else {
+          log.debug("Component requested for deletion", id, "is in use:", result);
+
+          var resultObj = [];
+          if(result.profileDescription)
+            resultObj.push({ componentId: id, result: result.profileDescription });
+          if(result.componentDescription)
+            resultObj.push({ componentId: id, result: result.componentDescription });
+          componentInUsageCb(resultObj, doDelete, doAbort);
+        }
+      });
   }
 }
 
@@ -304,15 +348,17 @@ module.exports = {
     });
   },
 
-  deleteComponents: function(type, ids) {
+  deleteComponents: function(type, ids, componentInUsageCb) {
     log.info("Requesting deletion of", ids);
     this.dispatch(Constants.DELETE_COMPONENTS, ids);
     deleteComponents(type, ids, function(){
       this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, ids);
-    }.bind(this), function(message) {
-      log.error(message);
-      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, {ids: ids, message: message});
-    }.bind(this));
+    }.bind(this), function(result) {
+      if(result.message != null) {
+        log.error(result.message);
+      }
+      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, result);
+    }.bind(this), componentInUsageCb);
   },
 
   loadComments: function(type, space, componentId) {

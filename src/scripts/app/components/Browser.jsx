@@ -94,9 +94,9 @@ var Browser = React.createClass({
     this.getFlux().actions.selectBrowserItem(item);
   },
 
-  handleDelete: function() {
+  handleDelete: function(componentInUsageCb) {
     var ids = Object.keys(this.state.selection.selectedItems);
-    this.getFlux().actions.deleteComponents(this.state.items.type, ids);
+    this.getFlux().actions.deleteComponents(this.state.items.type, ids, componentInUsageCb);
   }
 });
 

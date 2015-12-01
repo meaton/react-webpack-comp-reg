@@ -26,19 +26,23 @@ function newMessage(messages, type, obj) {
     message = obj;
   }
 
-  // assign unique id
-  var id = null;
-  var count=0;
-  while(id == null || messages.hasOwnProperty(id)) {
-    id = type + count++;
-  }
+  if(message == null) {
+    return messages;
+  } else {
+    // assign unique id
+    var id = null;
+    var count=0;
+    while(id == null || messages.hasOwnProperty(id)) {
+      id = type + count++;
+    }
 
-  var newMsg = {
-    type: type,
-    message: message
-  }
+    var newMsg = {
+      type: type,
+      message: message
+    }
 
-  return update(messages, {[id]: {$set: newMsg}});
+    return update(messages, {[id]: {$set: newMsg}});
+  }
 }
 
 var MessageStore = Fluxxor.createStore({
