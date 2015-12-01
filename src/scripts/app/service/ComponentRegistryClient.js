@@ -50,6 +50,10 @@ var ComponentRegistryClient = {
             _data = [_data];
 
           handleSuccess(_data);
+        } else {
+          log.debug("Empty response from", requestUrl);
+          //nothing was returned, empty workspace
+          handleSuccess([]);
         }
      }.bind(this),
      error: function(xhr, status, err) {
