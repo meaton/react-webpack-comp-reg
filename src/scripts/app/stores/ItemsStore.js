@@ -91,8 +91,16 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   handleFilterTextChange: function(text) {
+    var oldFilter = this.filterText;
     this.filterText = (text === "") ? null : text;
-    this.filteredItems = filter(this.items, this.filterText);
+
+    if(this.filterText != null && oldFilter != null && this.filterText.indexOf(oldFilter) == 0) {
+      //narrow down on existing filtered items
+      this.filteredItems = filter(this.filteredItems, this.filterText);
+    } else {
+      //filter on full set
+      this.filteredItems = filter(this.items, this.filterText);
+    }
     this.emit("change");
   }
 
@@ -102,11 +110,17 @@ function filter(items, filter) {
   if(filter == null) {
     return items;
   } else {
-    filter = filter.toLowerCase();
+    //filter = filter.toLowerCase();
+    var regex = new RegExp(escapeRegExp(filter), "i");
     return items.filter(function(item) {
-      return item.name.toLowerCase().indexOf(filter) >= 0;
+      return regex.test(item.name + item.groupName + item.description + item.creatorName + item.id);
     });
   }
 }
 
 module.exports = ItemsStore;
+
+function escapeRegExp(str) {
+  //http://stackoverflow.com/a/6969486
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}

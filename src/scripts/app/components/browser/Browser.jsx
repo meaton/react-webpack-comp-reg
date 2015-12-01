@@ -43,7 +43,7 @@ var Browser = React.createClass({
           />
     return (
         <section id="browser">
-          <div className="browser row">            
+          <div className="browser row">
             <div className="gridFilter">
               <Input type="text" label="Search" value={this.state.items.filterText} onChange={this.handleFilterTextChange} />
             </div>
