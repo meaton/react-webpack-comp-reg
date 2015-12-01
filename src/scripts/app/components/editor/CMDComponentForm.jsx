@@ -19,6 +19,7 @@ var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ActionButtons = require('./ActionButtons');
+var ValidatingTextInput = require('../ValidatingTextInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
 //utils
@@ -134,7 +135,7 @@ var CMDComponentForm = React.createClass({
 
     var editableProps = open?(
       <div className={editClasses}>
-        <Input type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <ValidatingTextInput validate={this.validationTest} type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
@@ -225,6 +226,11 @@ var CMDComponentForm = React.createClass({
 
   renderAfterAttributes: function() {
     return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
+  },
+
+  validationTest: function(val, feedback, evt) {
+    log.debug("Validate", evt);
+    return val == "valid";
   }
 });
 
