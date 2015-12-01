@@ -1,6 +1,7 @@
 'use strict';
 
 var log = require('loglevel');
+
 var React = require('react/addons');
 
 //bootstrap
@@ -12,23 +13,30 @@ var ValidatingTextInput = React.createClass({
   },
 
   getInitialState: function() {
-    return {valid: true};
+    return {valid: true, validated: false, message: null};
   },
 
   render: function() {
-    var {validate, className, ...other} = this.props;
-    var classes = this.state.valid ? "valid" : "invalid";
-    if(className != null) {
-      classes += className;
-    }
-    return <Input className={classes} onBlur={this.validate} {...other} />
+    var {validate, ...other} = this.props;
+
+    var bsStyle = (this.state.validated && !this.state.valid)?"error":null;
+
+    var input = <Input bsStyle={bsStyle} hasFeedback={true} addonAfter={this.state.message} onBlur={this.validate} {...other} />;
+    return input;
   },
 
   validate: function(evt) {
     var val = evt.target.value;
-    var valid = this.props.validate(val, evt);
+
+    // validation method has the option to provide a feedback message
+    var msgContainer = { message: null }
+    var setMsg = function(message) { msgContainer.message = message; }
+
+    //do validation
+    var valid = this.props.validate(val, setMsg, evt);
+
     log.debug("Validated",val,":",valid);
-    this.setState({valid: valid});
+    this.setState({valid: valid, validated: true, message: msgContainer.message});
   }
 });
 
