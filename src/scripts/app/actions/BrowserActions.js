@@ -24,6 +24,10 @@ module.exports = {
 
   editItem: function(item) {
     this.dispatch(Constants.EDIT_ITEM);
+  },
+
+  setFilterText: function(text) {
+    this.dispatch(Constants.FILTER_TEXT_CHANGE, text);
   }
 
 };

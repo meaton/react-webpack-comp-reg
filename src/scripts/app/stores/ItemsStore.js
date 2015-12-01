@@ -1,4 +1,5 @@
 'use strict';
+var log = require('loglevel');
 
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
@@ -10,10 +11,12 @@ var remove = ImmutabilityUtil.remove,
 var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
       this.items = [], //items to be shown in browser
+      this.filteredItems = [],
       this.deleted = {}, //items that have been deleted or are being deleted
       this.loading = false, //loading state
       this.type = Constants.TYPE_PROFILE, //components or profiles
-      this.space = Constants.SPACE_PUBLISHED //private, group, published
+      this.space = Constants.SPACE_PUBLISHED, //private, group, published
+      this.filterText = null
 
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
@@ -22,17 +25,19 @@ var ItemsStore = Fluxxor.createStore({
       Constants.SWITCH_SPACE, this.handleSwitchSpace,
       Constants.DELETE_COMPONENTS, this.handleDeleteItems,
       Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteItemsSuccess,
-      Constants.DELETE_COMPONENTS_FAILURE, this.handleDeleteItemsFailure
+      Constants.DELETE_COMPONENTS_FAILURE, this.handleDeleteItemsFailure,
+      Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange
     );
   },
 
   getState: function() {
     return {
-      items: this.items,
+      items: this.filteredItems,
       deleted: this.deleted,
       loading: this.loading,
       type: this.type,
-      space: this.space
+      space: this.space,
+      filterText: this.filterText
     };
   },
 
@@ -43,6 +48,7 @@ var ItemsStore = Fluxxor.createStore({
 
   handleLoadItemsSuccess: function(items) {
     this.items = items;
+    this.filteredItems = filter(this.items, this.filterText);
     this.loading = false;
     this.deleted = {};
     this.emit("change");
@@ -82,8 +88,25 @@ var ItemsStore = Fluxxor.createStore({
     // remove items from list of deleted items
     this.deleted = remove(this.deleted, result.ids);
     this.emit("change");
+  },
+
+  handleFilterTextChange: function(text) {
+    this.filterText = (text === "") ? null : text;
+    this.filteredItems = filter(this.items, this.filterText);
+    this.emit("change");
   }
 
 });
+
+function filter(items, filter) {
+  if(filter == null) {
+    return items;
+  } else {
+    filter = filter.toLowerCase();
+    return items.filter(function(item) {
+      return item.name.toLowerCase().indexOf(filter) >= 0;
+    });
+  }
+}
 
 module.exports = ItemsStore;

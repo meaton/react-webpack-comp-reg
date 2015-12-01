@@ -12,6 +12,9 @@ var SpaceSelector = require("../SpaceSelector.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 
+//bootstrap
+var Input = require('react-bootstrap/lib/Input');
+
 require('../../../../styles/Browser.sass');
 
 var Browser = React.createClass({
@@ -40,7 +43,10 @@ var Browser = React.createClass({
           />
     return (
         <section id="browser">
-          <div className="browser row">
+          <div className="browser row">            
+            <div className="gridFilter">
+              <Input type="text" label="Search" value={this.state.items.filterText} onChange={this.handleFilterTextChange} />
+            </div>
             <SpaceSelector
               type={this.state.items.type}
               space={this.state.items.space}
@@ -97,6 +103,10 @@ var Browser = React.createClass({
   handleDelete: function(componentInUsageCb) {
     var ids = Object.keys(this.state.selection.selectedItems);
     this.getFlux().actions.deleteComponents(this.state.items.type, ids, componentInUsageCb);
+  },
+
+  handleFilterTextChange: function(evt) {
+    this.getFlux().actions.setFilterText(evt.target.value);
   }
 });
 
