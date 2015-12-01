@@ -8,6 +8,177 @@ var Constants = require("../constants"),
     /* Component spec utils */
     ComponentSpec = require("../service/ComponentSpec");
 
+var RestActions = {
+  loadItems: function(type, space) {
+    this.dispatch(Constants.LOAD_ITEMS);
+    ComponentRegistryClient.loadComponents(type, space, function(items){
+        // Success
+        this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_ITEMS_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  loadEditorGridItems: function(space) {
+    this.dispatch(Constants.LOAD_EDITOR_ITEMS);
+    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, function(items){
+        // Success
+        this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_EDITOR_ITEMS_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  loadItem: function(type, space, itemId) {
+    ComponentRegistryClient.loadItem(itemId, function(item){
+        // Success
+        this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_ITEM_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  loadComponentSpec: function(type, space, itemId) {
+    this.dispatch(Constants.LOAD_COMPONENT_SPEC);
+    // load the (JSON) spec for this item
+    ComponentRegistryClient.loadSpec(type, space, itemId, "json", function(spec){
+        // Success. Now also load linked child components at root level, we need
+        // their names for display purposes.
+        loadLinkedComponents(spec.CMD_Component, space, function(linkedComponents) {
+          // Loading of linked components done...
+          SpecAugmenter.augmentWithIds(spec);
+          log.trace("Loaded and augmented spec: ", spec);
+          this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, {spec: spec, linkedComponents: linkedComponents});
+        }.bind(this));
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_COMPONENT_SPEC_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  /**
+   * Loads all linked components in the specified spec
+   * Dispatches Constants.LINKED_COMPONENTS_LOADED when done loading
+   * @param  {[type]} parentSpec spec to load linked components for
+   * @param  {[type]} space      space to load from
+   * @param  {Object} [currentset]     set of already loaded linked components (these will not be loaded again)
+   */
+  loadLinkedComponentSpecs: function(parentSpec, space, currentset) {
+    loadLinkedComponents(parentSpec, space, function(linkedComponents) {
+      this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
+    }.bind(this), currentset);
+  },
+
+  loadComponentSpecXml: function(type, space, item) {
+    this.dispatch(Constants.LOAD_COMPONENT_SPEC);
+    ComponentRegistryClient.loadSpec(type, space, item.id, "text", function(specXml){
+        // success
+        this.dispatch(Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, specXml);
+      }.bind(this),
+      function(message) {
+        // failure
+        this.dispatch(Constants.LOAD_COMPONENT_SPEC_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  saveComponentSpec: function(spec, item, space, successCb, componentInUsageCb) {
+    // do update, don't publish
+    saveSpec.apply(this, [spec, item, true, false, successCb, componentInUsageCb])
+  },
+
+  saveNewComponentSpec: function(spec, item, space, successCb) {
+    // new, don't update or publish
+    saveSpec.apply(this, [spec, item, false, false, successCb])
+  },
+
+  publishComponentSpec: function(spec, item, space, successCb) {
+    // do update and publish
+    saveSpec.apply(this, [spec, item, true, true, successCb])
+  },
+
+  deleteComponents: function(type, ids, componentInUsageCb) {
+    log.info("Requesting deletion of", ids);
+    this.dispatch(Constants.DELETE_COMPONENTS, ids);
+    deleteComponents(type, ids, function(deletedIds){
+      this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, deletedIds);
+    }.bind(this), function(result) {
+      if(result.message != null) {
+        log.error(result.message);
+      }
+      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, result);
+    }.bind(this), componentInUsageCb);
+  },
+
+  loadComments: function(type, space, componentId) {
+    this.dispatch(Constants.LOAD_COMMENTS);
+    ComponentRegistryClient.loadComments(componentId, type, function(comments){
+        // Success
+        this.dispatch(Constants.LOAD_COMMENTS_SUCCESS, comments);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.LOAD_COMMENTS_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  saveComment(type, componentId, comment) {
+    this.dispatch(Constants.SAVE_COMMENT, comment);
+    ComponentRegistryClient.saveComment(componentId, type, comment, function(result){
+        // Success
+        this.dispatch(Constants.SAVE_COMMENT_SUCCESS, result);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.SAVE_COMMENT_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  deleteComment(type, componentId, commentId) {
+    ComponentRegistryClient.deleteComment(componentId, type, commentId, function(id, result){
+        // Success
+        this.dispatch(Constants.DELETE_COMMENT_SUCCESS, id);
+      }.bind(this),
+      function(message) {
+        // Failure
+        this.dispatch(Constants.DELETE_COMMENT_FAILURE, message);
+      }.bind(this)
+    );
+  },
+
+  checkAuthState: function() {
+    log.trace("Checking authentication state...");
+    ComponentRegistryClient.getAuthState(function(authState){
+      if(authState != null) {
+        log.trace("Auth state:", authState);
+        this.dispatch(Constants.CHECK_AUTH_STATE, authState);
+      } else {
+        this.dispatch(Constants.CHECK_AUTH_STATE, {uid: null});
+      }
+    }.bind(this), function(message){
+      //TODO: dispatch so that store knows auth state is not up to date?
+      log.error(message);
+    });
+  }
+};
+
+module.exports = RestActions;
+
+// HELPER FUNCTIONS
+
 /**
  * Loads all linked components (with @ComponentId) that are a direct child
  * of the provided component (JSON spec). When done, the callback is called with
@@ -102,6 +273,16 @@ function loadComponentsById(ids, space, collected, callback) {
   }
 }
 
+/**
+ * Saves a spec while checking for component usage (if callback is provided)
+ * @param  {[type]} spec               [description]
+ * @param  {[type]} item               [description]
+ * @param  {[type]} update             [description]
+ * @param  {[type]} publish            [description]
+ * @param  {[type]} successCb          [description]
+ * @param  {[type]} componentInUsageCb Optional callback called if component is in use
+ * @return {[type]}                    [description]
+ */
 function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
   log.debug("Save - update:", update, " publish:", publish);
   this.dispatch(Constants.SAVE_COMPONENT_SPEC);
@@ -207,6 +388,15 @@ function deleteComponents(type, ids, success, failure, componentInUsageCb, remai
   }
 }
 
+/**
+ * Tries to delete a component, aborts if component is in use
+ * @param  {[type]} type               [description]
+ * @param  {[type]} id                 [description]
+ * @param  {[type]} componentInUsageCb [description]
+ * @param  {[type]} doDelete           [description]
+ * @param  {[type]} doAbort            [description]
+ * @return {[type]}                    [description]
+ */
 function tryDeleteComponent(type, id, componentInUsageCb, doDelete, doAbort) {
   // Almost ready to try saving...
   if(componentInUsageCb == null // No callback means no usage check
@@ -232,171 +422,3 @@ function tryDeleteComponent(type, id, componentInUsageCb, doDelete, doAbort) {
       });
   }
 }
-
-module.exports = {
-  loadItems: function(type, space) {
-    this.dispatch(Constants.LOAD_ITEMS);
-    ComponentRegistryClient.loadComponents(type, space, function(items){
-        // Success
-        this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.LOAD_ITEMS_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  loadEditorGridItems: function(space) {
-    this.dispatch(Constants.LOAD_EDITOR_ITEMS);
-    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, function(items){
-        // Success
-        this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.LOAD_EDITOR_ITEMS_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  loadItem: function(type, space, itemId) {
-    ComponentRegistryClient.loadItem(itemId, function(item){
-        // Success
-        this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.LOAD_ITEM_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  loadComponentSpec: function(type, space, itemId) {
-    this.dispatch(Constants.LOAD_COMPONENT_SPEC);
-    // load the (JSON) spec for this item
-    ComponentRegistryClient.loadSpec(type, space, itemId, "json", function(spec){
-        // Success. Now also load linked child components at root level, we need
-        // their names for display purposes.
-        loadLinkedComponents(spec.CMD_Component, space, function(linkedComponents) {
-          // Loading of linked components done...
-          SpecAugmenter.augmentWithIds(spec);
-          log.trace("Loaded and augmented spec: ", spec);
-          this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, {spec: spec, linkedComponents: linkedComponents});
-        }.bind(this));
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.LOAD_COMPONENT_SPEC_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  /**
-   * Loads all linked components in the specified spec
-   * Dispatches Constants.LINKED_COMPONENTS_LOADED when done loading
-   * @param  {[type]} parentSpec spec to load linked components for
-   * @param  {[type]} space      space to load from
-   * @param  {Object} [currentset]     set of already loaded linked components (these will not be loaded again)
-   */
-  loadLinkedComponentSpecs: function(parentSpec, space, currentset) {
-    loadLinkedComponents(parentSpec, space, function(linkedComponents) {
-      this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
-    }.bind(this), currentset);
-  },
-
-  loadComponentSpecXml: function(type, space, item) {
-    this.dispatch(Constants.LOAD_COMPONENT_SPEC);
-    ComponentRegistryClient.loadSpec(type, space, item.id, "text", function(specXml){
-        // success
-        this.dispatch(Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, specXml);
-      }.bind(this),
-      function(message) {
-        // failure
-        this.dispatch(Constants.LOAD_COMPONENT_SPEC_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  saveComponentSpec: function(spec, item, space, successCb, componentInUsageCb) {
-    // do update, don't publish
-    saveSpec.apply(this, [spec, item, true, false, successCb, componentInUsageCb])
-  },
-
-  saveNewComponentSpec: function(spec, item, space, successCb) {
-    // new, don't update or publish
-    saveSpec.apply(this, [spec, item, false, false, successCb])
-  },
-
-  publishComponentSpec: function(spec, item, space, successCb) {
-    // do update and publish
-    saveSpec.apply(this, [spec, item, true, true, successCb])
-  },
-
-  checkAuthState: function() {
-    log.trace("Checking authentication state...");
-    ComponentRegistryClient.getAuthState(function(authState){
-      if(authState != null) {
-        log.trace("Auth state:", authState);
-        this.dispatch(Constants.CHECK_AUTH_STATE, authState);
-      } else {
-        this.dispatch(Constants.CHECK_AUTH_STATE, {uid: null});
-      }
-    }.bind(this), function(message){
-      //TODO: dispatch so that store knows auth state is not up to date?
-      log.error(message);
-    });
-  },
-
-  deleteComponents: function(type, ids, componentInUsageCb) {
-    log.info("Requesting deletion of", ids);
-    this.dispatch(Constants.DELETE_COMPONENTS, ids);
-    deleteComponents(type, ids, function(deletedIds){
-      this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, deletedIds);
-    }.bind(this), function(result) {
-      if(result.message != null) {
-        log.error(result.message);
-      }
-      this.dispatch(Constants.DELETE_COMPONENTS_FAILURE, result);
-    }.bind(this), componentInUsageCb);
-  },
-
-  loadComments: function(type, space, componentId) {
-    this.dispatch(Constants.LOAD_COMMENTS);
-    ComponentRegistryClient.loadComments(componentId, type, function(comments){
-        // Success
-        this.dispatch(Constants.LOAD_COMMENTS_SUCCESS, comments);
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.LOAD_COMMENTS_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  saveComment(type, componentId, comment) {
-    this.dispatch(Constants.SAVE_COMMENT, comment);
-    ComponentRegistryClient.saveComment(componentId, type, comment, function(result){
-        // Success
-        this.dispatch(Constants.SAVE_COMMENT_SUCCESS, result);
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.SAVE_COMMENT_FAILURE, message);
-      }.bind(this)
-    );
-  },
-
-  deleteComment(type, componentId, commentId) {
-    ComponentRegistryClient.deleteComment(componentId, type, commentId, function(id, result){
-        // Success
-        this.dispatch(Constants.DELETE_COMMENT_SUCCESS, id);
-      }.bind(this),
-      function(message) {
-        // Failure
-        this.dispatch(Constants.DELETE_COMMENT_FAILURE, message);
-      }.bind(this)
-    );
-  }
-
-};
