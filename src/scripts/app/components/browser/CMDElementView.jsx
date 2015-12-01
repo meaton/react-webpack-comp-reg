@@ -10,14 +10,14 @@ var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDAttributeView = require('./CMDAttributeView');
-var ValueScheme = require('./ValueScheme');
+var ValueScheme = require('../ValueScheme');
 
 //utils
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 
-require('../../../styles/CMDElement.sass');
+require('../../../../styles/CMDElement.sass');
 
 /**
 * CMDElement - view display and editing form for a CMDI Element item.

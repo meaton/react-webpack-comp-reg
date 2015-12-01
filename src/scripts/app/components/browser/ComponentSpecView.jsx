@@ -5,7 +5,7 @@ var Router = require('react-router');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var btnGroup = require('../../mixins/BtnGroupEvents');
+var btnGroup = require('../../../mixins/BtnGroupEvents');
 
 //components
 var CMDComponentView = require('./CMDComponentView');
@@ -15,7 +15,7 @@ var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 
-require('../../../styles/ComponentViewer.sass');
+require('../../../../styles/ComponentViewer.sass');
 
 /**
 * ComponentViewer - view display for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
@@ -45,7 +45,7 @@ var ComponentSpec = React.createClass({
 
   getDefaultProps: function() {
     return {
-      domains: require('../../domains.js')
+      domains: require('../../../domains.js')
     };
   },
   render: function() {

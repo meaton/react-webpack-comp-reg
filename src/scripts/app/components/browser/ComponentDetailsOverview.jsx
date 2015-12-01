@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require("react"),
-    Constants = require("../constants"),
+    Constants = require("../../constants"),
     Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -10,8 +10,8 @@ var React = require("react"),
 var InfoPanel = require('./InfoPanel.jsx');
 
 //helpers
-var ExpansionState = require('../service/ExpansionState');
-var ComponentViewMixin = require('../mixins/ComponentViewMixin');
+var ExpansionState = require('../../service/ExpansionState');
+var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 
 /**
 * ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.

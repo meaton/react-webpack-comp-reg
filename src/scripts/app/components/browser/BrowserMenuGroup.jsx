@@ -11,13 +11,13 @@ var ButtonLink = require('react-router-bootstrap').ButtonLink;
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-var ButtonModal = require('./ButtonModal');
+var ButtonModal = require('../ButtonModal');
 
-var Constants = require('../constants');
-var Config = require('../../config');
+var Constants = require('../../constants');
+var Config = require('../../../config');
 
 //mixins
-var ComponentUsageMixin = require('../mixins/ComponentUsageMixin');
+var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 
 /**
 * BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.

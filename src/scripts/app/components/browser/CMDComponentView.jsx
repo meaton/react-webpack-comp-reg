@@ -5,8 +5,8 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var CMDComponentMixin = require('../mixins/CMDComponentMixin');
-var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
+var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
+var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 
 
 //bootstrap
@@ -20,7 +20,7 @@ var CMDAttributeView = require('./CMDAttributeView');
 var update = React.addons.update;
 var md5 = require('spark-md5');
 
-require('../../../styles/CMDComponent.sass');
+require('../../../../styles/CMDComponent.sass');
 
 /**
 * CMDComponent - view display and editing form for a CMDI Component item.

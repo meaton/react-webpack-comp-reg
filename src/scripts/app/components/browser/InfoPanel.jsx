@@ -3,7 +3,7 @@
 var log = require('loglevel');
 
 var React = require('react/addons'),
-    Constants = require("../constants");
+    Constants = require("../../constants");
 
 var moment = require('moment-timezone');
 
@@ -18,9 +18,9 @@ var Panel = require('react-bootstrap/lib/Panel');
 var ComponentSpecView = require('./ComponentSpecView');
 
 //utils
-var ComponentSpec = require('../service/ComponentSpec');
+var ComponentSpec = require('../../service/ComponentSpec');
 
-require('../../../styles/InfoPanel.sass');
+require('../../../../styles/InfoPanel.sass');
 
 /**
 * InfoPanel - displays the loaded registry item data and comments in Bootstrap tabbed-panes.

@@ -9,8 +9,8 @@ var React = require("react"),
 // Components
 var DataGrid = require("./DataGrid.jsx");
 var SpaceSelector = require("./SpaceSelector.jsx");
-var ComponentDetails = require('./ComponentDetailsOverview');
-var BrowserMenuGroup = require('./BrowserMenuGroup');
+var ComponentDetails = require('./browser/ComponentDetailsOverview');
+var BrowserMenuGroup = require('./browser/BrowserMenuGroup');
 
 require('../../../styles/Browser.sass');
 

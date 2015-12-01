@@ -10,7 +10,7 @@ var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
 //components
-var ValueScheme = require('./ValueScheme');
+var ValueScheme = require('../ValueScheme');
 
 //require('../../styles/CMDAttribute.sass');
 

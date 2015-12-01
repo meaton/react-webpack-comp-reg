@@ -15,11 +15,11 @@ var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
 var Input = require('react-bootstrap/lib/Input');
 
 //components
-var CMDComponentView = require('./CMDComponentView');
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ActionButtons = require('./ActionButtons');
+var CMDComponentView = require('./browser/CMDComponentView');
 
 //utils
 var classNames = require('classnames');
