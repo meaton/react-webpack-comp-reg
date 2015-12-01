@@ -44,15 +44,25 @@ var BrowserMenuGroup = React.createClass({
         deleteIdList.push(React.createElement('li', { key: id }, name));
       }.bind(this));
 
+    var warnPublic = (this.props.space === Constants.SPACE_PUBLISHED)?(
+      <p>
+        <strong>Note</strong>: deletion from the public space is only allowed
+        by the owner of the item within 30 days after publication. If these
+        criteria are not met, you will get an error message that says
+        "forbidden".
+      </p>
+    ):null;
+
     return (
       <div className="modal-desc">You will delete the following item(s):
         <ul>{deleteIdList}</ul>
         <p>This cannot be undone.</p>
+        {warnPublic}
       </div>
     );
   },
   render: function () {
-    var isPublished = this.props.space !== Constants.SPACE_PRIVATE; // TODO: or SPACE_GROUP
+    var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
 
     var editorLink = null;
@@ -91,7 +101,7 @@ var BrowserMenuGroup = React.createClass({
           <ButtonLink to="newEditor" params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
           {editorLink}
           <ButtonLink to="import" disabled={!this.props.loggedIn}>Import</ButtonLink>
-          <ButtonModal {...this.props} action={this.props.deleteComp} disabled={!this.props.loggedIn || selectionCount == 0 || isPublished}
+          <ButtonModal {...this.props} action={this.props.deleteComp} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
