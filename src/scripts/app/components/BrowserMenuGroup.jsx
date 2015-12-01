@@ -117,13 +117,13 @@ var BrowserMenuGroup = React.createClass({
       <div>
         <div className="modal-body">
           <div className="modal-desc">
-            <div>One of the component you are trying to delete is used by the following component(s) and/or profile(s):
+            <div>One of the component you are trying to delete is used in the following component(s) and/or profile(s):
               <ul>{errors}</ul>
             </div>
           </div>
         </div>
         <div className="modal-footer">
-          <div>One or more components have not been deleted. Pleas first delete the components and/or profiles listed above.</div>
+          <div><strong>One or more components have not been deleted!</strong><br/>Please first delete the components and/or profiles listed above.</div>
           <Button onClick={doAbort}>Ok</Button>
         </div>
       </div>

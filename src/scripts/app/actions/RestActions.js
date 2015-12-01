@@ -351,8 +351,8 @@ module.exports = {
   deleteComponents: function(type, ids, componentInUsageCb) {
     log.info("Requesting deletion of", ids);
     this.dispatch(Constants.DELETE_COMPONENTS, ids);
-    deleteComponents(type, ids, function(){
-      this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, ids);
+    deleteComponents(type, ids, function(deletedIds){
+      this.dispatch(Constants.DELETE_COMPONENTS_SUCCESS, deletedIds);
     }.bind(this), function(result) {
       if(result.message != null) {
         log.error(result.message);
