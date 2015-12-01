@@ -31,12 +31,14 @@ var AuthenticationStore = Fluxxor.createStore({
       newState = {
         authenticated: true,
         uid: newValues.uid,
-        displayName: newValues.displayName
+        displayName: newValues.displayName,
+        isAdmin: newValues.isAdmin
       };
     } else {
       // uid not set -> user not authenticated
       newState = {
-        authenticated: false
+        authenticated: false,
+        isAdmin: false
       };
     }
 

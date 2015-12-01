@@ -436,7 +436,7 @@ getAuthState: function(handleSuccess, handleFailure) {
        authenticated: isAuth,
        uid: isAuth ? result.username : null,
        displayName: isAuth ? result.displayName : null,
-       token: Math.random().toString(36).substring(7)
+       isAdmin: isAuth? result.isAdmin === "true" : false
      });
    },
    error: function(xhr, status, err) {

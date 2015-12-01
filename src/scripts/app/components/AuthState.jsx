@@ -29,7 +29,13 @@ var AuthState = React.createClass({
     if(authState.authenticated) {
       return (
         <div className="auth-logged-in">
-          {authState.displayName} <a href={adminUrl + "/userSettings"} target="_blank">settings</a>
+          {authState.displayName}
+          &nbsp;
+          <a href={adminUrl + "/userSettings"} target="_blank">&nbsp;settings</a>
+          &nbsp;
+          {authState.isAdmin ? (
+            <a href={adminUrl} target="_blank">admin</a>
+          ) : null}
         </div>
       );
     } else {
