@@ -110,10 +110,13 @@ function filter(items, filter) {
   if(filter == null) {
     return items;
   } else {
-    //filter = filter.toLowerCase();
     var regex = new RegExp(escapeRegExp(filter), "i");
     return items.filter(function(item) {
-      return regex.test(item.name + item.groupName + item.description + item.creatorName + item.id);
+      return regex.test(item.name)
+      || regex.test(item.groupName)
+      || regex.test(item.description)
+      || regex.test(item.creatorName)
+      || regex.test(item.id);
     });
   }
 }
