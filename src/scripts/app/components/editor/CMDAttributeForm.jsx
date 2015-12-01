@@ -5,22 +5,22 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
-var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
-var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
+var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
+var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
 //components
-var ValueScheme = require('./ValueScheme');
+var ValueScheme = require('../ValueScheme');
 
 //utils
 var classNames = require('classnames');
 
-require('../../../styles/CMDAttribute.sass');
+require('../../../../styles/CMDAttribute.sass');
 
 /**
 * CMDAttribute - view display and editing form for a CMDI Attribute item.

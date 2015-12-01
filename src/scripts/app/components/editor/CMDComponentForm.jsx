@@ -5,11 +5,11 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var CMDComponentMixin = require('../mixins/CMDComponentMixin');
-var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
-var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
-var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
+var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
+var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
+var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
+var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -19,12 +19,12 @@ var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ActionButtons = require('./ActionButtons');
-var CMDComponentView = require('./browser/CMDComponentView');
+var CMDComponentView = require('../browser/CMDComponentView');
 
 //utils
 var classNames = require('classnames');
 
-require('../../../styles/CMDComponent.sass');
+require('../../../../styles/CMDComponent.sass');
 
 /**
 * CMDComponentForm - editing form for a CMDI Component item, including (part of)

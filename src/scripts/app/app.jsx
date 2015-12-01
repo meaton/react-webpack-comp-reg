@@ -6,10 +6,10 @@ var React = require("react"),
 var Router = require('react-router');
 var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 
-var Browser = require("./components/Browser.jsx"),
+var Browser = require("./components/browser/Browser.jsx"),
     Main = require("./components/Main.jsx"),
-    Editor = require("./components/Editor.jsx");
-    EditorForm = require("./components/EditorForm.jsx");
+    Editor = require("./components/editor/Editor.jsx");
+    EditorForm = require("./components/editor/EditorForm.jsx");
 
 var ItemsStore = require("./stores/ItemsStore"),
     SelectionStore = require("./stores/SelectionStore"),

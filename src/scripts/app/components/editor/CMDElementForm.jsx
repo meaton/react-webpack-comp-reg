@@ -5,23 +5,23 @@ var React = require('react/addons');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
-var SpecFormUpdateMixin = require('../mixins/SpecFormUpdateMixin');
-var ActionButtonsMixin = require('../mixins/ActionButtonsMixin');
-var ToggleExpansionMixin = require('../mixins/ToggleExpansionMixin');
+var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
+var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDAttributeForm = require('./CMDAttributeForm');
-var ValueScheme = require('./ValueScheme');
 var CardinalityInput = require('./CardinalityInput');
+var ValueScheme = require('../ValueScheme');
 
 //utils
 var classNames = require('classnames');
 
-require('../../../styles/CMDElement.sass');
+require('../../../../styles/CMDElement.sass');
 
 /**
 * CMDElementForm - editing form for a CMDI Element item

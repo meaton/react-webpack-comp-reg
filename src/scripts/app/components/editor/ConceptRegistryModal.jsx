@@ -18,11 +18,11 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Button = require('react-bootstrap/lib/Button');
 
 //utils
-var ComponentRegistryClient = require('../service/ComponentRegistryClient');
+var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
 var update = React.addons.update;
 var classNames = require('classnames');
 
-require('../../../styles/EditorDialog.sass');
+require('../../../../styles/EditorDialog.sass');
 /**
 * ConceptRegistryModal - Bootstrap Modal dialog for setting the Concept Registry (CCR) link.
 * @constructor

@@ -1,7 +1,7 @@
 'use strict';
 
 var log = require('loglevel');
-var Constants = require("../constants");
+var Constants = require("../../constants");
 
 var React = require("react"),
     Router = require('react-router'),
@@ -15,12 +15,12 @@ var Button = require('react-bootstrap/lib/Button');
 //components
 var ComponentSpecForm = require("./ComponentSpecForm"),
     EditorMenuGroup = require("./EditorMenuGroup"),
-    DataGrid = require("./DataGrid.jsx"),
-    SpaceSelector = require("./SpaceSelector.jsx");
+    DataGrid = require("../DataGrid.jsx"),
+    SpaceSelector = require("../SpaceSelector.jsx");
 
 //mixins
-var ComponentViewMixin = require('../mixins/ComponentViewMixin');
-var ComponentUsageMixin = require('../mixins/ComponentUsageMixin');
+var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
+var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 
 //utils
 var classNames = require('classnames');

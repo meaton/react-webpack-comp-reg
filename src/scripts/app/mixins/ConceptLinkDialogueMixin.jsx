@@ -3,7 +3,7 @@
 var log = require('loglevel');
 
 var ModalTrigger = require('../components/ModalTrigger');
-var ConceptRegistryModal = require('../components/ConceptRegistryModal');
+var ConceptRegistryModal = require('../components/editor/ConceptRegistryModal');
 
 /**
 * Helper mixin for creating a button that triggers the CCR search dialogue. A

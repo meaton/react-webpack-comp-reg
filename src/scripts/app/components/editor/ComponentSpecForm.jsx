@@ -3,11 +3,11 @@ var log = require('loglevel');
 
 var React = require('react/addons');
 var Router = require('react-router');
-var Constants = require("../constants");
+var Constants = require("../../constants");
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin');
+var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -16,12 +16,12 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDComponentForm = require('./CMDComponentForm');
 
 //utils
-var ComponentSpec = require('../service/ComponentSpec');
+var ComponentSpec = require('../../service/ComponentSpec');
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 
-require('../../../styles/ComponentViewer.sass');
+require('../../../../styles/ComponentViewer.sass');
 
 /**
 * ComponentViewer - view display and editing form for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
@@ -66,7 +66,7 @@ var ComponentSpecForm = React.createClass({
 
   getDefaultProps: function() {
     return {
-      domains: require('../../domains.js')
+      domains: require('../../../domains.js')
     };
   },
 

@@ -3,7 +3,7 @@
 var log = require('loglevel');
 
 var React = require("react"),
-    Constants = require("../constants"),
+    Constants = require("../../constants"),
     Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -13,7 +13,7 @@ var {RouteHandler, Navigation} = require('react-router');
 //router bootstrap
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
 
-require('../../../styles/ComponentEditor.sass');
+require('../../../../styles/ComponentEditor.sass');
 
 /**
 * ComponentEditor - main editor component and route handler for editor subroutes
