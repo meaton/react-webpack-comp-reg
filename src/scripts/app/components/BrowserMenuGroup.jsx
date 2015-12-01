@@ -47,7 +47,7 @@ var BrowserMenuGroup = React.createClass({
     var warnPublic = (this.props.space === Constants.SPACE_PUBLISHED)?(
       <p>
         <strong>Note</strong>: deletion from the public space is only allowed
-        by the owner of the item within 30 days after publication. If these
+        by the owner of the item within one month after publication. If these
         criteria are not met, you will get an error message that says
         "forbidden".
       </p>
