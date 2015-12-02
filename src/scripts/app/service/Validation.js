@@ -15,15 +15,20 @@ var requiredString = {
   message: "Field cannot be empty"
 }
 
+var noSpaces = {
+  test: (v) => {return v.indexOf(" ") < 0},
+  message: "Field cannot contain spaces"
+}
+
 var validators = {
   component: {
-    '@name': [
-      requiredString,
-      {
-        test: (v) => {return v.indexOf(" ") < 0},
-        message: "Field cannot contain spaces"
-      },
-    ]
+    '@name': [requiredString, noSpaces]
+  },
+  element: {
+    '@name': [requiredString, noSpaces]
+  },
+  attribute: {
+    'Name': [requiredString, noSpaces]
   }
 };
 

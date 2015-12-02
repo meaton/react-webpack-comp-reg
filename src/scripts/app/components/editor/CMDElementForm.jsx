@@ -17,9 +17,11 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValueScheme = require('../ValueScheme');
+var ValidatingTextInput = require('../ValidatingTextInput');
 
 //utils
 var classNames = require('classnames');
+var Validation = require('../../service/Validation');
 
 require('../../../../styles/CMDElement.sass');
 
@@ -98,7 +100,9 @@ var CMDElementForm = React.createClass({
     // elem props
     var editableProps = open ? (
       <div className="form-horizontal form-group">
-        <Input type="text" name="@name" label="Name" value={elem['@name']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          onChange={this.updateElementValue} validate={this.validate} />
         <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}  onChange={this.updateElementValue}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
@@ -142,6 +146,10 @@ var CMDElementForm = React.createClass({
                   }.bind(this)) : <span>No Attributes</span>
         }
       </div>);
+  },
+
+  validate: function(val, feedback, target) {
+    return Validation.validateField('element', target.name, val, feedback);
   }
 });
 

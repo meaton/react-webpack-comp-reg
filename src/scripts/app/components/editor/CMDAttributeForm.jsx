@@ -16,9 +16,11 @@ var Button = require('react-bootstrap/lib/Button');
 
 //components
 var ValueScheme = require('../ValueScheme');
+var ValidatingTextInput = require('../ValidatingTextInput');
 
 //utils
 var classNames = require('classnames');
+var Validation = require('../../service/Validation');
 
 require('../../../../styles/CMDAttribute.sass');
 
@@ -81,7 +83,9 @@ var CMDAttributeForm = React.createClass({
 
     var editableProps = open?(
       <div className="form-horizontal form-group">
-        <Input type="text" label="Name" name="Name" value={attr.Name} onChange={this.updateAttributeValue} labelClassName="col-xs-1" wrapperClassName="col-xs-2" />
+        <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name}
+          labelClassName="col-xs-1" wrapperClassName="col-xs-2"
+          onChange={this.updateAttributeValue} validate={this.validate} />
         <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
           buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
@@ -101,6 +105,10 @@ var CMDAttributeForm = React.createClass({
         {attr.Name} {attr_val}
       </div>
     );
+  },
+
+  validate: function(val, feedback, target) {
+    return Validation.validateField('attribute', target.name, val, feedback);
   }
 });
 
