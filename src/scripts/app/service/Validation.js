@@ -145,11 +145,11 @@ var Validation = {
     return true;
   },
 
-  checkUniqueSiblingName: function(items, name, feedback) {
+  checkUniqueSiblingName: function(items, field, name, feedback) {
     if(items != null) {
       var count = 0;
       for(var i=0;i<(items.length);i++) {
-        if(items[i]["@name"] === name || items[i]["Name"] === name) {
+        if(items[i][field] === name) {
           count++;
         }
         if(count > 1) {

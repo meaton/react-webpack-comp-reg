@@ -150,7 +150,8 @@ var CMDElementForm = React.createClass({
   },
 
   validate: function(val, targetName, feedback) {
-    return Validation.validateField('element', targetName, val, feedback);
+    return Validation.validateField('element', targetName, val, feedback)
+      && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
   }
 });
 

@@ -84,7 +84,6 @@ var CMDAttributeForm = React.createClass({
     var editableProps = open?(
       <div className="form-horizontal form-group">
         <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name}
-          labelClassName="col-xs-1" wrapperClassName="col-xs-2"
           onChange={this.updateAttributeValue} validate={this.validate} />
         <ValidatingTextInput ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
@@ -109,7 +108,8 @@ var CMDAttributeForm = React.createClass({
   },
 
   validate: function(val, targetName, feedback) {
-    return Validation.validateField('attribute', targetName, val, feedback);
+    return Validation.validateField('attribute', targetName, val, feedback)
+      && (targetName != 'Name' || this.props.checkUniqueName(targetName, val, feedback));
   }
 });
 

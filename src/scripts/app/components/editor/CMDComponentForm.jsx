@@ -191,7 +191,7 @@ var CMDComponentForm = React.createClass({
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onToggleSelection={this.props.onToggleSelection}
-        checkUniqueComponentName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
+        checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
         />);
     }
   },
@@ -205,6 +205,7 @@ var CMDComponentForm = React.createClass({
               onRemove={this.handleRemoveElement.bind(this, this.props.onComponentChange, index)}
               isFirst={index == 0}
               isLast={index == this.props.spec.CMD_Element.length - 1}
+              checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Element)}
               {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
               />;
   },
@@ -217,6 +218,7 @@ var CMDComponentForm = React.createClass({
               onRemove={this.handleRemoveAttribute.bind(this, this.props.onComponentChange, index)}
               isFirst={index == 0}
               isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+              checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
               {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
        />;
   },
@@ -235,7 +237,7 @@ var CMDComponentForm = React.createClass({
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('component', targetName, val, feedback)
-      && (targetName != '@name' || this.props.checkUniqueComponentName(val, feedback));
+      && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
   }
 });
 
