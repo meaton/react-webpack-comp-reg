@@ -37,7 +37,11 @@ var ValidatingTextInput = React.createClass({
   render: function() {
     var {validate, ...other} = this.props;
     var bsStyle = (this.state.validated && !this.state.valid)?"error":null;
-    return <Input ref="input" bsStyle={bsStyle} hasFeedback={true} addonAfter={this.state.message} onBlur={this.doValidate} {...other} />;
+    return <Input ref="input" bsStyle={bsStyle} hasFeedback={true} addonAfter={this.state.message} onBlur={this.handleBlur} {...other} />;
+  },
+
+  handleBlur: function(evt) {
+    this.doValidate();
   },
 
   doValidate: function() {

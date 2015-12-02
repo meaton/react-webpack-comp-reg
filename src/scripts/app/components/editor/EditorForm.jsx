@@ -296,6 +296,10 @@ var EditorForm = React.createClass({
         }
       }
     }
+    if(!result) {
+      //TODO: nicer pop up (use modal window)
+      window.alert("There are validation errors, see the marked fields for details.");
+    }
     return result;
   }
 
