@@ -14,9 +14,11 @@ var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDComponentForm = require('./CMDComponentForm');
+var ValidatingTextInput = require('../ValidatingTextInput');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
+var Validation = require('../../service/Validation');
 var update = React.addons.update;
 var classNames = require('classnames');
 var md5 = require('spark-md5');
@@ -92,9 +94,13 @@ var ComponentSpecForm = React.createClass({
             <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
             <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
           </div>
-          <Input type="text" name="Name" label="Name" value={spec.Header.Name} onChange={this.handleHeaderChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+          <ValidatingTextInput type="text" name="Name" label="Name" value={spec.Header.Name}
+            labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+            onChange={this.handleHeaderChange} validate={this.validate}  />
           <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-          <Input type="textarea" name="Description" label="Description" value={spec.Header.Description} onChange={this.handleHeaderChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+          <ValidatingTextInput type="textarea" name="Description" label="Description" value={spec.Header.Description}
+            labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+            onChange={this.handleHeaderChange} validate={this.validate} />
           <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
             <option value="">Select a domain...</option>
             {this.props.domains.map(function(domain, index) {
@@ -147,6 +153,10 @@ var ComponentSpecForm = React.createClass({
 
   updateConceptLink: function(val) {
     this.handleComponentChange({$merge: {['@ConceptLink']: val}});
+  },
+
+  validate: function(val, feedback, target) {
+    return Validation.validateField('header', target.name, val, feedback);
   }
 });
 

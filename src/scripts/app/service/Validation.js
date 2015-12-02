@@ -21,6 +21,10 @@ var noSpaces = {
 }
 
 var validators = {
+  header: {
+    'Name': [requiredString, noSpaces],
+    'Description': [requiredString]
+  },
   component: {
     '@name': [requiredString, noSpaces]
   },
