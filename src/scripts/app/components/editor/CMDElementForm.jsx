@@ -148,8 +148,8 @@ var CMDElementForm = React.createClass({
       </div>);
   },
 
-  validate: function(val, feedback, target) {
-    return Validation.validateField('element', target.name, val, feedback);
+  validate: function(val, targetName, feedback) {
+    return Validation.validateField('element', targetName, val, feedback);
   }
 });
 

@@ -155,8 +155,8 @@ var ComponentSpecForm = React.createClass({
     this.handleComponentChange({$merge: {['@ConceptLink']: val}});
   },
 
-  validate: function(val, feedback, target) {
-    return Validation.validateField('header', target.name, val, feedback);
+  validate: function(val, targetName, feedback) {
+    return Validation.validateField('header', targetName, val, feedback);
   }
 });
 

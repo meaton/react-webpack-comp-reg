@@ -43,6 +43,14 @@ var EditorForm = React.createClass({
     };
   },
 
+  childContextTypes: {
+      validationListener: React.PropTypes.object
+  },
+
+  getChildContext: function() {
+    return {validationListener: this.validationListener}
+  },
+
   componentDidMount: function() {
     var params = this.getParams();
     log.debug("Editor - path:", this.getPathname(), "params:", params);
@@ -183,15 +191,21 @@ var EditorForm = React.createClass({
   },
 
   handleSave: function() {
-    this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess, this.handleUsageWarning);
+    if(this.validateChildren()) {
+      this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess, this.handleUsageWarning);
+    }
   },
 
   handleSaveNew: function() {
-    this.getFlux().actions.saveNewComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
+    if(this.validateChildren()) {
+      this.getFlux().actions.saveNewComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
+    }
   },
 
   handlePublish: function() {
-    this.getFlux().actions.publishComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
+    if(this.validateChildren()) {
+      this.getFlux().actions.publishComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
+    }
   },
 
   afterSuccess: function() {
@@ -239,6 +253,50 @@ var EditorForm = React.createClass({
         </div>
       </div>
     );
+  },
+
+  // Validation (picked up from context by ValidatingTextInput components)
+  // This ensures that all validating inputs are locally validated once more
+  // when trying to save or publish.
+
+  validationListener: {
+    add: function(item) {
+      log.debug("Adding validation item", item);
+      if(this.validationItems == null) {
+        this.validationItems = [];
+      }
+      this.validationItems.push(item);
+    },
+
+    remove: function(item) {
+      if($.isArray(this.validationItems)) {
+        for(var i=0;i<(this.validationItems.length);i++) {
+          if(this.validationItems[i] === item) {
+            break;
+          }
+        }
+        log.debug("Removing validation item", i, item);
+        this.validationItems.splice(i, 1);
+      }
+    }
+  },
+
+  validateChildren: function() {
+    var result = true;
+
+    var validationItems = this.validationListener.validationItems;
+    log.debug("Validating children:", validationItems);
+
+    if(validationItems != null) {
+      for(var i=0;i<(validationItems.length);i++) {
+        var item = validationItems[i];
+        log.debug("Validating", item);
+        if(!item.doValidate()) {
+          result = false;
+        }
+      }
+    }
+    return result;
   }
 
 

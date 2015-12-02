@@ -232,8 +232,8 @@ var CMDComponentForm = React.createClass({
     return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
   },
 
-  validate: function(val, feedback, target) {
-    return Validation.validateField('component', target.name, val, feedback);
+  validate: function(val, targetName, feedback) {
+    return Validation.validateField('component', targetName, val, feedback);
   }
 });
 

@@ -107,8 +107,8 @@ var CMDAttributeForm = React.createClass({
     );
   },
 
-  validate: function(val, feedback, target) {
-    return Validation.validateField('attribute', target.name, val, feedback);
+  validate: function(val, targetName, feedback) {
+    return Validation.validateField('attribute', targetName, val, feedback);
   }
 });
 
