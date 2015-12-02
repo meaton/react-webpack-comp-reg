@@ -10,6 +10,8 @@ var err = {
   ReqValueScheme: 'Valid type value is required.'
 };
 
+var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
+
 var requiredString = {
   test: (v) => {return v != null && v.length > 0},
   message: "Field cannot be empty"
@@ -20,24 +22,37 @@ var noSpaces = {
   message: "Field cannot contain spaces"
 }
 
+var regex = function(expr, msg) {
+  return {
+    test: (v) => {return v == null || v.length == 0 || expr.test(v)},
+    message: msg
+  };
+}
+
+var conceptLinkUri = regex(conceptLinkPattern, "Must be a valid URI")
+
 var validators = {
   header: {
     'Name': [requiredString, noSpaces],
-    'Description': [requiredString]
+    'Description': [requiredString],
+    'CMD_Component.@ConceptLink': [conceptLinkUri]
   },
   component: {
-    '@name': [requiredString, noSpaces]
+    '@name': [requiredString, noSpaces],
+    '@ConceptLink': [conceptLinkUri]
   },
   element: {
-    '@name': [requiredString, noSpaces]
+    '@name': [requiredString, noSpaces],
+    '@ConceptLink': [conceptLinkUri]
   },
   attribute: {
-    'Name': [requiredString, noSpaces]
+    'Name': [requiredString, noSpaces],
+    'ConceptLink': [conceptLinkUri]
   }
 };
 
 var testConceptLink = function(fieldValue) {
-  var regExp = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
+  var regExp = conceptLinkPattern;
   if(typeof fieldValue === "string" && fieldValue.length > 0 && !regExp.test(fieldValue))
     return false;
   return true;

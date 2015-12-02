@@ -103,8 +103,9 @@ var CMDElementForm = React.createClass({
         <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateElementValue} validate={this.validate} />
-        <Input ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}  onChange={this.updateElementValue}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
+        <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          onChange={this.updateElementValue} validate={this.validate}
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />

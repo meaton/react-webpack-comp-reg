@@ -139,9 +139,9 @@ var CMDComponentForm = React.createClass({
         <ValidatingTextInput type="text" name="@name" label="Name" value={comp['@name']}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateComponentValue} validate={this.validate}  />
-        <Input validate={this.validate} type="text" name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput" readOnly
-          onChange={this.updateConceptLink}
+        <ValidatingTextInput type="text" name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput"
+          onChange={this.updateComponentValue} validate={this.validate}
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>

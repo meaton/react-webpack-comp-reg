@@ -86,8 +86,9 @@ var CMDAttributeForm = React.createClass({
         <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name}
           labelClassName="col-xs-1" wrapperClassName="col-xs-2"
           onChange={this.updateAttributeValue} validate={this.validate} />
-        <Input ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}  onChange={this.updateAttributeValue}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField" readOnly
+        <ValidatingTextInput ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          onChange={this.updateAttributeValue} validate={this.validate}
           buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
         <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
       </div>

@@ -107,9 +107,10 @@ var ComponentSpecForm = React.createClass({
               return <option key={index} value={domain.data}>{domain.label}</option>
             })}
           </Input>
-          <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
-            labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
-            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)}
+          <ValidatingTextInput ref="conceptRegInput" type="text" name="CMD_Component.@ConceptLink" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
+            labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+            onChange={this.handleConceptLinkChange} validate={this.validate}
+            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLinkValue)}
             />
             <CMDComponentForm
               spec={spec.CMD_Component}
@@ -151,7 +152,11 @@ var ComponentSpecForm = React.createClass({
     this.props.onComponentChange(update);
   },
 
-  updateConceptLink: function(val) {
+  handleConceptLinkChange: function(e) {
+    this.updateConceptLinkValue(e.target.value);
+  },
+
+  updateConceptLinkValue: function(val) {
     this.handleComponentChange({$merge: {['@ConceptLink']: val}});
   },
 
