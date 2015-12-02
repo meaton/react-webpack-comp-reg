@@ -24,6 +24,7 @@ var CMDComponentView = require('../browser/CMDComponentView');
 
 //utils
 var classNames = require('classnames');
+var Validation = require('../../service/Validation');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -135,9 +136,10 @@ var CMDComponentForm = React.createClass({
 
     var editableProps = open?(
       <div className={editClasses}>
-        <ValidatingTextInput validate={this.validationTest} type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <Input ref="conceptRegInput" type="text" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.updateConceptLink} readOnly
+        <ValidatingTextInput validate={this.validate} type="text" name="@name" label="Name" value={comp['@name']} onChange={this.updateComponentValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <Input validate={this.validate} type="text" name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput" readOnly
+          onChange={this.updateConceptLink}
           buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
         <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>
@@ -228,9 +230,8 @@ var CMDComponentForm = React.createClass({
     return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
   },
 
-  validationTest: function(val, feedback, evt) {
-    log.debug("Validate", evt);
-    return val == "valid";
+  validate: function(val, feedback, target) {
+    return Validation.validateField('component', target.name, val, feedback);
   }
 });
 

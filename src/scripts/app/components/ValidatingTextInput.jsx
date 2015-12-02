@@ -33,9 +33,9 @@ var ValidatingTextInput = React.createClass({
     var setMsg = function(message) { msgContainer.message = message; }
 
     //do validation
-    var valid = this.props.validate(val, setMsg, evt);
+    var valid = this.props.validate(val, setMsg, evt.target);
 
-    log.debug("Validated",val,":",valid);
+    log.trace("Validated",val,":",valid);
     this.setState({valid: valid, validated: true, message: msgContainer.message});
   }
 });

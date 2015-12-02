@@ -10,6 +10,23 @@ var err = {
   ReqValueScheme: 'Valid type value is required.'
 };
 
+var requiredString = {
+  test: (v) => {return v != null && v.length > 0},
+  message: "Field cannot be empty"
+}
+
+var validators = {
+  component: {
+    '@name': [
+      requiredString,
+      {
+        test: (v) => {return v.indexOf(" ") < 0},
+        message: "Field cannot contain spaces"
+      },
+    ]
+  }
+};
+
 var testConceptLink = function(fieldValue) {
   var regExp = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
   if(typeof fieldValue === "string" && fieldValue.length > 0 && !regExp.test(fieldValue))
@@ -81,6 +98,29 @@ var testCardinalitySettings = function(minValue, maxValue) {
 * Validation - client-side validation checks before saving a CMDI Profile or Component item.
 */
 var Validation = {
+
+  validateField: function(parent, field, val, feedback) {
+    var tests = validators[parent][field];
+    if($.isArray(tests)) {
+      for(i=0;i<tests.length;i++) {
+        var test = tests[i];
+        log.trace("Testing", test);
+        if(!test.test(val)) {
+          // a test failed
+          log.debug("Failed validation test for field", field, "=", val, ":", test.message);
+          if(feedback != null) {
+            feedback(test.message);
+          }
+          return false;
+        }
+      }
+    } else {
+      log.warn("No validators for field", parent, field, "in", validators);
+    }
+    // no test failed
+    return true;
+  },
+
   validate: function(data) {
     log.debug('validate data');
 
