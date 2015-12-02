@@ -191,6 +191,7 @@ var CMDComponentForm = React.createClass({
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onToggleSelection={this.props.onToggleSelection}
+        checkUniqueComponentName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
         />);
     }
   },
@@ -233,7 +234,8 @@ var CMDComponentForm = React.createClass({
   },
 
   validate: function(val, targetName, feedback) {
-    return Validation.validateField('component', targetName, val, feedback);
+    return Validation.validateField('component', targetName, val, feedback)
+      && (targetName != '@name' || this.props.checkUniqueComponentName(val, feedback));
   }
 });
 

@@ -145,6 +145,22 @@ var Validation = {
     return true;
   },
 
+  checkUniqueSiblingName: function(items, name, feedback) {
+    if(items != null) {
+      var count = 0;
+      for(var i=0;i<(items.length);i++) {
+        if(items[i]["@name"] === name || items[i]["Name"] === name) {
+          count++;
+        }
+        if(count > 1) {
+          feedback("Sibling names must be unique");
+          return false;
+        }
+      }
+    }
+    return true;
+  },
+
   validate: function(data) {
     log.debug('validate data');
 
