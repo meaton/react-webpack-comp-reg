@@ -286,9 +286,15 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
 
   // to be called when save is eventually safe and/or confirmed
   var save = function() {
-    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(spec){
+    ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(result){
         // success
-        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec);
+        var type = (result["@isProfile"] === "true")?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENTS;
+        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, {
+          item: result.description,
+          type: type,
+          update: update,
+          publish: publish
+        });
         if(successCb) {
           successCb(spec);
         }

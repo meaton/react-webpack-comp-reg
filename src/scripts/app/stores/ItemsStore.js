@@ -5,6 +5,8 @@ var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
 
 var ImmutabilityUtil = require('../service/ImmutabilityUtil');
+var ComponentSpec = require('../service/ComponentSpec');
+
 var remove = ImmutabilityUtil.remove,
     update = ImmutabilityUtil.update;
 
@@ -26,7 +28,8 @@ var ItemsStore = Fluxxor.createStore({
       Constants.DELETE_COMPONENTS, this.handleDeleteItems,
       Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteItemsSuccess,
       Constants.DELETE_COMPONENTS_FAILURE, this.handleDeleteItemsFailure,
-      Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange
+      Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange,
+      Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved
     );
   },
 
@@ -101,6 +104,18 @@ var ItemsStore = Fluxxor.createStore({
       //filter on full set
       this.filteredItems = filter(this.items, this.filterText);
     }
+    this.emit("change");
+  },
+
+  handleComponentSaved: function(result) {
+    if(result.publish) {
+      //switch to public space
+      this.space = Constants.SPACE_PUBLISHED;
+    } else if(!result.update) {
+      //new item, saved to private space
+      this.space = Constants.SPACE_PRIVATE;
+    }
+    this.type = result.type;
     this.emit("change");
   }
 

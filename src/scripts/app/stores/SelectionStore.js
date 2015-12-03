@@ -19,7 +19,8 @@ var SelectionStore = Fluxxor.createStore({
       Constants.SELECT_BROWSER_ITEM, this.handleSelectItem,
       Constants.SWITCH_MULTIPLE_SELECT, this.handleSwitchMultipleSelect,
       Constants.SWITCH_SPACE, this.handleSwitchSpace,
-      Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteItemsSuccess
+      Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteItemsSuccess,
+      Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved
     );
   },
 
@@ -68,7 +69,14 @@ var SelectionStore = Fluxxor.createStore({
     // remove deleted items from selection
     this.selectedItems = remove(this.selectedItems, ids);
     this.emit("change");
+  },
+
+  handleComponentSaved: function(result) {
+    //select the newly saved component
+    this.allowMultiple = false;
+    this.handleSelectItem(result.item);
   }
+
 });
 
 module.exports = SelectionStore;
