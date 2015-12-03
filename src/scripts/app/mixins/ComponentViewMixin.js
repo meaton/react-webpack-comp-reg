@@ -16,7 +16,7 @@ var ComponentViewMixin = {
    * @param  {object} spec         [description]
    * @param  {boolean} defaultState state to assume if state is not stored explicitly
    */
-  doToggle: function(space, itemId, spec, defaultState) {
+  doToggle: function(itemId, spec, defaultState) {
     var wasExpanded = ExpansionState.isExpanded(this.state.details.expansionState, itemId, defaultState);
 
     // expand view
@@ -24,7 +24,7 @@ var ComponentViewMixin = {
 
     if(!wasExpanded) {
       // load child components of expanded item
-      this.getFlux().actions.loadLinkedComponentSpecs(spec, space, this.state.details.linkedComponents);
+      this.getFlux().actions.loadLinkedComponentSpecs(spec, this.state.details.linkedComponents);
     }
   }
 

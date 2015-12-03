@@ -74,7 +74,7 @@ var ComponentRegistryClient = {
    }, corsRequestParams));
  },
 
- loadSpec: function(type, space, id, raw_type, handleSuccess, handleFailure) {
+ loadSpec: function(type, id, raw_type, handleSuccess, handleFailure) {
   var self = this;
   var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles/':'/registry/components/';
   var requestUrl = restUrl + typepath + id;

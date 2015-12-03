@@ -57,13 +57,6 @@ var ComponentDetailsOverview = React.createClass({
     this.getFlux().actions.deleteComment(this.props.type, this.props.item.id, commentId);
   },
 
-  /**
-   * from ComponentViewMixin
-   */
-  toggleComponent: function(itemId, spec) {
-    this.doToggle(this.props.space, itemId, spec);
-  },
-
   render: function() {
     var hideClass = (this.props.item != null) ? "show" : "hide";
     var infoPanel = (this.props.item != null) ?
@@ -79,7 +72,7 @@ var ComponentDetailsOverview = React.createClass({
                   className={this.state.details.loading?" wait":""}
                   expansionState={this.state.details.expansionState}
                   linkedComponents={this.state.details.linkedComponents}
-                  onComponentToggle={this.toggleComponent}
+                  onComponentToggle={this.doToggle /* from ComponentViewMixin */}
                   deleteComment={this.deleteComment}
                   saveComment={this.saveComment}
                   loggedIn={this.state.auth.authState.authenticated}

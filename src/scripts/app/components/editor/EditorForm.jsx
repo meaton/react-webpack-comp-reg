@@ -135,7 +135,7 @@ var EditorForm = React.createClass({
               item={this.state.editor.item}
               expansionState={this.state.details.expansionState}
               linkedComponents={this.state.details.linkedComponents}
-              onComponentToggle={this.toggleItem}
+              onComponentToggle={this.doToggle /* from ComponentViewMixin */}
               onTypeChange={this.setType}
               onHeaderChange={this.updateHeader}
               onItemChange={this.updateItem}
@@ -184,7 +184,7 @@ var EditorForm = React.createClass({
     this.getFlux().actions.insertComponentById(this.state.details.spec, targetComponentId, itemId,
       function(newSpec) {
         // make sure the newly added linked component is loaded
-        this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.editor.space, this.state.details.linkedComponents);
+        this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.details.linkedComponents);
       }.bind(this)
     );
 
@@ -194,26 +194,21 @@ var EditorForm = React.createClass({
     this.getFlux().actions.toggleComponentSelection(id);
   },
 
-  toggleItem: function(itemId, spec, defaultState) {
-    // from ComponentViewMixin
-    this.doToggle(this.state.editor.space, itemId, spec, defaultState);
-  },
-
   handleSave: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess, this.handleUsageWarning);
+      this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.afterSuccess, this.handleUsageWarning);
     }
   },
 
   handleSaveNew: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.saveNewComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
+      this.getFlux().actions.saveNewComponentSpec(this.state.details.spec, this.state.editor.item, this.afterSuccess);
     }
   },
 
   handlePublish: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.publishComponentSpec(this.state.details.spec, this.state.editor.item, this.state.editor.space, this.afterSuccess);
+      this.getFlux().actions.publishComponentSpec(this.state.details.spec, this.state.editor.item, this.afterSuccess);
     }
   },
 

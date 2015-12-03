@@ -50,10 +50,10 @@ var RestActions = {
   loadComponentSpec: function(type, space, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     // load the (JSON) spec for this item
-    ComponentRegistryClient.loadSpec(type, space, itemId, "json", function(spec){
+    ComponentRegistryClient.loadSpec(type, itemId, "json", function(spec){
         // Success. Now also load linked child components at root level, we need
         // their names for display purposes.
-        loadLinkedComponents(spec.CMD_Component, space, function(linkedComponents) {
+        loadLinkedComponents(spec.CMD_Component, function(linkedComponents) {
           // Loading of linked components done...
           SpecAugmenter.augmentWithIds(spec);
           log.trace("Loaded and augmented spec: ", spec);
@@ -71,18 +71,17 @@ var RestActions = {
    * Loads all linked components in the specified spec
    * Dispatches Constants.LINKED_COMPONENTS_LOADED when done loading
    * @param  {[type]} parentSpec spec to load linked components for
-   * @param  {[type]} space      space to load from
    * @param  {Object} [currentset]     set of already loaded linked components (these will not be loaded again)
    */
-  loadLinkedComponentSpecs: function(parentSpec, space, currentset) {
-    loadLinkedComponents(parentSpec, space, function(linkedComponents) {
+  loadLinkedComponentSpecs: function(parentSpec, currentset) {
+    loadLinkedComponents(parentSpec, function(linkedComponents) {
       this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
     }.bind(this), currentset);
   },
 
   loadComponentSpecXml: function(type, space, item) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
-    ComponentRegistryClient.loadSpec(type, space, item.id, "text", function(specXml){
+    ComponentRegistryClient.loadSpec(type, item.id, "text", function(specXml){
         // success
         this.dispatch(Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, specXml);
       }.bind(this),
@@ -93,17 +92,17 @@ var RestActions = {
     );
   },
 
-  saveComponentSpec: function(spec, item, space, successCb, componentInUsageCb) {
+  saveComponentSpec: function(spec, item, successCb, componentInUsageCb) {
     // do update, don't publish
     saveSpec.apply(this, [spec, item, true, false, successCb, componentInUsageCb])
   },
 
-  saveNewComponentSpec: function(spec, item, space, successCb) {
+  saveNewComponentSpec: function(spec, item, successCb) {
     // new, don't update or publish
     saveSpec.apply(this, [spec, item, false, false, successCb])
   },
 
-  publishComponentSpec: function(spec, item, space, successCb) {
+  publishComponentSpec: function(spec, item, successCb) {
     // do update and publish
     saveSpec.apply(this, [spec, item, true, true, successCb])
   },
@@ -184,11 +183,10 @@ module.exports = RestActions;
  * of the provided component (JSON spec). When done, the callback is called with
  * the result - this is guaranteed to happen.
  * @param  {object}   component component specification to load linked components for
- * @param  {string}   space     space to load components from
  * @param  {Function} callback  will be called with the list of loaded components
  * @param  {Object} [currentset={}]  set of already loaded linked components (these will not be loaded again)
  */
-function loadLinkedComponents(component, space, callback, currentset) {
+function loadLinkedComponents(component, callback, currentset) {
     var components = {};
     var childComponents = component.CMD_Component;
     if(currentset == undefined) {
@@ -198,7 +196,7 @@ function loadLinkedComponents(component, space, callback, currentset) {
     // gather linked component IDs
     if(childComponents != undefined) {
       var linkedComponentIds = getComponentIds(childComponents, currentset);
-      loadComponentsById(linkedComponentIds, space, components, callback);
+      loadComponentsById(linkedComponentIds, components, callback);
     } else {
       // no child components, nothing to do so call callback immediately
       callback(components);
@@ -235,21 +233,20 @@ function getComponentIds(childComponents, currentset) {
  * Loads components with specified ids. When done, the callback is called with
 * the result - this is guaranteed to happen.
  * @param  {[Array]}   ids       array with ids to load
- * @param  {[string]}   space     space to load specs from
  * @param  {[Object]}   collected collected specs thus far
  * @param  {Function} callback  gets called with result when all components have been loaded
  */
-function loadComponentsById(ids, space, collected, callback) {
+function loadComponentsById(ids, collected, callback) {
   var id = ids.pop();
   if(id == undefined) {
     //tail of recursion
     callback(collected);
   } else if(collected[id] != undefined) {
     // already loaded, skip this one and continue
-    loadComponentsById(ids, space, collected, callback);
+    loadComponentsById(ids, collected, callback);
   } else {
     // load current id
-    ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENTS, space, id, "json", function(spec){
+    ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENTS, id, "json", function(spec){
         log.info("Loaded", id, ":", spec.Header.Name);
 
         if(spec == undefined) {
@@ -261,13 +258,13 @@ function loadComponentsById(ids, space, collected, callback) {
         //success
         collected[id] = spec;
         // proceed
-        loadComponentsById(ids, space, collected, callback);
+        loadComponentsById(ids, collected, callback);
       },
       function(message) {
         // failure
         log.warn("Failed to load child component with id ", id, ": ", message);
         // proceed (nothing added)
-        loadComponentsById(ids, space, collected, callback);
+        loadComponentsById(ids, collected, callback);
       }
     );
   }
