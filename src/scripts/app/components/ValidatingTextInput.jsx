@@ -37,10 +37,10 @@ var ValidatingTextInput = React.createClass({
   render: function() {
     var {validate, ...other} = this.props;
     var bsStyle = (this.state.validated && !this.state.valid)?"error":null;
-    return <Input ref="input" bsStyle={bsStyle} hasFeedback={true} addonAfter={this.state.message} onFocus={this.onFocusChange} onBlur={this.onFocusChange} {...other} />;
+    return <Input ref="input" bsStyle={bsStyle} hasFeedback={true} addonAfter={this.state.message} onBlur={this.onBlur} {...other} />;
   },
 
-  onFocusChange: function(evt) {
+  onBlur: function(evt) {
     this.doValidate();
   },
 

@@ -142,6 +142,7 @@ var CMDElementForm = React.createClass({
                       onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
                       isFirst={index == 0}
                       isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+                      checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
                       {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
                       />
                   }.bind(this)) : <span>No Attributes</span>
