@@ -39,7 +39,8 @@ var EditorForm = React.createClass({
     var flux = this.getFlux();
     return {
       details: flux.store("ComponentDetailsStore").getState(),
-      editor: flux.store("EditorStore").getState()
+      editor: flux.store("EditorStore").getState(),
+      group: flux.store("GroupStore").getState()
     };
   },
 
@@ -98,7 +99,8 @@ var EditorForm = React.createClass({
       this.getFlux().actions.loadItem(type, id);
     }
 
-    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space);
+    this.getFlux().actions.loadGroups();
+    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.group);
   },
 
   render: function () {
@@ -146,12 +148,14 @@ var EditorForm = React.createClass({
           <div className="browserGroup">
             <SpaceSelector
               type={Constants.TYPE_COMPONENTS}
-              componentsOnly={true}
+              space={this.state.editor.grid.space}
+              groups={this.state.group.groups}
+              selectedGroup={this.state.editor.grid.group}
               allowMultiSelect={false}
               validUserSession={true}
-              space={this.state.editor.grid.space}
+              componentsOnly={true}
               onSpaceSelect={this.handleGridSpaceSelect}
-              onToggleMultipleSelect={null /*this.handleToggleMultipleSelect*/} />
+              onToggleMultipleSelect={null} />
             <DataGrid
               multiSelect={false}
               editMode={true}
@@ -168,9 +172,9 @@ var EditorForm = React.createClass({
 
   // ACTION HANDLERS FOR CHILD COMPONENTS
 
-  handleGridSpaceSelect: function(type, space) {
-    this.getFlux().actions.switchEditorGridSpace(space);
-    this.getFlux().actions.loadEditorGridItems(space);
+  handleGridSpaceSelect: function(type, space, group) {
+    this.getFlux().actions.switchEditorGridSpace(space, group);
+    this.getFlux().actions.loadEditorGridItems(space, group);
   },
 
   handleGridRowSelect: function(itemId) {
