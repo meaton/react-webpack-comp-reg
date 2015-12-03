@@ -25,6 +25,18 @@ var corsRequestParams = (Config.cors) ?
       withCredentials: true
   }} : {};
 
+function getRegistrySpacePath(space) {
+  if(space == Constants.SPACE_PUBLISHED) {
+    return "published";
+  }
+  if(space == Constants.SPACE_PRIVATE) {
+    return "private";
+  }
+  if(space == Constants.SPACE_GROUP) {
+    return "group";
+  }
+}
+
 var ComponentRegistryClient = {
 
   loadComponents: function(type, space, handleSuccess, handleFailure) {
@@ -35,7 +47,7 @@ var ComponentRegistryClient = {
      accepts: {
        json: 'application/json'
      },
-     data: { unique: new Date().getTime(), registrySpace: (space != null) ? space: "" },
+     data: { unique: new Date().getTime(), registrySpace: (space != null) ? getRegistrySpacePath(space): "" },
      dataType: 'json',
      success: function(data) {
        log.trace("Successfully loaded " + requestUrl);
