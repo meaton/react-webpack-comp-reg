@@ -110,8 +110,6 @@ var SpaceSelector = React.createClass({
     var types = this.types;
     var currentType = this.props.type;
 
-    log.debug("Current type", types, currentType);
-
     return (
       <div className="left">
         <ButtonGroup className="space_selector">
