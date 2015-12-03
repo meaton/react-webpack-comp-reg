@@ -102,7 +102,7 @@ var SpaceSelector = React.createClass({
   },
 
   render: function() {
-    var showMultiSelect = this.props.allowMultiSelect && this.props.componentsOnly;
+    var showMultiSelect = this.props.allowMultiSelect;
 
     var spaces = this.getSpaces();
     var currentSpace = this.getCurrentSpace();
@@ -131,18 +131,20 @@ var SpaceSelector = React.createClass({
           </DropdownButton>
 
           {/* Components, profiles */}
-          <DropdownButton title={types[currentType].label}
-            disabled={!this.props.validUserSession && currentSpace != PUBLIC}>
-              {Object.keys(types).map(typeKey => (
-                  <MenuItem
-                    key={typeKey}
-                    className={classNames({ selected: (typeKey === currentType) })}
-                    onSelect={this.selectType.bind(this, typeKey)}>
-                      {types[typeKey].label}
-                  </MenuItem>
-                )
-              )}
-          </DropdownButton>
+          {!this.props.componentsOnly && (
+            <DropdownButton title={types[currentType].label}
+              disabled={(!this.props.validUserSession && currentSpace != PUBLIC)}>
+                {Object.keys(types).map(typeKey => (
+                    <MenuItem
+                      key={typeKey}
+                      className={classNames({ selected: (typeKey === currentType) })}
+                      onSelect={this.selectType.bind(this, typeKey)}>
+                        {types[typeKey].label}
+                    </MenuItem>
+                  )
+                )}
+            </DropdownButton>
+        )}
 
           {/* Toggle multiselect */}
           {showMultiSelect && (
