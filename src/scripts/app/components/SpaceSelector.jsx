@@ -18,6 +18,13 @@ var ButtonLink = require('react-router-bootstrap').ButtonLink;
 //var auth = require('./Authentication').auth;
 var classNames = require('classnames');
 
+
+var PUBLIC = Constants.SPACE_PUBLISHED;
+var PRIVATE = Constants.SPACE_PRIVATE;
+var GROUP = Constants.SPACE_GROUP;
+var COMPONENTS = Constants.TYPE_COMPONENTS;
+var PROFILES = Constants.TYPE_PROFILE;
+
 /**
 * SpaceSelector - selector or switcher between public, private and/or group spaces and component or profile types.
 * @constructor
@@ -26,87 +33,123 @@ var SpaceSelector = React.createClass({
   propTypes: {
     space: React.PropTypes.string,
     type: React.PropTypes.string,
+    componentsOnly: React.PropTypes.bool,
     multiSelect: React.PropTypes.bool,
     allowMultiSelect: React.PropTypes.bool,
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
-    onToggleMultipleSelect: React.PropTypes.func
+    onToggleMultipleSelect: React.PropTypes.func,
+    groups: React.PropTypes.array,
+    selectedGroup: React.PropTypes.string
   },
 
   getDefaultProps: function() {
     return {
       allowMultiSelect: true,
-      multiSelect: false
+      multiSelect: false,
+      componentsOnly: false,
+      groups: [],
+      selectedGroup: null
     };
   },
 
-  getInitialState: function() {
-    return {
-             spaces: (this.props.type == "componentsOnly") ?
-                [{ label: "Public", registry: {type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PUBLISHED }, loginRequired: false },
-                 { label: "Private", registry: {type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }, loginRequired: true }] :
-                [{ label: "Public", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.SPACE_PUBLISHED }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PUBLISHED }], loginRequired: false },
-                 { label: "Private", registry: [{ type: Constants.TYPE_PROFILE, filter: Constants.SPACE_PRIVATE }, { type: Constants.TYPE_COMPONENTS, filter: Constants.SPACE_PRIVATE }], loginRequired: true }]
-           };
+  selectSpace: function(space) {
+    var spaceId, groupId;
+    if(space == PUBLIC || space == PRIVATE) {
+      this.props.onSpaceSelect(this.props.type, space);
+    } else if(space.indexOf("group_") == 0) {
+      //var groupId = space;//TODO: substr
+      //this.props.onSpaceSelect(this.props.type, GROUP, groupId);
+    }
   },
 
-  spaceSelect: function(selection, event) {
-    log.trace('clicked type:', selection.currentSpaceIdx);
-    log.trace('mstate registry:', selection.currentRegIdx);
+  selectType: function(type) {
+    this.props.onSpaceSelect(type, this.props.space, this.props.group);
+  },
 
-    //select 'space-type' object depending on selected index
-    var spaceType = this.state.spaces[selection.currentSpaceIdx];
-    spaceType = ($.isArray(spaceType.registry))?spaceType.registry[selection.currentRegIdx]:spaceType.registry;
+  types: {
+    [PROFILES]: {
+      label: "Profiles"
+    },
+    [COMPONENTS]: {
+      label: "Components"
+    }
+  },
 
-    //private, published, group
-    var space = spaceType.filter;
-    //profile or components
-    var type = spaceType.type;
+  getSpaces: function() {
+    var spaces = {
+      [PUBLIC]: {
+        label: Constants.SPACE_NAMES[PUBLIC],
+        loginRequired: false
+      },
+      [PRIVATE]: {
+        label: Constants.SPACE_NAMES[PRIVATE],
+        loginRequired: true
+      }
+    }
+    //TODO: add groups "group_"...
+    return spaces;
+  },
 
-    log.debug("Selected", space, type);
-    this.props.onSpaceSelect(type, space);
+  getCurrentSpace: function() {
+    if(this.props.space == PUBLIC || this.props.space == PRIVATE) {
+      return this.props.space;
+    } else if(this.props.space == Constants.SPACE_GROUP && this.props.selectedGroup != null) {
+      return "group_" + this.props.selectedGroup;
+    } else {
+      return null;
+    }
   },
 
   render: function() {
-    var currentSpaceIdx = (this.props.space == "private") ? 1 : 0;
-    var currentRegIdx = (this.props.type == "components") ? 1 : 0;
+    var showMultiSelect = this.props.allowMultiSelect && this.props.componentsOnly;
 
-    var self = this;
-    var list = this.state.spaces.map(function(d, sindex){
-      var selectedClass = classNames({ active: (currentSpaceIdx == sindex) });
-        if(self.props.type == "componentsOnly") {
-          return (
-            <Button className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession} onClick={self.spaceSelect.bind(self, {currentSpaceIdx: sindex, currentRegIdx: 0})} >
-              {d.label}
-            </Button>
-          );
-        } else {
-          return (
-            <DropdownButton key={sindex} title={d.label} className={selectedClass} disabled={d.loginRequired && !self.props.validUserSession}>
-              {d.registry.map(function(reg, mindex) {
-                var selectedTypeClass = classNames({ selected: (selectedClass == "active" && currentRegIdx == mindex) });
-                return (
-                  React.createElement(MenuItem, { key: mindex, className: selectedTypeClass, onSelect: self.spaceSelect.bind(self, {currentSpaceIdx : sindex, currentRegIdx: mindex}) }, reg.type)
-              ) })}
-            </DropdownButton>
-          );
-        }
-    });
-    var selectModeBtn = this.props.allowMultiSelect ? (
-            <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"} 
-                    onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>
-          ):null;
-    return (this.props.type == "componentsOnly") ?
-    (
-      <div className="left">
-        <ButtonGroup className="space_selector">{list}</ButtonGroup>
-      </div>
-    ) :
-    (
+    var spaces = this.getSpaces();
+    var currentSpace = this.getCurrentSpace();
+
+    var types = this.types;
+    var currentType = this.props.type;
+
+    log.debug("Current type", types, currentType);
+
+    return (
       <div className="left">
         <ButtonGroup className="space_selector">
-          {list}
-          {selectModeBtn}
+
+          {/* Public, private, groups */}
+          <DropdownButton title={spaces[currentSpace].label}
+            disabled={!this.props.validUserSession && currentSpace == PUBLIC}>
+              {Object.keys(this.getSpaces()).map(spaceKey => (
+                  <MenuItem
+                    key={spaceKey}
+                    className={classNames({ selected: (spaceKey === currentSpace) })}
+                    onSelect={this.selectSpace.bind(this, spaceKey)}>
+                      {spaces[spaceKey].label}
+                  </MenuItem>
+                )
+              )}
+          </DropdownButton>
+
+          {/* Components, profiles */}
+          <DropdownButton title={types[currentType].label}
+            disabled={!this.props.validUserSession && currentSpace != PUBLIC}>
+              {Object.keys(types).map(typeKey => (
+                  <MenuItem
+                    key={typeKey}
+                    className={classNames({ selected: (typeKey === currentType) })}
+                    onSelect={this.selectType.bind(this, typeKey)}>
+                      {types[typeKey].label}
+                  </MenuItem>
+                )
+              )}
+          </DropdownButton>
+
+          {/* Toggle multiselect */}
+          {showMultiSelect && (
+            <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"}
+                    onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>
+          )}
+
         </ButtonGroup>
       </div>
     );
