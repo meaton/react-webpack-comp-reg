@@ -119,8 +119,8 @@ var EditorForm = React.createClass({
               {this.state.editor.type === Constants.TYPE_PROFILE
                 ? (newItem?"New profile":"Edit profile")
                 :(newItem?"New component":"Edit component")}
-
-                &nbsp;in &quot;{Constants.SPACE_NAMES[this.state.editor.space]}&quot;</h3>
+              {!newItem && <span>&nbsp;in &quot;{Constants.SPACE_NAMES[this.state.editor.space]}&quot;</span>}
+            </h3>
 
             <EditorMenuGroup
               isNew={newItem}

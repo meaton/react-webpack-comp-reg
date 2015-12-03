@@ -55,9 +55,8 @@ var EditorStore = Fluxxor.createStore({
   },
 
   handleOpenEditor: function(obj) {
-    var type = obj.type;
-    var space = obj.space;
-    var id = obj.id;
+    this.type = obj.type;
+    this.space = obj.space;
 
     // reset component selection state
     this.selectedComponentId = null;
