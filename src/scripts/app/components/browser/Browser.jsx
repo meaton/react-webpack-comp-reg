@@ -94,7 +94,7 @@ var Browser = React.createClass({
   },
 
   loadItems: function() {
-    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space);
+    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.group);
   },
 
   loadGroups: function() {

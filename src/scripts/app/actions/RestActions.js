@@ -22,9 +22,9 @@ var RestActions = {
     );
   },
 
-  loadEditorGridItems: function(space) {
+  loadEditorGridItems: function(space, group) {
     this.dispatch(Constants.LOAD_EDITOR_ITEMS);
-    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, function(items){
+    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, group, function(items){
         // Success
         this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
       }.bind(this),
