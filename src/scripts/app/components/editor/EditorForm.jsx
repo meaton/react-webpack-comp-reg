@@ -27,7 +27,7 @@ var classNames = require('classnames');
 
 /**
 * EditorForm - Form routing endpoint for spec editor, either new/existing component/profile
-* Params assumed: 'type' and 'componentId' OR 'profileId'
+* Routing params assumed: 'type' and 'componentId' OR 'profileId'
 * @constructor
 */
 var EditorForm = React.createClass({
@@ -48,7 +48,11 @@ var EditorForm = React.createClass({
   },
 
   getChildContext: function() {
-    return {validationListener: this.validationListener}
+    return {
+      // here we can fetch validating inputs for triggering on save
+      // (picked up from context by ValidatingTextInput components)
+      validationListener: this.validationListener
+    }
   },
 
   componentDidMount: function() {
@@ -78,8 +82,10 @@ var EditorForm = React.createClass({
 
     var space = params.space;
 
+    // initialise editor
     this.getFlux().actions.openEditor(type, space, id);
 
+    // further initialisation of the editor depending on parameters
     if(this.isNew() && id == undefined) {
       // create new component
       this.getFlux().actions.newComponentSpec(type, space);
@@ -159,6 +165,8 @@ var EditorForm = React.createClass({
       );
     }
   },
+
+  // ACTION HANDLERS FOR CHILD COMPONENTS
 
   handleGridSpaceSelect: function(type, space) {
     this.getFlux().actions.switchEditorGridSpace(space);
@@ -255,10 +263,9 @@ var EditorForm = React.createClass({
     );
   },
 
-  // Validation (picked up from context by ValidatingTextInput components)
+  // INPUT VALIDATION
   // This ensures that all validating inputs are locally validated once more
   // when trying to save or publish.
-
   validationListener: {
     add: function(item) {
       log.debug("Adding validation item", item);
