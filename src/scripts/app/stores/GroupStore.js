@@ -20,7 +20,11 @@ var GroupStore = Fluxxor.createStore({
   },
 
   handleLoadGroups: function(groups) {
-    this.loading = true;
+    if(groups != null && !$.isArray(groups)) {
+      this.groups = [groups];
+    } else {
+      this.groups = groups;
+    }
     this.emit("change");
   }
 });

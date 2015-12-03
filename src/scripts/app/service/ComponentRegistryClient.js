@@ -402,6 +402,26 @@ loadAllowedTypes: function(cb) {
   }, corsRequestParams));
 },
 
+loadGroups: function(success, failure) {
+  $.ajax($.extend({
+    type: 'GET',
+    url: restUrl + '/registry/groups/usermembership',
+    processData: false,
+    contentType: false,
+    dataType:'json',
+    success: function(data) {
+      if(data == null) {
+        success([]);
+      } else {
+        success(data.group);
+      }
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
 usageCheck: function(componentId, cb) {
   var url = restUrl +'/registry/components/usage/' + componentId;
 

@@ -7,6 +7,9 @@ var {Route} = require('react-router');
 
 var Constants = require("../constants");
 
+//mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
 //bootstrap
 var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
@@ -22,14 +25,18 @@ var classNames = require('classnames');
 var PUBLIC = Constants.SPACE_PUBLISHED;
 var PRIVATE = Constants.SPACE_PRIVATE;
 var GROUP = Constants.SPACE_GROUP;
+
 var COMPONENTS = Constants.TYPE_COMPONENTS;
 var PROFILES = Constants.TYPE_PROFILE;
+
+var GROUP_PREFIX = "group_";
 
 /**
 * SpaceSelector - selector or switcher between public, private and/or group spaces and component or profile types.
 * @constructor
 */
 var SpaceSelector = React.createClass({
+  mixins: [ImmutableRenderMixin],
   propTypes: {
     space: React.PropTypes.string,
     type: React.PropTypes.string,
@@ -57,9 +64,10 @@ var SpaceSelector = React.createClass({
     var spaceId, groupId;
     if(space == PUBLIC || space == PRIVATE) {
       this.props.onSpaceSelect(this.props.type, space);
-    } else if(space.indexOf("group_") == 0) {
-      //var groupId = space;//TODO: substr
-      //this.props.onSpaceSelect(this.props.type, GROUP, groupId);
+    } else if(space.indexOf(GROUP_PREFIX) == 0) {
+      var groupId = space.substring(GROUP_PREFIX.length);
+      log.debug("Selected group", groupId);
+      this.props.onSpaceSelect(this.props.type, GROUP, groupId);
     }
   },
 
@@ -87,7 +95,19 @@ var SpaceSelector = React.createClass({
         loginRequired: true
       }
     }
-    //TODO: add groups "group_"...
+
+    // add group spaces
+    if(this.props.groups != null) {
+      var groups = this.props.groups;
+      for(var i=0;i<(groups.length);i++) {
+        log.trace("Group", groups[i]);
+        var groupId = GROUP_PREFIX + groups[i].id;
+        spaces[groupId] = {
+          label: groups[i].name,
+          loginRequired: true
+        }
+      }
+    }
     return spaces;
   },
 
@@ -95,7 +115,7 @@ var SpaceSelector = React.createClass({
     if(this.props.space == PUBLIC || this.props.space == PRIVATE) {
       return this.props.space;
     } else if(this.props.space == Constants.SPACE_GROUP && this.props.selectedGroup != null) {
-      return "group_" + this.props.selectedGroup;
+      return GROUP_PREFIX + this.props.selectedGroup;
     } else {
       return null;
     }
@@ -117,7 +137,7 @@ var SpaceSelector = React.createClass({
           {/* Public, private, groups */}
           <DropdownButton title={spaces[currentSpace].label}
             disabled={!this.props.validUserSession && currentSpace == PUBLIC}>
-              {Object.keys(this.getSpaces()).map(spaceKey => (
+              {Object.keys(spaces).map(spaceKey => (
                   <MenuItem
                     key={spaceKey}
                     className={classNames({ selected: (spaceKey === currentSpace) })}

@@ -32,6 +32,18 @@ var Browser = React.createClass({
     };
   },
 
+  componentDidMount: function() {
+    this.loadItems();
+    this.loadGroups();
+  },
+
+  componentWillUpdate: function(nextProps, nextState) {
+    if(this.state.auth.authState != nextState.auth.authState) {
+      // user logged in or out, update groups
+      this.loadGroups();
+    }
+  },
+
   render: function() {
     var item = this.state.selection.currentItem;
     var viewer =
@@ -81,12 +93,12 @@ var Browser = React.createClass({
     );
   },
 
-  componentDidMount: function() {
-    this.loadItems();
-  },
-
   loadItems: function() {
     this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space);
+  },
+
+  loadGroups: function() {
+    this.getFlux().actions.loadGroups();
   },
 
   handleToggleMultipleSelect: function() {

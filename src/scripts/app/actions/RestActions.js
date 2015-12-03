@@ -120,6 +120,17 @@ var RestActions = {
     }.bind(this), componentInUsageCb);
   },
 
+  loadGroups: function() {
+    ComponentRegistryClient.loadGroups(function(groups){
+        this.dispatch(Constants.LOAD_GROUPS, groups);
+      }.bind(this),
+      function(message){
+        log.error("Failed to load user groups", message);
+        this.dispatch(Constants.LOAD_GROUPS, null);
+      }.bind(this)
+    );
+  },
+
   loadComments: function(type, componentId) {
     this.dispatch(Constants.LOAD_COMMENTS);
     ComponentRegistryClient.loadComments(componentId, type, function(comments){
