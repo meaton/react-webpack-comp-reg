@@ -15,8 +15,9 @@ var ItemsStore = require("./stores/ItemsStore"),
     SelectionStore = require("./stores/SelectionStore"),
     ComponentDetailsStore = require("./stores/ComponentDetailsStore"),
     AuthenticationStore = require("./stores/AuthenticationStore"),
-    MessageStore = require("./stores/MessageStore");
-    EditorStore = require("./stores/EditorStore");
+    MessageStore = require("./stores/MessageStore"),
+    EditorStore = require("./stores/EditorStore"),
+    GroupStore = require("./stores/GroupStore");
 
 var actions = require("./actions");
 
@@ -33,7 +34,8 @@ var stores = {
   ComponentDetailsStore: new ComponentDetailsStore(),
   AuthenticationStore: new AuthenticationStore(),
   MessageStore: new MessageStore(),
-  EditorStore: new EditorStore()
+  EditorStore: new EditorStore(),
+  GroupStore: new GroupStore()
 };
 
 var flux = new Fluxxor.Flux(stores, actions);
