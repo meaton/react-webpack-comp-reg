@@ -49,6 +49,7 @@ var Browser = React.createClass({
             <SpaceSelector
               type={this.state.items.type}
               space={this.state.items.space}
+              selectedGroup={this.state.items.group}
               multiSelect={this.state.selection.allowMultiple}
               validUserSession={this.state.auth.authState.uid != null}
               onSpaceSelect={this.handleSpaceSelect}
@@ -90,8 +91,8 @@ var Browser = React.createClass({
     this.getFlux().actions.switchMultipleSelect();
   },
 
-  handleSpaceSelect: function(type, registry) {
-    this.getFlux().actions.switchSpace(type, registry);
+  handleSpaceSelect: function(type, registry, group) {
+    this.getFlux().actions.switchSpace(type, registry, group);
     this.getFlux().actions.loadItems(type, registry);
   },
 

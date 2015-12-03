@@ -18,8 +18,8 @@ module.exports = {
    * @param  {string} type     Constants.TYPE_PROFILE or Constants.TYPE_COMPONENTS
    * @param  {string} registry Constants.SPACE_PRIVATE, Constants.SPACE_PUBLISHED or Constants.SPACE_GROUP
    */
-  switchSpace: function(type, space) {
-    this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space});
+  switchSpace: function(type, space, group) {
+    this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, group: group||null});
   },
 
   editItem: function(item) {

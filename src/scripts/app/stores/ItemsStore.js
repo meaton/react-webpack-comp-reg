@@ -18,6 +18,7 @@ var ItemsStore = Fluxxor.createStore({
       this.loading = false, //loading state
       this.type = Constants.TYPE_PROFILE, //components or profiles
       this.space = Constants.SPACE_PUBLISHED, //private, group, published
+      this.group = null;
       this.filterText = null
 
     this.bindActions(
@@ -40,6 +41,7 @@ var ItemsStore = Fluxxor.createStore({
       loading: this.loading,
       type: this.type,
       space: this.space,
+      group: this.group,
       filterText: this.filterText
     };
   },
@@ -65,6 +67,13 @@ var ItemsStore = Fluxxor.createStore({
   handleSwitchSpace: function(spaceType) {
     this.type = spaceType.type;
     this.space = spaceType.space;
+
+    if(spaceType.group == undefined) {
+      this.group = null;
+    } else {
+      this.group = spaceType.group;
+    }
+    
     this.emit("change");
   },
 
