@@ -35,7 +35,7 @@ var RestActions = {
     );
   },
 
-  loadItem: function(type, space, itemId) {
+  loadItem: function(type, itemId) {
     ComponentRegistryClient.loadItem(itemId, function(item){
         // Success
         this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
@@ -47,7 +47,7 @@ var RestActions = {
     );
   },
 
-  loadComponentSpec: function(type, space, itemId) {
+  loadComponentSpec: function(type, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     // load the (JSON) spec for this item
     ComponentRegistryClient.loadSpec(type, itemId, "json", function(spec){
@@ -79,7 +79,7 @@ var RestActions = {
     }.bind(this), currentset);
   },
 
-  loadComponentSpecXml: function(type, space, item) {
+  loadComponentSpecXml: function(type, item) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     ComponentRegistryClient.loadSpec(type, item.id, "text", function(specXml){
         // success
@@ -120,7 +120,7 @@ var RestActions = {
     }.bind(this), componentInUsageCb);
   },
 
-  loadComments: function(type, space, componentId) {
+  loadComments: function(type, componentId) {
     this.dispatch(Constants.LOAD_COMMENTS);
     ComponentRegistryClient.loadComments(componentId, type, function(comments){
         // Success

@@ -93,9 +93,9 @@ var EditorForm = React.createClass({
       this.getFlux().actions.newItem(type, space);
     } else {
       // load the spec for editing
-      this.getFlux().actions.loadComponentSpec(type, space, id);
+      this.getFlux().actions.loadComponentSpec(type, id);
       // load the item for editing
-      this.getFlux().actions.loadItem(type, space, id);
+      this.getFlux().actions.loadItem(type, id);
     }
 
     this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space);
@@ -119,7 +119,6 @@ var EditorForm = React.createClass({
               {this.state.editor.type === Constants.TYPE_PROFILE
                 ? (newItem?"New profile":"Edit profile")
                 :(newItem?"New component":"Edit component")}
-              {!newItem && <span>&nbsp;in &quot;{Constants.SPACE_NAMES[this.state.editor.space]}&quot;</span>}
             </h3>
 
             <EditorMenuGroup

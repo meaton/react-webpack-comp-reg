@@ -10,7 +10,6 @@ var update = React.addons.update;
 var EditorStore = Fluxxor.createStore({
   initialize: function(options) {
     this.type = Constants.TYPE_COMPONENTS; //components or profiles
-    this.space = Constants.SPACE_PUBLISHED; //private, group, published
     this.item = null;
     this.processing = false;
     this.selectedComponentId = null;
@@ -42,7 +41,6 @@ var EditorStore = Fluxxor.createStore({
     var selectedItems = (this.selectedGridItem == null) ? {} : {[this.selectedGridItem.id]: this.selectedGridItem}
     return {
       type: this.type,
-      space: this.space,
       item: this.item,
       selectedComponentId: this.selectedComponentId,
       processing: this.processing,
@@ -56,7 +54,6 @@ var EditorStore = Fluxxor.createStore({
 
   handleOpenEditor: function(obj) {
     this.type = obj.type;
-    this.space = obj.space;
 
     // reset component selection state
     this.selectedComponentId = null;

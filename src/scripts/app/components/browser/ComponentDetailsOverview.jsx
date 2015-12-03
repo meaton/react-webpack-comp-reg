@@ -33,20 +33,19 @@ var ComponentDetailsOverview = React.createClass({
 
   propTypes: {
     item: React.PropTypes.object,
-    type: React.PropTypes.string,
-    space: React.PropTypes.string
+    type: React.PropTypes.string
   },
 
   loadSpec: function () {
-    this.getFlux().actions.loadComponentSpec(this.props.type, this.props.space, this.props.item.id);
+    this.getFlux().actions.loadComponentSpec(this.props.type, this.props.item.id);
   },
 
   loadXml: function () {
-    this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.space, this.props.item);
+    this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.item);
   },
 
   loadComments: function() {
-    this.getFlux().actions.loadComments(this.props.type, this.props.space, this.props.item.id);
+    this.getFlux().actions.loadComments(this.props.type, this.props.item.id);
   },
 
   saveComment: function(comment) {

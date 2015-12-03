@@ -39,7 +39,6 @@ var Browser = React.createClass({
           ref="details"
           item={item}
           type={this.state.items.type}
-          space={this.state.items.space}
           />
     return (
         <section id="browser">
