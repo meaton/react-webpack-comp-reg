@@ -120,7 +120,7 @@ var EditorForm = React.createClass({
                 ? (newItem?"New profile":"Edit profile")
                 :(newItem?"New component":"Edit component")}
 
-                &nbsp;in &quot;{this.state.editor.space}&quot;</h3>
+                &nbsp;in &quot;{Constants.SPACE_NAMES[this.state.editor.space]}&quot;</h3>
 
             <EditorMenuGroup
               isNew={newItem}
@@ -146,7 +146,8 @@ var EditorForm = React.createClass({
           </div>
           <div className="browserGroup">
             <SpaceSelector
-              type="componentsOnly"
+              type={Constants.TYPE_COMPONENTS}
+              componentsOnly={true}
               allowMultiSelect={false}
               validUserSession={true}
               space={this.state.editor.grid.space}

@@ -91,6 +91,12 @@ module.exports = {
   SPACE_PRIVATE: "SPACE_PRIVATE",
   SPACE_GROUP: "SPACE_GROUP",
 
+  SPACE_NAMES: {
+    SPACE_PUBLISHED: "Public space",
+    SPACE_PRIVATE: "Private space",
+    SPACE_GROUP: "Group space"
+  },
+
   /* INFO VIEWS */
   INFO_VIEW_SPEC: "INFO_VIEW_SPEC",
   INFO_VIEW_XML: "INFO_VIEW_XML",
