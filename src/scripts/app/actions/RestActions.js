@@ -9,9 +9,9 @@ var Constants = require("../constants"),
     ComponentSpec = require("../service/ComponentSpec");
 
 var RestActions = {
-  loadItems: function(type, space) {
+  loadItems: function(type, space, group) {
     this.dispatch(Constants.LOAD_ITEMS);
-    ComponentRegistryClient.loadComponents(type, space, function(items){
+    ComponentRegistryClient.loadComponents(type, space, group, function(items){
         // Success
         this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
       }.bind(this),

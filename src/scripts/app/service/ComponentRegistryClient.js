@@ -39,15 +39,19 @@ function getRegistrySpacePath(space) {
 
 var ComponentRegistryClient = {
 
-  loadComponents: function(type, space, handleSuccess, handleFailure) {
+  loadComponents: function(type, space, group, handleSuccess, handleFailure) {
     var type = (type != null) ? type.toLowerCase() : "profiles";
     var requestUrl = restUrl + '/registry/' + type;
+
+    var registrySpace = (space != null) ? getRegistrySpacePath(space): "";
+    var groupId = (space == Constants.SPACE_GROUP) ? group : null;
+
     $.ajax($.extend({
      url: requestUrl,
      accepts: {
        json: 'application/json'
      },
-     data: { unique: new Date().getTime(), registrySpace: (space != null) ? getRegistrySpacePath(space): "" },
+     data: { unique: new Date().getTime(), registrySpace: registrySpace, groupId: groupId },
      dataType: 'json',
      success: function(data) {
        log.trace("Successfully loaded " + requestUrl);

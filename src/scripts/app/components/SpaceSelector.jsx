@@ -72,7 +72,7 @@ var SpaceSelector = React.createClass({
   },
 
   selectType: function(type) {
-    this.props.onSpaceSelect(type, this.props.space, this.props.group);
+    this.props.onSpaceSelect(type, this.props.space, this.props.selectedGroup);
   },
 
   types: {

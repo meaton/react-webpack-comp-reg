@@ -107,7 +107,7 @@ var Browser = React.createClass({
 
   handleSpaceSelect: function(type, registry, group) {
     this.getFlux().actions.switchSpace(type, registry, group);
-    this.getFlux().actions.loadItems(type, registry);
+    this.getFlux().actions.loadItems(type, registry, group);
   },
 
   handleRowSelect: function(item, target) {
