@@ -160,11 +160,6 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
       url: url,
       data: fd,
       mimeType: 'multipart/form-data',
-      username: Config.REST.auth.username,
-      password: Config.REST.auth.password,
-      xhrFields: {
-        withCredentials: true
-      },
       processData: false,
       contentType: false,
       dataType: "json",
@@ -307,9 +302,13 @@ transferComponent: function(itemId, groupId, handleSuccess, handleFailure) {
   var url = restUrl + '/registry/items/' + itemId + '/transferownership?groupId=' + groupId;
   $.ajax($.extend({
     type: 'POST',
+    data: {grouId: groupId},
     url: url,
-    success: function(data) {
-      handleSuccess(data);
+    processData: false,
+    contentType: false,
+    dataType: "text", //will return something like "Ownership transferred"
+    success: function() {
+      handleSuccess();
     }.bind(this),
     error: function(xhr, status, err) {
       handleFailure("Failed to transfer component:" + err);
