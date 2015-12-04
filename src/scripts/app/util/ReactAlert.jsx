@@ -25,65 +25,61 @@ module.exports = {
       log.error('Cannot unmount Alert dialog: ', elementId);
   },
 
-  showAlert: function(renderContent) {
+  showMessage: function(container, title, message) {
+    this.showAlert((closeAlert) => (
+      <Modal title={title}
+        enforceFocus={true}
+        backdrop={true}
+        animation={false}
+        container={container}
+        onRequestHide={closeAlert}>
+        <div className="modal-body">
+          <div className="modal-desc">
+            <div>{message}</div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <Button onClick={closeAlert}>Ok</Button>
+        </div>
+      </Modal>
+    ));
+  },
+
+  showConfirmationDialogue: function(container, title, message, onYes, onNo) {
+    this.showAlert((closeAlert) => (
+      <Modal title={title}
+        enforceFocus={true}
+        backdrop={true}
+        animation={false}
+        container={container}
+        onRequestHide={closeAlert}>
+        <div className="modal-body">
+          <div className="modal-desc">
+            <div>{message}</div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <Button onClick={(evt)=>{
+              closeAlert(evt);
+              if(onYes) onYes();
+            }}>Yes</Button>
+          <Button onClick={(evt)=>{
+              closeAlert(evt);
+              if(onNo) onNo();
+            }}>No</Button>
+        </div>
+      </Modal>
+    ));
+  },
+
+  showAlert: function(renderModal) {
     var self = this;
     var closeAlert = function(evt) {
       self.closeAlert("alert-container", evt);
     };
 
-    var dialogue = renderContent(closeAlert);
+    var dialogue = renderModal(closeAlert);
 
     this.renderAlert(dialogue, "alert-container");
-  },
-
-  showMessage: function(container, title, message) {
-    this.showAlert(function(closeAlert) {
-      return (
-        <Modal title={title}
-          enforceFocus={true}
-          backdrop={true}
-          animation={false}
-          container={container}
-          onRequestHide={closeAlert}>
-          <div className="modal-body">
-            <div className="modal-desc">
-              <div>{message}</div>
-            </div>
-          </div>
-          <div className="modal-footer">
-            <Button onClick={closeAlert}>Ok</Button>
-          </div>
-        </Modal>
-      );
-    });
-  },
-
-  showConfirmationDialogue: function(container, title, message, onYes, onNo) {
-    this.showAlert(function(closeAlert) {
-      return (
-        <Modal title={title}
-          enforceFocus={true}
-          backdrop={true}
-          animation={false}
-          container={container}
-          onRequestHide={closeAlert}>
-          <div className="modal-body">
-            <div className="modal-desc">
-              <div>{message}</div>
-            </div>
-          </div>
-          <div className="modal-footer">
-            <Button onClick={(evt)=>{
-                closeAlert(evt);
-                if(onYes) onYes();
-              }}>Yes</Button>
-            <Button onClick={(evt)=>{
-                closeAlert(evt);
-                if(onNo) onNo();
-              }}>No</Button>
-          </div>
-        </Modal>
-      );
-    });
   }
 }
