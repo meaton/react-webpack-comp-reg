@@ -10,7 +10,7 @@ body, #app, #app-main, #app-root {
 }
 
 .btn {
-  font-size: 12px;  
+  font-size: 12px;
 }
 
 .wait, .wait * {
@@ -68,7 +68,6 @@ a { cursor: pointer; color: #999; }
 }
 
 .actionMenu.btn-group {
-  overflow: hidden;
   margin: 8px;
 }
 

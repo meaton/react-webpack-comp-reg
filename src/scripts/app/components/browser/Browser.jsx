@@ -72,8 +72,10 @@ var Browser = React.createClass({
                 type={this.state.items.type}
                 space={this.state.items.space}
                 items={this.state.selection.selectedItems}
+                groups={this.state.group.groups}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
+                moveToGroup={this.state.items.space != Constants.SPACE_PUBLISHED}
                 deleteComp={this.handleDelete}
               />
             <DataGrid

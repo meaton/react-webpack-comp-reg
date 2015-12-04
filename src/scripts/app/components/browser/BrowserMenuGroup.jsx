@@ -12,6 +12,8 @@ var ButtonLink = require('react-router-bootstrap').ButtonLink;
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonModal = require('../ButtonModal');
+var DropdownButton = require('react-bootstrap/lib/DropdownButton');
+var MenuItem = require('react-bootstrap/lib/MenuItem');
 
 var Constants = require('../../constants');
 var Config = require('../../../config');
@@ -31,12 +33,18 @@ var BrowserMenuGroup = React.createClass({
     type: React.PropTypes.string.isRequired,
     space: React.PropTypes.string.isRequired,
     items: React.PropTypes.object,
+    groups: React.PropTypes.array,
     loggedIn: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
+    moveToGroup: React.PropTypes.bool,
     deleteComp: React.PropTypes.func,
   },
   getDefaultProps: function() {
-    return { items: {} };
+    return {
+      items: {},
+      groups: [],
+      moveToGroup: false
+    };
   },
   generateDeleteModal: function() {
     var deleteIdList = [];
@@ -108,8 +116,28 @@ var BrowserMenuGroup = React.createClass({
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
+          {this.props.moveToGroup && this.renderMoveToGroup(selectionCount > 0)}
         </ButtonGroup>
     );
+  },
+
+  renderMoveToGroup: function(selectionCount) {
+    if($.isArray(this.props.groups) && this.props.groups.length > 0) {
+      return (
+        <DropdownButton title="Move to group" disabled={selectionCount < 1}>
+            {this.props.groups.map(group => (
+                <MenuItem
+                  key={group.id}
+                  onSelect={null /*todo*/}>
+                    {group.name}
+                </MenuItem>
+              )
+            )}
+        </DropdownButton>
+      );
+    } else {
+      return null;
+    }
   },
 
   renderUsageModalContent: function(errors, doContinue, doAbort) {

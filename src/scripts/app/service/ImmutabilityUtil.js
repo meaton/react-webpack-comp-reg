@@ -28,7 +28,7 @@ module.exports = {
     } else {
       // Case of single key:
       // copy all keys except for single key to remove
-      for(i=0;i<keys.length;i++) {
+      for(var i=0;i<keys.length;i++) {
         if(keys[i] !== keysToRemove) {
           newObj[keys[i]] = object[keys[i]];
         }
