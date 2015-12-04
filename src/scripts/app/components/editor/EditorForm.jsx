@@ -100,7 +100,7 @@ var EditorForm = React.createClass({
     }
 
     this.getFlux().actions.loadGroups();
-    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.group);
+    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team);
   },
 
   render: function () {
@@ -150,7 +150,7 @@ var EditorForm = React.createClass({
               type={Constants.TYPE_COMPONENTS}
               space={this.state.editor.grid.space}
               groups={this.state.team.teams}
-              selectedGroup={this.state.editor.grid.group}
+              selectedGroup={this.state.editor.grid.team}
               allowMultiSelect={false}
               validUserSession={true}
               componentsOnly={true}

@@ -15,7 +15,7 @@ var EditorStore = Fluxxor.createStore({
     this.selectedComponentId = null;
 
     this.gridSpace = Constants.SPACE_PUBLISHED;
-    this.gridGroup = null;
+    this.gridTeam = null;
     this.gridItems = [];
     this.gridLoading = false;
 
@@ -47,7 +47,7 @@ var EditorStore = Fluxxor.createStore({
       processing: this.processing,
       grid: {
         space: this.gridSpace,
-        group: this.gridGroup,
+        team: this.gridTeam,
         items: this.gridItems,
         loading: this.gridLoading
       }
@@ -90,7 +90,7 @@ var EditorStore = Fluxxor.createStore({
 
   handleSwitchGridSpace: function(spaceObj) {
     this.gridSpace = spaceObj.space;
-    this.gridGroup = spaceObj.group;
+    this.gridTeam = spaceObj.group;
     this.emit("change");
   },
 
