@@ -46,7 +46,7 @@ var SpaceSelector = React.createClass({
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
     onToggleMultipleSelect: React.PropTypes.func,
-    groups: React.PropTypes.array,
+    teams: React.PropTypes.array,
     selectedGroup: React.PropTypes.string
   },
 
@@ -55,7 +55,7 @@ var SpaceSelector = React.createClass({
       allowMultiSelect: true,
       multiSelect: false,
       componentsOnly: false,
-      groups: [],
+      teams: [],
       selectedGroup: null
     };
   },
@@ -97,13 +97,13 @@ var SpaceSelector = React.createClass({
     }
 
     // add group spaces
-    if(this.props.groups != null) {
-      var groups = this.props.groups;
-      for(var i=0;i<(groups.length);i++) {
-        log.trace("Group", groups[i]);
-        var teamId = TEAM_PREFIX + groups[i].id;
+    if(this.props.teams != null) {
+      var teams = this.props.teams;
+      for(var i=0;i<(teams.length);i++) {
+        log.trace("Group", teams[i]);
+        var teamId = TEAM_PREFIX + teams[i].id;
         spaces[teamId] = {
-          label: groups[i].name,
+          label: teams[i].name,
           loginRequired: true
         }
       }
@@ -134,7 +134,7 @@ var SpaceSelector = React.createClass({
       <div className="left">
         <ButtonGroup className="space_selector">
 
-          {/* Public, private, groups */}
+          {/* Public, private, teams */}
           <DropdownButton title={spaces[currentSpace].label}
             disabled={!this.props.validUserSession && currentSpace == PUBLIC}>
               {Object.keys(spaces).map(spaceKey => (

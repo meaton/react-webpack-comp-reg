@@ -149,7 +149,7 @@ var EditorForm = React.createClass({
             <SpaceSelector
               type={Constants.TYPE_COMPONENTS}
               space={this.state.editor.grid.space}
-              groups={this.state.team.teams}
+              teams={this.state.team.teams}
               selectedGroup={this.state.editor.grid.team}
               allowMultiSelect={false}
               validUserSession={true}

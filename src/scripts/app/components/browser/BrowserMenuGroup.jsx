@@ -35,7 +35,7 @@ var BrowserMenuGroup = React.createClass({
     type: React.PropTypes.string.isRequired,
     space: React.PropTypes.string.isRequired,
     items: React.PropTypes.object,
-    groups: React.PropTypes.array,
+    teams: React.PropTypes.array,
     loggedIn: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
     moveToTeamEnabled: React.PropTypes.bool,
@@ -45,7 +45,7 @@ var BrowserMenuGroup = React.createClass({
   getDefaultProps: function() {
     return {
       items: {},
-      groups: [],
+      teams: [],
       moveToTeam: false
     };
   },
@@ -125,16 +125,16 @@ var BrowserMenuGroup = React.createClass({
   },
 
   renderMoveToTeam: function(hasSelection) {
-    if($.isArray(this.props.groups) && this.props.groups.length > 0) {
+    if($.isArray(this.props.teams) && this.props.teams.length > 0) {
       return (
         <DropdownButton title="Move to team" disabled={!hasSelection}>
-            {this.props.groups.map(group => (
-                group.id === this.props.selectedGroup ? null :
+            {this.props.teams.map(team => (
+                team.id === this.props.selectedGroup ? null :
                 <MenuItem
-                  key={group.id}
-                  onSelect={this.confirmMoveToTeam.bind(this, group.id)}
+                  key={team.id}
+                  onSelect={this.confirmMoveToTeam.bind(this, team.id)}
                   >
-                    {group.name}
+                    {team.name}
                 </MenuItem>
               )
             )}

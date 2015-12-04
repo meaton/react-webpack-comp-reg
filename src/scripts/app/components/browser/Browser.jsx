@@ -39,7 +39,7 @@ var Browser = React.createClass({
 
   componentWillUpdate: function(nextProps, nextState) {
     if(this.state.auth.authState != nextState.auth.authState) {
-      // user logged in or out, update groups
+      // user logged in or out, update teams
       this.loadTeams();
     }
   },
@@ -62,7 +62,7 @@ var Browser = React.createClass({
             <SpaceSelector
               type={this.state.items.type}
               space={this.state.items.space}
-              groups={this.state.team.teams}
+              teams={this.state.team.teams}
               selectedGroup={this.state.items.team}
               multiSelect={this.state.selection.allowMultiple}
               validUserSession={this.state.auth.authState.uid != null}
@@ -72,7 +72,7 @@ var Browser = React.createClass({
                 type={this.state.items.type}
                 space={this.state.items.space}
                 items={this.state.selection.selectedItems}
-                groups={this.state.team.teams}
+                teams={this.state.team.teams}
                 selectedGroup={this.state.items.team}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
