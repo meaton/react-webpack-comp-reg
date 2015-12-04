@@ -6,6 +6,7 @@ var React = require("react")
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
+var ReactAlert = require('../util/ReactAlert');
 
 /**
 * ComponentUsageMixin - Feedback for component usage check. Assumes
@@ -18,12 +19,12 @@ var ComponentUsageMixin = {
 
     if(errors.length >= 1) {
       var doContinue = function(evt) {
-        this.closeAlert("alert-container", evt);
+        ReactAlert.closeAlert("alert-container", evt);
         cbYes(true);
       }.bind(this);
 
       var doAbort = function(evt) {
-        this.closeAlert("alert-container", evt);
+        ReactAlert.closeAlert("alert-container", evt);
         cbNo(true);
       }.bind(this);
 
@@ -33,12 +34,12 @@ var ComponentUsageMixin = {
           backdrop={true}
           animation={false}
           container={this}
-          onRequestHide={this.closeAlert.bind(this, "alert-container")}>
+          onRequestHide={ReactAlert.closeAlert.bind(this, "alert-container")}>
           {this.renderUsageModalContent(errors, doContinue, doAbort)}
         </Modal>
       );
 
-      this.renderAlert(instance, "alert-container");
+      ReactAlert.renderAlert(instance, "alert-container");
     }
   },
 
@@ -59,22 +60,6 @@ var ComponentUsageMixin = {
         }
 
     return errorsReactDOM;
-  },
-
-  renderAlert: function(instance, elementId) {
-    var div = React.DOM.div;
-    if(instance && elementId)
-      React.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));
-    else
-      log.error('Cannot render Alert dialog: ', elementId);
-  },
-
-  closeAlert: function(elementId, evt) {
-    if(evt) evt.stopPropagation();
-    if(elementId)
-      React.unmountComponentAtNode(document.getElementById(elementId));
-    else
-      log.error('Cannot unmount Alert dialog: ', elementId);
   }
 
 }
