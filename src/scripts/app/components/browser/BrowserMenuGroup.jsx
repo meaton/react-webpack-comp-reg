@@ -14,7 +14,6 @@ var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonModal = require('../ButtonModal');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
-var Modal = require('react-bootstrap/lib/Modal');
 
 var ReactAlert = require('../../util/ReactAlert');
 
@@ -151,31 +150,9 @@ var BrowserMenuGroup = React.createClass({
       this.props.moveToGroup(groupId);
     } else {
       // moving out of private space cannot be undone, show warning
-      var closeAlert = function(evt) {
-        ReactAlert.closeAlert("alert-container", evt);
-      };
-      var dialogue = (
-        <Modal title={"Move component(s) or profile(s) into group"}
-          enforceFocus={true}
-          backdrop={true}
-          animation={false}
-          container={this}
-          onRequestHide={closeAlert}>
-          <div className="modal-body">
-            <div className="modal-desc">
-              <div>
-                Items, once moved to a group, can not be moved back to your workspace. Do you want to move this item?
-              </div>
-            </div>
-          </div>
-          <div className="modal-footer">
-            <Button onClick={(evt)=>{closeAlert(evt) || this.props.moveToGroup(groupId)}}>Yes</Button>
-            <Button onClick={closeAlert}>No</Button>
-          </div>
-        </Modal>
-      );
-
-      ReactAlert.renderAlert(dialogue, "alert-container");
+      var title = "Move component(s) or profile(s) into group";
+      var message = "Items, once moved to a group, can not be moved back to your workspace. Do you want to move this item?";
+      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToGroup.bind(null, groupId));
     }
   },
 
