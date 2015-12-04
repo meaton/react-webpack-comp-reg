@@ -9,9 +9,9 @@ var Constants = require("../constants"),
     ComponentSpec = require("../service/ComponentSpec");
 
 var RestActions = {
-  loadItems: function(type, space, group) {
+  loadItems: function(type, space, team) {
     this.dispatch(Constants.LOAD_ITEMS);
-    ComponentRegistryClient.loadComponents(type, space, group, function(items){
+    ComponentRegistryClient.loadComponents(type, space, team, function(items){
         // Success
         this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
       }.bind(this),
@@ -22,9 +22,9 @@ var RestActions = {
     );
   },
 
-  loadEditorGridItems: function(space, group) {
+  loadEditorGridItems: function(space, team) {
     this.dispatch(Constants.LOAD_EDITOR_ITEMS);
-    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, group, function(items){
+    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, team, function(items){
         // Success
         this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
       }.bind(this),
@@ -121,20 +121,20 @@ var RestActions = {
   },
 
   loadTeams: function() {
-    ComponentRegistryClient.loadTeams(function(groups){
-        this.dispatch(Constants.LOAD_TEAMS, groups);
+    ComponentRegistryClient.loadTeams(function(teams){
+        this.dispatch(Constants.LOAD_TEAMS, teams);
       }.bind(this),
       function(message){
-        log.error("Failed to load user groups", message);
+        log.error("Failed to load user teams", message);
         this.dispatch(Constants.LOAD_TEAMS, null);
       }.bind(this)
     );
   },
 
-  moveComponentsToGroup: function(ids, groupId) {
+  moveComponentsToTeam: function(ids, teamId) {
     log.info("Requesting moving of", ids);
     this.dispatch(Constants.MOVE_TO_TEAM, ids);
-    moveComponentsToGroup(ids, groupId, function(movedIds){
+    moveComponentsToTeam(ids, teamId, function(movedIds){
       this.dispatch(Constants.MOVE_TO_TEAM_SUCCESS, movedIds);
     }.bind(this), function(result) {
       if(result.message != null) {
@@ -452,12 +452,12 @@ function tryDeleteComponent(type, id, componentInUsageCb, doDelete, doAbort) {
 /**
  * Moves a number of components (by id) by means of tail recursion.
  * @param  {Array} ids       [description]
- * @param  {number} groupId       [description]
+ * @param  {number} teamId       [description]
  * @param  {function} success   success callback
  * @param  {function} failure   failure callback
  * @param  {Array} [remainder] [description]
  */
-function moveComponentsToGroup(ids, groupId, success, failure, remainder) {
+function moveComponentsToTeam(ids, teamId, success, failure, remainder) {
   if(remainder == undefined) {
     remainder = ids.slice();
   }
@@ -476,10 +476,10 @@ function moveComponentsToGroup(ids, groupId, success, failure, remainder) {
       //moved
       log.trace("Successfully moved", id);
       //process remainder
-      moveComponentsToGroup(ids, groupId, success, failure, remainder);
+      moveComponentsToTeam(ids, teamId, success, failure, remainder);
     };
 
-    ComponentRegistryClient.transferComponent(id, groupId,
+    ComponentRegistryClient.transferComponent(id, teamId,
       handleSuccess, //success
       function(msg) { //failure
         remainder.push(id);

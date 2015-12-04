@@ -63,7 +63,7 @@ var Browser = React.createClass({
               type={this.state.items.type}
               space={this.state.items.space}
               groups={this.state.team.teams}
-              selectedGroup={this.state.items.group}
+              selectedGroup={this.state.items.team}
               multiSelect={this.state.selection.allowMultiple}
               validUserSession={this.state.auth.authState.uid != null}
               onSpaceSelect={this.handleSpaceSelect}
@@ -73,7 +73,7 @@ var Browser = React.createClass({
                 space={this.state.items.space}
                 items={this.state.selection.selectedItems}
                 groups={this.state.team.teams}
-                selectedGroup={this.state.items.group}
+                selectedGroup={this.state.items.team}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
                 moveToGroupEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
@@ -98,7 +98,7 @@ var Browser = React.createClass({
   },
 
   loadItems: function() {
-    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.group);
+    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.team);
   },
 
   loadTeams: function() {
@@ -126,7 +126,7 @@ var Browser = React.createClass({
   handleMoveToGroup: function(groupId) {
     var ids = Object.keys(this.state.selection.selectedItems);
     log.debug("Move to group", ids, groupId);
-    this.getFlux().actions.moveComponentsToGroup(ids, groupId);
+    this.getFlux().actions.moveComponentsToTeam(ids, groupId);
   },
 
   handleFilterTextChange: function(evt) {
