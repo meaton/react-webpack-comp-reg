@@ -24,12 +24,12 @@ var classNames = require('classnames');
 
 var PUBLIC = Constants.SPACE_PUBLISHED;
 var PRIVATE = Constants.SPACE_PRIVATE;
-var GROUP = Constants.SPACE_TEAM;
+var TEAM = Constants.SPACE_TEAM;
 
 var COMPONENTS = Constants.TYPE_COMPONENTS;
 var PROFILES = Constants.TYPE_PROFILE;
 
-var GROUP_PREFIX = "group_";
+var TEAM_PREFIX = "group_";
 
 /**
 * SpaceSelector - selector or switcher between public, private and/or group spaces and component or profile types.
@@ -64,10 +64,10 @@ var SpaceSelector = React.createClass({
     var spaceId, teamId;
     if(space == PUBLIC || space == PRIVATE) {
       this.props.onSpaceSelect(this.props.type, space);
-    } else if(space.indexOf(GROUP_PREFIX) == 0) {
-      var teamId = space.substring(GROUP_PREFIX.length);
+    } else if(space.indexOf(TEAM_PREFIX) == 0) {
+      var teamId = space.substring(TEAM_PREFIX.length);
       log.debug("Selected team", teamId);
-      this.props.onSpaceSelect(this.props.type, GROUP, teamId);
+      this.props.onSpaceSelect(this.props.type, TEAM, teamId);
     }
   },
 
@@ -101,7 +101,7 @@ var SpaceSelector = React.createClass({
       var groups = this.props.groups;
       for(var i=0;i<(groups.length);i++) {
         log.trace("Group", groups[i]);
-        var teamId = GROUP_PREFIX + groups[i].id;
+        var teamId = TEAM_PREFIX + groups[i].id;
         spaces[teamId] = {
           label: groups[i].name,
           loginRequired: true
@@ -115,7 +115,7 @@ var SpaceSelector = React.createClass({
     if(this.props.space == PUBLIC || this.props.space == PRIVATE) {
       return this.props.space;
     } else if(this.props.space == Constants.SPACE_TEAM && this.props.selectedGroup != null) {
-      return GROUP_PREFIX + this.props.selectedGroup;
+      return TEAM_PREFIX + this.props.selectedGroup;
     } else {
       return null;
     }
