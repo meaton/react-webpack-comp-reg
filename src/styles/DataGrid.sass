@@ -35,12 +35,17 @@
     outline: 0 none;
   }
 
-  tr.even.selected {
-    background-color: #b0bed9 !important;
-  }
+  tr.selected {
 
-  tr.odd.selected {
-    background-color: #a0aec9 !important;
+    &.even {
+      background-color: #b0bed9 !important;
+      color: #666;
+    }
+
+    &.odd {
+      background-color: #a0aec9 !important;
+      color: #333;
+    }
   }
 
   tr.odd.deleting, tr.even.deleting {
