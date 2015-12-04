@@ -132,8 +132,8 @@ var EditorActions = {
     this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
   },
 
-  switchEditorGridSpace: function(space, group) {
-    this.dispatch(Constants.SWITCH_EDITOR_GRID_SPACE, {space: space, group: group});
+  switchEditorGridSpace: function(space, team) {
+    this.dispatch(Constants.SWITCH_EDITOR_GRID_SPACE, {space: space, team: team});
   },
 
   toggleComponentSelection: function(id) {

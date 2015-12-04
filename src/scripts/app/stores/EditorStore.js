@@ -90,7 +90,7 @@ var EditorStore = Fluxxor.createStore({
 
   handleSwitchGridSpace: function(spaceObj) {
     this.gridSpace = spaceObj.space;
-    this.gridTeam = spaceObj.group;
+    this.gridTeam = spaceObj.team;
     this.emit("change");
   },
 

@@ -47,7 +47,7 @@ var SpaceSelector = React.createClass({
     onSpaceSelect: React.PropTypes.func,
     onToggleMultipleSelect: React.PropTypes.func,
     teams: React.PropTypes.array,
-    selectedGroup: React.PropTypes.string
+    selectedTeam: React.PropTypes.string
   },
 
   getDefaultProps: function() {
@@ -56,7 +56,7 @@ var SpaceSelector = React.createClass({
       multiSelect: false,
       componentsOnly: false,
       teams: [],
-      selectedGroup: null
+      selectedTeam: null
     };
   },
 
@@ -72,7 +72,7 @@ var SpaceSelector = React.createClass({
   },
 
   selectType: function(type) {
-    this.props.onSpaceSelect(type, this.props.space, this.props.selectedGroup);
+    this.props.onSpaceSelect(type, this.props.space, this.props.selectedTeam);
   },
 
   types: {
@@ -114,8 +114,8 @@ var SpaceSelector = React.createClass({
   getCurrentSpace: function() {
     if(this.props.space == PUBLIC || this.props.space == PRIVATE) {
       return this.props.space;
-    } else if(this.props.space == Constants.SPACE_TEAM && this.props.selectedGroup != null) {
-      return TEAM_PREFIX + this.props.selectedGroup;
+    } else if(this.props.space == Constants.SPACE_TEAM && this.props.selectedTeam != null) {
+      return TEAM_PREFIX + this.props.selectedTeam;
     } else {
       return null;
     }

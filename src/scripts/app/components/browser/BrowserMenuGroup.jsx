@@ -129,7 +129,7 @@ var BrowserMenuGroup = React.createClass({
       return (
         <DropdownButton title="Move to team" disabled={!hasSelection}>
             {this.props.teams.map(team => (
-                team.id === this.props.selectedGroup ? null :
+                team.id === this.props.selectedTeam ? null :
                 <MenuItem
                   key={team.id}
                   onSelect={this.confirmMoveToTeam.bind(this, team.id)}

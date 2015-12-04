@@ -70,7 +70,7 @@ var ItemsStore = Fluxxor.createStore({
   handleSwitchSpace: function(spaceType) {
     this.type = spaceType.type;
     this.space = spaceType.space;
-    this.team = spaceType.group;
+    this.team = spaceType.team;
     this.emit("change");
   },
 

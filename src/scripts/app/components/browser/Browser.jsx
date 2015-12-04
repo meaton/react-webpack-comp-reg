@@ -63,7 +63,7 @@ var Browser = React.createClass({
               type={this.state.items.type}
               space={this.state.items.space}
               teams={this.state.team.teams}
-              selectedGroup={this.state.items.team}
+              selectedTeam={this.state.items.team}
               multiSelect={this.state.selection.allowMultiple}
               validUserSession={this.state.auth.authState.uid != null}
               onSpaceSelect={this.handleSpaceSelect}
@@ -73,7 +73,7 @@ var Browser = React.createClass({
                 space={this.state.items.space}
                 items={this.state.selection.selectedItems}
                 teams={this.state.team.teams}
-                selectedGroup={this.state.items.team}
+                selectedTeam={this.state.items.team}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
                 moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
