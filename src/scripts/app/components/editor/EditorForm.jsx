@@ -24,6 +24,7 @@ var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 
 //utils
 var classNames = require('classnames');
+var ReactAlert = require('../../util/ReactAlert');
 
 /**
 * EditorForm - Form routing endpoint for spec editor, either new/existing component/profile
@@ -306,8 +307,7 @@ var EditorForm = React.createClass({
       }
     }
     if(!result) {
-      //TODO: nicer pop up (use modal window)
-      window.alert("There are validation errors, see the marked fields for details.");
+      ReactAlert.showMessage(this, "Validation errors", "There are validation errors, see the marked fields for details.");
     }
     return result;
   }
