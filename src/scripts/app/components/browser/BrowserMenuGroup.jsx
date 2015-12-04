@@ -38,15 +38,15 @@ var BrowserMenuGroup = React.createClass({
     groups: React.PropTypes.array,
     loggedIn: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
-    moveToGroupEnabled: React.PropTypes.bool,
-    moveToGroup: React.PropTypes.func,
+    moveToTeamEnabled: React.PropTypes.bool,
+    moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
   },
   getDefaultProps: function() {
     return {
       items: {},
       groups: [],
-      moveToGroup: false
+      moveToTeam: false
     };
   },
   generateDeleteModal: function() {
@@ -119,12 +119,12 @@ var BrowserMenuGroup = React.createClass({
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
-          {this.props.moveToGroupEnabled && this.renderMoveToGroup(selectionCount > 0)}
+          {this.props.moveToTeamEnabled && this.renderMoveToTeam(selectionCount > 0)}
         </ButtonGroup>
     );
   },
 
-  renderMoveToGroup: function(hasSelection) {
+  renderMoveToTeam: function(hasSelection) {
     if($.isArray(this.props.groups) && this.props.groups.length > 0) {
       return (
         <DropdownButton title="Move to team" disabled={!hasSelection}>
@@ -132,7 +132,7 @@ var BrowserMenuGroup = React.createClass({
                 group.id === this.props.selectedGroup ? null :
                 <MenuItem
                   key={group.id}
-                  onSelect={this.confirmMoveToGroup.bind(this, group.id)}
+                  onSelect={this.confirmMoveToTeam.bind(this, group.id)}
                   >
                     {group.name}
                 </MenuItem>
@@ -145,14 +145,14 @@ var BrowserMenuGroup = React.createClass({
     }
   },
 
-  confirmMoveToGroup: function(teamId) {
+  confirmMoveToTeam: function(teamId) {
     if(this.props.space != Constants.SPACE_PRIVATE) {
-      this.props.moveToGroup(teamId);
+      this.props.moveToTeam(teamId);
     } else {
       // moving out of private space cannot be undone, show warning
       var title = "Move component(s) or profile(s) into team space";
       var message = "Items, once moved to a team space, can not be moved back to your workspace. Do you want to move this item?";
-      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToGroup.bind(null, teamId));
+      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToTeam.bind(null, teamId));
     }
   },
 

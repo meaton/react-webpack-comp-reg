@@ -76,8 +76,8 @@ var Browser = React.createClass({
                 selectedGroup={this.state.items.team}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
-                moveToGroupEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
-                moveToGroup={this.handleMoveToGroup}
+                moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
+                moveToTeam={this.handleMoveToTeam}
                 deleteComp={this.handleDelete}
               />
             <DataGrid
@@ -123,7 +123,7 @@ var Browser = React.createClass({
     this.getFlux().actions.deleteComponents(this.state.items.type, ids, componentInUsageCb);
   },
 
-  handleMoveToGroup: function(teamId) {
+  handleMoveToTeam: function(teamId) {
     var ids = Object.keys(this.state.selection.selectedItems);
     log.debug("Move to team", ids, teamId);
     this.getFlux().actions.moveComponentsToTeam(ids, teamId);
