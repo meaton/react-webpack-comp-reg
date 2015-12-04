@@ -120,27 +120,27 @@ var RestActions = {
     }.bind(this), componentInUsageCb);
   },
 
-  loadGroups: function() {
-    ComponentRegistryClient.loadGroups(function(groups){
-        this.dispatch(Constants.LOAD_GROUPS, groups);
+  loadTeams: function() {
+    ComponentRegistryClient.loadTeams(function(groups){
+        this.dispatch(Constants.LOAD_TEAMS, groups);
       }.bind(this),
       function(message){
         log.error("Failed to load user groups", message);
-        this.dispatch(Constants.LOAD_GROUPS, null);
+        this.dispatch(Constants.LOAD_TEAMS, null);
       }.bind(this)
     );
   },
 
   moveComponentsToGroup: function(ids, groupId) {
     log.info("Requesting moving of", ids);
-    this.dispatch(Constants.MOVE_TO_GROUP, ids);
+    this.dispatch(Constants.MOVE_TO_TEAM, ids);
     moveComponentsToGroup(ids, groupId, function(movedIds){
-      this.dispatch(Constants.MOVE_TO_GROUP_SUCCESS, movedIds);
+      this.dispatch(Constants.MOVE_TO_TEAM_SUCCESS, movedIds);
     }.bind(this), function(result) {
       if(result.message != null) {
         log.error(result.message);
       }
-      this.dispatch(Constants.MOVE_TO_GROUP_FAILURE, result);
+      this.dispatch(Constants.MOVE_TO_TEAM_FAILURE, result);
     }.bind(this));
   },
 

@@ -16,7 +16,7 @@ module.exports = {
   /**
    * Switch to the space defined by type and registry
    * @param  {string} type     Constants.TYPE_PROFILE or Constants.TYPE_COMPONENTS
-   * @param  {string} registry Constants.SPACE_PRIVATE, Constants.SPACE_PUBLISHED or Constants.SPACE_GROUP
+   * @param  {string} registry Constants.SPACE_PRIVATE, Constants.SPACE_PUBLISHED or Constants.SPACE_TEAM
    */
   switchSpace: function(type, space, group) {
     this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, group: group||null});

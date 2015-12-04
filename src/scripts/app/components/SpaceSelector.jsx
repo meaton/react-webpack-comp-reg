@@ -24,7 +24,7 @@ var classNames = require('classnames');
 
 var PUBLIC = Constants.SPACE_PUBLISHED;
 var PRIVATE = Constants.SPACE_PRIVATE;
-var GROUP = Constants.SPACE_GROUP;
+var GROUP = Constants.SPACE_TEAM;
 
 var COMPONENTS = Constants.TYPE_COMPONENTS;
 var PROFILES = Constants.TYPE_PROFILE;
@@ -114,7 +114,7 @@ var SpaceSelector = React.createClass({
   getCurrentSpace: function() {
     if(this.props.space == PUBLIC || this.props.space == PRIVATE) {
       return this.props.space;
-    } else if(this.props.space == Constants.SPACE_GROUP && this.props.selectedGroup != null) {
+    } else if(this.props.space == Constants.SPACE_TEAM && this.props.selectedGroup != null) {
       return GROUP_PREFIX + this.props.selectedGroup;
     } else {
       return null;

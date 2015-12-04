@@ -99,7 +99,7 @@ var EditorForm = React.createClass({
       this.getFlux().actions.loadItem(type, id);
     }
 
-    this.getFlux().actions.loadGroups();
+    this.getFlux().actions.loadTeams();
     this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team);
   },
 

@@ -32,7 +32,7 @@ function getRegistrySpacePath(space) {
   if(space == Constants.SPACE_PRIVATE) {
     return "private";
   }
-  if(space == Constants.SPACE_GROUP) {
+  if(space == Constants.SPACE_TEAM) {
     return "group";
   }
 }
@@ -44,7 +44,7 @@ var ComponentRegistryClient = {
     var requestUrl = restUrl + '/registry/' + type;
 
     var registrySpace = (space != null) ? getRegistrySpacePath(space): "";
-    var groupId = (space == Constants.SPACE_GROUP) ? group : null;
+    var groupId = (space == Constants.SPACE_TEAM) ? group : null;
 
     $.ajax($.extend({
      url: requestUrl,
@@ -411,7 +411,7 @@ loadAllowedTypes: function(cb) {
   }, corsRequestParams));
 },
 
-loadGroups: function(success, failure) {
+loadTeams: function(success, failure) {
   $.ajax($.extend({
     type: 'GET',
     url: restUrl + '/registry/groups/usermembership',

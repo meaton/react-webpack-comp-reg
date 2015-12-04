@@ -34,13 +34,13 @@ var Browser = React.createClass({
 
   componentDidMount: function() {
     this.loadItems();
-    this.loadGroups();
+    this.loadTeams();
   },
 
   componentWillUpdate: function(nextProps, nextState) {
     if(this.state.auth.authState != nextState.auth.authState) {
       // user logged in or out, update groups
-      this.loadGroups();
+      this.loadTeams();
     }
   },
 
@@ -101,8 +101,8 @@ var Browser = React.createClass({
     this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.group);
   },
 
-  loadGroups: function() {
-    this.getFlux().actions.loadGroups();
+  loadTeams: function() {
+    this.getFlux().actions.loadTeams();
   },
 
   handleToggleMultipleSelect: function() {

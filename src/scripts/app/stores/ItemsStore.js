@@ -29,9 +29,9 @@ var ItemsStore = Fluxxor.createStore({
       Constants.DELETE_COMPONENTS, this.handleDeleteOrMove,
       Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteOrMoveSuccess,
       Constants.DELETE_COMPONENTS_FAILURE, this.handleDeleteOrMoveFailure,
-      Constants.MOVE_TO_GROUP, this.handleDeleteOrMove,
-      Constants.MOVE_TO_GROUP_SUCCESS, this.handleDeleteOrMoveSuccess,
-      Constants.MOVE_TO_GROUP_FAILURE, this.handleDeleteOrMoveFailure,
+      Constants.MOVE_TO_TEAM, this.handleDeleteOrMove,
+      Constants.MOVE_TO_TEAM_SUCCESS, this.handleDeleteOrMoveSuccess,
+      Constants.MOVE_TO_TEAM_FAILURE, this.handleDeleteOrMoveFailure,
       Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange,
       Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved
     );

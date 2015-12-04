@@ -9,7 +9,7 @@ var TeamStore = Fluxxor.createStore({
     this.teams = []
 
     this.bindActions(
-      Constants.LOAD_GROUPS, this.handleLoadTeams
+      Constants.LOAD_TEAMS, this.handleLoadTeams
     );
   },
 
