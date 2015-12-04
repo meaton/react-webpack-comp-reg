@@ -61,13 +61,13 @@ var SpaceSelector = React.createClass({
   },
 
   selectSpace: function(space) {
-    var spaceId, groupId;
+    var spaceId, teamId;
     if(space == PUBLIC || space == PRIVATE) {
       this.props.onSpaceSelect(this.props.type, space);
     } else if(space.indexOf(GROUP_PREFIX) == 0) {
-      var groupId = space.substring(GROUP_PREFIX.length);
-      log.debug("Selected group", groupId);
-      this.props.onSpaceSelect(this.props.type, GROUP, groupId);
+      var teamId = space.substring(GROUP_PREFIX.length);
+      log.debug("Selected team", teamId);
+      this.props.onSpaceSelect(this.props.type, GROUP, teamId);
     }
   },
 
@@ -101,8 +101,8 @@ var SpaceSelector = React.createClass({
       var groups = this.props.groups;
       for(var i=0;i<(groups.length);i++) {
         log.trace("Group", groups[i]);
-        var groupId = GROUP_PREFIX + groups[i].id;
-        spaces[groupId] = {
+        var teamId = GROUP_PREFIX + groups[i].id;
+        spaces[teamId] = {
           label: groups[i].name,
           loginRequired: true
         }

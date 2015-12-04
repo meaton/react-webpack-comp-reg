@@ -145,14 +145,14 @@ var BrowserMenuGroup = React.createClass({
     }
   },
 
-  confirmMoveToGroup: function(groupId) {
+  confirmMoveToGroup: function(teamId) {
     if(this.props.space != Constants.SPACE_PRIVATE) {
-      this.props.moveToGroup(groupId);
+      this.props.moveToGroup(teamId);
     } else {
       // moving out of private space cannot be undone, show warning
       var title = "Move component(s) or profile(s) into team space";
       var message = "Items, once moved to a team space, can not be moved back to your workspace. Do you want to move this item?";
-      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToGroup.bind(null, groupId));
+      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToGroup.bind(null, teamId));
     }
   },
 

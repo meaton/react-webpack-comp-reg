@@ -44,14 +44,14 @@ var ComponentRegistryClient = {
     var requestUrl = restUrl + '/registry/' + type;
 
     var registrySpace = (space != null) ? getRegistrySpacePath(space): "";
-    var groupId = (space == Constants.SPACE_TEAM) ? group : null;
+    var teamId = (space == Constants.SPACE_TEAM) ? group : null;
 
     $.ajax($.extend({
      url: requestUrl,
      accepts: {
        json: 'application/json'
      },
-     data: { unique: new Date().getTime(), registrySpace: registrySpace, groupId: groupId },
+     data: { unique: new Date().getTime(), registrySpace: registrySpace, groupId: teamId },
      dataType: 'json',
      success: function(data) {
        log.trace("Successfully loaded " + requestUrl);
@@ -298,11 +298,11 @@ deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
   }, corsRequestParams));
 },
 
-transferComponent: function(itemId, groupId, handleSuccess, handleFailure) {
-  var url = restUrl + '/registry/items/' + itemId + '/transferownership?groupId=' + groupId;
+transferComponent: function(itemId, teamId, handleSuccess, handleFailure) {
+  var url = restUrl + '/registry/items/' + itemId + '/transferownership?groupId=' + teamId;
   $.ajax($.extend({
     type: 'POST',
-    data: {grouId: groupId},
+    data: {groupId: teamId},
     url: url,
     processData: false,
     contentType: false,

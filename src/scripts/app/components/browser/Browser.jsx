@@ -123,10 +123,10 @@ var Browser = React.createClass({
     this.getFlux().actions.deleteComponents(this.state.items.type, ids, componentInUsageCb);
   },
 
-  handleMoveToGroup: function(groupId) {
+  handleMoveToGroup: function(teamId) {
     var ids = Object.keys(this.state.selection.selectedItems);
-    log.debug("Move to group", ids, groupId);
-    this.getFlux().actions.moveComponentsToTeam(ids, groupId);
+    log.debug("Move to team", ids, teamId);
+    this.getFlux().actions.moveComponentsToTeam(ids, teamId);
   },
 
   handleFilterTextChange: function(evt) {
