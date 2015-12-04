@@ -14,7 +14,7 @@ var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
       this.items = [], //items to be shown in browser
       this.filteredItems = [],
-      this.deleted = {}, //items that have been deleted or are being deleted
+      this.removed = {}, //items that have been deleted or are being deleted
       this.loading = false, //loading state
       this.type = Constants.TYPE_PROFILE, //components or profiles
       this.space = Constants.SPACE_PUBLISHED, //private, group, published
@@ -26,9 +26,12 @@ var ItemsStore = Fluxxor.createStore({
       Constants.LOAD_ITEMS_SUCCESS, this.handleLoadItemsSuccess,
       Constants.LOAD_ITEMS_FAILURE, this.handleLoadItemsFailure,
       Constants.SWITCH_SPACE, this.handleSwitchSpace,
-      Constants.DELETE_COMPONENTS, this.handleDeleteItems,
-      Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteItemsSuccess,
-      Constants.DELETE_COMPONENTS_FAILURE, this.handleDeleteItemsFailure,
+      Constants.DELETE_COMPONENTS, this.handleDeleteOrMove,
+      Constants.DELETE_COMPONENTS_SUCCESS, this.handleDeleteOrMoveSuccess,
+      Constants.DELETE_COMPONENTS_FAILURE, this.handleDeleteOrMoveFailure,
+      Constants.MOVE_TO_GROUP, this.handleDeleteOrMove,
+      Constants.MOVE_TO_GROUP_SUCCESS, this.handleDeleteOrMoveSuccess,
+      Constants.MOVE_TO_GROUP_FAILURE, this.handleDeleteOrMoveFailure,
       Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange,
       Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved
     );
@@ -37,7 +40,7 @@ var ItemsStore = Fluxxor.createStore({
   getState: function() {
     return {
       items: this.filteredItems,
-      deleted: this.deleted,
+      deleted: this.removed,
       loading: this.loading,
       type: this.type,
       space: this.space,
@@ -55,7 +58,7 @@ var ItemsStore = Fluxxor.createStore({
     this.items = items;
     this.filteredItems = filter(this.items, this.filterText);
     this.loading = false;
-    this.deleted = {};
+    this.removed = {};
     this.emit("change");
   },
 
@@ -71,28 +74,28 @@ var ItemsStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleDeleteItems: function(ids) {
+  handleDeleteOrMove: function(ids) {
     this.loading = true;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.deleted = update(this.deleted, {[id]: {$set: Constants.DELETE_STATE_DELETING}});
+      this.removed = update(this.removed, {[id]: {$set: Constants.DELETE_STATE_DELETING}});
     }
     this.emit("change");
   },
 
-  handleDeleteItemsSuccess: function(ids) {
+  handleDeleteOrMoveSuccess: function(ids) {
     this.loading = false;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.deleted = update(this.deleted, {[id]: {$set: Constants.DELETE_STATE_DELETED}});
+      this.removed = update(this.removed, {[id]: {$set: Constants.DELETE_STATE_DELETED}});
     }
     this.emit("change");
   },
 
-  handleDeleteItemsFailure: function(result) {
+  handleDeleteOrMoveFailure: function(result) {
     this.loading = false;
     // remove items from list of deleted items
-    this.deleted = remove(this.deleted, result.ids);
+    this.removed = remove(this.removed, result.ids);
     this.emit("change");
   },
 

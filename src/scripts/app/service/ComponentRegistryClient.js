@@ -292,14 +292,27 @@ deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
   var url = restUrl + '/registry/' + type + '/' + itemId;
 
   $.ajax($.extend({
-    type: 'DELETE', // 'POST' // Note testing locally with CORS enable DELETE method in init-config accepted methods
+    type: 'DELETE',
     url: url,
-    //data: { method: 'DELETE' }, // used for POST method of deletion
     success: function(data) {
       handleSuccess(data);
     }.bind(this),
     error: function(xhr, status, err) {
       handleFailure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
+transferComponent: function(itemId, groupId, handleSuccess, handleFailure) {
+  var url = restUrl + '/registry/items/' + itemId + '/transferownership?groupId=' + groupId;
+  $.ajax($.extend({
+    type: 'POST',
+    url: url,
+    success: function(data) {
+      handleSuccess(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      handleFailure("Failed to transfer component:" + err);
     }.bind(this)
   }, corsRequestParams));
 },
@@ -328,13 +341,6 @@ loadComments: function(componentId, type, success, failure) {
 },
 
 saveComment: function(componentId, type, comment, success, failure) {
-  //POST
-  /*<comment>
-    <comments>test comment</comments>
-    <commentDate/>
-    <componentId>clarin.eu:cr1:p_1433928406468</componentId>
-    <userName/>
-  </comment>*/
   var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
   var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
   var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/';

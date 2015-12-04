@@ -36,7 +36,8 @@ var BrowserMenuGroup = React.createClass({
     groups: React.PropTypes.array,
     loggedIn: React.PropTypes.bool.isRequired,
     multiSelect: React.PropTypes.bool.isRequired,
-    moveToGroup: React.PropTypes.bool,
+    moveToGroupEnabled: React.PropTypes.bool,
+    moveToGroup: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
   },
   getDefaultProps: function() {
@@ -116,7 +117,7 @@ var BrowserMenuGroup = React.createClass({
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
-          {this.props.moveToGroup && this.renderMoveToGroup(selectionCount > 0)}
+          {this.props.moveToGroupEnabled && this.renderMoveToGroup(selectionCount > 0)}
         </ButtonGroup>
     );
   },
@@ -128,7 +129,7 @@ var BrowserMenuGroup = React.createClass({
             {this.props.groups.map(group => (
                 <MenuItem
                   key={group.id}
-                  onSelect={null /*todo*/}>
+                  onSelect={this.props.moveToGroup.bind(null, group.id)}>
                     {group.name}
                 </MenuItem>
               )

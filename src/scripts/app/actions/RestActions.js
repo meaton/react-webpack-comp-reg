@@ -131,6 +131,19 @@ var RestActions = {
     );
   },
 
+  moveComponentsToGroup: function(ids, groupId) {
+    log.info("Requesting moving of", ids);
+    this.dispatch(Constants.MOVE_TO_GROUP, ids);
+    moveComponentsToGroup(ids, groupId, function(movedIds){
+      this.dispatch(Constants.MOVE_TO_GROUP_SUCCESS, movedIds);
+    }.bind(this), function(result) {
+      if(result.message != null) {
+        log.error(result.message);
+      }
+      this.dispatch(Constants.MOVE_TO_GROUP_FAILURE, result);
+    }.bind(this));
+  },
+
   loadComments: function(type, componentId) {
     this.dispatch(Constants.LOAD_COMMENTS);
     ComponentRegistryClient.loadComments(componentId, type, function(comments){
@@ -354,7 +367,6 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
  * performs a usage check for components (not profiles) iff a componentInUsageCb
  * is provided
  * @param  {string} type      [description]
- * @param  {string} space     [description]
  * @param  {Array} ids       [description]
  * @param  {function} success   success callback
  * @param  {function} failure   failure callback
@@ -433,6 +445,48 @@ function tryDeleteComponent(type, id, componentInUsageCb, doDelete, doAbort) {
             resultObj.push({ componentId: id, result: result.componentDescription });
           componentInUsageCb(resultObj, doDelete, doAbort);
         }
+      });
+  }
+}
+
+/**
+ * Moves a number of components (by id) by means of tail recursion.
+ * @param  {Array} ids       [description]
+ * @param  {number} groupId       [description]
+ * @param  {function} success   success callback
+ * @param  {function} failure   failure callback
+ * @param  {Array} [remainder] [description]
+ */
+function moveComponentsToGroup(ids, groupId, success, failure, remainder) {
+  if(remainder == undefined) {
+    remainder = ids.slice();
+  }
+  if(remainder.length == 0) {
+    // done
+    log.trace("Nothing left to move");
+    success(ids);
+  } else {
+    // some items left to move... take first
+    var id = remainder.shift();
+    log.trace("Requesting moving of", id);
+
+    // callback that wraps success callback, passing it with remainder to
+    // this function
+    var handleSuccess = function() {
+      //moved
+      log.trace("Successfully moved", id);
+      //process remainder
+      moveComponentsToGroup(ids, groupId, success, failure, remainder);
+    };
+
+    ComponentRegistryClient.transferComponent(id, groupId,
+      handleSuccess, //success
+      function(msg) { //failure
+        remainder.push(id);
+        failure({
+          message: msg,
+          ids: remainder
+        });
       });
   }
 }

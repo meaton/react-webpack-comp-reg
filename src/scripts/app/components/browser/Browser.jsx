@@ -75,7 +75,8 @@ var Browser = React.createClass({
                 groups={this.state.group.groups}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
-                moveToGroup={this.state.items.space != Constants.SPACE_PUBLISHED}
+                moveToGroupEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
+                moveToGroup={this.handleMoveToGroup}
                 deleteComp={this.handleDelete}
               />
             <DataGrid
@@ -119,6 +120,12 @@ var Browser = React.createClass({
   handleDelete: function(componentInUsageCb) {
     var ids = Object.keys(this.state.selection.selectedItems);
     this.getFlux().actions.deleteComponents(this.state.items.type, ids, componentInUsageCb);
+  },
+
+  handleMoveToGroup: function(groupId) {
+    var ids = Object.keys(this.state.selection.selectedItems);
+    log.debug("Move to group", ids, groupId);
+    this.getFlux().actions.moveComponentsToGroup(ids, groupId);
   },
 
   handleFilterTextChange: function(evt) {
