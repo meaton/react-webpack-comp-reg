@@ -4,7 +4,7 @@ var log = require('loglevel');
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants");
 
-var ImmutabilityUtil = require('../service/ImmutabilityUtil');
+var ImmutabilityUtil = require('../util/ImmutabilityUtil');
 var ComponentSpec = require('../service/ComponentSpec');
 
 var remove = ImmutabilityUtil.remove,
