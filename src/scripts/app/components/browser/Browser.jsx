@@ -18,7 +18,7 @@ var Input = require('react-bootstrap/lib/Input');
 require('../../../../styles/Browser.sass');
 
 var Browser = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ItemsStore", "SelectionStore", "ComponentDetailsStore", "AuthenticationStore", "GroupStore")],
+  mixins: [FluxMixin, StoreWatchMixin("ItemsStore", "SelectionStore", "ComponentDetailsStore", "AuthenticationStore", "TeamStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -28,7 +28,7 @@ var Browser = React.createClass({
       selection: flux.store("SelectionStore").getState(),
       details: flux.store("ComponentDetailsStore").getState(),
       auth: flux.store("AuthenticationStore").getState(),
-      group: flux.store("GroupStore").getState()
+      team: flux.store("TeamStore").getState()
     };
   },
 
@@ -62,7 +62,7 @@ var Browser = React.createClass({
             <SpaceSelector
               type={this.state.items.type}
               space={this.state.items.space}
-              groups={this.state.group.groups}
+              groups={this.state.team.teams}
               selectedGroup={this.state.items.group}
               multiSelect={this.state.selection.allowMultiple}
               validUserSession={this.state.auth.authState.uid != null}
@@ -72,7 +72,7 @@ var Browser = React.createClass({
                 type={this.state.items.type}
                 space={this.state.items.space}
                 items={this.state.selection.selectedItems}
-                groups={this.state.group.groups}
+                groups={this.state.team.teams}
                 selectedGroup={this.state.items.group}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}

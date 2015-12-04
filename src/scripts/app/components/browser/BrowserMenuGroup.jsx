@@ -127,7 +127,7 @@ var BrowserMenuGroup = React.createClass({
   renderMoveToGroup: function(hasSelection) {
     if($.isArray(this.props.groups) && this.props.groups.length > 0) {
       return (
-        <DropdownButton title="Move to group" disabled={!hasSelection}>
+        <DropdownButton title="Move to team" disabled={!hasSelection}>
             {this.props.groups.map(group => (
                 group.id === this.props.selectedGroup ? null :
                 <MenuItem
@@ -150,8 +150,8 @@ var BrowserMenuGroup = React.createClass({
       this.props.moveToGroup(groupId);
     } else {
       // moving out of private space cannot be undone, show warning
-      var title = "Move component(s) or profile(s) into group";
-      var message = "Items, once moved to a group, can not be moved back to your workspace. Do you want to move this item?";
+      var title = "Move component(s) or profile(s) into team space";
+      var message = "Items, once moved to a team space, can not be moved back to your workspace. Do you want to move this item?";
       ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToGroup.bind(null, groupId));
     }
   },

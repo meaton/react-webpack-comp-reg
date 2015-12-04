@@ -40,7 +40,7 @@ var EditorForm = React.createClass({
     return {
       details: flux.store("ComponentDetailsStore").getState(),
       editor: flux.store("EditorStore").getState(),
-      group: flux.store("GroupStore").getState()
+      team: flux.store("TeamStore").getState()
     };
   },
 
@@ -149,7 +149,7 @@ var EditorForm = React.createClass({
             <SpaceSelector
               type={Constants.TYPE_COMPONENTS}
               space={this.state.editor.grid.space}
-              groups={this.state.group.groups}
+              groups={this.state.team.teams}
               selectedGroup={this.state.editor.grid.group}
               allowMultiSelect={false}
               validUserSession={true}
