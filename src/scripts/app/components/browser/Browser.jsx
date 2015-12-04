@@ -73,6 +73,7 @@ var Browser = React.createClass({
                 space={this.state.items.space}
                 items={this.state.selection.selectedItems}
                 groups={this.state.group.groups}
+                selectedGroup={this.state.items.group}
                 loggedIn={this.state.auth.authState.uid != null}
                 multiSelect={this.state.selection.allowMultiple}
                 moveToGroupEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}

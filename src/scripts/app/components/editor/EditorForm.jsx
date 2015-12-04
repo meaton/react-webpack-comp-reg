@@ -243,6 +243,9 @@ var EditorForm = React.createClass({
             || lastRoute.name === "newProfile";
   },
 
+  /**
+   * Required by ComponentUsageMixin
+   */
   renderUsageModalContent: function(errors, doContinue, doAbort) {
     return(
       <div>

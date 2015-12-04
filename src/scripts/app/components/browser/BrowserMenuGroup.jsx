@@ -122,14 +122,16 @@ var BrowserMenuGroup = React.createClass({
     );
   },
 
-  renderMoveToGroup: function(selectionCount) {
+  renderMoveToGroup: function(hasSelection) {
     if($.isArray(this.props.groups) && this.props.groups.length > 0) {
       return (
-        <DropdownButton title="Move to group" disabled={selectionCount < 1}>
+        <DropdownButton title="Move to group" disabled={!hasSelection}>
             {this.props.groups.map(group => (
+                group.id === this.props.selectedGroup ? null : 
                 <MenuItem
                   key={group.id}
-                  onSelect={this.props.moveToGroup.bind(null, group.id)}>
+                  onSelect={this.props.moveToGroup.bind(null, group.id)}
+                  >
                     {group.name}
                 </MenuItem>
               )
@@ -141,6 +143,9 @@ var BrowserMenuGroup = React.createClass({
     }
   },
 
+  /**
+   * Required by ComponentUsageMixin
+   */
   renderUsageModalContent: function(errors, doContinue, doAbort) {
     return(
       <div>
