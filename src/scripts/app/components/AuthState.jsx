@@ -40,7 +40,7 @@ var AuthState = React.createClass({
       );
     } else {
       return (
-        <form className="login-form" ref="submitForm" action={authUrl + "?redirect=" + window.location.protocol + "//" + window.location.host + Config.deploy.path } method="POST">
+        <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + window.location.protocol + "//" + window.location.host + Config.deploy.path } method="POST">
           <button type="submit">login</button>
         </form>
       );
@@ -48,4 +48,15 @@ var AuthState = React.createClass({
   }
 });
 
-module.exports = AuthState;
+var AuthUtil = {
+  triggerLogin: function() {
+    var loginForm = $("form#login");
+    if(loginForm != null) {
+      loginForm.submit();
+    } else {
+      return false;
+    }
+  }
+}
+
+module.exports = {AuthState: AuthState, AuthUtil: AuthUtil};

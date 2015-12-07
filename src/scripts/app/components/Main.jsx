@@ -10,7 +10,7 @@ var Router = require('react-router');
 var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
 
 // Components
-var AuthState = require("./AuthState.jsx");
+var AuthState = require("./AuthState.jsx").AuthState;
 var AlertsView = require("./AlertsView.jsx");
 
 // Boostrap

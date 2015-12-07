@@ -13,6 +13,8 @@ var {RouteHandler, Navigation} = require('react-router');
 //router bootstrap
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
 
+var AuthUtil = require('../AuthState').AuthUtil;
+
 require('../../../../styles/ComponentEditor.sass');
 
 /**
@@ -32,11 +34,7 @@ var Editor = React.createClass({
 
   componentDidMount: function() {
     if(!this.isAuthenticated()) {
-      // try to trigger a login
-      var loginForm = $("form.login-form");
-      // we're assuming that the AuthState component is rendered somehwere on the page
-      log.info(loginForm);
-      if(loginForm.length) {
+      if(AuthUtil.triggerLogin()) {
         loginForm.submit();
       } else {
         alert("Please authenticate manually by pressing the login button");

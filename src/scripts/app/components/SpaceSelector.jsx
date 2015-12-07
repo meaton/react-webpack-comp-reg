@@ -20,6 +20,7 @@ var ButtonLink = require('react-router-bootstrap').ButtonLink;
 //utils
 //var auth = require('./Authentication').auth;
 var classNames = require('classnames');
+var AuthUtil = require('./AuthState').AuthUtil;
 
 
 var PUBLIC = Constants.SPACE_PUBLISHED;
@@ -135,17 +136,21 @@ var SpaceSelector = React.createClass({
         <ButtonGroup className="space_selector">
 
           {/* Public, private, teams */}
-          <DropdownButton title={spaces[currentSpace].label}
-            disabled={!this.props.validUserSession && currentSpace == PUBLIC}>
-              {Object.keys(spaces).map(spaceKey => (
-                  <MenuItem
-                    key={spaceKey}
-                    className={classNames({ selected: (spaceKey === currentSpace) })}
-                    onSelect={this.selectSpace.bind(this, spaceKey)}>
-                      {spaces[spaceKey].label}
-                  </MenuItem>
+          <DropdownButton title={spaces[currentSpace].label}>
+              {(this.props.validUserSession || currentSpace != PUBLIC)?(
+                  Object.keys(spaces).map(spaceKey => (
+                    <MenuItem
+                      key={spaceKey}
+                      className={classNames({ selected: (spaceKey === currentSpace) })}
+                      onSelect={this.selectSpace.bind(this, spaceKey)}>
+                        {spaces[spaceKey].label}
+                    </MenuItem>
+                  )
                 )
-              )}
+              ):(
+                <MenuItem disabled={true} onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
+              )
+            }
           </DropdownButton>
 
           {/* Components, profiles */}
