@@ -13,18 +13,18 @@ var err = {
 var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
 
 var requiredString = {
-  test: (v) => {return v != null && v.length > 0},
+  test: function(v) {return v != null && v.length > 0},
   message: "Field cannot be empty"
 }
 
 var noSpaces = {
-  test: (v) => {return v.indexOf(" ") < 0},
+  test: function(v) {return v.indexOf(" ") < 0},
   message: "Field cannot contain spaces"
 }
 
 var regex = function(expr, msg) {
   return {
-    test: (v) => {return v == null || v.length == 0 || expr.test(v)},
+    test: function(v) {return v == null || v.length == 0 || expr.test(v)},
     message: msg
   };
 }

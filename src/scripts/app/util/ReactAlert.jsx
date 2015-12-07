@@ -26,7 +26,7 @@ module.exports = {
   },
 
   showMessage: function(container, title, message) {
-    this.showAlert((closeAlert) => (
+    this.showAlert(function(closeAlert) { return (
       <Modal title={title}
         enforceFocus={true}
         backdrop={true}
@@ -42,11 +42,11 @@ module.exports = {
           <Button onClick={closeAlert}>Ok</Button>
         </div>
       </Modal>
-    ));
+    )});
   },
 
   showConfirmationDialogue: function(container, title, message, onYes, onNo) {
-    this.showAlert((closeAlert) => (
+    this.showAlert(function(closeAlert) { return (
       <Modal title={title}
         enforceFocus={true}
         backdrop={true}
@@ -59,17 +59,17 @@ module.exports = {
           </div>
         </div>
         <div className="modal-footer">
-          <Button onClick={(evt)=>{
+          <Button onClick={function(evt) {
               closeAlert(evt);
               if(onYes) onYes();
             }}>Yes</Button>
-          <Button onClick={(evt)=>{
+          <Button onClick={function(evt) {
               closeAlert(evt);
               if(onNo) onNo();
             }}>No</Button>
         </div>
       </Modal>
-    ));
+    )});
   },
 
   showAlert: function(renderModal) {

@@ -138,14 +138,14 @@ var SpaceSelector = React.createClass({
           {/* Public, private, teams */}
           <DropdownButton title={spaces[currentSpace].label}>
               {(this.props.validUserSession || currentSpace != PUBLIC)?(
-                  Object.keys(spaces).map(spaceKey => (
+                  Object.keys(spaces).map(function(spaceKey) {return (
                     <MenuItem
                       key={spaceKey}
                       className={classNames({ selected: (spaceKey === currentSpace) })}
                       onSelect={this.selectSpace.bind(this, spaceKey)}>
                         {spaces[spaceKey].label}
                     </MenuItem>
-                  )
+                  )}.bind(this)
                 )
               ):(
                 <MenuItem disabled={true} onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
@@ -157,14 +157,14 @@ var SpaceSelector = React.createClass({
           {!this.props.componentsOnly && (
             <DropdownButton title={types[currentType].label}
               disabled={(!this.props.validUserSession && currentSpace != PUBLIC)}>
-                {Object.keys(types).map(typeKey => (
+                {Object.keys(types).map(function(typeKey) {return(
                     <MenuItem
                       key={typeKey}
                       className={classNames({ selected: (typeKey === currentType) })}
                       onSelect={this.selectType.bind(this, typeKey)}>
                         {types[typeKey].label}
                     </MenuItem>
-                  )
+                  )}.bind(this)
                 )}
             </DropdownButton>
         )}
