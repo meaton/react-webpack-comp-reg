@@ -9,11 +9,9 @@ var React = require("react"),
 // Components
 var DataGrid = require("../datagrid/DataGrid.jsx");
 var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
+var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
-
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
 
 require('../../../../styles/Browser.sass');
 
@@ -56,9 +54,7 @@ var Browser = React.createClass({
     return (
         <section id="browser">
           <div className="browser row">
-            <div className="gridFilter">
-              <Input type="search" value={this.state.items.filterText} onChange={this.handleFilterTextChange} />
-            </div>
+            <DataGridFilter value={this.state.items.filterText} onChange={this.handleFilterTextChange} />
             <SpaceSelector
               type={this.state.items.type}
               space={this.state.items.space}
