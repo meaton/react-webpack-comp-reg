@@ -53,6 +53,7 @@ var AuthUtil = {
     var loginForm = $("form#login");
     if(loginForm != null) {
       loginForm.submit();
+      return true;
     } else {
       return false;
     }
