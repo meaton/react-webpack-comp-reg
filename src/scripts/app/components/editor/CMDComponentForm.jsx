@@ -19,7 +19,7 @@ var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ActionButtons = require('./ActionButtons');
-var ValidatingTextInput = require('../ValidatingTextInput');
+var ValidatingTextInput = require('./ValidatingTextInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
 //utils

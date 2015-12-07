@@ -16,7 +16,7 @@ var Button = require('react-bootstrap/lib/Button');
 
 //components
 var ValueScheme = require('../ValueScheme');
-var ValidatingTextInput = require('../ValidatingTextInput');
+var ValidatingTextInput = require('./ValidatingTextInput');
 
 //utils
 var classNames = require('classnames');

@@ -17,7 +17,7 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValueScheme = require('../ValueScheme');
-var ValidatingTextInput = require('../ValidatingTextInput');
+var ValidatingTextInput = require('./ValidatingTextInput');
 
 //utils
 var classNames = require('classnames');

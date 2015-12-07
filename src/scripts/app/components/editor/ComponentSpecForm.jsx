@@ -14,7 +14,7 @@ var Input = require('react-bootstrap/lib/Input');
 
 //components
 var CMDComponentForm = require('./CMDComponentForm');
-var ValidatingTextInput = require('../ValidatingTextInput');
+var ValidatingTextInput = require('./ValidatingTextInput');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
