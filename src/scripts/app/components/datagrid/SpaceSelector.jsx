@@ -5,7 +5,7 @@ var log = require('loglevel');
 var React = require('react');
 var {Route} = require('react-router');
 
-var Constants = require("../constants");
+var Constants = require("../../constants");
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -20,7 +20,7 @@ var ButtonLink = require('react-router-bootstrap').ButtonLink;
 //utils
 //var auth = require('./Authentication').auth;
 var classNames = require('classnames');
-var AuthUtil = require('./AuthState').AuthUtil;
+var AuthUtil = require('../AuthState').AuthUtil;
 
 
 var PUBLIC = Constants.SPACE_PUBLISHED;
