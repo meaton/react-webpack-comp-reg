@@ -1,9 +1,12 @@
+'use strict';
+var log = require('loglevel');
+
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants"),
-    ExpansionState = require("../service/ExpansionState"),
     React = require('react/addons');
 
-var log = require('loglevel');
+var ExpansionState = require("../service/ExpansionState");
+var ItemsFilter = require('../service/ItemsFilter');
 
 var update = React.addons.update;
 
@@ -17,7 +20,9 @@ var EditorStore = Fluxxor.createStore({
     this.gridSpace = Constants.SPACE_PUBLISHED;
     this.gridTeam = null;
     this.gridItems = [];
+    this.filteredGridItems = [];
     this.gridLoading = false;
+    this.gridFilterText = null;
 
     // component spec itself is stored in the component details store for the editor
 
@@ -33,6 +38,7 @@ var EditorStore = Fluxxor.createStore({
       Constants.LOAD_EDITOR_ITEMS_SUCCESS, this.handleLoadGridItemsSuccess,
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
       Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace,
+      Constants.GRID_FILTER_TEXT_CHANGE, this.handleFilterTextChange,
       Constants.TOGGLE_COMPONENT_SELECTION, this.handleToggleComponentSelection
     );
   },
@@ -48,8 +54,9 @@ var EditorStore = Fluxxor.createStore({
       grid: {
         space: this.gridSpace,
         team: this.gridTeam,
-        items: this.gridItems,
-        loading: this.gridLoading
+        items: this.filteredGridItems,
+        loading: this.gridLoading,
+        filterText: this.gridFilterText
       }
     };
   },
@@ -116,8 +123,15 @@ var EditorStore = Fluxxor.createStore({
   },
 
   handleLoadGridItemsSuccess: function(items) {
-    this.gridLoading = false;
     this.gridItems = items;
+    this.filteredGridItems = ItemsFilter.filter(this.gridItems, this.gridFilterText);
+    this.gridLoading = false;
+    this.emit("change");
+  },
+
+  handleFilterTextChange: function(text) {
+    this.filteredGridItems = ItemsFilter.updateItems(this.gridItems, text, this.filteredGridItems, this.gridFilterText);
+    this.gridFilterText = ItemsFilter.updateFilterText(text);
     this.emit("change");
   }
 

@@ -16,7 +16,8 @@ var Button = require('react-bootstrap/lib/Button');
 var ComponentSpecForm = require("./ComponentSpecForm"),
     EditorMenuGroup = require("./EditorMenuGroup"),
     DataGrid = require("../datagrid/DataGrid.jsx"),
-    SpaceSelector = require("../datagrid/SpaceSelector.jsx");
+    SpaceSelector = require("../datagrid/SpaceSelector.jsx"),
+    DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 
 //mixins
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
@@ -147,6 +148,9 @@ var EditorForm = React.createClass({
               />
           </div>
           <div className="browserGroup">
+            <DataGridFilter
+              value={this.state.editor.grid.filterText}
+              onChange={this.handleGridFilterTextChange} />
             <SpaceSelector
               type={Constants.TYPE_COMPONENTS}
               space={this.state.editor.grid.space}
@@ -176,6 +180,10 @@ var EditorForm = React.createClass({
   handleGridSpaceSelect: function(type, space, group) {
     this.getFlux().actions.switchEditorGridSpace(space, group);
     this.getFlux().actions.loadEditorGridItems(space, group);
+  },
+
+  handleGridFilterTextChange: function(evt) {
+    this.getFlux().actions.setGridFilterText(evt.target.value);
   },
 
   handleGridRowSelect: function(itemId) {

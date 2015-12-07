@@ -136,6 +136,10 @@ var EditorActions = {
     this.dispatch(Constants.SWITCH_EDITOR_GRID_SPACE, {space: space, team: team});
   },
 
+  setGridFilterText: function(value) {
+    this.dispatch(Constants.GRID_FILTER_TEXT_CHANGE, value);
+  },
+
   toggleComponentSelection: function(id) {
     this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id);
   }

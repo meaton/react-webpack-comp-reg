@@ -54,7 +54,9 @@ var Browser = React.createClass({
     return (
         <section id="browser">
           <div className="browser row">
-            <DataGridFilter value={this.state.items.filterText} onChange={this.handleFilterTextChange} />
+            <DataGridFilter 
+              value={this.state.items.filterText}
+              onChange={this.handleFilterTextChange} />
             <SpaceSelector
               type={this.state.items.type}
               space={this.state.items.space}

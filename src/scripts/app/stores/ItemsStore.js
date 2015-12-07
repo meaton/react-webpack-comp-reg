@@ -6,6 +6,7 @@ var Fluxxor = require("fluxxor"),
 
 var ImmutabilityUtil = require('../util/ImmutabilityUtil');
 var ComponentSpec = require('../service/ComponentSpec');
+var ItemsFilter = require('../service/ItemsFilter');
 
 var remove = ImmutabilityUtil.remove,
     update = ImmutabilityUtil.update;
@@ -56,7 +57,7 @@ var ItemsStore = Fluxxor.createStore({
 
   handleLoadItemsSuccess: function(items) {
     this.items = items;
-    this.filteredItems = filter(this.items, this.filterText);
+    this.filteredItems = ItemsFilter.filter(this.items, this.filterText);
     this.loading = false;
     this.removed = {};
     this.emit("change");
@@ -100,16 +101,8 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   handleFilterTextChange: function(text) {
-    var oldFilter = this.filterText;
-    this.filterText = (text === "") ? null : text;
-
-    if(this.filterText != null && oldFilter != null && this.filterText.indexOf(oldFilter) == 0) {
-      //narrow down on existing filtered items
-      this.filteredItems = filter(this.filteredItems, this.filterText);
-    } else {
-      //filter on full set
-      this.filteredItems = filter(this.items, this.filterText);
-    }
+    this.filteredItems = ItemsFilter.updateItems(this.items, text, this.filteredItems, this.filterText);
+    this.filterText = ItemsFilter.updateFilterText(text);
     this.emit("change");
   },
 
@@ -127,24 +120,4 @@ var ItemsStore = Fluxxor.createStore({
 
 });
 
-function filter(items, filter) {
-  if(filter == null) {
-    return items;
-  } else {
-    var regex = new RegExp(escapeRegExp(filter), "i");
-    return items.filter(function(item) {
-      return regex.test(item.name)
-      || regex.test(item.groupName)
-      || regex.test(item.description)
-      || regex.test(item.creatorName)
-      || regex.test(item.id);
-    });
-  }
-}
-
 module.exports = ItemsStore;
-
-function escapeRegExp(str) {
-  //http://stackoverflow.com/a/6969486
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-}
