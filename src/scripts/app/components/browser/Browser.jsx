@@ -7,7 +7,7 @@ var React = require("react"),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 // Components
-var DataGrid = require("../DataGrid.jsx");
+var DataGrid = require("../datagrid/DataGrid.jsx");
 var SpaceSelector = require("../SpaceSelector.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');

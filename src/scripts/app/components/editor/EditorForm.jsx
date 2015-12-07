@@ -15,7 +15,7 @@ var Button = require('react-bootstrap/lib/Button');
 //components
 var ComponentSpecForm = require("./ComponentSpecForm"),
     EditorMenuGroup = require("./EditorMenuGroup"),
-    DataGrid = require("../DataGrid.jsx"),
+    DataGrid = require("../datagrid/DataGrid.jsx"),
     SpaceSelector = require("../SpaceSelector.jsx");
 
 //mixins

@@ -2,7 +2,7 @@ var log = require('loglevel');
 
 //react
 var React = require("react"),
-    Constants = require("../constants");
+    Constants = require("../../constants");
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -11,7 +11,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var DataTablesWrapper = require("./DataTablesWrapper.jsx"),
     DataTablesRow = require("./DataTablesRow.jsx")
 
-require('../../../styles/DataGrid.sass');
+require('../../../../styles/DataGrid.sass');
 
 var DataGrid = React.createClass({
   mixins: [ImmutableRenderMixin],
