@@ -16,7 +16,7 @@ var DataGridFilter = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   propTypes: {
-    value: React.PropTypes.string.isRequired,
+    value: React.PropTypes.string,
     onChange: React.PropTypes.func.isRequired
   },
   render: function() {
