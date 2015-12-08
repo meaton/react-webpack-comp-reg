@@ -92,8 +92,12 @@ var NotFound = React.createClass({
 // Router.run(routes, Router.HistoryLocation, function(Handler) {
 //   React.render(<Handler flux={flux} />, document.getElementById("app"));
 // });
+var createFluxComponent = function(Component, props) {
+  return <Component {...props} flux={flux} />;
+};
+
 ReactDOM.render((
-  <Router>
+  <Router createElement={createFluxComponent}>
     <Route path={Config.deploy.path} component={Main}>
       <IndexRoute component={Browser} />
       <Route path="browser" component={Browser} />

@@ -8,7 +8,7 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var {RouteHandler, Navigation} = require('react-router');
+var {Navigation} = require('react-router');
 
 //router bootstrap
 var ButtonLink = require('react-router-bootstrap').ButtonLink;
@@ -55,7 +55,7 @@ var Editor = React.createClass({
     if(this.isAuthenticated()) {
       return (
           <div className="editorContainer">
-            <RouteHandler/>
+            {this.props.children}
             {/*grid*/}
           </div>
         );

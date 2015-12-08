@@ -6,9 +6,6 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var Router = require('react-router');
-var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
-
 // Components
 var AuthState = require("./AuthState.jsx").AuthState;
 var AlertsView = require("./AlertsView.jsx");
@@ -63,7 +60,7 @@ var Main = React.createClass({
 
             <div className="main container-fluid">
               <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
-              <RouteHandler/>
+              {this.props.children}
             </div>
         </div>
     );
