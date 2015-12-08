@@ -79,24 +79,21 @@ var BrowserMenuGroup = React.createClass({
     var editorLink = null;
     var editBtnLabel = isPublished ? "Edit as new" : "Edit";
 
-    var params = {space: this.props.space};
-
     if(selectionCount == 1) {
       var itemId = Object.keys(this.props.items)[0];
       var editorRoute = null;
       if(this.props.type === Constants.TYPE_PROFILE) {
-        editorRoute = (isPublished) ? "newProfile" : "profile";
-        params.profileId = itemId;
+        editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
+          + this.props.space + "/" + itemId;
       } else if(this.props.type === Constants.TYPE_COMPONENTS) {
-        editorRoute = (isPublished) ? "newComponent" : "component";
-        params.componentId = itemId;
+        editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
+          + this.props.space + "/" + itemId;
       }
 
       if(editorRoute != null) {
         editorLink = (
           <LinkContainer to={editorRoute} disabled={this.props.multiSelect}>
             <Button
-              params={params}
               bsStyle="primary">
                 {editBtnLabel}
             </Button>
@@ -109,11 +106,12 @@ var BrowserMenuGroup = React.createClass({
 
     return (
         <ButtonGroup className="actionMenu">
-          <LinkContainer to="newEditor" disabled={!this.props.loggedIn}>
-            <Button params={{type: this.props.type, space: this.props.space}}>Create new</Button>
+          <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
+            disabled={!this.props.loggedIn}>
+            <Button>Create new</Button>
           </LinkContainer>
           {editorLink}
-          <LinkContainer to="import" disabled={!this.props.loggedIn}>
+          <LinkContainer to="/import" disabled={!this.props.loggedIn}>
             <Button>Import</Button>
           </LinkContainer>
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }

@@ -96,9 +96,10 @@ var createFluxComponent = function(Component, props) {
   return <Component {...props} flux={flux} />;
 };
 
+//note: root path used to be {Config.deploy.path}, changed this when upgraded to react-router 1.0.0
 ReactDOM.render((
   <Router createElement={createFluxComponent}>
-    <Route path={Config.deploy.path} component={Main}>
+    <Route path="/" component={Main}>
       <IndexRoute component={Browser} />
       <Route path="browser" component={Browser} />
       <Route path="import" component={NotFound /*Import*/} />

@@ -34,21 +34,18 @@ var ButtonModal = React.createClass({
         this.setState({ description: nextProps.desc });
       },
       render: function() {
+        var desc = (typeof this.props.desc === "string") ? ( <p className="modal-desc">{this.state.desc || this.props.desc}</p> ) : this.props.desc;
         return (
           <div>
             <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
-            <Overlay show={this.state.isModalOpen}>{this.renderOverlay()}</Overlay>
+            {this.renderOverlay(this.state.isModalOpen)}
           </div>
         );
       },
-      renderOverlay: function() {
-        if(!this.state.isModalOpen) {
-          return <span/>;
-        }
-
+      renderOverlay: function(isShown) {
         var desc = (typeof this.props.desc === "string") ? ( <p className="modal-desc">{this.state.desc || this.props.desc}</p> ) : this.props.desc;
         return (
-          <Modal bsStyle="primary" title={this.props.title} animation={false} backdrop={true} onRequestHide={this.toggleModal}>
+          <Modal show={isShown} bsStyle="primary" title={this.props.title} animation={false} backdrop={true} onRequestHide={this.toggleModal}>
             <div className="modal-body">
               {desc}
               <div className="modal-footer">

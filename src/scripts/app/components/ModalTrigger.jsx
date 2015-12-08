@@ -85,7 +85,7 @@ var ModalTrigger = React.createClass({
   render: function() {
     return <div>
       {this.renderTrigger()}
-      <Overlay show={this.state.isModalOpen}>{this.renderOverlay()}</Overlay>
+      {this.state.isModalOpen && this.renderOverlay()}
     </div>
   },
   renderTrigger: function() {
@@ -101,21 +101,17 @@ var ModalTrigger = React.createClass({
       );
   },
   renderOverlay: function () {
-    if(!this.state.isModalOpen) {
-      return <span/>;
-    } else {
-      log.trace("Modal active", this.props.modal);
-      return (
-        <Draggable axis="both" handle=".modal-header"
-          grid={[5, 5]}
-          zIndex={1050}
-          onStart={this.handleStart}
-          onDrag={this.handleDrag}
-          onStop={this.handleStop}>
-          {this.props.modal}
-        </Draggable>
-      );
-    }
+    log.trace("Modal active", this.props.modal);
+    return (
+      <Draggable axis="both" handle=".modal-header"
+        grid={[5, 5]}
+        zIndex={1050}
+        onStart={this.handleStart}
+        onDrag={this.handleDrag}
+        onStop={this.handleStop}>
+        {this.props.modal}
+      </Draggable>
+    );
   }
 });
 
