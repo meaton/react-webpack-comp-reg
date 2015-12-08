@@ -34,11 +34,12 @@ var ButtonModal = React.createClass({
         this.setState({ description: nextProps.desc });
       },
       render: function() {
-        return
-        <div>
-          <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
-          <Overlay show={this.state.isModalOpen}>{this.renderOverlay}</Overlay>
-        </div>
+        return (
+          <div>
+            <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
+            <Overlay show={this.state.isModalOpen}>{this.renderOverlay}</Overlay>
+          </div>
+        );
       },
       renderOverlay: function() {
         if(!this.state.isModalOpen) {
