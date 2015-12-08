@@ -37,7 +37,7 @@ var ButtonModal = React.createClass({
         return (
           <div>
             <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
-            <Overlay show={this.state.isModalOpen}>{this.renderOverlay}</Overlay>
+            <Overlay show={this.state.isModalOpen}>{this.renderOverlay()}</Overlay>
           </div>
         );
       },

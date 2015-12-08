@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var update = require('react-addons-update');
 
 //bootstrap
@@ -12,7 +13,7 @@ module.exports = {
   renderAlert: function(instance, elementId) {
     var div = React.DOM.div;
     if(instance && elementId)
-      React.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));
+      ReactDOM.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));
     else
       log.error('Cannot render Alert dialog: ', elementId);
   },

@@ -85,7 +85,7 @@ var ModalTrigger = React.createClass({
   render: function() {
     return <div>
       {this.renderTrigger()}
-      <Overlay show={this.state.isModalOpen}>{this.renderOverlay}</Overlay>
+      <Overlay show={this.state.isModalOpen}>{this.renderOverlay()}</Overlay>
     </div>
   },
   renderTrigger: function() {
