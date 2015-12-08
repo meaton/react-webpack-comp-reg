@@ -3,9 +3,7 @@ var log = require('loglevel');
 
 var React = require('react/addons');
 var Draggable = require('react-draggable');
-
-//bootstrap mixins
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
+var Overlay = require('react-bootstrap/lib/Overlay');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -87,6 +85,12 @@ var ModalTrigger = React.createClass({
     $(this.getOverlayDOMNode()).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
   },
   render: function() {
+    return <div>
+      {this.renderTrigger()}
+      <Overlay show={this.state.isModalOpen}>{this.renderOverlay}</Overlay>
+    </div>
+  },
+  renderTrigger: function() {
     if(this.props.useLink)
       return (
         <a onClick={this.toggleModal}>{this.props.label}</a>

@@ -2,12 +2,10 @@
 
 var React = require('react/addons');
 
-//bootstrap mixin
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
-
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
+var Overlay = require('react-bootstrap/lib/Overlay');
 
 /**
 * ButtonModal - Bootstrap Modal dialog triggered by Button, utilising react-bootstrap OverlayMixin to control overlay display.
@@ -15,7 +13,6 @@ var Modal = require('react-bootstrap/lib/Modal');
 * @mixes OverlayMixin
 */
 var ButtonModal = React.createClass({
-      mixins: [OverlayMixin],
       getInitialState: function() {
         return {
           isModalOpen: false,
@@ -38,7 +35,11 @@ var ButtonModal = React.createClass({
         this.setState({ description: nextProps.desc });
       },
       render: function() {
-        return <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
+        return
+        <div>
+          <Button disabled={this.props.disabled} onClick={this.toggleModal}>{this.props.btnLabel}</Button>
+          <Overlay show={this.state.isModalOpen}>{this.renderOverlay}</Overlay>
+        </div>
       },
       renderOverlay: function() {
         if(!this.state.isModalOpen) {
