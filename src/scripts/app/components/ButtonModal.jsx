@@ -8,9 +8,8 @@ var Modal = require('react-bootstrap/lib/Modal');
 var Overlay = require('react-bootstrap/lib/Overlay');
 
 /**
-* ButtonModal - Bootstrap Modal dialog triggered by Button, utilising react-bootstrap OverlayMixin to control overlay display.
+* ButtonModal - Bootstrap Modal dialog triggered by Button, utilising react-bootstrap Overlay to control overlay display.
 * @constructor
-* @mixes OverlayMixin
 */
 var ButtonModal = React.createClass({
       getInitialState: function() {

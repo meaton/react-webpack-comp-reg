@@ -13,8 +13,8 @@ var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin')
 var Modal = require('react-bootstrap/lib/Modal');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
-var TabbedArea = require('react-bootstrap/lib/TabbedArea');
-var TabPane = require('react-bootstrap/lib/TabPane');
+var Tabs = require('react-bootstrap/lib/Tabs');
+var Tab = require('react-bootstrap/lib/Tab');
 
 //service
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
@@ -221,15 +221,15 @@ var TypeModal = React.createClass({
     return (
       <Modal ref="modal" id="typeModal" key="typeModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.close} container={this.props.container}>
         <div className='modal-body'>
-          <TabbedArea activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
-            <TabPane eventKey={0} tab="Type">
+          <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
+            <Tab eventKey={0} title="Type">
               <Input ref="simpleTypeInput" linkValue={this.linkState('value')} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
               {$.map(this.state.reg_types, function(type, index) {
                 return <option key={type}>{type}</option>
               })}
               </Input>
-            </TabPane>
-            <TabPane eventKey={1} tab="Controlled vocabulary">
+            </Tab>
+            <Tab eventKey={1} title="Controlled vocabulary">
               <Table id="typeTable" ref="table" columns={vocabCols} data={vocabData} className={tableClasses}>
                 <tfoot>
                   <tr>
@@ -241,11 +241,11 @@ var TypeModal = React.createClass({
                 </tfoot>
               </Table>
               <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
-            </TabPane>
-            <TabPane eventKey={2} tab="Pattern">
+            </Tab>
+            <Tab eventKey={2} title="Pattern">
               <Input ref="patternInput" type="text" defaultValue={(this.props.pattern != undefined) ? this.props.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
-            </TabPane>
-          </TabbedArea>
+            </Tab>
+          </Tabs>
         </div>
         <div className="modal-footer">
           <Button onClick={this.close}>Cancel</Button>

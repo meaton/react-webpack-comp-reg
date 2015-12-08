@@ -10,8 +10,8 @@ var moment = require('moment-timezone');
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var ButtonInput = require('react-bootstrap/lib/ButtonInput');
-var TabbedArea = require('react-bootstrap/lib/TabbedArea');
-var TabPane = require('react-bootstrap/lib/TabPane');
+var Tabs = require('react-bootstrap/lib/Tabs');
+var Tab = require('react-bootstrap/lib/Tab');
 var Panel = require('react-bootstrap/lib/Panel');
 
 //components
@@ -121,20 +121,20 @@ var InfoPanel = React.createClass({
     }
 
     return (
-      <TabbedArea activeKey={this.props.activeView} onSelect={this.refreshTab} className={ComponentSpec.isProfile(item)?"profile":"component"}>
-        <TabPane eventKey={Constants.INFO_VIEW_SPEC} tab="view">
+      <Tabs activeKey={this.props.activeView} onSelect={this.refreshTab} className={ComponentSpec.isProfile(item)?"profile":"component"}>
+        <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view">
           {viewer}
-        </TabPane>
-        <TabPane eventKey={Constants.INFO_VIEW_XML} tab="xml">
+        </Tab>
+        <Tab eventKey={Constants.INFO_VIEW_XML} title="xml">
             {(this.props.specXml != null) ?
             <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
               : null }
-        </TabPane>
-        <TabPane id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} tab={"Comments (" + commentsCount + ")"}>
+        </Tab>
+        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + commentsCount + ")"}>
             {this.renderComments()}
             {commentsForm}
-        </TabPane>
-      </TabbedArea>
+        </Tab>
+      </Tabs>
     );
   },
 

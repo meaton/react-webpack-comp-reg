@@ -12,12 +12,10 @@ var Button = require('react-bootstrap/lib/Button');
 var update = React.addons.update;
 
 /**
-* ModalTrigger - Bootstrap custom ModalTrigger utilising react-bootstrap OverlayMixin. Manages dialog display for two components implementing Bootstrap Modal, TypeModal and ConceptRegistryModal.
+* ModalTrigger - Bootstrap custom ModalTrigger utilising react-bootstrap Overlay. Manages dialog display for two components implementing Bootstrap Modal, TypeModal and ConceptRegistryModal.
 * @constructor
-* @mixes OverlayMixin
 */
 var ModalTrigger = React.createClass({
-  mixins: [OverlayMixin],
   propTypes: {
     modal: React.PropTypes.object.isRequired,
     label: React.PropTypes.string.isRequired,
