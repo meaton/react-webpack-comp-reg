@@ -25,25 +25,35 @@ var corsRequestParams = (Config.cors) ?
       withCredentials: true
   }} : {};
 
-function getRegistrySpacePath(space) {
-  if(space == Constants.SPACE_PUBLISHED) {
-    return "published";
-  }
-  if(space == Constants.SPACE_PRIVATE) {
-    return "private";
-  }
-  if(space == Constants.SPACE_TEAM) {
-    return "group";
-  }
-}
 
 var ComponentRegistryClient = {
 
-  loadComponents: function(type, space, group, handleSuccess, handleFailure) {
-    var type = (type != null) ? type.toLowerCase() : "profiles";
-    var requestUrl = restUrl + '/registry/' + type;
+  getRegistrySpacePath: function(space) {
+    if(space == Constants.SPACE_PUBLISHED) {
+      return "published";
+    }
+    if(space == Constants.SPACE_PRIVATE) {
+      return "private";
+    }
+    if(space == Constants.SPACE_TEAM) {
+      return "group";
+    }
+  },
 
-    var registrySpace = (space != null) ? getRegistrySpacePath(space): "";
+  getRegistryUrl: function(type, id) {
+    var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles':'/registry/components';
+    var requestUrl = restUrl + typepath;
+    if(id == null) {
+      return requestUrl;
+    } else {
+      return requestUrl + "/" + id;
+    }
+  },
+
+  loadComponents: function(type, space, group, handleSuccess, handleFailure) {
+    var requestUrl = this.getRegistryUrl(type);
+
+    var registrySpace = (space != null) ? this.getRegistrySpacePath(space): "";
     var teamId = (space == Constants.SPACE_TEAM) ? group : null;
 
     $.ajax($.extend({
@@ -80,8 +90,7 @@ var ComponentRegistryClient = {
 
  loadSpec: function(type, id, raw_type, handleSuccess, handleFailure) {
   var self = this;
-  var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles/':'/registry/components/';
-  var requestUrl = restUrl + typepath + id;
+  var requestUrl = this.getRegistryUrl(type, id);
   $.ajax($.extend({
     url: requestUrl,
     dataType: (raw_type != undefined) ? raw_type : "json",

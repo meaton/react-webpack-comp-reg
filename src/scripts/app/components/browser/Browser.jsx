@@ -6,12 +6,22 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var Config = require('../../../config');
+
+// Bootstrap
+var Button = require('react-bootstrap/lib/Button');
+var Modal = require('react-bootstrap/lib/Modal');
+
 // Components
 var DataGrid = require("../datagrid/DataGrid.jsx");
 var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
 var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
+
+var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+
+var ReactAlert = require('../../util/ReactAlert');
 
 require('../../../../styles/Browser.sass');
 
@@ -54,7 +64,7 @@ var Browser = React.createClass({
     return (
         <section id="browser">
           <div className="browser row">
-            <DataGridFilter 
+            <DataGridFilter
               value={this.state.items.filterText}
               onChange={this.handleFilterTextChange} />
             <SpaceSelector
@@ -86,6 +96,7 @@ var Browser = React.createClass({
               multiSelect={this.state.selection.allowMultiple}
               editMode={false}
               onRowSelect={this.handleRowSelect}
+              onClickInfo={this.showInfo}
               />
           </div>
           <div className="viewer row">
@@ -129,6 +140,27 @@ var Browser = React.createClass({
 
   handleFilterTextChange: function(evt) {
     this.getFlux().actions.setFilterText(evt.target.value);
+  },
+
+  showInfo: function(item) {
+    var bookmarkLink = Config.webappUrl + "/?itemId=" + item.id + "&registrySpace=" + ComponentRegistryClient.getRegistrySpacePath(this.state.items.space);
+    var xsdLink = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd";
+
+    ReactAlert.showAlert(function(closeAlert) { return (
+      <Modal title={"Info for " + item.name}
+        enforceFocus={true}
+        backdrop={true}
+        animation={false}
+        container={this}
+        onRequestHide={closeAlert}>
+        <div className="modal-body">
+          <div className="modal-desc component-info">
+            <div>Bookmark link: <a href={bookmarkLink}>{bookmarkLink}</a></div>
+            <div>Link to xsd: <a href={xsdLink}>{xsdLink}</a></div>
+          </div>
+        </div>
+      </Modal>
+    )}.bind(this));
   }
 });
 

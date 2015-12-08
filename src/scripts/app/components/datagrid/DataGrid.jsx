@@ -24,7 +24,8 @@ var DataGrid = React.createClass({
     editMode: React.PropTypes.bool.isRequired,
     deletedItems: React.PropTypes.object,
     onRowSelect: React.PropTypes.func,
-    rowSelectAllowed: React.PropTypes.bool
+    rowSelectAllowed: React.PropTypes.bool,
+    onClickInfo: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -68,6 +69,7 @@ var DataGrid = React.createClass({
           selected={selectedContext[d.id]?true:false}
           className={className}
           rowSelectAllowed={self.props.rowSelectAllowed}
+          onClickInfo={self.props.onClickInfo}
           >
         </DataTablesRow>
      );

@@ -89,7 +89,8 @@
   // Column widths - default
   table {
     tbody td, thead th {
-      width: 14%;
+      //5 non-fixed columns
+      width: 70% * .2;
     }
   }
 
@@ -101,7 +102,11 @@
       }
 
       &.commentsCount {
-        width: 10%;
+        width: 7%;
+      }
+
+      &.infoLink {
+        width: 3%;
       }
     }
   }
@@ -109,7 +114,7 @@
   // Column widths - with multiple selection
   table.multipleSelection {
     tbody td, thead th {
-      width: 13%;
+      width: 65% * .2;
 
       &.checkboxCell {
         width: 5%;
@@ -118,4 +123,19 @@
     }
   }
 
+}
+
+div.component-info {
+  padding-top: 0;
+
+  div {
+    border-bottom: 1px solid #ccc;
+    padding: 1em 0;
+
+    a {
+      display: block;
+      margin-left: 2em;
+      overflow: auto;
+    }
+  }
 }

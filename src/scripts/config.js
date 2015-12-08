@@ -23,5 +23,6 @@ module.exports = {
   Config: Config,
   ccrUrl: getUrl() + "/ccr",
   restUrl: getUrl() + "/rest",
-  adminUrl: getUrl() + "/admin"
+  adminUrl: getUrl() + "/admin",
+  webappUrl: getUrl()
 };
