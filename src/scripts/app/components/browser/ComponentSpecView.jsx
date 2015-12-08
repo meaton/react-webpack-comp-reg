@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -20,11 +19,6 @@ require('../../../../styles/ComponentViewer.sass');
 /**
 * ComponentViewer - view display for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
 * @constructor
-* @mixes ImmutableRenderMixin
-* @BtnGroupEvents
-* @Loader
-* @Router.Navigation
-* @Router.State
 */
 var ComponentSpec = React.createClass({
   propTypes: {

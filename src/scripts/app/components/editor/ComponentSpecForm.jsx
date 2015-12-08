@@ -2,7 +2,6 @@
 var log = require('loglevel');
 
 var React = require('react');
-var Router = require('react-router');
 var Constants = require("../../constants");
 
 //mixins
@@ -29,28 +28,9 @@ require('../../../../styles/ComponentViewer.sass');
 * ComponentViewer - view display and editing form for a CMDI Profile or Component item and its root properties, nested Components (CMDComponent), Elements, (CMDElement) and Attributes (CMDAttribute).
 * @constructor
 * @mixes ImmutableRenderMixin
-* @LinkedStateMixin
-* @BtnGroupEvents
-* @Loader
-* @ActionButtonsMixin
-* @ValidationMixin
-* @Router.Navigation
-* @Router.State
 */
 var ComponentSpecForm = React.createClass({
-  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin, Router.Navigation, Router.State],
-
-  statics: {
-    willTransitionTo: function(transition, params, query) {
-      log.debug('attempting transition...' + transition.path);
-    },
-    willTransitionFrom: function(transition, component) {
-      log.debug('transition from...' + this.path);
-      // if(component.state.editMode && !component.state.isSaved)
-      //   if(!confirm('You have unsaved work. Are you sure you want to cancel?'))
-      //     transition.abort();
-    }
-  },
+  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,

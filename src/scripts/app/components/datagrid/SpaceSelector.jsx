@@ -3,7 +3,6 @@
 var log = require('loglevel');
 
 var React = require('react');
-var {Route} = require('react-router');
 
 var Constants = require("../../constants");
 

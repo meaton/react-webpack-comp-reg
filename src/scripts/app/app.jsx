@@ -1,10 +1,13 @@
 var log = require('loglevel');
 
 var React = require("react"),
+    ReactDOM = require("react-dom"),
     Fluxxor = require("fluxxor");
 
-var Router = require('react-router');
-var { Route, RouteHandler, DefaultRoute, Link, NotFoundRoute } = Router;
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var IndexRoute = ReactRouter.IndexRoute;
 
 var Browser = require("./components/browser/Browser.jsx"),
     Main = require("./components/Main.jsx"),
@@ -69,25 +72,41 @@ var NotFound = React.createClass({
 });
 
 // react-router configuration
-var routes = (
-    <Route handler={Main} path={Config.deploy.path} >
-      <NotFoundRoute handler={NotFound}/>
-      <Route name="browser" handler={Browser} />
-      <Route name="import" handler={NotFound /*Import*/} />
-      <Route path="editor" handler={Editor}>
-        <Route name="component" path="component/:space/:componentId" handler={EditorForm} />
-        <Route name="newComponent" path="component/new/:space/:componentId" handler={EditorForm} />
-        <Route name="profile" path="profile/:space/:profileId" handler={EditorForm} />
-        <Route name="newProfile" path="profile/new/:space/:profileId" handler={EditorForm} />
-        <Route name="newEditor" path="new/:space/:type" handler={EditorForm} />
-      </Route>
-      <DefaultRoute handler={Browser} />
-    </Route>
-);
+// var routes = (
+    // <Route handler={Main} path={Config.deploy.path} >
+    //   <NotFoundRoute handler={NotFound}/>
+    //   <Route name="browser" handler={Browser} />
+    //   <Route name="import" handler={NotFound /*Import*/} />
+    //   <Route path="editor" handler={Editor}>
+    //     <Route name="component" path="component/:space/:componentId" handler={EditorForm} />
+    //     <Route name="newComponent" path="component/new/:space/:componentId" handler={EditorForm} />
+    //     <Route name="profile" path="profile/:space/:profileId" handler={EditorForm} />
+    //     <Route name="newProfile" path="profile/new/:space/:profileId" handler={EditorForm} />
+    //     <Route name="newEditor" path="new/:space/:type" handler={EditorForm} />
+    //   </Route>
+    //   <DefaultRoute handler={Browser} />
+    // </Route>
+// );
 
 // manage defined routes and history with react-router
-Router.run(routes, Router.HistoryLocation, function(Handler) {
-  React.render(<Handler flux={flux} />, document.getElementById("app"));
-});
-
+// Router.run(routes, Router.HistoryLocation, function(Handler) {
+//   React.render(<Handler flux={flux} />, document.getElementById("app"));
+// });
+ReactDOM.render((
+  <Router>
+    <Route path={Config.deploy.path} component={Main}>
+      <IndexRoute component={Browser} />
+      <Route path="browser" component={Browser} />
+      <Route path="import" component={NotFound /*Import*/} />
+      <Route path="editor" component={Editor}>
+        <Route path="component/:space/:componentId" component={EditorForm} />
+        <Route path="component/new/:space/:componentId" component={EditorForm} />
+        <Route path="profile/:space/:profileId" component={EditorForm} />
+        <Route path="profile/new/:space/:profileId" component={EditorForm} />
+        <Route path="new/:space/:type" component={EditorForm} />
+      </Route>
+      <Route path="*" component={NotFound}/>
+    </Route>
+  </Router>
+), document.getElementById("app"));
 log.info("Application started");

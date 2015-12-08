@@ -3,7 +3,7 @@
 var log = require('loglevel');
 
 var React = require('react');
-var Router = require('react-router');
+var Router = require('react-router').Router;
 
 //router bootstrap
 var ButtonLink = require('react-router-bootstrap').ButtonLink;

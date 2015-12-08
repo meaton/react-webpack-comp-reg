@@ -4,7 +4,6 @@ var log = require('loglevel');
 var Constants = require("../../constants");
 
 var React = require("react"),
-    Router = require('react-router'),
     Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -33,7 +32,7 @@ var ReactAlert = require('../../util/ReactAlert');
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, Router.Navigation, Router.State, ComponentViewMixin, ComponentUsageMixin,
+  mixins: [FluxMixin, ComponentViewMixin, ComponentUsageMixin,
     StoreWatchMixin("ComponentDetailsStore", "EditorStore")],
 
   // Required by StoreWatchMixin
