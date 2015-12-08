@@ -3,10 +3,9 @@
 var log = require('loglevel');
 
 var React = require('react');
-var Router = require('react-router').Router;
 
 //router bootstrap
-var ButtonLink = require('react-router-bootstrap').ButtonLink;
+var LinkContainer = require('react-router-bootstrap').LinkContainer;
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -26,11 +25,9 @@ var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 /**
 * BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.
 * @constructor
-* @mixes Router.State
-* @mixes Router.Navigation
 */
 var BrowserMenuGroup = React.createClass({
-  mixins: [Router.State, Router.Navigation, ComponentUsageMixin],
+  mixins: [ComponentUsageMixin],
   propTypes: {
     type: React.PropTypes.string.isRequired,
     space: React.PropTypes.string.isRequired,
@@ -97,13 +94,14 @@ var BrowserMenuGroup = React.createClass({
 
       if(editorRoute != null) {
         editorLink = (
-          <ButtonLink
-            to={editorRoute}
-            params={params}
-            bsStyle="primary"
-            disabled={this.props.multiSelect}>
-              {editBtnLabel}
-          </ButtonLink>
+          <LinkContainer to={editorRoute}>
+            <Button
+              params={params}
+              bsStyle="primary"
+              disabled={this.props.multiSelect}>
+                {editBtnLabel}
+            </Button>
+          </LinkContainer>
         );
       }
     } else {
@@ -112,9 +110,13 @@ var BrowserMenuGroup = React.createClass({
 
     return (
         <ButtonGroup className="actionMenu">
-          <ButtonLink to="newEditor" params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</ButtonLink>
+          <LinkContainer to="newEditor" >
+            <Button params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</Button>
+          </LinkContainer>
           {editorLink}
-          <ButtonLink to="import" disabled={!this.props.loggedIn}>Import</ButtonLink>
+          <LinkContainer to="import">
+            <Button disabled={!this.props.loggedIn}>Import</Button>
+          </LinkContainer>
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
@@ -127,7 +129,7 @@ var BrowserMenuGroup = React.createClass({
   renderMoveToTeam: function(hasSelection) {
     if($.isArray(this.props.teams) && this.props.teams.length > 0) {
       return (
-        <DropdownButton title="Move to team" disabled={!hasSelection}>
+        <DropdownButton id="moveToTeam" title="Move to team" disabled={!hasSelection}>
             {this.props.teams.map(function(team) {
                 return (team.id === this.props.selectedTeam) ? null : (
                   <MenuItem
