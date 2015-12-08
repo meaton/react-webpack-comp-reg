@@ -21,6 +21,7 @@ var ComponentSpecForm = require("./ComponentSpecForm"),
 //mixins
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
+var History = require("react-router").History;
 
 //utils
 var classNames = require('classnames');
@@ -32,7 +33,7 @@ var ReactAlert = require('../../util/ReactAlert');
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, ComponentViewMixin, ComponentUsageMixin,
+  mixins: [FluxMixin, History, ComponentViewMixin, ComponentUsageMixin,
     StoreWatchMixin("ComponentDetailsStore", "EditorStore")],
 
   // Required by StoreWatchMixin
@@ -58,8 +59,8 @@ var EditorForm = React.createClass({
   },
 
   componentDidMount: function() {
-    var params = this.getParams();
-    log.debug("Editor - path:", this.getPathname(), "params:", params);
+    var params = this.props.params;
+    log.debug("Editor - location:", this.location, "params:", params);
 
     // set application state through actions, after this avoid using params directly
 
@@ -224,7 +225,7 @@ var EditorForm = React.createClass({
   },
 
   afterSuccess: function() {
-    this.transitionTo("browser");
+    this.history.pushState(null, "/browser");
   },
 
   setType: function(type) {
@@ -244,11 +245,16 @@ var EditorForm = React.createClass({
   },
 
   isNew: function() {
-    var routes = this.getRoutes();
-    var lastRoute = routes[routes.length - 1];
-    return lastRoute.name === "newEditor"
-            || lastRoute.name === "newComponent"
-            || lastRoute.name === "newProfile";
+    var routes = this.props.routes;
+    if(routes.length == 0) {
+      log.error("No routes");
+    }
+
+    var path = routes[routes.length - 1].path;
+    if(path == null) {
+      log.error("No path for route", lastRoute);
+    }
+    return path.indexOf("new") == 0 || path.indexOf("component/new") == 0 || path.indexOf("profile/new") == 0;
   },
 
   /**

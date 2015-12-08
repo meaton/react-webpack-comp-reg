@@ -8,8 +8,6 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var {Navigation} = require('react-router');
-
 var AuthUtil = require('../AuthState').AuthUtil;
 
 require('../../../../styles/ComponentEditor.sass');
