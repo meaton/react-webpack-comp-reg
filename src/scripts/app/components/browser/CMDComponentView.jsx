@@ -30,10 +30,8 @@ require('../../../../styles/CMDComponent.sass');
 */
 var CMDComponentView = React.createClass({
   mixins: [ImmutableRenderMixin, CMDComponentMixin, ToggleExpansionMixin],
-  propTypes: {
-    onComponentChange: React.PropTypes.func.isRequired
-    /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
-  },
+
+  /* props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
 
   /**
    * Components should be closed by default iff they are linked
