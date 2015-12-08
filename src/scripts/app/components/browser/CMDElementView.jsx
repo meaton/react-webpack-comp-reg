@@ -32,7 +32,6 @@ var CMDElementView = React.createClass({
     open: React.PropTypes.bool,
     openAll: React.PropTypes.bool,
     closeAll: React.PropTypes.bool,
-    key: React.PropTypes.string,
     expansionState: React.PropTypes.object
   },
   getDefaultProps: function() {
@@ -41,25 +40,6 @@ var CMDElementView = React.createClass({
       openAll: false,
       closeAll: false
     };
-  },
-  toggleElement: function(evt) {
-    //TODO flux: action
-    // console.log('toggle elem: ' + JSON.stringify(this.state.elem));
-    // var isOpen = (this.state.elem.hasOwnProperty('open')) ? !this.state.elem.open : true;
-    // this.setState({ elem: update(this.state.elem, { open: { $set: isOpen }}) });
-  },
-  elemAttrs: function(elem) {
-    var multilingual = (elem.hasOwnProperty('@Multilingual')) && elem['@Multilingual'] == "true";
-    var lb = React.createElement('br');
-    var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
-    var maxC = multilingual ? "unbounded" : ((elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1);
-    var docu_attr = (elem.hasOwnProperty("@Documentation")) ? [React.createElement("span", { className: "attrElem" }, "Documentation: " + elem['@Documentation']), lb] : null;
-    var display_attr = (elem.hasOwnProperty("@DisplayPriority")) ? [React.createElement("span", { className: "attrElem" }, "DisplayPriority: " + elem['@DisplayPriority']), lb] : null;
-    var conceptLink_attr = (elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") ? [React.createElement("span", { className: "attrElem" }, "ConceptLink: ", new React.createElement("a", { href: elem['@ConceptLink'], target: "_blank" }, elem['@ConceptLink']) ), lb] : null;
-    var multilingual_attr = [React.createElement("span", { className: "attrElem" }, "Multilingual: " + multilingual), lb];
-    var card_attr = [React.createElement('span', { className: "attrElem" }, "Number of occurrences: " + minC + " - " + maxC), lb];
-
-    return {conceptLink_attr, docu_attr, display_attr, card_attr, multilingual_attr};
   },
   render: function () {
     var self = this;
@@ -85,13 +65,31 @@ var CMDElementView = React.createClass({
         </div>);
     }
 
+    var multilingual = (elem.hasOwnProperty('@Multilingual')) && elem['@Multilingual'] == "true";
+    var lb = React.createElement('br');
+    var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : 1;
+    var maxC = multilingual ? "unbounded" : ((elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1);
+
     return (
       <div className="CMDElement">
         <span>Element: </span>
         <span className="elementName">{elem['@name']}</span> { valueScheme }
-        <div className="elemAttrs">
-          { React.addons.createFragment({ left: this.elemAttrs(elem) }) }
-        </div>
+        <ul className="elemAttrs">
+          {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
+            <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
+          )}
+
+          {elem.hasOwnProperty("@Documentation") && (
+            <li className="attrElem">Documentation: {elem['@Documentation']}</li>
+          )}
+
+          {elem.hasOwnProperty("@DisplayPriority") && (
+            <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
+          )}
+
+          <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
+          <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
+        </ul>
         {attrList}
       </div>
       );
