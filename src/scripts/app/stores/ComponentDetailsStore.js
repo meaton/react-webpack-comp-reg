@@ -1,11 +1,11 @@
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants"),
     ExpansionState = require("../service/ExpansionState"),
-    React = require('react/addons');
+    React = require('react');
 
 var log = require('loglevel');
 
-var update = React.addons.update;
+var update = require('react-addons-update');
 
 var ComponentSpecStore = Fluxxor.createStore({
   initialize: function(options) {

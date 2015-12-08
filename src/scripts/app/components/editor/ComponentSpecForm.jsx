@@ -1,7 +1,7 @@
 'use strict';
 var log = require('loglevel');
 
-var React = require('react/addons');
+var React = require('react');
 var Router = require('react-router');
 var Constants = require("../../constants");
 
@@ -19,7 +19,7 @@ var ValidatingTextInput = require('./ValidatingTextInput');
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
 var Validation = require('../../service/Validation');
-var update = React.addons.update;
+var update = require('react-addons-update');
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 

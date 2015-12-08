@@ -1,7 +1,7 @@
 'use strict';
 var log = require('loglevel');
 
-var React = require('react/addons');
+var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');

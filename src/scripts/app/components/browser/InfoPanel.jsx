@@ -2,7 +2,7 @@
 
 var log = require('loglevel');
 
-var React = require('react/addons'),
+var React = require('react'),
     Constants = require("../../constants");
 
 var moment = require('moment-timezone');

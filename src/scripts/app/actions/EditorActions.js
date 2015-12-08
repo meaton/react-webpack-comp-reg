@@ -1,8 +1,7 @@
 var log = require("loglevel");
 var Constants = require("../constants");
 
-var React = require('react/addons');
-var update = React.addons.update;
+var update = require('react-addons-update');
 
 var ComponentRegistryClient = require("../service/ComponentRegistryClient");
 var SpecAugmenter = require("../service/SpecAugmenter");

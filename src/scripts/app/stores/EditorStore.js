@@ -3,12 +3,12 @@ var log = require('loglevel');
 
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants"),
-    React = require('react/addons');
+    React = require('react');
 
 var ExpansionState = require("../service/ExpansionState");
 var ItemsFilter = require('../service/ItemsFilter');
 
-var update = React.addons.update;
+var update = require('react-addons-update');
 
 var EditorStore = Fluxxor.createStore({
   initialize: function(options) {

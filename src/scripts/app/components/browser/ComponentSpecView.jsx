@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react');
 var Router = require('react-router');
 
 //mixins
@@ -11,7 +11,7 @@ var btnGroup = require('../../../mixins/BtnGroupEvents');
 var CMDComponentView = require('./CMDComponentView');
 
 //utils
-var update = React.addons.update;
+var update = require('react-addons-update');
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 

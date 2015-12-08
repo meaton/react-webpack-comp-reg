@@ -1,7 +1,7 @@
 'use strict';
 
 // React
-var React = require('react/addons');
+var React = require('react');
 
 // Config
 var Config = require('../../config').Config;

@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -13,7 +13,7 @@ var CMDAttributeView = require('./CMDAttributeView');
 var ValueScheme = require('../ValueScheme');
 
 //utils
-var update = React.addons.update;
+var update = require('react-addons-update');
 var classNames = require('classnames');
 var md5 = require('spark-md5');
 

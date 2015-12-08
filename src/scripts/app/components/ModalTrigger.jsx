@@ -1,7 +1,7 @@
 'use strict';
 var log = require('loglevel');
 
-var React = require('react/addons');
+var React = require('react');
 var Draggable = require('react-draggable');
 var Overlay = require('react-bootstrap/lib/Overlay');
 
@@ -9,7 +9,7 @@ var Overlay = require('react-bootstrap/lib/Overlay');
 var Button = require('react-bootstrap/lib/Button');
 
 //utils
-var update = React.addons.update;
+var update = require('react-addons-update');
 
 /**
 * ModalTrigger - Bootstrap custom ModalTrigger utilising react-bootstrap Overlay. Manages dialog display for two components implementing Bootstrap Modal, TypeModal and ConceptRegistryModal.

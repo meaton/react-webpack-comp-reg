@@ -3,8 +3,8 @@
  * '_appId' property to all CMD Component, Element and Attribute objects.
  */
 
-var React = require('react/addons');
-var update = React.addons.update;
+var React = require('react');
+var update = require('react-addons-update');
 
 var log = require('loglevel');
 

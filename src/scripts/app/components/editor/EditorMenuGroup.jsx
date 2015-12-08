@@ -2,7 +2,7 @@
 
 var log = require('loglevel');
 
-var React = require('react/addons');
+var React = require('react');
 var Router = require('react-router');
 
 //router bootstrap

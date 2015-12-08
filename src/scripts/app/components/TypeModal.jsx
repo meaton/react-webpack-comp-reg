@@ -1,12 +1,12 @@
 'use strict';
 var log = require('loglevel');
 
-var React = require('react/addons');
+var React = require('react');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
 //mixins
-var LinkedStateMixin = React.addons.LinkedStateMixin;
+var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin')
 
 //bootstrap
@@ -20,7 +20,7 @@ var Tab = require('react-bootstrap/lib/Tab');
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 
 //utils
-var update = React.addons.update;
+var update = require('react-addons-update');
 var classNames = require('classnames');
 
 require('../../../styles/EditorDialog.sass');
@@ -28,7 +28,7 @@ require('../../../styles/EditorDialog.sass');
 /**
 * TypeModal - Bootstrap Modal dialog used for setting the defined Type value, Pattern value or a custom-defined Vocabulary enum.
 * @constructor
-* @mixes React.addons.LinkedStateMixin
+* @mixes require('react-addons-linked-state-mixin')
 */
 var TypeModal = React.createClass({
   mixins: [LinkedStateMixin, ConceptLinkDialogueMixin],

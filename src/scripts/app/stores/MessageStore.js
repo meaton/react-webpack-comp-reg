@@ -2,9 +2,9 @@ var log = require("loglevel");
 
 var Fluxxor = require("fluxxor"),
     Constants = require("../constants"),
-    React = require('react/addons');
+    React = require('react');
 
-var update = React.addons.update;
+var update = require('react-addons-update');
 
 var MessageStore = Fluxxor.createStore({
   initialize: function(options) {

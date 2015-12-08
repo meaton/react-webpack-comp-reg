@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');

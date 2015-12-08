@@ -1,7 +1,7 @@
 'use strict';
 
 var log = require('loglevel');
-var React = require('react/addons');
+var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -17,7 +17,7 @@ var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
 
 //utils
-var update = React.addons.update;
+var update = require('react-addons-update');;
 var md5 = require('spark-md5');
 
 require('../../../../styles/CMDComponent.sass');

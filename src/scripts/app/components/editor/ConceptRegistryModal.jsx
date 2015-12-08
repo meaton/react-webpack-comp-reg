@@ -1,12 +1,12 @@
 'use strict';
 var log = require('loglevel');
 
-var React = require('react/addons');
+var React = require('react');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
 //mixins
-var LinkedStateMixin = React.addons.LinkedStateMixin;
+var LinkedStateMixin = require('react-addons-linked-state-mixin');
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
@@ -16,7 +16,7 @@ var Button = require('react-bootstrap/lib/Button');
 
 //utils
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
-var update = React.addons.update;
+var update = require('react-addons-update');
 var classNames = require('classnames');
 
 require('../../../../styles/EditorDialog.sass');
@@ -24,7 +24,7 @@ require('../../../../styles/EditorDialog.sass');
 * ConceptRegistryModal - Bootstrap Modal dialog for setting the Concept Registry (CCR) link.
 * @constructor
 * @mixes Loader
-* @mixes React.addons.LinkedStateMixin
+* @mixes require('react-addons-linked-state-mixin')
 */
 var ConceptRegistryModal = React.createClass({
   mixins: [LinkedStateMixin],
