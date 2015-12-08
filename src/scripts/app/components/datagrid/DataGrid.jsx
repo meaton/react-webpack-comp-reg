@@ -78,7 +78,7 @@ var DataGrid = React.createClass({
     return (
       <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
         {this.props.loading ? <span>Loading...</span> : null}
-        <DataTablesWrapper ref="wrapper" multiple={this.props.multiSelect} editMode={this.props.editMode} >
+        <DataTablesWrapper ref="wrapper" multiple={this.props.multiSelect} editMode={this.props.editMode} onClickInfo={this.props.onClickInfo} >
          {x}
         </DataTablesWrapper>
       </div>

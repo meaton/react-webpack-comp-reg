@@ -1,7 +1,10 @@
 var React = require("react");
 
-//mixins
+// mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+
+// utils
+var classNames = require('classnames');
 
 /**
 * DataTablesWrapper - outputs a HTML static table layout and header coloums for rendering by the DataTables plugin.
@@ -11,15 +14,15 @@ var DataTablesWrapper = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   render: function() {
-    var className = "table table-striped";
-    if(this.props.multiple) {
-      className += " multipleSelection";
-    }
+    var className = classNames("table table-striped", {
+      multipleSelection: (this.props.multiple),
+      withInfoLink: (this.props.onClickInfo != null)
+    });
     return (
       <table className={className} id="testtable">
         <thead>
           <tr>
-            {(this.props.multiple || this.props.editMode) ? <th className="checkboxCell"/> : null}
+            {(this.props.multiple || this.props.editMode) && <th className="checkboxCell"/> }
             <th className="name">Name</th>
             <th>Group Name</th>
             <th>Domain Name</th>
@@ -27,6 +30,7 @@ var DataTablesWrapper = React.createClass({
             <th>Description</th>
             <th>Registration Date</th>
             <th className="commentsCount">Comments</th>
+            {this.props.onClickInfo && <th className="infoLink"/>}
           </tr>
         </thead>
         <tbody>

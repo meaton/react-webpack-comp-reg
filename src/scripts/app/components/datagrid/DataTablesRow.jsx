@@ -72,10 +72,11 @@ var DataTablesRow = React.createClass({
 
         {this.props.onClickInfo != null && (
           <td className="infoLink">
-            <a onClick={this.props.onClickInfo.bind(null, this.props.data)} title="Component details"><span>&#8505;</span></a>
+            <a onClick={this.props.onClickInfo.bind(null, this.props.data)} title="Component details">
+              <span className="glyphicon glyphicon-info-sign"></span>
+            </a>
           </td>
         )}
-
       </tr>
     )
   }
