@@ -47,8 +47,8 @@ var EditorMenuGroup = React.createClass({
           btnLabel="Publish"
           title="Publish"
           desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-        <LinkContainer to={'browser'}>{/*query={this.getCancelQueryParams()*/}
-          <Button disabled={this.props.disabled}>Cancel</Button>
+        <LinkContainer to={'browser'} disabled={this.props.disabled}>{/*query={this.getCancelQueryParams()*/}
+          <Button>Cancel</Button>
         </LinkContainer>
       </ButtonGroup>
     );

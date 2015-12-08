@@ -94,11 +94,10 @@ var BrowserMenuGroup = React.createClass({
 
       if(editorRoute != null) {
         editorLink = (
-          <LinkContainer to={editorRoute}>
+          <LinkContainer to={editorRoute} disabled={this.props.multiSelect}>
             <Button
               params={params}
-              bsStyle="primary"
-              disabled={this.props.multiSelect}>
+              bsStyle="primary">
                 {editBtnLabel}
             </Button>
           </LinkContainer>
@@ -110,12 +109,12 @@ var BrowserMenuGroup = React.createClass({
 
     return (
         <ButtonGroup className="actionMenu">
-          <LinkContainer to="newEditor" >
-            <Button params={{type: this.props.type, space: this.props.space}} disabled={!this.props.loggedIn}>Create new</Button>
+          <LinkContainer to="newEditor" disabled={!this.props.loggedIn}>
+            <Button params={{type: this.props.type, space: this.props.space}}>Create new</Button>
           </LinkContainer>
           {editorLink}
-          <LinkContainer to="import">
-            <Button disabled={!this.props.loggedIn}>Import</Button>
+          <LinkContainer to="import" disabled={!this.props.loggedIn}>
+            <Button>Import</Button>
           </LinkContainer>
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
