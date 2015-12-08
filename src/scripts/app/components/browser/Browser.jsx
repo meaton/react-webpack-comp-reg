@@ -22,6 +22,7 @@ var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
 
 var ReactAlert = require('../../util/ReactAlert');
+var Clipboard = require('clipboard');
 
 require('../../../../styles/Browser.sass');
 
@@ -146,21 +147,40 @@ var Browser = React.createClass({
     var bookmarkLink = Config.webappUrl + "/?itemId=" + item.id + "&registrySpace=" + ComponentRegistryClient.getRegistrySpacePath(this.state.items.space);
     var xsdLink = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd";
 
+    var clipboard;
     ReactAlert.showAlert(function(closeAlert) { return (
-      <Modal title={"Info for " + item.name}
+      <Modal id="componentInfoModal" title={"Info for " + item.name}
         enforceFocus={true}
         backdrop={true}
         animation={false}
         container={this}
-        onRequestHide={closeAlert}>
+        onRequestHide={function(evt){
+          closeAlert(evt);
+          if(clipboard) clipboard.destroy();
+        }}>
         <div className="modal-body">
           <div className="modal-desc component-info">
-            <div>Bookmark link: <a href={bookmarkLink}>{bookmarkLink}</a></div>
-            <div>Link to xsd: <a href={xsdLink}>{xsdLink}</a></div>
+            <div><a href={bookmarkLink}>Bookmark link:</a>
+              <div>
+                <input id="bookmarkLink" type="text" value={bookmarkLink} />
+                <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
+                  <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
+                </button>
+              </div>
+            </div>
+            <div><a href={xsdLink}>Link to xsd:</a>
+              <div>
+                <input id="xsdLink" type="text" value={xsdLink} />
+                <button type="button" className="btn btn-default" data-clipboard-target="#xsdLink" title="Copy to clipboard">
+                  <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </Modal>
     )}.bind(this));
+    clipboard = new Clipboard("#componentInfoModal .component-info .btn");
   }
 });
 

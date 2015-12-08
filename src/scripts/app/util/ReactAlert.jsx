@@ -81,5 +81,7 @@ module.exports = {
     var dialogue = renderModal(closeAlert);
 
     this.renderAlert(dialogue, "alert-container");
+
+    return dialogue;
   }
 }

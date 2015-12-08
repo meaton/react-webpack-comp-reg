@@ -128,14 +128,24 @@
 div.component-info {
   padding-top: 0;
 
-  div {
+  & > div {
     border-bottom: 1px solid #ccc;
     padding: 1em 0;
 
     a {
-      display: block;
-      margin-left: 2em;
-      overflow: auto;
+      color: black;
+    }
+
+    & > div {
+      input {
+        display: inline-block;
+        width: 90%;
+        height: 2em;
+        border: 0;
+        margin-left: 2%;
+        margin-right: 1%;
+        color: #999;
+      }
     }
   }
 }
