@@ -8,9 +8,6 @@ var sortColumn = require('reactabular').sortColumn;
 //mixins
 var LinkedStateMixin = React.addons.LinkedStateMixin;
 
-//bootstrap mixins
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
-
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
 var Input = require('react-bootstrap/lib/Input');
