@@ -10,9 +10,6 @@ var React = require("react"),
 
 var {Navigation} = require('react-router');
 
-//router bootstrap
-var ButtonLink = require('react-router-bootstrap').ButtonLink;
-
 var AuthUtil = require('../AuthState').AuthUtil;
 
 require('../../../../styles/ComponentEditor.sass');

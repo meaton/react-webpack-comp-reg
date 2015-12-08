@@ -10,11 +10,10 @@ var Constants = require("../../constants");
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //bootstrap
+var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
-var Button = require('react-bootstrap/lib/Button');
-var ButtonLink = require('react-router-bootstrap').ButtonLink;
 
 //utils
 //var auth = require('./Authentication').auth;
@@ -135,7 +134,7 @@ var SpaceSelector = React.createClass({
         <ButtonGroup className="space_selector">
 
           {/* Public, private, teams */}
-          <DropdownButton title={spaces[currentSpace].label}>
+          <DropdownButton id="spaceDropDown" title={spaces[currentSpace].label}>
               {(this.props.validUserSession || currentSpace != PUBLIC)?(
                   Object.keys(spaces).map(function(spaceKey) {return (
                     <MenuItem
@@ -154,7 +153,7 @@ var SpaceSelector = React.createClass({
 
           {/* Components, profiles */}
           {!this.props.componentsOnly && (
-            <DropdownButton title={types[currentType].label}
+            <DropdownButton id="typeDropDown" title={types[currentType].label}
               disabled={(!this.props.validUserSession && currentSpace != PUBLIC)}>
                 {Object.keys(types).map(function(typeKey) {return(
                     <MenuItem
