@@ -29,14 +29,16 @@ var ComponentUsageMixin = {
       }.bind(this);
 
       var instance = (
-        <Modal title={"Component is used"}
+        <Modal.Dialog
           enforceFocus={true}
           backdrop={true}
           animation={false}
-          container={this}
-          onRequestHide={ReactAlert.closeAlert.bind(this, "alert-container")}>
+          container={this}>
+          <Modal.Header closeButton={true} onHide={ReactAlert.closeAlert.bind(this, "alert-container")}>
+            <Modal.Title>Component is used</Modal.Title>
+          </Modal.Header>
           {this.renderUsageModalContent(errors, doContinue, doAbort)}
-        </Modal>
+        </Modal.Dialog>
       );
 
       ReactAlert.renderAlert(instance, "alert-container");

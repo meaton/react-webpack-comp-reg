@@ -13,6 +13,7 @@ var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonModal = require('../ButtonModal');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Modal = require('react-bootstrap/lib/Modal');
 
 var ReactAlert = require('../../util/ReactAlert');
 
@@ -160,21 +161,23 @@ var BrowserMenuGroup = React.createClass({
    * Required by ComponentUsageMixin
    */
   renderUsageModalContent: function(errors, doContinue, doAbort) {
-    return(
-      <div>
-        <div className="modal-body">
-          <div className="modal-desc">
-            <div>One of the component you are trying to delete is used in the following component(s) and/or profile(s):
-              <ul>{errors}</ul>
-            </div>
+    return [(
+      <Modal.Body key="body">
+        <div className="modal-desc">
+          <div>One of the component you are trying to delete is used in the following component(s) and/or profile(s):
+            <ul>{errors}</ul>
           </div>
         </div>
-        <div className="modal-footer">
-          <div><strong>One or more components have not been deleted!</strong><br/>Please first delete the components and/or profiles listed above.</div>
-          <Button onClick={doAbort}>Ok</Button>
+      </Modal.Body>
+    ), (
+      <Modal.Footer key="footer">
+        <div>
+          <strong>One or more components have not been deleted!</strong><br/>
+          To delete this component, please first delete the components and/or profiles listed above.
         </div>
-      </div>
-    );
+        <Button onClick={doAbort}>Ok</Button>
+      </Modal.Footer>
+    )];
   }
 });
 

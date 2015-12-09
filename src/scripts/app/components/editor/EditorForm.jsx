@@ -10,6 +10,7 @@ var React = require("react"),
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
+var Modal = require('react-bootstrap/lib/Modal');
 
 //components
 var ComponentSpecForm = require("./ComponentSpecForm"),
@@ -261,22 +262,21 @@ var EditorForm = React.createClass({
    * Required by ComponentUsageMixin
    */
   renderUsageModalContent: function(errors, doContinue, doAbort) {
-    return(
-      <div>
-        <div className="modal-body">
-          <div className="modal-desc">
-            <div>The component you are about to save is used by the following component(s) and/or profile(s):
-              <ul>{errors}</ul>
-            </div>
+    return [(
+      <Modal.Body key="body">
+        <div className="modal-desc">
+          <div>The component you are about to save is used by the following component(s) and/or profile(s):
+            <ul>{errors}</ul>
           </div>
         </div>
-        <div className="modal-footer">
+      </Modal.Body>
+    ), (
+      <Modal.Footer key="footer">
           <div>Changes in this component will affect the above. Do you want to proceed?</div>
           <Button onClick={doContinue} bsStyle="primary">Yes</Button>
           <Button onClick={doAbort}>No</Button>
-        </div>
-      </div>
-    );
+      </Modal.Footer>
+    )];
   },
 
   // INPUT VALIDATION
