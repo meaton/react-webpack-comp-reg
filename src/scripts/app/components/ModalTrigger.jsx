@@ -10,6 +10,7 @@ var Button = require('react-bootstrap/lib/Button');
 
 //utils
 var update = require('react-addons-update');
+var ReactAlert = require('../util/ReactAlert');
 
 /**
 * ModalTrigger - Bootstrap custom ModalTrigger utilising react-bootstrap Overlay. Manages dialog display for two components implementing Bootstrap Modal, TypeModal and ConceptRegistryModal.
@@ -42,6 +43,17 @@ var ModalTrigger = React.createClass({
       // //TODO: correct offset
       // offset.top += (ReactDOM.findDOMNode(this.props.container).className.indexOf("editor") != -1) ? $('#app-root').offset().top : 0;
       // log.debug('toggle modal offset:', offset.top, offset.left);
+      //
+      if(this.state.isModalOpen) {
+        //hide
+        this.state.close(evt);
+      } else {
+        //show new alert
+        ReactAlert.showAlert(function(closeAlert) {
+          this.setState({close: closeAlert});
+          return this.props.modal;
+        }.bind(this));
+      }
 
       this.setState({
         // position: (!this.state.isModalOpen) ? update(this.state.position, { $set: offset }) : { top: 0, left: 0 },
@@ -51,7 +63,6 @@ var ModalTrigger = React.createClass({
   render: function() {
     return <div>
       {this.renderTrigger()}
-      {this.state.isModalOpen && this.renderOverlay()}
     </div>
   },
   renderTrigger: function() {
@@ -65,11 +76,7 @@ var ModalTrigger = React.createClass({
           {this.props.label}
         </Button>
       );
-  },
-  renderOverlay: function () {
-    log.trace("Modal active", this.props.modal);
-    return this.props.modal;
-  },
+  }
 
   // TODO: re-enable dragging?
   // renderOverlay: function () {
