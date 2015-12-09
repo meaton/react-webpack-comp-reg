@@ -284,7 +284,7 @@ var EditorForm = React.createClass({
   // when trying to save or publish.
   validationListener: {
     add: function(item) {
-      log.debug("Adding validation item", item);
+      log.trace("Adding validation item", item);
       if(this.validationItems == null) {
         this.validationItems = [];
       }
