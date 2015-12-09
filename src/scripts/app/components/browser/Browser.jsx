@@ -97,7 +97,7 @@ var Browser = React.createClass({
               multiSelect={this.state.selection.allowMultiple}
               editMode={false}
               onRowSelect={this.handleRowSelect}
-              onClickInfo={this.showInfo}
+              onClickInfo={this.showComponentInfo}
               />
           </div>
           <div className="viewer row">
@@ -143,51 +143,59 @@ var Browser = React.createClass({
     this.getFlux().actions.setFilterText(evt.target.value);
   },
 
-  showInfo: function(item) {
+  showComponentInfo: function(item) {
+    var contentId = "componentInfoModal";
+
+    var clipboard; //initialise after dialogue shown (the DOM elements need to exist)
+    ReactAlert.showModalAlert(
+      "Info for " + item.name,
+      this.renderComponentInfoBody.bind(null, item, contentId),
+      null, //no footer
+      function() {
+        if(clipboard) {
+          //as advised...
+          clipboard.destroy();
+        }
+      }
+    );
+    clipboard = new Clipboard("#" + contentId + " .btn");
+  },
+
+  renderComponentInfoBody: function(item, contentId) {
     var bookmarkLink = Config.webappUrl + "/?itemId=" + item.id + "&registrySpace=" + ComponentRegistryClient.getRegistrySpacePath(this.state.items.space);
     if(this.state.items.space === Constants.SPACE_TEAM) {
       bookmarkLink += "&groupId=" + this.state.items.team;
     }
     var xsdLink = this.state.items.type === Constants.TYPE_PROFILE ? ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd" : null;
 
-    var clipboard;
-    ReactAlert.showAlert(function(closeAlert) { return (
-      <Modal id="componentInfoModal" title={"Info for " + item.name}
-        enforceFocus={true}
-        backdrop={true}
-        animation={false}
-        container={this}
-        onRequestHide={function(evt){
-          closeAlert(evt);
-          if(clipboard) clipboard.destroy();
-        }}>
-        <div className="modal-body">
-          <div className="modal-desc component-info">
-            <div>
-              <a href={bookmarkLink}>Bookmark link:</a>
-              <div>
-                <input id="bookmarkLink" type="text" value={bookmarkLink} />
-                <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
-                  <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
-                </button>
-              </div>
-            </div>
-            {xsdLink != null && (
-              <div>
-                <a href={xsdLink}>Link to xsd:</a>
-                <div>
-                  <input id="xsdLink" type="text" value={xsdLink} />
-                  <button type="button" className="btn btn-default" data-clipboard-target="#xsdLink" title="Copy to clipboard">
-                    <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
-                  </button>
-                </div>
-              </div>
-            )}
+    //not setting onChange to the inputs will generate a warning unless readOnly
+    //is set, which does not yield the desired behaviour, therefore a noop function is passed
+    var noop = function() {};
+
+    return (
+      <div id={contentId} className="modal-desc component-info">
+        <div>
+          <a href={bookmarkLink}>Bookmark link:</a>
+          <div>
+            <input id="bookmarkLink" type="text" value={bookmarkLink} onChange={noop} />
+            <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
+              <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
+            </button>
           </div>
         </div>
-      </Modal>
-    )}.bind(this));
-    clipboard = new Clipboard("#componentInfoModal .component-info .btn");
+        {xsdLink != null && (
+          <div>
+            <a href={xsdLink}>Link to xsd:</a>
+            <div>
+              <input id="xsdLink" type="text" value={xsdLink} onChange={noop} />
+              <button type="button" className="btn btn-default" data-clipboard-target="#xsdLink" title="Copy to clipboard">
+                <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 });
 

@@ -51,19 +51,24 @@ module.exports = {
     this.showModalAlert(title, renderBodyContent, renderFooterContent);
   },
 
-  showModalAlert: function(title, renderBodyContent, renderFooterContent) {
+  showModalAlert: function(title, renderBodyContent, renderFooterContent, onClose) {
     this.showAlert(function(closeAlert) {
       var opts = {
-        closeAlert: closeAlert
+        closeAlert: function(evt) {
+          if(onClose) {
+            onClose(evt);
+          }
+          closeAlert(evt);
+        }
       };
 
       return (
         <Modal.Dialog enforceFocus={true} backdrop={true}>
-          <Modal.Header closeButton={true} onHide={closeAlert}>
+          <Modal.Header closeButton={true} onHide={opts.closeAlert}>
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{renderBodyContent(opts)}</Modal.Body>
-          <Modal.Footer>{renderFooterContent(opts)}</Modal.Footer>
+          {renderBodyContent != null && (<Modal.Body>{renderBodyContent(opts)}</Modal.Body>)}
+          {renderFooterContent != null && (<Modal.Footer>{renderFooterContent(opts)}</Modal.Footer>)}
         </Modal.Dialog>
     )});
   },
