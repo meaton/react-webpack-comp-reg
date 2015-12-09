@@ -28,9 +28,10 @@ var EditorStore = Fluxxor.createStore({
 
     this.bindActions(
       Constants.OPEN_EDITOR, this.handleOpenEditor,
-      Constants.LOAD_ITEM_SUCCESS, this.handleLoadItem,
+      Constants.LOAD_ITEM, this.handleLoadItem,
+      Constants.LOAD_ITEM_SUCCESS, this.handleLoadItemSuccess,
       Constants.LOAD_ITEM_FAILURE, this.handleLoadItemFailure,
-      Constants.ITEM_UPDATED, this.handleLoadItem,
+      Constants.ITEM_UPDATED, this.handleLoadItemSuccess,
       Constants.SAVE_COMPONENT_SPEC, this.handleSave,
       Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleSaveDone,
       Constants.SAVE_COMPONENT_SPEC_FAILURE, this.handleSaveDone,
@@ -71,12 +72,19 @@ var EditorStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleLoadItem: function(item) {
+  handleLoadItem: function(itemId) {
+    this.processing = true;
+    this.emit("change");
+  },
+
+  handleLoadItemSuccess: function(item) {
+    this.processing = false;
     this.item = item
     this.emit("change");
   },
 
   handleLoadItemFailure: function() {
+    this.processing = false;
     this.item = null;
     this.emit("change");
   },

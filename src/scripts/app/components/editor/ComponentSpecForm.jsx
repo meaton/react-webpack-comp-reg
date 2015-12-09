@@ -56,6 +56,8 @@ var ComponentSpecForm = React.createClass({
     var spec = this.props.spec;
     var item = this.props.item;
 
+    log.debug("Spec form item", item);
+
     if(spec == null || item == null) {
       return (
         <div className="ComponentViewer loading" />

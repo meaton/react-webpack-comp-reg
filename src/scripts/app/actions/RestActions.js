@@ -36,6 +36,7 @@ var RestActions = {
   },
 
   loadItem: function(type, itemId) {
+    this.dispatch(Constants.LOAD_ITEM, itemId);
     ComponentRegistryClient.loadItem(itemId, function(item){
         // Success
         this.dispatch(Constants.LOAD_ITEM_SUCCESS, item);
