@@ -46,13 +46,10 @@ var ModalTrigger = React.createClass({
       //
       if(this.state.isModalOpen) {
         //hide
-        this.state.close(evt);
+        ReactAlert.closeAlert("editorModal", evt);
       } else {
         //show new alert
-        ReactAlert.showAlert(function(closeAlert) {
-          this.setState({close: closeAlert});
-          return this.props.modal;
-        }.bind(this));
+        ReactAlert.renderAlert(this.props.modal, "editorModal");
       }
 
       this.setState({

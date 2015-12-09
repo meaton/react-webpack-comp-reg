@@ -120,6 +120,8 @@ var EditorForm = React.createClass({
         <div className="editorContainer">
           <div className={editorClasses}>
 
+            <div id="editorModal">{/* 'hook' for editor modals */}</div>
+
             <h3>
               {this.state.editor.type === Constants.TYPE_PROFILE
                 ? (newItem?"New profile":"Edit profile")
