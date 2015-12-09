@@ -334,7 +334,7 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
   // to be called when the user aborts the save action (i.e. does not confirm after usage warning)
   var abort = function() {
     log.debug("Saving of component aborted after usage check");
-    this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, spec); //TODO: other event?
+    this.dispatch(Constants.SAVE_COMPONENT_SPEC_ABORTED);
   }.bind(this);
 
   // Almost ready to try saving...

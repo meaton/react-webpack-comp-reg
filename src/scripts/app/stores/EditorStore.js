@@ -34,6 +34,7 @@ var EditorStore = Fluxxor.createStore({
       Constants.SAVE_COMPONENT_SPEC, this.handleSave,
       Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleSaveDone,
       Constants.SAVE_COMPONENT_SPEC_FAILURE, this.handleSaveDone,
+      Constants.SAVE_COMPONENT_SPEC_ABORTED, this.handleSaveDone,
       Constants.LOAD_EDITOR_ITEMS, this.handleLoadGridItems,
       Constants.LOAD_EDITOR_ITEMS_SUCCESS, this.handleLoadGridItemsSuccess,
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
