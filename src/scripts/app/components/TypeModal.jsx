@@ -219,8 +219,13 @@ var TypeModal = React.createClass({
     log.debug("Table data:", vocabData);
 
     return (
-      <Modal ref="modal" id="typeModal" key="typeModal" className="type-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.close} container={this.props.container}>
-        <div className='modal-body'>
+      <Modal.Dialog ref="modal" id="typeModal" key="typeModal" className="type-dialog" enforceFocus={true} backdrop={false}>
+
+        <Modal.Header closeButton={true} onHide={this.close}>
+          <Modal.Title>{this.props.title}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
           <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <Tab eventKey={0} title="Type">
               <Input ref="simpleTypeInput" linkValue={this.linkState('value')} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
@@ -246,11 +251,13 @@ var TypeModal = React.createClass({
               <Input ref="patternInput" type="text" defaultValue={(this.props.pattern != undefined) ? this.props.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
             </Tab>
           </Tabs>
-        </div>
-        <div className="modal-footer">
+        </Modal.Body>
+
+        <Modal.Footer>
           <Button onClick={this.close}>Cancel</Button>
-        </div>
-      </Modal>
+        </Modal.Footer>
+
+      </Modal.Dialog>
     );
   }
 });

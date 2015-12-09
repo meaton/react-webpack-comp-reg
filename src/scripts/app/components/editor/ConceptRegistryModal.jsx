@@ -172,19 +172,29 @@ var ConceptRegistryModal = React.createClass({
     };
 
     return (
-      <Modal ref="modal" id="ccrModal" key="ccrModal" className="registry-dialog" title={this.props.title} backdrop={false} animation={false} onRequestHide={this.close} container={this.props.container}>
-        <div className='modal-body'>
-          <Input type="text" placeholder="Type keyword (at least 2 characters) and press Enter to search" valueLink={this.linkState('inputSearch')} addonBefore={<Glyphicon glyph='search' />} buttonAfter={
+      <Modal.Dialog key="ccrModal" ref="modal" id="ccrModal" className="registry-dialog" enforceFocus={true} backdrop={false}>
+
+        <Modal.Header closeButton={true} onHide={this.close}>
+          <Modal.Title>{this.props.title}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Input
+            type="text" placeholder="Type keyword (at least 2 characters) and press Enter to search"
+            valueLink={this.linkState('inputSearch')}
+            addonBefore={<Glyphicon glyph='search' />}
+            buttonAfter={
               <Button onClick={this.inputSearchUpdate} disabled={this.state.inputSearch.length <= 1}>Search</Button>
             }/>
           <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
-        </div>
-        <div className="modal-footer">
+        </Modal.Body>
+        
+        <Modal.Footer>
           <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button>
           <Button onClick={this.clear}>Clear Setting</Button>
           <Button onClick={this.close}>Cancel</Button>
-        </div>
-      </Modal>
+        </Modal.Footer>
+      </Modal.Dialog>
     );
   }
 });
