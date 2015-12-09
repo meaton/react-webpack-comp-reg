@@ -33,7 +33,6 @@ var ConceptLinkDialogueMixin = {
   },
 
   closeConceptLinkDialogue: function(ref, evt) {
-    log.debug("Ref", this, ref);
     this.refs[ref].toggleModal(evt);
   }
 

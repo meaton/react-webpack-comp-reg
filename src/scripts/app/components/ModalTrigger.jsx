@@ -3,8 +3,7 @@ var log = require('loglevel');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Draggable = require('react-draggable');
-var Overlay = require('react-bootstrap/lib/Overlay');
+// var Draggable = require('react-draggable');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -38,53 +37,16 @@ var ModalTrigger = React.createClass({
   toggleModal: function(evt) {
       log.debug('modal visible: ', this.state.isModalOpen, this.props.container);
 
-      var offset = $(this.props.container.getDOMNode()).position();
-      //TODO: correct offset
-      offset.top += (this.props.container.getDOMNode().className.indexOf("editor") != -1) ? $('.ComponentViewer').offset().top : 0;
-      log.debug('toggle modal offset:', offset.top, offset.left);
+      // Position of draggable
+      // var offset = $(ReactDOM.findDOMNode(this.props.container)).position();
+      // //TODO: correct offset
+      // offset.top += (ReactDOM.findDOMNode(this.props.container).className.indexOf("editor") != -1) ? $('#app-root').offset().top : 0;
+      // log.debug('toggle modal offset:', offset.top, offset.left);
 
       this.setState({
-        position: (!this.state.isModalOpen) ? update(this.state.position, { $set: offset }) : { top: 0, left: 0 },
+        // position: (!this.state.isModalOpen) ? update(this.state.position, { $set: offset }) : { top: 0, left: 0 },
         isModalOpen: !this.state.isModalOpen
       });
-  },
-  handleStart: function (event, ui) {
-      console.log('Event: ', event);
-      console.log('Position: ', ui.position);
-  },
-  handleDrag: function (event, ui) {
-      console.log('Event: ', event);
-      console.log('Position: ', ui.position);
-      var offset = $(this.state.container.getDOMNode()).position();
-      this.setState({
-        position: update(this.state.position, { $set: { top: ui.position.top + offset.top, left: ui.position.left + offset.left }})
-      });
-  },
-  handleStop: function (event, ui) {
-      console.log('Event: ', event);
-      console.log('Position: ', ui.position);
-  },
-  handleTableScroll: function(domNode) {
-    var modal = domNode;
-    var tableBody = $(modal).find('.table tbody').eq(0);
-    var tableHead = $(modal).find('.table thead').eq(0);
-    var scrollbarWidth = tableBody.innerWidth() - tableBody.prop('scrollWidth');
-
-    if(tableBody.innerWidth()-1 > tableBody.prop('scrollWidth')) {
-      tableHead.width(tableBody.innerWidth() - scrollbarWidth);
-      $(modal).find('.table').addClass('with-scroll');
-    } else {
-      tableHead.width('100%');
-      $(modal).find('.table').removeClass('with-scroll');
-    }
-  },
-  componentDidUpdate: function() {
-    if(this.refs.overlay != null) {
-      var overlayNode = ReactDOM.findDOMNode(this.refs.overlay);
-      if(overlayNode == undefined) overlayNode = "#"
-      log.debug("Overlay node", overlayNode);
-      $(overlayNode).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
-    }
   },
   render: function() {
     return <div>
@@ -106,17 +68,60 @@ var ModalTrigger = React.createClass({
   },
   renderOverlay: function () {
     log.trace("Modal active", this.props.modal);
-    return (
-      <Draggable ref="overlay" axis="both" handle=".modal-header"
-        grid={[5, 5]}
-        zIndex={1050}
-        onStart={this.handleStart}
-        onDrag={this.handleDrag}
-        onStop={this.handleStop}>
-        {this.props.modal}
-      </Draggable>
-    );
-  }
+    return this.props.modal;
+  },
+
+  // TODO: re-enable dragging?
+  // renderOverlay: function () {
+  //   return (
+  //     <Draggable ref="overlay" axis="both" handle=".modal-header"
+  //       grid={[5, 5]}
+  //       zIndex={1050}
+  //       onStart={this.handleStart}
+  //       onDrag={this.handleDrag}
+  //       onStop={this.handleStop}>
+  //       {this.props.modal}
+  //     </Draggable>
+  //   );
+  // },
+  // handleStart: function (event, ui) {
+  //     console.log('Event: ', event);
+  //     console.log('Position: ', ui.position);
+  // },
+  // handleDrag: function (event, ui) {
+  //     console.log('Event: ', event);
+  //     console.log('Position: ', ui.position);
+  //     var offset = $(ReactDOM.findDOMNode(this.props.container)).position();
+  //     this.setState({
+  //       position: update(this.state.position, { $set: { top: ui.position.top + offset.top, left: ui.position.left + offset.left }})
+  //     });
+  // },
+  // handleStop: function (event, ui) {
+  //     console.log('Event: ', event);
+  //     console.log('Position: ', ui.position);
+  // },
+  // handleTableScroll: function(domNode) {
+  //   var modal = domNode;
+  //   var tableBody = $(modal).find('.table tbody').eq(0);
+  //   var tableHead = $(modal).find('.table thead').eq(0);
+  //   var scrollbarWidth = tableBody.innerWidth() - tableBody.prop('scrollWidth');
+  //
+  //   if(tableBody.innerWidth()-1 > tableBody.prop('scrollWidth')) {
+  //     tableHead.width(tableBody.innerWidth() - scrollbarWidth);
+  //     $(modal).find('.table').addClass('with-scroll');
+  //   } else {
+  //     tableHead.width('100%');
+  //     $(modal).find('.table').removeClass('with-scroll');
+  //   }
+  // },
+  // componentDidUpdate: function() {
+  //   if(this.refs.overlay != null) {
+  //     var overlayNode = ReactDOM.findDOMNode(this.refs.overlay);
+  //     if(overlayNode == undefined) overlayNode = "#"
+  //     log.debug("Overlay node", overlayNode);
+  //     $(overlayNode).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
+  //   }
+  // },
 });
 
 module.exports = ModalTrigger;

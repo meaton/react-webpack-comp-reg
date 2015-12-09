@@ -2,6 +2,7 @@
 var log = require('loglevel');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
@@ -94,7 +95,7 @@ var TypeModal = React.createClass({
         self.setState({ reg_types: data.elementType }, function() {
           var simpleType = this.refs.simpleTypeInput;
           if(simpleType != undefined)
-            simpleType.refs.input.getDOMNode().selectedIndex = this.state.type != null ? $.inArray(this.state.type, data.elementType) : $.inArray("string", data.elementType);
+            ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = this.state.type != null ? $.inArray(this.state.type, data.elementType) : $.inArray("string", data.elementType);
         });
     });
   },
@@ -198,7 +199,6 @@ var TypeModal = React.createClass({
             (<span><a href={value} target="_blank">{value}</a></span>) :
             (<span>
               {modal}
-              {/*<ModalTrigger type="ConceptRegistry" label="add link" useLink={true} container={self.props.container} target={self} onClose={self.addConceptLink.bind(self, rowIndex)} />*/}
             </span>)
           };
         }

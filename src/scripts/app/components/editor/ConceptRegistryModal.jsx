@@ -2,6 +2,7 @@
 var log = require('loglevel');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
@@ -42,7 +43,8 @@ var ConceptRegistryModal = React.createClass({
   },
   getDefaultProps: function() {
     return {
-      title: "Search in CLARIN Concept Registry"
+      title: "Search in CLARIN Concept Registry",
+      show: true
     };
   },
   inputSearchUpdate: function(evt) {
@@ -82,7 +84,7 @@ var ConceptRegistryModal = React.createClass({
   componentDidUpdate: function(prevProps, prevState) {
     if(prevState.currentLinkSelection != this.state.currentLinkSelection) {
       var selectedClass = "selected";
-      var tbody = $('#' + this.refs.table.getDOMNode().id + " tbody");
+      var tbody = $('#' + ReactDOM.findDOMNode(this.refs.table).id + " tbody");
       tbody.children('.' + selectedClass).toggleClass(selectedClass);
       tbody.children().eq(this.state.currentLinkSelection).toggleClass(selectedClass);
     }
@@ -139,9 +141,6 @@ var ConceptRegistryModal = React.createClass({
       }
     ]});
   },
-  componentDidMount: function() {
-    //this.props.onChange(this.getDOMNode());
-  },
   defaultCellProps: function(rowIndex) {
     var self = this;
     var isEven = (rowIndex % 2);
@@ -172,7 +171,7 @@ var ConceptRegistryModal = React.createClass({
     };
 
     return (
-      <Modal.Dialog key="ccrModal" ref="modal" id="ccrModal" className="registry-dialog" enforceFocus={true} backdrop={false}>
+      <Modal.Dialog show={this.props.show} key="ccrModal" ref="modal" id="ccrModal" className="registry-dialog" enforceFocus={true} backdrop={false}>
 
         <Modal.Header closeButton={true} onHide={this.close}>
           <Modal.Title>{this.props.title}</Modal.Title>
@@ -188,7 +187,7 @@ var ConceptRegistryModal = React.createClass({
             }/>
           <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
         </Modal.Body>
-        
+
         <Modal.Footer>
           <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button>
           <Button onClick={this.clear}>Clear Setting</Button>
