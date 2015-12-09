@@ -27,7 +27,7 @@
     "spark-md5": "0.0.5",
     "react-draggable": "^0.6.0",
     "classnames": "^2.1.1",
-    "reactabular": "^0.5.2",
+    "reactabular": "^0.9.x",
     "expose-loader": "^0.7.x",
     "loglevel": "^1.4.x",
     "clipboard": "^1.5.x"
