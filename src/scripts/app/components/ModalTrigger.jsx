@@ -2,6 +2,7 @@
 var log = require('loglevel');
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Draggable = require('react-draggable');
 var Overlay = require('react-bootstrap/lib/Overlay');
 
@@ -35,7 +36,7 @@ var ModalTrigger = React.createClass({
     };
   },
   toggleModal: function(evt) {
-      log.trace('modal visible: ', this.state.isModalOpen, this.props.container);
+      log.debug('modal visible: ', this.state.isModalOpen, this.props.container);
 
       var offset = $(this.props.container.getDOMNode()).position();
       //TODO: correct offset
@@ -78,9 +79,12 @@ var ModalTrigger = React.createClass({
     }
   },
   componentDidUpdate: function() {
-    var overlayNode = this.getOverlayDOMNode();
-    if(overlayNode == undefined) overlayNode = "#"
-    $(this.getOverlayDOMNode()).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
+    if(this.refs.overlay != null) {
+      var overlayNode = ReactDOM.findDOMNode(this.refs.overlay);
+      if(overlayNode == undefined) overlayNode = "#"
+      log.debug("Overlay node", overlayNode);
+      $(overlayNode).css({left: this.state.position.left, top: this.state.position.top, display: (this.state.isModalOpen) ? 'block' : 'none'});
+    }
   },
   render: function() {
     return <div>
@@ -103,7 +107,7 @@ var ModalTrigger = React.createClass({
   renderOverlay: function () {
     log.trace("Modal active", this.props.modal);
     return (
-      <Draggable axis="both" handle=".modal-header"
+      <Draggable ref="overlay" axis="both" handle=".modal-header"
         grid={[5, 5]}
         zIndex={1050}
         onStart={this.handleStart}
