@@ -80,7 +80,7 @@ var ValueScheme = React.createClass({
                 })}
               </Input>
             ) : (
-              <DropdownButton bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
+              <DropdownButton id={"values_" + obj._appId} bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
                 {
                   $.map(enumItems, function(item, index) {
                     return (<MenuItem key={obj._appId + index} eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>);
