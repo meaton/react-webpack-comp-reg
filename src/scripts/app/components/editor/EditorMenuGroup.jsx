@@ -6,7 +6,7 @@ var React = require('react');
 var Router = require('react-router');
 
 //router bootstrap
-var LinkContainer = require('react-router-bootstrap').LinkContainer;
+var LinkButton = require('../LinkButton');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -47,9 +47,7 @@ var EditorMenuGroup = React.createClass({
           btnLabel="Publish"
           title="Publish"
           desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-        <LinkContainer to="/browser" disabled={this.props.disabled}>{/*query={this.getCancelQueryParams()*/}
-          <Button>Cancel</Button>
-        </LinkContainer>
+        <LinkButton to="/browser" disabled={this.props.disabled}>Cancel</LinkButton>
       </ButtonGroup>
     );
   }

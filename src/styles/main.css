@@ -101,3 +101,7 @@ a { cursor: pointer; color: #999; }
 .main .viewer > div.show, .main .viewer > div.show > div {
   height: 100%;
 }
+
+.buttonContainer {
+  display: inline-block;
+}
