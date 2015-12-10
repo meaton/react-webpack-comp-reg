@@ -31,8 +31,8 @@
    overflow-y: visible;
 }
 .modal, .modal-backdrop {
-  position: absolute;
-  overflow: hidden;
+  // position: absolute;
+  // overflow: hidden;
 }
 .modal-inline {
   text-align: right;
@@ -49,63 +49,86 @@
   padding-left: 1px;
   width: 748px;
 }
-#typeTable tfoot td:first-child {
-  cursor: pointer;
+
+#typeTable, #ccrTable {
+
+  & thead, & tbody {
+    display: block;
+  }
+
+  & tbody {
+    height: 130px;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 }
-#typeTable thead, #ccrTable thead {
-  display: block;
+
+#typeTable {
+  tr, tfoot {
+    display: block;
+  }
+
+  th, td {
+    display: inline-block;
+    width: 32%;
+    line-height: 1.4em;
+    min-height: 24px;
+    word-wrap: break-word;
+    overflow: hidden;
+  }
+
+  tfoot td:first-child {
+    cursor: pointer;
+  }
+
+  tfoot td:last-child {
+    width: 68%;
+  }
+  th:last-child, td:last-child {
+    width: 4%;
+  }
 }
-#typeTable tr, #typeTable tbody, #typeTable tfoot, #ccrTable thead tr, #ccrTable tbody {
-  display: block;
-}
-#typeTable tbody, #ccrTable tbody {
-  height: 130px;
-  display: block;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-#typeTable th, #typeTable td {
-  display: inline-block;
-  width: 32%;
-  line-height: 1.4em;
-  min-height: 24px;
-  word-wrap: break-word;
-  overflow: hidden;
-}
+
 #ccrTable {
   margin-bottom: 30px;
-}
-#ccrTable th, #ccrTable tr {
-  cursor: pointer;
-}
-#ccrTable tr.selected {
-  background-color: #b0bed9;
-}
-#ccrTable thead {
-  border-bottom: 1px solid #ddd;
-}
-#ccrTable th {
-  border-bottom: 0;
-}
-#ccrTable th, #ccrTable td {
-  display: inline-block;
-  width: 106.278px;
-  line-height: 1.6em;
-  min-height: 28px;
-  font-size: 0.8em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-#ccrTable.with-scroll th, #ccrTable.with-scroll td {
-  width: 104.285px;
-}
-#typeTable tfoot td:last-child {
-  width: 68%;
-}
-#typeTable th:last-child, #typeTable td:last-child {
-  width: 4%;
-}
-#ccrTable th.sort-asc, #ccrTable th.sort-desc {
-  background-color: yellow;
+
+  &.with-scroll th, &.with-scroll td {
+    width: 104.285px;
+  }
+
+  th, tr {
+    cursor: pointer;
+  }
+
+  tr.selected {
+    background-color: #b0bed9;
+  }
+
+  th, td {
+    display: inline-block;
+    width: (720px/7);
+    line-height: 1.6em;
+    min-height: 28px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  thead {
+    border-bottom: 1px solid #ddd;
+
+    tr {
+      display: block;
+    }
+
+    th {
+      border-bottom: 0;
+
+      &.sort-asc, &.sort-desc {
+        background-color: yellow;
+      }
+    }
+  }
 }

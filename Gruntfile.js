@@ -1,5 +1,7 @@
 'use strict';
 
+var serverPort = 8000;
+
 var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
 };
@@ -28,7 +30,7 @@ module.exports = function (grunt) {
     'webpack-dev-server': {
       options: {
         hot: true,
-        port: 8000,
+        port: serverPort,
         webpack: webpackDevConfig,
         publicPath: '/assets/',
         contentBase: './<%= pkg.src %>/',
@@ -41,7 +43,7 @@ module.exports = function (grunt) {
 
     connect: {
       options: {
-        port: 8000
+        port: serverPort
       },
 
       dist: {

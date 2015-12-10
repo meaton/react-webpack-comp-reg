@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require('react');
-var {RouteHandler, Navigation} = require('react-router');
 
 //components
 var Authentication = require('./Authentication').Authentication;
@@ -16,7 +15,7 @@ var ComponentEditor = React.createClass({
   mixins: [Authentication],
   render: function () {
     return (
-          <RouteHandler/>
+          {this.props.children}
       );
   }
 });

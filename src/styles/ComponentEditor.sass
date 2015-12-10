@@ -1,40 +1,102 @@
-$bottomPaneHeight: 345px;
-$gridHeight: 380px;
-$tabContentHeight: 300px;
-
-.browser {
-  padding: 8px;
-}
-
-.viewer {
-  padding: 8px;
-  min-height: $bottomPaneHeight;
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-.viewer .tab-content {
-  height: $tabContentHeight;
-  overflow-y: auto;
-}
-
-.editor {
-  margin-top: 60px;
+// $bottomPaneHeight: 345px;
+// $gridHeight: 380px;
+// $tabContentHeight: 300px;
+//
+// .browser {
+//   padding: 8px;
+// }
+//
+// .viewer {
+//   padding: 8px;
+//   min-height: $bottomPaneHeight;
+//   overflow-x: hidden;
+//   overflow-y: hidden;
+// }
+//
+// .viewer .tab-content {
+//   height: $tabContentHeight;
+//   overflow-y: auto;
+// }
+//
+#editor {
+  margin-top: 1em;
   height: 100%;
   background: #fff;
   color: #999;
-  overflow: hidden;
+  overflow: auto;
+  padding-bottom: 4em;
+  position: relative;
+
+  .editorContainer {
+    height: 100%;
+  }
+
+  .editorGroup {
+    height: 69%;
+    overflow-y: auto;
+    margin-bottom: 1%;
+  }
+
+  .browserGroup {
+    height: 30%;
+    overflow-y: auto;
+    border-top-style: groove;
+  }
+
 }
 
-.editor .ComponentViewer {
-  overflow-x: hidden;
-  overflow-y: auto;
+form#editComponent {
+  padding-left: 2em;
 }
 
-.editor .component-grid {
-  overflow: hidden;
+div.processing {
+  cursor: wait;
+  background-color: #f9feff;
 }
 
-.editor .actionMenu.btn-group {
-  padding: 8px;
+.addComponent, .addElement, .attrList {
+  clear: both;
 }
+
+.attrList {
+    margin: .5em 2em;
+    padding-left: .5em;
+    border-left: 1px solid;
+}
+
+.form-horizontal {
+
+  .form-group {
+    /* override react style */
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .editorFormLabel, .control-label {
+    width: 15%;
+    text-align: left;
+    display: inline-block;
+  }
+
+  .editorFormField {
+    width: 80%;
+    display: inline-block;
+  }
+
+  .input-group-btn:last-child>.btn {
+    margin-left: 1em;
+  }
+}
+
+// .editor .ComponentViewer {
+//   overflow-x: hidden;
+//   overflow-y: auto;
+// }
+//
+// .editor .component-grid {
+//   overflow: hidden;
+// }
+//
+// .editor .actionMenu.btn-group {
+//   padding: 8px;
+// }

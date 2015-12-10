@@ -30,12 +30,13 @@
   <![endif]-->
 </head>
 <body>
-  <!--[if lt IE 8]>
-    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
-  <div id="content">
-    <h1>CMDI Component Registry <small>React.js Prototype beta</small></h1>
-  </div>
+  <div id="app"></div>
+  <script type="text/javascript">
+    if(parent != null) {
+      //make react devtools work when app is embedded in iframe (as is the case with webpack-dev-server)
+      __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
+    }
+  </script>
   <script type="text/javascript" src="assets/main.js"></script>
 </body>
 </html>

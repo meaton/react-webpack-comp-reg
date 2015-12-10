@@ -468,7 +468,8 @@ var ComponentViewer = React.createClass({
           valueScheme = obj.Type;
     }
 
-    return (!this.state.editMode) ? valueScheme : <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} readOnly />;
+    return (!this.state.editMode) ? valueScheme :
+    <Input ref="typeInput" type="text" label="Type" value={valueScheme} buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2" onChange={this.updateValueScheme.bind(this, target)} readOnly />;
   },
   handleInputChange: function(link, e) {
     if(link != undefined && link != null)

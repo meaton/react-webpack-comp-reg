@@ -19,7 +19,7 @@ var config = {
   entry: [
       'webpack-dev-server/client?http://localhost:8000',
       'webpack/hot/only-dev-server',
-      './src/scripts/components/main.jsx'
+      './src/scripts/app/app.jsx'
   ],
 
   output: {
@@ -29,7 +29,7 @@ var config = {
 
   cache: true,
   debug: true,
-  devtool: false,
+  devtool: "source-map",
 
   stats: {
     colors: true,
@@ -50,6 +50,9 @@ var config = {
       loader: 'jshint'
     }],
     loaders: [{
+      test: require.resolve("react"),
+      loader: "expose?React"
+    }, {
       test: /\.jsx$/,
       loader: 'react-hot!jsx-loader?harmony'
     }, {
@@ -64,7 +67,8 @@ var config = {
     }, {
       test: /\.(png|jpg)$/,
       loader: 'url-loader?limit=8192'
-    }]
+    }
+  ]
   },
 
   plugins: [

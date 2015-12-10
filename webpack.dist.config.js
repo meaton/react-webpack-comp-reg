@@ -10,14 +10,14 @@ var webpack = require('webpack');
 
 module.exports = {
 
-  entry: './src/scripts/components/main.jsx',
+  entry: './src/scripts/app/app.jsx',
 
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
     filename: 'main.js'
   },
-  
+
   console: false,
   debug: false,
   devtool: false,
@@ -30,7 +30,7 @@ module.exports = {
 
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+    //new webpack.optimize.UglifyJsPlugin(), //disabled because it has issues with dynamic object index syntax (in particular ExpansionState.js)
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin()
   ],
