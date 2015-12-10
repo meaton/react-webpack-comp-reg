@@ -22,7 +22,7 @@ var ConceptLinkDialogueMixin = {
 
     return <ModalTrigger
       ref={ref}
-      container={this}
+      modalTarget="ccrModalContainer"
       label={label != null ? label : "Search in concept registry..."}
       modal={
         <ConceptRegistryModal

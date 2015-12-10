@@ -48,7 +48,7 @@ var ValueScheme = React.createClass({
       var typeTrigger = (
         <ModalTrigger
           ref="modalTrigger"
-          container={this}
+          modalTarget="typeModalContainer"
           label="Edit..."
           modal={
             <TypeModal

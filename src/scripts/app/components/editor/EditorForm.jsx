@@ -120,7 +120,9 @@ var EditorForm = React.createClass({
         <div className="editorContainer">
           <div className={editorClasses}>
 
-            <div id="editorModal">{/* 'hook' for editor modals */}</div>
+            {/* 'hook' for editor modals */}
+            <div id="typeModalContainer"></div>
+            <div id="ccrModalContainer"></div>
 
             <h3>
               {this.state.editor.type === Constants.TYPE_PROFILE

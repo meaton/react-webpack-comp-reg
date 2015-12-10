@@ -11,6 +11,8 @@ var Modal = require('react-bootstrap/lib/Modal');
 
 module.exports = {
 
+  defaultContainer: "alert-container",
+
   showMessage: function(container, title, message) {
     log.debug("Alert: [", title, "]", message);
 
@@ -73,15 +75,19 @@ module.exports = {
     )});
   },
 
-  showAlert: function(renderModal) {
+  showAlert: function(renderModal, container) {
+    if(container == null) {
+      container = this.defaultContainer;
+    }
+
     var self = this;
     var closeAlert = function(evt) {
-      self.closeAlert("alert-container", evt);
+      self.closeAlert(container, evt);
     };
 
     var dialogue = renderModal(closeAlert);
 
-    this.renderAlert(dialogue, "alert-container");
+    this.renderAlert(dialogue, container);
 
     return dialogue;
   },

@@ -21,10 +21,12 @@ var ModalTrigger = React.createClass({
     modal: React.PropTypes.object.isRequired,
     label: React.PropTypes.string.isRequired,
     useLink: React.PropTypes.bool,
+    modalTarget: React.PropTypes.string
   },
   getDefaultProps: function() {
     return {
-      useLink: false
+      useLink: false,
+      modalTarget: ReactAlert.defaultContainer
     }
   },
   getInitialState: function() {
@@ -36,7 +38,7 @@ var ModalTrigger = React.createClass({
     };
   },
   toggleModal: function(evt) {
-      log.debug('modal visible: ', this.state.isModalOpen, this.props.container);
+      log.debug('modal visible: ', this.state.isModalOpen);
 
       // Position of draggable
       // var offset = $(ReactDOM.findDOMNode(this.props.container)).position();
@@ -46,10 +48,10 @@ var ModalTrigger = React.createClass({
       //
       if(this.state.isModalOpen) {
         //hide
-        ReactAlert.closeAlert("editorModal", evt);
+        ReactAlert.closeAlert(this.props.modalTarget, evt);
       } else {
         //show new alert
-        ReactAlert.renderAlert(this.props.modal, "editorModal");
+        ReactAlert.renderAlert(this.props.modal, this.props.modalTarget);
       }
 
       this.setState({
@@ -58,11 +60,6 @@ var ModalTrigger = React.createClass({
       });
   },
   render: function() {
-    return <div>
-      {this.renderTrigger()}
-    </div>
-  },
-  renderTrigger: function() {
     if(this.props.useLink)
       return (
         <a onClick={this.toggleModal}>{this.props.label}</a>
