@@ -41,7 +41,7 @@ var CMDComponentView = React.createClass({
     return !this.props.isLinked;
   },
 
-  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable) {
+  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);
     } else {
@@ -54,6 +54,10 @@ var CMDComponentView = React.createClass({
         linkedComponents={this.props.linkedComponents}
         onToggle={this.props.onToggle}
         isLinked={isLinked}
+        onMove={this.props.editMode && this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
+        onRemove={this.props.editMode && this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
+        isFirst={index == 0}
+        isLast={index == this.props.spec.CMD_Component.length - 1}
         />);
     }
   },

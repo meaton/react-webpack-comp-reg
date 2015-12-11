@@ -150,9 +150,14 @@ var CMDComponentForm = React.createClass({
       </div>
     ) : null;
 
+    var appId = this.props.spec._appId;
     return (
       <div>
-        <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></span> {cardOpt}
+        {this.createActionButtons({
+          onToggleSelection: this.props.onToggleSelection.bind(null, appId),
+          isSelected: appId === this.props.selectedComponentId
+        })}
+        <span>Component: <span class="componentName">{compName}</span></span> {cardOpt}
         {editableProps}
       </div>
     );
@@ -168,13 +173,10 @@ var CMDComponentForm = React.createClass({
       parent: this.props.spec,
       linkedComponents: this.props.linkedComponents,
       isLinked: isLinked,
-      actionButtons: (<ActionButtons
-        onToggleSelection={isLinked ? null : this.props.onToggleSelection.bind(null, spec._appId)}
-        isSelected={spec._appId === this.props.selectedComponentId}
-        onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
-        onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
-        moveUpEnabled={index != 0}
-        moveDownEnabled={index != this.props.spec.CMD_Component.length - 1} />)
+      onMove: this.handleMoveComponent.bind(this, this.props.onComponentChange, index),
+      onRemove: this.handleRemoveComponent.bind(this, this.props.onComponentChange, index),
+      isFirst: index == 0,
+      isLast: index == this.props.spec.CMD_Component.length - 1
     };
 
     if(isLinked) {
@@ -182,7 +184,14 @@ var CMDComponentForm = React.createClass({
         // linked components do not get a form
         return (<CMDComponentView
           {... componentProperties}
-          {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+          {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
+          actionButtons={
+            <ActionButtons
+              onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
+              onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
+              moveUpEnabled={index != 0}
+              moveDownEnabled={index != this.props.spec.CMD_Component.length - 1} />
+          }
           />);
       } else {
         return (<div className="CMDComponent" key={compId + "_" + index}>Component {compId} loading...</div>);

@@ -82,13 +82,14 @@ var ActionButtonsMixin = {
     }
   },
 
-  createActionButtons: function() {
+  createActionButtons: function(props) {
     return (
       <ActionButtons
         onMove={this.props.onMove}
         onRemove={this.props.onRemove}
         moveUpEnabled={!this.props.isFirst}
         moveDownEnabled={!this.props.isLast}
+        {...props}
       />);
   }
 };
