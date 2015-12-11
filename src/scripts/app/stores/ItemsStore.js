@@ -60,7 +60,7 @@ var ItemsStore = Fluxxor.createStore({
 
   handleLoadItemsSuccess: function(items) {
     this.items = items;
-    this.filteredItems = ItemsFilter.filter(this.items, this.filterText);
+    this.filteredItems = ItemsFilter.filter(this.items, this.filterText, this.sortState);
     this.loading = false;
     this.removed = {};
     this.emit("change");
@@ -104,7 +104,7 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   handleFilterTextChange: function(text) {
-    this.filteredItems = ItemsFilter.updateItems(this.items, text, this.filteredItems, this.filterText);
+    this.filteredItems = ItemsFilter.updateItems(this.items, text, this.filteredItems, this.filterText, this.sortState);
     this.filterText = ItemsFilter.updateFilterText(text);
     this.emit("change");
   },
@@ -128,6 +128,12 @@ var ItemsStore = Fluxxor.createStore({
       column: (currentColumn === column && currentOrder === Constants.SORT_ORDER_DESC) ? null : column,
       order: (currentColumn === column && Constants.SORT_ORDER_ASC) ? Constants.SORT_ORDER_DESC : Constants.SORT_ORDER_ASC
     };
+    if(this.sortState.column == null) {
+      // refilter from items
+      this.filteredItems = ItemsFilter.filter(this.items, this.filterText);
+    } else {
+      this.filteredItems = ItemsFilter.updateItems(this.items, this.filterText, this.filteredItems, this.filterText, this.sortState);
+    }
     this.emit("change");
   }
 

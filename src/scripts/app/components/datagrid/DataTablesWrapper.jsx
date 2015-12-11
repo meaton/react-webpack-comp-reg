@@ -47,7 +47,7 @@ var DataTablesWrapper = React.createClass({
             <th {...this.createHeaderProps('creatorName')}>Creator</th>
             <th {...this.createHeaderProps('description')}>Description</th>
             <th {...this.createHeaderProps('registrationDate')}>Registration Date</th>
-            <th className="commentsCount">Comments</th>
+            <th {...this.createHeaderProps('commentsCount')}>Comments</th>
             {this.props.onClickInfo && <th className="infoLink"/>}
           </tr>
         </thead>
