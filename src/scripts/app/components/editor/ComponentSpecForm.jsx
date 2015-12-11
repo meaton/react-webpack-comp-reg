@@ -98,8 +98,8 @@ var ComponentSpecForm = React.createClass({
             />
           {this.props.onExpandAll && this.props.onCollapseAll &&
             <div>
-              <a onClick={this.props.onExpandAll.bind(null, spec)}>Expand all</a>&nbsp;
-              <a onClick={this.props.onCollapseAll.bind(null, spec)}>Collapse all</a>
+              <a onClick={this.props.onExpandAll.bind(null, spec.CMD_Component)}>Expand all</a>&nbsp;
+              <a onClick={this.props.onCollapseAll.bind(null, spec.CMD_Component)}>Collapse all</a>
             </div>
           }
           <CMDComponentForm

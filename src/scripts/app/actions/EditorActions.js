@@ -144,12 +144,12 @@ var EditorActions = {
   },
 
   expandAll: function(spec) {
-    var ids = []; //TODO: get childIds
+    var ids = ComponentSpec.getTreeIds(spec);
     this.dispatch(Constants.SET_ITEM_EXPANSION, {itemIds: ids, expansionState: true});
   },
 
   collapseAll: function(spec) {
-    var ids = []; //TODO: get childIds
+    var ids = ComponentSpec.getTreeIds(spec);
     this.dispatch(Constants.SET_ITEM_EXPANSION, {itemIds: ids, expansionState: false});
   }
 

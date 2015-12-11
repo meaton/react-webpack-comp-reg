@@ -1,6 +1,7 @@
 'use strict';
 
 var log = require('loglevel');
+var _ = require('lodash');
 
 var React = require('react');
 var update = require('react-addons-update');
@@ -14,7 +15,7 @@ function updateCommandInComponent(spec, appId, command) {
     var children = spec.CMD_Component;
     if(children != undefined) {
       // search for match in children
-      for(var i=0;i<children.length;i++) {
+      for(var i=0;i<(children.length);i++) {
         var child = children[i];
         // try for this child...
         var childCommand = updateCommandInComponent(child, appId, command);
@@ -67,10 +68,39 @@ var ComponentSpec = {
     }
   },
 
+  /**
+   * Gathers all AppIds in a spec tree
+   * @param  {object} spec spec to gather ids for
+   * @return {Array}      Array of AppIds of all components, elements and attributes in the provided spec
+   */
+  getTreeIds: function(spec) {
+    var ids = [];
+    // add child components
+    if(spec.CMD_Component != null) {
+      _.each(spec.CMD_Component, addIdsFromChild.bind(this, ids));
+    }
+    // add child elements
+    if(spec.CMD_Element != null) {
+      _.each(spec.CMD_Element, addIdsFromChild.bind(this, ids));
+    }
+    // add child attributes
+    if(spec.AttributeList != null && spec.AttributeList.Attribute != null) {
+      _.each(spec.AttributeList.Attribute, addIdsFromChild.bind(this, ids));
+    }
+    return ids;
+  },
+
   isProfile(spec) {
     return spec['@isProfile']=="true";
   }
 
+}
+
+function addIdsFromChild(ids, child) {
+  if(child._appId != null) {
+    ids.push(child._appId);
+    Array.prototype.push.apply(ids, this.getTreeIds(child));
+  }
 }
 
 module.exports = ComponentSpec;
