@@ -28,6 +28,10 @@ module.exports = {
 
   setFilterText: function(text) {
     this.dispatch(Constants.FILTER_TEXT_CHANGE, text);
+  },
+
+  toggleSortState: function(column) {
+    this.dispatch(Constants.TOGGLE_SORT_STATE, column);
   }
 
 };

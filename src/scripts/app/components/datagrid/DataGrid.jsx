@@ -25,7 +25,9 @@ var DataGrid = React.createClass({
     deletedItems: React.PropTypes.object,
     onRowSelect: React.PropTypes.func,
     rowSelectAllowed: React.PropTypes.bool,
-    onClickInfo: React.PropTypes.func
+    onClickInfo: React.PropTypes.func,
+    onToggleSort: React.PropTypes.func,
+    sortState: React.PropTypes.object,
   },
 
   getDefaultProps: function() {
@@ -78,7 +80,13 @@ var DataGrid = React.createClass({
     return (
       <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
         {this.props.loading ? <span>Loading...</span> : null}
-        <DataTablesWrapper ref="wrapper" multiple={this.props.multiSelect} editMode={this.props.editMode} onClickInfo={this.props.onClickInfo} >
+        <DataTablesWrapper
+          ref="wrapper"
+          multiple={this.props.multiSelect}
+          editMode={this.props.editMode}
+          sortState={this.props.sortState}
+          onToggleSort={this.props.onToggleSort}
+          onClickInfo={this.props.onClickInfo} >
          {x}
         </DataTablesWrapper>
       </div>

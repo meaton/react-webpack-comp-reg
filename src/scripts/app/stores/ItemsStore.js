@@ -20,7 +20,8 @@ var ItemsStore = Fluxxor.createStore({
       this.type = Constants.TYPE_PROFILE, //components or profiles
       this.space = Constants.SPACE_PUBLISHED, //private, group, published
       this.team = null;
-      this.filterText = null
+      this.filterText = null,
+      this.sortState = null;
 
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
@@ -34,7 +35,8 @@ var ItemsStore = Fluxxor.createStore({
       Constants.MOVE_TO_TEAM_SUCCESS, this.handleDeleteOrMoveSuccess,
       Constants.MOVE_TO_TEAM_FAILURE, this.handleDeleteOrMoveFailure,
       Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange,
-      Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved
+      Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved,
+      Constants.TOGGLE_SORT_STATE, this.toggleSortState
     );
   },
 
@@ -46,7 +48,8 @@ var ItemsStore = Fluxxor.createStore({
       type: this.type,
       space: this.space,
       team: this.team,
-      filterText: this.filterText
+      filterText: this.filterText,
+      sortState: this.sortState
     };
   },
 
@@ -115,6 +118,16 @@ var ItemsStore = Fluxxor.createStore({
       this.space = Constants.SPACE_PRIVATE;
     }
     this.type = result.type;
+    this.emit("change");
+  },
+
+  toggleSortState: function(column) {
+    var currentColumn = (this.sortState != null)?this.sortState.column : null;
+    var currentOrder= (this.sortState != null)?this.sortState.order : null;
+    this.sortState = {
+      column: (currentColumn === column && currentOrder === Constants.SORT_ORDER_DESC) ? null : column,
+      order: (currentColumn === column && Constants.SORT_ORDER_ASC) ? Constants.SORT_ORDER_DESC : Constants.SORT_ORDER_ASC
+    };
     this.emit("change");
   }
 

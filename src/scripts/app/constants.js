@@ -59,6 +59,9 @@ module.exports = {
 
   /* grid filter text changes */
   FILTER_TEXT_CHANGE: "FILTER_TEXT_CHANGE",
+  TOGGLE_SORT_STATE: "TOGGLE_SORT_STATE",
+  SORT_ORDER_ASC: "SORT_ORDER_ASC",
+  SORT_ORDER_DESC: "SORT_ORDER_DESC",
 
   /* component view */
   TOGGLE_ITEM_EXPANSION: "TOGGLE_ITEM_EXPANSION",

@@ -98,6 +98,8 @@ var Browser = React.createClass({
               editMode={false}
               onRowSelect={this.handleRowSelect}
               onClickInfo={this.showComponentInfo}
+              sortState={this.state.items.sortState}
+              onToggleSort={this.toggleSort}
               />
           </div>
           <div className="viewer row">
@@ -141,6 +143,10 @@ var Browser = React.createClass({
 
   handleFilterTextChange: function(evt) {
     this.getFlux().actions.setFilterText(evt.target.value);
+  },
+
+  toggleSort: function(column) {
+    this.getFlux().actions.toggleSortState(column);
   },
 
   showComponentInfo: function(item) {
