@@ -59,6 +59,9 @@ var CMDComponentForm = React.createClass({
     };
   },
 
+  /**
+   * used by CMDComponentMixin
+   */
   isSelected: function() {
     return this.props.spec._appId === this.props.selectedComponentId;
   },
@@ -149,7 +152,6 @@ var CMDComponentForm = React.createClass({
 
     return (
       <div>
-        <div className="controlLinks"><a onClick={this.props.onToggleSelection.bind(null, this.props.spec._appId)}>{this.isSelected() ? "unselect" : "select"}</a></div>
         <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></span> {cardOpt}
         {editableProps}
       </div>
@@ -167,6 +169,8 @@ var CMDComponentForm = React.createClass({
       linkedComponents: this.props.linkedComponents,
       isLinked: isLinked,
       actionButtons: (<ActionButtons
+        onToggleSelection={isLinked ? null : this.props.onToggleSelection.bind(null, spec._appId)}
+        isSelected={spec._appId === this.props.selectedComponentId}
         onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
         onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
         moveUpEnabled={index != 0}
