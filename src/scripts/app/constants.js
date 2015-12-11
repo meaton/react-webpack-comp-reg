@@ -65,6 +65,7 @@ module.exports = {
 
   /* component view */
   TOGGLE_ITEM_EXPANSION: "TOGGLE_ITEM_EXPANSION",
+  SET_ITEM_EXPANSION: "SET_ITEM_EXPANSION",
   LINKED_COMPONENTS_LOADED: "LINKED_COMPONENTS_LOADED",
 
   /* toggle item selection in the browser */

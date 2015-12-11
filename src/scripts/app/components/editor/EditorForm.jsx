@@ -150,6 +150,8 @@ var EditorForm = React.createClass({
               onComponentChange={this.updateComponentSpec}
               onToggleSelection={this.handleToggleSelection}
               selectedComponentId={this.state.editor.selectedComponentId}
+              onExpandAll={this.expandAll}
+              onCollapseAll={this.collapseAll}
               />
           </div>
           <div className="browserGroup">
@@ -173,7 +175,6 @@ var EditorForm = React.createClass({
               loading={this.state.editor.grid.loading}
               onRowSelect={this.handleGridRowSelect}
               />
-            {/*deletedItems={this.state.items.deleted}*/}
           </div>
         </div>
       );
@@ -247,6 +248,14 @@ var EditorForm = React.createClass({
 
   updateComponentSpec: function(change) {
     this.getFlux().actions.updateSpec(this.state.details.spec, change);
+  },
+
+  expandAll: function(spec) {
+    this.getFlux().actions.expandAll(spec);
+  },
+
+  collapseAll: function(spec) {
+    this.getFlux().actions.collapseAll(spec);
   },
 
   isNew: function() {

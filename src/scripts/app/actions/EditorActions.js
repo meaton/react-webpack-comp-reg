@@ -141,6 +141,16 @@ var EditorActions = {
 
   toggleComponentSelection: function(id) {
     this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id);
+  },
+
+  expandAll: function(spec) {
+    var ids = []; //TODO: get childIds
+    this.dispatch(Constants.SET_ITEM_EXPANSION, {itemIds: ids, expansionState: true});
+  },
+
+  collapseAll: function(spec) {
+    var ids = []; //TODO: get childIds
+    this.dispatch(Constants.SET_ITEM_EXPANSION, {itemIds: ids, expansionState: false});
   }
 
 };

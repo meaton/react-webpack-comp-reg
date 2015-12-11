@@ -25,6 +25,7 @@ var ComponentSpecStore = Fluxxor.createStore({
       Constants.LOAD_COMPONENT_SPEC_FAILURE, this.handleLoadSpecFailure,
 
       Constants.TOGGLE_ITEM_EXPANSION, this.handleToggleItemExpansion,
+      Constants.SET_ITEM_EXPANSION, this.handleSetItemExpansion,
       Constants.LINKED_COMPONENTS_LOADED, this.handleLinkedComponentsLoaded,
       Constants.COMPONENT_SPEC_UPDATED, this.handleSpecUpdate,
 
@@ -108,6 +109,14 @@ var ComponentSpecStore = Fluxxor.createStore({
     console.trace("Toggling", itemId, "currently", currentState);
     this.expansionState = ExpansionState.setChildState(this.expansionState, itemId, !currentState);
     console.trace("New expansion state: ", this.expansionState);
+    this.emit("change");
+  },
+
+  handleSetItemExpansion: function(obj) {
+    var itemIds = obj.itemIds;
+    for(var i=0;i<(itemIds.length);i++) {
+      this.expansionState = ExpansionState.setChildState(this.expansionState, itemIds[i], obj.expansionState);
+    }
     this.emit("change");
   },
 

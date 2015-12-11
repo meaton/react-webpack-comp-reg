@@ -43,7 +43,9 @@ var ComponentSpecForm = React.createClass({
     onItemChange: React.PropTypes.func.isRequired,
     onComponentChange: React.PropTypes.func.isRequired,
     onToggleSelection: React.PropTypes.func.isRequired,
-    selectedComponentId: React.PropTypes.string
+    selectedComponentId: React.PropTypes.string,
+    onExpandAll: React.PropTypes.func,
+    onCollapseAll: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -94,16 +96,22 @@ var ComponentSpecForm = React.createClass({
             onChange={this.handleConceptLinkChange} validate={this.validate}
             buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLinkValue)}
             />
-            <CMDComponentForm
-              spec={spec.CMD_Component}
-              hideProperties={true}
-              onToggle={this.props.onComponentToggle}
-              expansionState={this.props.expansionState}
-              linkedComponents={this.props.linkedComponents}
-              onToggleSelection={this.props.onToggleSelection}
-              onComponentChange={this.handleComponentChange}
-              selectedComponentId={this.props.selectedComponentId}
-              />
+          {this.props.onExpandAll && this.props.onCollapseAll &&
+            <div>
+              <a onClick={this.props.onExpandAll.bind(null, spec)}>Expand all</a>&nbsp;
+              <a onClick={this.props.onCollapseAll.bind(null, spec)}>Collapse all</a>
+            </div>
+          }
+          <CMDComponentForm
+            spec={spec.CMD_Component}
+            hideProperties={true}
+            onToggle={this.props.onComponentToggle}
+            expansionState={this.props.expansionState}
+            linkedComponents={this.props.linkedComponents}
+            onToggleSelection={this.props.onToggleSelection}
+            onComponentChange={this.handleComponentChange}
+            selectedComponentId={this.props.selectedComponentId}
+            />
           </form>
         );
     }
