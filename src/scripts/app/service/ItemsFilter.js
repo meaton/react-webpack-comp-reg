@@ -1,13 +1,13 @@
 'use strict';
 var log = require('loglevel');
 var Constants = require("../constants");
-var sortByOrder = require('lodash').sortByOrder;
+var _ = require('lodash');
 
 var ItemsFilter = {
   updateItems: function(items, newFilter, filteredItems, oldFilter, sortState) {
     if(newFilter === oldFilter) {
       // filter unchanged
-      return this.sort(filteredItems, sortState);
+      return this.sort(_(filteredItems), sortState);
     } else if(newFilter != null && filteredItems != null && oldFilter != null && newFilter.indexOf(oldFilter) == 0) {
       //narrow down on existing filtered items
       return this.filter(filteredItems, newFilter, sortState);
@@ -23,10 +23,10 @@ var ItemsFilter = {
 
   filter: function(items, filter, sortState) {
     if(filter == null) {
-      return this.sort(items, sortState);
+      return this.sort(_(items), sortState);
     } else {
       var regex = new RegExp(escapeRegExp(filter), "i");
-      return this.sort(items.filter(function(item) {
+      return this.sort(_(items).filter(function(item) {
         return regex.test(item.name)
         || regex.test(item.groupName)
         || regex.test(item.description)
@@ -36,13 +36,20 @@ var ItemsFilter = {
     }
   },
 
+  /**
+   * [function description]
+   * @param  {LodashWrapper} items     wrapped array of items
+   * @param  {object} sortState with properties 'column' and 'order'
+   * @return {Array}           array of items sorted according to sort state
+   */
   sort: function(items, sortState) {
+    log.debug("items", items);
     if(sortState == null || sortState.column == null) {
-      return items;
+      return items.value();
     } else {
       log.debug("Sort by", sortState.column, sortState.order);
       var order = (sortState.order === Constants.SORT_ORDER_DESC) ? 'desc':'asc';
-      return sortByOrder(items, [sortState.column], [order]);
+      return items.sortByOrder([sortState.column], [order]).value();
     }
   }
 }
