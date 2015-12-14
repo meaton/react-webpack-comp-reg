@@ -117,12 +117,18 @@ var CMDElementForm = React.createClass({
 
     //putting it all together...
     return (
-      <div className={elementClasses}>
-        {this.createActionButtons() /* from ActionButtonsMixin */}
-        <span>Element: <a className="elementLink" onClick={this.toggleExpansionState}>{elemName}</a></span> {cardOpt}
-        {editableProps}
-        {this.renderAttributes(elem)}
-        {this.isOpen() && <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>}
+      <div className={'panel panel-warning ' + elementClasses}>
+        <div className="panel-heading">
+          {this.createActionButtons() /* from ActionButtonsMixin */}
+          <span>Element: <a className="elementLink" onClick={this.toggleExpansionState}>{elemName}</a></span> {cardOpt}
+        </div>
+        {open && (
+          <div className="panel-body">
+            {editableProps}
+            {this.renderAttributes(elem)}
+            {this.isOpen() && <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>}
+          </div>
+        )}
       </div>
     );
   },

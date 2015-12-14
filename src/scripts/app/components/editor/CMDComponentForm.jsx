@@ -135,10 +135,9 @@ var CMDComponentForm = React.createClass({
 
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
     var cardOpt = !open? ( <span>Cardinality: {(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}</span> ) : null;
-    var editClasses = null; //TODO determine classes?
 
     var editableProps = open?(
-      <div className={editClasses}>
+      <div className="panel-body componentProps">
         <ValidatingTextInput type="text" name="@name" label="Name" value={comp['@name']}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateComponentValue} validate={this.validate}  />
@@ -152,12 +151,14 @@ var CMDComponentForm = React.createClass({
 
     var appId = this.props.spec._appId;
     return (
-      <div>
+      <div className="panel panel-info">
+        <div className="panel-heading">
+        <span>Component: <span className="componentName">{compName}</span></span> {cardOpt}
         {this.createActionButtons({
           onToggleSelection: this.props.onToggleSelection.bind(null, appId),
           isSelected: appId === this.props.selectedComponentId
         })}
-        <span>Component: <span className="componentName">{compName}</span></span> {cardOpt}
+        </div>
         {editableProps}
       </div>
     );

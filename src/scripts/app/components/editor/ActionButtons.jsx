@@ -10,8 +10,8 @@ require('../../../../styles/ActionButtons.sass'); // TODO apply image styles to 
 */
 var ActionButtons = React.createClass({
   propTypes: {
-    onMove: React.PropTypes.func.isRequired,
-    onRemove: React.PropTypes.func.isRequired,
+    onMove: React.PropTypes.func,
+    onRemove: React.PropTypes.func,
     moveUpEnabled: React.PropTypes.bool,
     moveDownEnabled: React.PropTypes.bool,
     onToggleExpansion: React.PropTypes.func,
@@ -43,13 +43,15 @@ var ActionButtons = React.createClass({
             <a className="toggleSelect" onClick={this.props.onToggleSelection}>{this.props.isSelected ? "unselect" : "select"}</a>
           </div>
         }
-        {(this.props.moveUpEnabled || this.props.moveDownEnabled) &&
+        {(this.props.onMove && (this.props.moveUpEnabled || this.props.moveDownEnabled)) &&
           <div className="posControl">
             {this.props.moveUpEnabled ? (<a className="moveUp" onClick={this.props.onMove.bind(this, "up")}>move up</a>): <span className="disabledAction">move up</span>}
             {this.props.moveDownEnabled ? (<a className="moveDown" onClick={this.props.onMove.bind(this, "down")}>move down</a>): <span className="disabledAction">move down</span>}
           </div>
         }
-        <a className="remove" onClick={this.props.onRemove}>click to remove</a>
+        {this.props.onRemove &&
+          <a className="remove" onClick={this.props.onRemove}>click to remove</a>
+        }
       </div>
     );
   }
