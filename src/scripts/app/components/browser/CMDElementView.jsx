@@ -55,7 +55,7 @@ var CMDElementView = React.createClass({
     }
     if(elem.AttributeList != undefined) {
       attrList = (
-        <div className="attrList">AttributeList:
+        <div className="attrList">
           {
             (attrSet != undefined && attrSet.length > 0) ?
             $.map(attrSet, function(attr, index) {
@@ -71,26 +71,31 @@ var CMDElementView = React.createClass({
     var maxC = multilingual ? "unbounded" : ((elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1);
 
     return (
-      <div className="CMDElement">
-        <span>Element: </span>
-        <span className="elementName">{elem['@name']}</span> { valueScheme }
-        <ul className="elemAttrs">
-          {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
-            <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
-          )}
+      <div className="panel panel-warning CMDElement">
+        <div className="panel-heading">
+          <span>Element: </span>
+          <span className="elementName">{elem['@name']}</span>
+        </div>
+        <div className="panel-body">
+          <div className="valueScheme">Value scheme: {valueScheme}</div>
+          <ul className="elemAttrs">
+            {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
+              <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
+            )}
 
-          {elem.hasOwnProperty("@Documentation") && (
-            <li className="attrElem">Documentation: {elem['@Documentation']}</li>
-          )}
+            {elem.hasOwnProperty("@Documentation") && (
+              <li className="attrElem">Documentation: {elem['@Documentation']}</li>
+            )}
 
-          {elem.hasOwnProperty("@DisplayPriority") && (
-            <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
-          )}
+            {elem.hasOwnProperty("@DisplayPriority") && (
+              <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
+            )}
 
-          <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
-          <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
-        </ul>
-        {attrList}
+            <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
+            <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
+          </ul>
+          {attrList}
+        </div>
       </div>
       );
   }

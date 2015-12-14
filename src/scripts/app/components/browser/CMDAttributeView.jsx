@@ -40,8 +40,14 @@ var CMDAttributeView = React.createClass({
     var attr = this.props.spec;
     var attr_val = <ValueScheme obj={attr} enabled={false} />
     return (
-      <div className="attrAttr">
-        {attr.Name} {attr_val}
+      <div className="panel panel-success attrAttr">
+        <div className="panel-heading">
+          <span>Attribute: </span>
+          <span className="elementName">{attr.Name}</span>
+        </div>
+        <div className="panel-body">
+          <div className="valueScheme">Value scheme: {attr_val}</div>
+        </div>
       </div>
     );
   }

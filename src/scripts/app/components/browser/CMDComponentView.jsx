@@ -90,11 +90,11 @@ var CMDComponentView = React.createClass({
     var title;
     if(this.props.isLinked) {
       title = (
-        <div><span>Component: </span><a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></div>
+        <div className="panel-heading"><span>Component: </span><a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></div>
       )
     } else {
       title = (
-        <div><span>Component: </span><span className="componentName">{compName}</span></div>
+        <div className="panel-heading"><span>Component: </span><span className="componentName">{compName}</span></div>
       )
     }
 
@@ -104,9 +104,9 @@ var CMDComponentView = React.createClass({
     var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
 
     return (
-      <div>
+      <div className="panel panel-info">
         {title}
-        <div className="componentProps">{compProps}</div>
+        <div className="panel-body componentProps">{compProps}</div>
       </div>
     );
   }

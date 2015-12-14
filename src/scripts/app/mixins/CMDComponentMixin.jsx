@@ -45,7 +45,7 @@ var CMDComponentMixin = {
       comp = comp[0];
 
     // classNames
-    var viewClasses = classNames('componentBody');
+    var viewClasses = classNames('panel-group componentBody');
     var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': (this.isSelected && this.isSelected()), 'linked': this.props.isLinked });
 
     var children = (open || this.props.renderChildrenWhenCollapsed)?(
