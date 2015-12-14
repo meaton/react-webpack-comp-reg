@@ -17,7 +17,8 @@ var ActionButtons = React.createClass({
     onToggleExpansion: React.PropTypes.func,
     isExpanded: React.PropTypes.bool,
     onToggleSelection: React.PropTypes.func,
-    isSelected: React.PropTypes.bool
+    isSelected: React.PropTypes.bool,
+    title: React.PropTypes.string
   },
   getDefaultProps: function() {
     return {
@@ -29,7 +30,7 @@ var ActionButtons = React.createClass({
     return (
       <div className="controlLinks">
         {this.props.onToggleExpansion && (
-          <div className="expandCollaps">
+          <div className="expandCollapse">
             {!this.props.isExpanded &&
               <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-expand"></span></a>
             }
@@ -40,18 +41,28 @@ var ActionButtons = React.createClass({
         )}
         {this.props.onToggleSelection &&
           <div className="select">
-            <a className="toggleSelect" onClick={this.props.onToggleSelection}>{this.props.isSelected ? "unselect" : "select"}</a>
+            <a className="toggleSelect" onClick={this.props.onToggleSelection}>
+              {this.props.isSelected ?
+                <span title="Unselect" className="glyphicon glyphicon-star"></span>
+                :<span title="Select" className="glyphicon glyphicon-star-empty"></span>
+              }
+            </a>
           </div>
         }
-        {(this.props.onMove && (this.props.moveUpEnabled || this.props.moveDownEnabled)) &&
-          <div className="posControl">
-            {this.props.moveUpEnabled ? (<a className="moveUp" onClick={this.props.onMove.bind(this, "up")}>move up</a>): <span className="disabledAction">move up</span>}
-            {this.props.moveDownEnabled ? (<a className="moveDown" onClick={this.props.onMove.bind(this, "down")}>move down</a>): <span className="disabledAction">move down</span>}
-          </div>
-        }
-        {this.props.onRemove &&
-          <a className="remove" onClick={this.props.onRemove}>click to remove</a>
-        }
+        <div className="title">
+          {this.props.title}
+        </div>
+        <div className="moveRemove pull-right">
+          {(this.props.onMove && (this.props.moveUpEnabled || this.props.moveDownEnabled)) &&
+            <div className="posControl">
+              {this.props.moveUpEnabled ? (<a className="moveUp" onClick={this.props.onMove.bind(this, "up")}>move up</a>): <span className="disabledAction">move up</span>}
+              {this.props.moveDownEnabled ? (<a className="moveDown" onClick={this.props.onMove.bind(this, "down")}>move down</a>): <span className="disabledAction">move down</span>}
+            </div>
+          }
+          {this.props.onRemove &&
+            <a className="remove" onClick={this.props.onRemove}>click to remove</a>
+          }
+        </div>
       </div>
     );
   }

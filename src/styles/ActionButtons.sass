@@ -1,4 +1,27 @@
-.controlLinks a {
-  padding-right: 4px;
-  line-height: 1.2em;
+.controlLinks {
+  a .glyphicon {
+      color: black;
+      font-size: 120%;
+  }
+
+  & > div {
+    display: inline-block;
+    margin: 0 2px;
+
+    &.expandCollapse {
+      max-width: 6%;
+    }
+
+    &.select {
+      max-width: 7%;
+    }
+
+    &.title {
+      max-width: 70%;
+    }
+
+    &.moveRemove {
+      max-width: 12%;
+    }
+  }
 }

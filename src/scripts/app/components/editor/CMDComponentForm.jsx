@@ -150,11 +150,12 @@ var CMDComponentForm = React.createClass({
     ) : null;
 
     var appId = this.props.spec._appId;
+    var title = <span>Component: <span className="componentName">{compName}</span> {cardOpt}</span>;
     return (
       <div className="panel panel-info">
         <div className="panel-heading">
-        <span>Component: <span className="componentName">{compName}</span></span> {cardOpt}
         {this.createActionButtons({
+          title: title,
           onToggleSelection: this.props.onToggleSelection.bind(null, appId),
           isSelected: appId === this.props.selectedComponentId
         })}
