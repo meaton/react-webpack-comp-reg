@@ -14,8 +14,7 @@ var ActionButtons = React.createClass({
     onRemove: React.PropTypes.func.isRequired,
     moveUpEnabled: React.PropTypes.bool,
     moveDownEnabled: React.PropTypes.bool,
-    onExpand: React.PropTypes.func,
-    onCollapse: React.PropTypes.func,
+    onToggleExpansion: React.PropTypes.func,
     isExpanded: React.PropTypes.bool,
     onToggleSelection: React.PropTypes.func,
     isSelected: React.PropTypes.bool
@@ -29,14 +28,16 @@ var ActionButtons = React.createClass({
   render: function() {
     return (
       <div className="controlLinks">
-        <div className="expandCollaps">
-          {this.props.onExpand && !this.props.isExpanded &&
-            <a className="expand" onClick={this.props.onExpand}><span className="glyphicon glyphicon-chevron-down"></span></a>
-          }
-          {this.props.onCollapse && this.props.isExpanded &&
-            <a className="expand" onClick={this.props.onCollapse}><span className="glyphicon glyphicon-chevron-up"></span></a>
-          }
-        </div>
+        {this.props.onToggleExpansion && (
+          <div className="expandCollaps">
+            {!this.props.isExpanded &&
+              <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-expand"></span></a>
+            }
+            {this.props.isExpanded &&
+              <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-collapse-up"></span></a>
+            }
+          </div>
+        )}
         {this.props.onToggleSelection &&
           <div className="select">
             <a className="toggleSelect" onClick={this.props.onToggleSelection}>{this.props.isSelected ? "unselect" : "select"}</a>

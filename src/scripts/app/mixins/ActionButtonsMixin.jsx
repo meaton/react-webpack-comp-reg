@@ -36,13 +36,16 @@ var ActionButtonsMixin = {
     onMove: React.PropTypes.func,
     onRemove: React.PropTypes.func,
     isFirst: React.PropTypes.bool,
-    isLast: React.PropTypes.bool
+    isLast: React.PropTypes.bool,
+    onToggleExpansion: React.PropTypes.func,
+    isExpanded: React.PropTypes.bool
   },
 
   getDefaultProps: function() {
     return {
       isFirst: false,
-      isLast: false
+      isLast: false,
+      isExpanded: true
     };
   },
 
@@ -83,12 +86,20 @@ var ActionButtonsMixin = {
   },
 
   createActionButtons: function(props) {
+    var expansionProps = {};
+    if(this.toggleExpansionState) { //from ToggleExpansionMixin
+      expansionProps.onToggleExpansion = this.toggleExpansionState;
+    }
+    if(this.isOpen) { //from ToggleExpansionMixin
+      expansionProps.isExpanded = this.isOpen();
+    }
     return (
       <ActionButtons
         onMove={this.props.onMove}
         onRemove={this.props.onRemove}
         moveUpEnabled={!this.props.isFirst}
         moveDownEnabled={!this.props.isLast}
+        {...expansionProps}
         {...props}
       />);
   }

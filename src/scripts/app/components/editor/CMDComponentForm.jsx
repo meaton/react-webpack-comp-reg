@@ -157,7 +157,7 @@ var CMDComponentForm = React.createClass({
           onToggleSelection: this.props.onToggleSelection.bind(null, appId),
           isSelected: appId === this.props.selectedComponentId
         })}
-        <span>Component: <span class="componentName">{compName}</span></span> {cardOpt}
+        <span>Component: <span className="componentName">{compName}</span></span> {cardOpt}
         {editableProps}
       </div>
     );
@@ -187,6 +187,8 @@ var CMDComponentForm = React.createClass({
           {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
           actionButtons={
             <ActionButtons
+              onToggleExpansion={this.toggleExpansionStateOf.bind(this, spec, false)}
+              isExpanded={this.isOpen(spec, false)}
               onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
               onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
               moveUpEnabled={index != 0}

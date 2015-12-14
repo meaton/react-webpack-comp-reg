@@ -28,9 +28,18 @@ var ToggleExpansionMixin = {
     this.props.onToggle(this.props.spec._appId, this.props.spec, this.getDefaultOpenState());
   },
 
-  isOpen: function() {
-    var defaultState = this.getDefaultOpenState();
-    return ExpansionState.isExpanded(this.props.expansionState, this.props.spec._appId, defaultState);
+  toggleExpansionStateOf: function(spec, defaultState) {
+    this.props.onToggle(spec._appId, spec, defaultState);
+  },
+
+  isOpen: function(spec, defaultState) {
+    if(spec == undefined) {
+      spec = this.props.spec;
+    }
+    if(defaultState == undefined) {
+      defaultState = this.getDefaultOpenState();
+    }
+    return ExpansionState.isExpanded(this.props.expansionState, spec._appId, defaultState);
   },
 
   getExpansionProps: function() {
