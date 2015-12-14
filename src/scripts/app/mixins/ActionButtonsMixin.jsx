@@ -1,6 +1,6 @@
 var log = require('loglevel');
 
-var ActionButtons = require('../components/editor/ActionButtons');
+var ActionButtons = require('../components/ActionButtons');
 
 function $remove(index) {
   //update command: remove at index

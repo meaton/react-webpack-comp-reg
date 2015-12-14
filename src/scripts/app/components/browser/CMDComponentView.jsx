@@ -15,7 +15,7 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
-var ActionButtons = require('../editor/ActionButtons');
+var ActionButtons = require('../ActionButtons');
 
 //utils
 var update = require('react-addons-update');;
