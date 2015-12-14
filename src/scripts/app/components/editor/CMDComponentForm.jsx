@@ -239,15 +239,15 @@ var CMDComponentForm = React.createClass({
   },
 
   renderAfterComponents: function() {
-    return <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>;
+    return this.isOpen() ? <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div> : null;
   },
 
   renderAfterElements: function() {
-    return <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div>
+    return this.isOpen() ? <div className="addElement"><a onClick={this.addNewElement}>+Element</a></div> : null;
   },
 
   renderAfterAttributes: function() {
-    return <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div>;
+    return this.isOpen() ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div> : null;
   },
 
   validate: function(val, targetName, feedback) {

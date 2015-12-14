@@ -122,7 +122,7 @@ var CMDElementForm = React.createClass({
         <span>Element: <a className="elementLink" onClick={this.toggleExpansionState}>{elemName}</a></span> {cardOpt}
         {editableProps}
         {this.renderAttributes(elem)}
-        <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
+        {this.isOpen() && <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>}
       </div>
     );
   },
