@@ -99,9 +99,11 @@ var CMDAttributeForm = React.createClass({
           {this.createActionButtons() /* from ActionButtonsMixin */}
           <span>Attribute: <span className="attrName">{attrName}</span></span>
         </div>
-        <div className="panel-body">
-          {editableProps}
-        </div>
+        {open &&
+          <div className="panel-body">
+            {editableProps}
+          </div>
+        }
       </div>
     );
   },

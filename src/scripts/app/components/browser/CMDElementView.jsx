@@ -71,31 +71,33 @@ var CMDElementView = React.createClass({
     var maxC = multilingual ? "unbounded" : ((elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : 1);
 
     return (
-      <div className="panel panel-warning CMDElement">
-        <div className="panel-heading">
-          <span>Element: </span>
-          <span className="elementName">{elem['@name']}</span>
+      <div className="CMDElement">
+        <div className="panel panel-warning">
+          <div className="panel-heading">
+            <span>Element: </span>
+            <span className="elementName">{elem['@name']}</span>
+          </div>
+          <div className="panel-body">
+            <div className="valueScheme">Value scheme: {valueScheme}</div>
+            <ul className="elemAttrs">
+              {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
+                <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
+              )}
+
+              {elem.hasOwnProperty("@Documentation") && (
+                <li className="attrElem">Documentation: {elem['@Documentation']}</li>
+              )}
+
+              {elem.hasOwnProperty("@DisplayPriority") && (
+                <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
+              )}
+
+              <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
+              <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
+            </ul>
+          </div>
         </div>
-        <div className="panel-body">
-          <div className="valueScheme">Value scheme: {valueScheme}</div>
-          <ul className="elemAttrs">
-            {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
-              <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
-            )}
-
-            {elem.hasOwnProperty("@Documentation") && (
-              <li className="attrElem">Documentation: {elem['@Documentation']}</li>
-            )}
-
-            {elem.hasOwnProperty("@DisplayPriority") && (
-              <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
-            )}
-
-            <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
-            <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
-          </ul>
-          {attrList}
-        </div>
+        {attrList}
       </div>
       );
   }

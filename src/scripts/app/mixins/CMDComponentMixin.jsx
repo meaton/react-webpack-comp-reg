@@ -172,7 +172,6 @@ var CMDComponentMixin = {
       <div>
         {(attrSet != undefined && attrSet.length > 0)? (
           <div className="attrList">
-            Attributes:
             {$.map(attrSet, this.renderAttribute)}
           </div>
         ):null}
