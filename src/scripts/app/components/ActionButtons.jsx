@@ -55,12 +55,12 @@ var ActionButtons = React.createClass({
         <div className="moveRemove pull-right">
           {(this.props.onMove && (this.props.moveUpEnabled || this.props.moveDownEnabled)) &&
             <div className="posControl">
-              {this.props.moveUpEnabled ? (<a className="moveUp" onClick={this.props.onMove.bind(this, "up")}>move up</a>): <span className="disabledAction">move up</span>}
-              {this.props.moveDownEnabled ? (<a className="moveDown" onClick={this.props.onMove.bind(this, "down")}>move down</a>): <span className="disabledAction">move down</span>}
+              {this.props.moveUpEnabled ? (<a title="Move up" onClick={this.props.onMove.bind(this, "up")}><span className="glyphicon glyphicon-circle-arrow-up"></span></a>): <span className="glyphicon glyphicon-circle-arrow-up disabled"></span>}
+              {this.props.moveDownEnabled ? (<a title="Move down" onClick={this.props.onMove.bind(this, "down")}><span className="glyphicon glyphicon-circle-arrow-down"></span></a>): <span className="glyphicon glyphicon-circle-arrow-down disabled"></span>}
             </div>
           }
           {this.props.onRemove &&
-            <a className="remove" onClick={this.props.onRemove}>click to remove</a>
+            <a className="remove" onClick={this.props.onRemove}><span className="glyphicon glyphicon-remove-circle"></span></a>
           }
         </div>
       </div>

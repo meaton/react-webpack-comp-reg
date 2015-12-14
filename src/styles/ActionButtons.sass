@@ -1,12 +1,29 @@
 .controlLinks {
+
+  .glyphicon {
+    margin: 0 2px;
+  }
+
   a .glyphicon {
       color: black;
       font-size: 120%;
+
+      &:hover {
+        color: #999;
+      }
+
+      &:active {
+        color: #fff;
+      }
   }
 
-  & > div {
+  span.disabled {
+    color: #ccc;
+    font-size: 120%;
+  }
+
+  & div {
     display: inline-block;
-    margin: 0 2px;
 
     &.expandCollapse {
       max-width: 6%;
@@ -17,11 +34,11 @@
     }
 
     &.title {
-      max-width: 70%;
+      max-width: 60%;
     }
 
     &.moveRemove {
-      max-width: 12%;
+      max-width: 18%;
     }
   }
 }
