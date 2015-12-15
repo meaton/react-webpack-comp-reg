@@ -95,7 +95,9 @@ var CMDComponentMixin = {
 
       return (
         <div className="components">
-          {nestedComponents}
+          <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+            {nestedComponents}
+          </ReactCSSTransitionGroup>
           {afterComponents}
         </div>
       );
@@ -147,7 +149,7 @@ var CMDComponentMixin = {
 
     return (
       <div className="elements">
-        <ReactCSSTransitionGroup transitionName="elements" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
           {elements}
         </ReactCSSTransitionGroup>
         {afterElements}
@@ -173,7 +175,7 @@ var CMDComponentMixin = {
     return (
       <div>
             <div className="attrList">
-              <ReactCSSTransitionGroup transitionName="attributes" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+              <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
                 {attrSet != undefined && attrSet.length > 0 &&
                   $.map(attrSet, this.renderAttribute)
                 }

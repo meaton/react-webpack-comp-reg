@@ -58,19 +58,19 @@
   }
 
   // animate item appearance and removal in editor
-  .attributes-enter, .elements-enter {
+  .editor-items-enter {
     opacity: 0.01;
 
-    &.attributes-enter-active, &.elements-enter-active {
+    &.editor-items-enter-active {
       opacity: 1;
       transition: opacity 500ms ease-in;
     }
   }
 
-  .attributes-leave, .elements-leave {
+  .editor-items-leave {
     opacity: 1;
 
-    &.attributes-leave-active, &.elements-leave-active {
+    &.editor-items-leave-active {
       opacity: 0.01;
       transition: opacity 300ms ease-in;
     }
