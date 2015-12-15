@@ -13,7 +13,7 @@ module.exports = {
 
   defaultContainer: "alert-container",
 
-  showMessage: function(container, title, message) {
+  showMessage: function(title, message) {
     log.debug("Alert: [", title, "]", message);
 
     var renderBodyContent = function() { return (
@@ -29,7 +29,7 @@ module.exports = {
     this.showModalAlert(title, renderBodyContent, renderFooterContent);
   },
 
-  showConfirmationDialogue: function(container, title, message, onYes, onNo) {
+  showConfirmationDialogue: function(title, message, onYes, onNo) {
 
     var renderBodyContent = function() { return (
       <div className="modal-desc">

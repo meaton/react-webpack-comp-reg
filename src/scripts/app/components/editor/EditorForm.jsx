@@ -333,7 +333,7 @@ var EditorForm = React.createClass({
       }
     }
     if(!result) {
-      ReactAlert.showMessage(this, "Validation errors", "There are validation errors, see the marked fields for details.");
+      ReactAlert.showMessage("Validation errors", "There are validation errors, see the marked fields for details.");
     }
     return result;
   }

@@ -153,7 +153,7 @@ var BrowserMenuGroup = React.createClass({
       // moving out of private space cannot be undone, show warning
       var title = "Move component(s) or profile(s) into team space";
       var message = "Items, once moved to a team space, can not be moved back to your workspace. Do you want to move this item?";
-      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToTeam.bind(null, teamId));
+      ReactAlert.showConfirmationDialogue(title, message, this.props.moveToTeam.bind(null, teamId));
     }
   },
 
