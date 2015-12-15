@@ -15,7 +15,6 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
-var ActionButtons = require('../ActionButtons');
 
 //utils
 var update = require('react-addons-update');;
@@ -55,14 +54,8 @@ var CMDComponentView = React.createClass({
         linkedComponents={this.props.linkedComponents}
         onToggle={this.props.onToggle}
         isLinked={isLinked}
-        onMove={this.props.editMode && this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
-        onRemove={this.props.editMode && this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
         isFirst={index == 0}
         isLast={index == this.props.spec.CMD_Component.length - 1}
-        actionButtons={isLinked ?
-          <ActionButtons
-            onToggleExpansion={this.toggleExpansionStateOf.bind(this, spec, !isLinked)}
-            isExpanded={this.isOpen(spec, !isLinked)}/>:null}
         />);
     }
   },
@@ -103,15 +96,19 @@ var CMDComponentView = React.createClass({
     if(this.props.isLinked) {
       title = (
         <div className="panel-heading">
-          {this.props.actionButtons}
-          <span>Component: </span><a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a> {!open && cardinality}
+          {
+            this.createActionButtons({
+              title: <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a> {!open && cardinality}</span>
+            })
+          }
         </div>
       )
     } else {
       title = (
         <div className="panel-heading">
-          {this.props.actionButtons}
-          <span>Component: </span><span className="componentName">{compName}</span>
+          {this.createActionButtons({
+            title: <span>Component: <span className="componentName">{compName}</span></span>
+          })}
         </div>
       )
     }

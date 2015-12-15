@@ -187,15 +187,6 @@ var CMDComponentForm = React.createClass({
         return (<CMDComponentView
           {... componentProperties}
           {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
-          actionButtons={
-            <ActionButtons
-              onToggleExpansion={this.toggleExpansionStateOf.bind(this, spec, false)}
-              isExpanded={this.isOpen(spec, false)}
-              onMove={this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
-              onRemove={this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
-              moveUpEnabled={index != 0}
-              moveDownEnabled={index != this.props.spec.CMD_Component.length - 1} />
-          }
           />);
       } else {
         return (<div className="CMDComponent" key={compId + "_" + index}>Component {compId} loading...</div>);

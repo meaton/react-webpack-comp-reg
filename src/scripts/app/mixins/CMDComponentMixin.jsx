@@ -17,14 +17,12 @@ var CMDComponentMixin = {
     /* determines whether 'envelope' with properties should be hidden */
     hideProperties: React.PropTypes.bool,
     isLinked:  React.PropTypes.bool,
-    linkedComponents: React.PropTypes.object,
-    actionButtons: React.PropTypes.object
+    linkedComponents: React.PropTypes.object
   },
 
   getDefaultProps: function() {
     return {
-      hideProperties: false,
-      actionButtons: null
+      hideProperties: false
     };
   },
 
