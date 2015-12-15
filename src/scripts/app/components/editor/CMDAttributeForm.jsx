@@ -96,8 +96,9 @@ var CMDAttributeForm = React.createClass({
     return (
       <div className={"panel panel-success " + attrClasses}>
         <div className="panel-heading">
-          {this.createActionButtons() /* from ActionButtonsMixin */}
-          <span>Attribute: <span className="attrName">{attrName}</span></span>
+          {this.createActionButtons({ /* from ActionButtonsMixin */
+            title: <span>Attribute: <span className="attrName">{attrName}</span></span>
+          })}
         </div>
         {open &&
           <div className="panel-body">
