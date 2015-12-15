@@ -170,7 +170,7 @@ var CMDComponentForm = React.createClass({
 
     // common properties (for both view and form)
     var componentProperties = {
-      key: spec._appId + "_" +index,
+      key: spec._appId,
       spec: spec,
       parent: this.props.spec,
       linkedComponents: this.props.linkedComponents,
