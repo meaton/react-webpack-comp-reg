@@ -44,7 +44,7 @@ var ActionButtons = React.createClass({
             <a className="toggleSelect" onClick={this.props.onToggleSelection}>
               {this.props.isSelected ?
                 <span title="Unselect" className="glyphicon glyphicon-star"></span>
-                :<span title="Select" className="glyphicon glyphicon-star-empty"></span>
+                :<span title="Select to add other components into this component" className="glyphicon glyphicon-star-empty"></span>
               }
             </a>
           </div>

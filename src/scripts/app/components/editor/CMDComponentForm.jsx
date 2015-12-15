@@ -157,7 +157,7 @@ var CMDComponentForm = React.createClass({
         {this.createActionButtons({
           title: title,
           onToggleSelection: this.props.onToggleSelection.bind(null, appId),
-          isSelected: appId === this.props.selectedComponentId
+          isSelected: this.isSelected()
         })}
         </div>
         {editableProps}
@@ -232,7 +232,12 @@ var CMDComponentForm = React.createClass({
   },
 
   renderAfterComponents: function() {
-    return this.isOpen() ? <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div> : null;
+    return (
+      <div>
+        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Added component will be inserted here</div>}
+        {this.isOpen() && <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>}
+      </div>
+    );
   },
 
   renderAfterElements: function() {

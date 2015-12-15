@@ -121,7 +121,7 @@ var CMDElementForm = React.createClass({
         <div className='panel panel-warning'>
           <div className="panel-heading">
             {this.createActionButtons({ /* from ActionButtonsMixin */
-              title: <span>Element: <a className="elementLink" onClick={this.toggleExpansionState}>{elemName}</a> {cardOpt}</span>
+              title: <span>Element: <span className="elementName">{elemName}</span> {cardOpt}</span>
             })}
           </div>
           {open && (
