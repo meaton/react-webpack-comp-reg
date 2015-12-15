@@ -18,7 +18,7 @@ var ActionButtons = React.createClass({
     isExpanded: React.PropTypes.bool,
     onToggleSelection: React.PropTypes.func,
     isSelected: React.PropTypes.bool,
-    title: React.PropTypes.string
+    title: React.PropTypes.object
   },
   getDefaultProps: function() {
     return {

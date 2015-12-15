@@ -2,6 +2,7 @@
 var log = require('loglevel');
 
 var React = require('react');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -138,10 +139,11 @@ var CMDElementForm = React.createClass({
 
   renderAttributes: function(elem) {
     var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-    return (attrSet == undefined)?null:(
-      <div className="attrList">Attributes:
+    return (
+      <div className="attrList">
+        <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
         {
-          (attrSet != undefined && attrSet.length > 0) ?
+          (attrSet != undefined && attrSet.length > 0) &&
           $.map(attrSet, function(attr, index) {
             return <CMDAttributeForm
                       key={attr._appId}
@@ -154,8 +156,9 @@ var CMDElementForm = React.createClass({
                       checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
                       {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
                       />
-                  }.bind(this)) : <span>No Attributes</span>
+                  }.bind(this))
         }
+        </ReactCSSTransitionGroup>
       </div>);
   },
 
