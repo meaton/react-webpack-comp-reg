@@ -1,5 +1,7 @@
 var log = require('loglevel');
 
+var ReactDOM = require('react-dom');
+
 var ActionButtons = require('../components/ActionButtons');
 var ReactAlert = require('../util/ReactAlert');
 
@@ -48,6 +50,27 @@ var ActionButtonsMixin = {
       isLast: false,
       isExpanded: true
     };
+  },
+
+  getInitialState: function() {
+    return {wasMoved: false}
+  },
+
+  beforeMove: function(handler, direction) {
+    // start animation on move
+    $(ReactDOM.findDOMNode(this)).fadeTo(200, .1, function() {
+      this.setState({wasMoved: true});
+      handler(direction);
+    }.bind(this));
+  },
+
+  componentDidUpdate: function(prevProps) {
+    // finish animation on move
+    if(this.state.wasMoved) {
+      var node = $(ReactDOM.findDOMNode(this));
+      node.fadeTo(500, 1);
+      this.setState({wasMoved: false});
+    }
   },
 
   handleMoveComponent: function(changeHandler, index, direction) {
@@ -102,7 +125,8 @@ var ActionButtonsMixin = {
     }
     return (
       <ActionButtons
-        onMove={this.props.onMove}
+        container={this}
+        onMove={this.beforeMove.bind(null, this.props.onMove)}
         onRemove={this.props.onRemove}
         moveUpEnabled={!this.props.isFirst}
         moveDownEnabled={!this.props.isLast}

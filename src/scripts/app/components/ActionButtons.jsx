@@ -1,5 +1,5 @@
 'use strict';
-
+var log = require('loglevel');
 var React = require('react');
 
 require('../../../styles/ActionButtons.sass'); // TODO apply image styles to links

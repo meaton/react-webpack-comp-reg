@@ -211,6 +211,7 @@ var CMDComponentForm = React.createClass({
               onElementChange={this.handleElementChange.bind(this, index)}
               onMove={this.handleMoveElement.bind(this, this.props.onComponentChange, index)}
               onRemove={this.handleRemoveElement.bind(this, this.props.onComponentChange, index)}
+              index={index}
               isFirst={index == 0}
               isLast={index == this.props.spec.CMD_Element.length - 1}
               checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Element)}
