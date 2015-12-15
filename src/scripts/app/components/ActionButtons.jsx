@@ -53,7 +53,7 @@ var ActionButtons = React.createClass({
           {this.props.title}
         </div>
         <div className="moveRemove pull-right">
-          {(this.props.onMove && (this.props.moveUpEnabled || this.props.moveDownEnabled)) &&
+          {this.props.onMove &&
             <div className="posControl">
               {this.props.moveUpEnabled ? (<a title="Move up" onClick={this.props.onMove.bind(this, "up")}><span className="glyphicon glyphicon-circle-arrow-up"></span></a>): <span className="glyphicon glyphicon-circle-arrow-up disabled"></span>}
               {this.props.moveDownEnabled ? (<a title="Move down" onClick={this.props.onMove.bind(this, "down")}><span className="glyphicon glyphicon-circle-arrow-down"></span></a>): <span className="glyphicon glyphicon-circle-arrow-down disabled"></span>}
