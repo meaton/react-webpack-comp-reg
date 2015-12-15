@@ -1,6 +1,7 @@
 var log = require('loglevel');
 
 var ActionButtons = require('../components/ActionButtons');
+var ReactAlert = require('../util/ReactAlert');
 
 function $remove(index) {
   //update command: remove at index
@@ -56,7 +57,9 @@ var ActionButtonsMixin = {
 
   handleRemoveComponent: function(changeHandler, index) {
     log.debug("Remove component",index, "from", this.props.spec);
-    changeHandler({CMD_Component: $remove(index)});
+    ReactAlert.showConfirmationDialogue("Remove component?", "Are you sure that you want to remove this component?", function() {
+        changeHandler({CMD_Component: $remove(index)});
+    });
   },
 
   handleMoveElement: function(changeHandler, index, direction) {
@@ -66,7 +69,9 @@ var ActionButtonsMixin = {
 
   handleRemoveElement: function(changeHandler, index) {
     log.debug("Remove element",index, "from", this.props.spec);
-    changeHandler({CMD_Element: $remove(index)});
+    ReactAlert.showConfirmationDialogue("Remove element?", "Are you sure that you want to remove this element?", function() {
+      changeHandler({CMD_Element: $remove(index)});
+    });
   },
 
   handleMoveAttribute: function(changeHandler, index, direction) {
@@ -76,13 +81,15 @@ var ActionButtonsMixin = {
 
   handleRemoveAttribute: function(changeHandler, index) {
     log.debug("Remove attribute",index, "from", this.props.spec);
-    var attrs = this.props.spec.AttributeList.Attribute;
-    if(index == 0 && $.isArray(attrs) && attrs.length == 1) {
-      // removal of last attribute: remove AttributeList
-      changeHandler({AttributeList: {$set: null}});
-    } else {
-      changeHandler({AttributeList: {Attribute: $remove(index)}});
-    }
+    ReactAlert.showConfirmationDialogue("Remove attribute?", "Are you sure that you want to remove this attribute?", function() {
+      var attrs = this.props.spec.AttributeList.Attribute;
+      if(index == 0 && $.isArray(attrs) && attrs.length == 1) {
+        // removal of last attribute: remove AttributeList
+        changeHandler({AttributeList: {$set: null}});
+      } else {
+        changeHandler({AttributeList: {Attribute: $remove(index)}});
+      }
+    }.bind(this));
   },
 
   createActionButtons: function(props) {
