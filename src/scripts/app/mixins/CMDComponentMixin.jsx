@@ -1,5 +1,7 @@
 'use strict';
 
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
+
 var log = require('loglevel');
 
 //helpers
@@ -48,9 +50,9 @@ var CMDComponentMixin = {
 
     var children = (open || this.props.renderChildrenWhenCollapsed)?(
       <div className={viewClasses}>
-        <div>{this.renderAttributes(comp)}</div>
-        <div className="childElements">{this.renderElements(comp)}</div>
-        <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>
+          <div>{this.renderAttributes(comp)}</div>
+          <div className="childElements">{this.renderElements(comp)}</div>
+          <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>
       </div>
     ):null;
 
@@ -145,7 +147,9 @@ var CMDComponentMixin = {
 
     return (
       <div className="elements">
-        {elements}
+        <ReactCSSTransitionGroup transitionName="elements" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+          {elements}
+        </ReactCSSTransitionGroup>
         {afterElements}
       </div>
     );
@@ -168,12 +172,14 @@ var CMDComponentMixin = {
     var self = this;
     return (
       <div>
-        {(attrSet != undefined && attrSet.length > 0)? (
-          <div className="attrList">
-            {$.map(attrSet, this.renderAttribute)}
-          </div>
-        ):null}
-        {afterAttributes}
+            <div className="attrList">
+              <ReactCSSTransitionGroup transitionName="attributes" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+                {attrSet != undefined && attrSet.length > 0 &&
+                  $.map(attrSet, this.renderAttribute)
+                }
+              </ReactCSSTransitionGroup>
+            </div>
+          {afterAttributes}
       </div>
     );
   }

@@ -57,6 +57,24 @@
 
   }
 
+  // animate item appearance and removal in editor
+  .attributes-enter, .elements-enter {
+    opacity: 0.01;
+
+    &.attributes-enter-active, &.elements-enter-active {
+      opacity: 1;
+      transition: opacity 500ms ease-in;
+    }
+  }
+
+  .attributes-leave, .elements-leave {
+    opacity: 1;
+
+    &.attributes-leave-active, &.elements-leave-active {
+      opacity: 0.01;
+      transition: opacity 300ms ease-in;
+    }
+  }
 }
 
 form#editComponent {
@@ -99,6 +117,7 @@ div.processing {
     margin-left: 1em;
   }
 }
+
 
 // .editor .ComponentViewer {
 //   overflow-x: hidden;
