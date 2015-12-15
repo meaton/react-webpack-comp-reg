@@ -71,6 +71,13 @@ var ActionButtonsMixin = {
       node.fadeTo(500, 1);
       this.setState({wasMoved: false});
     }
+
+    //TODO: scroll to new pos?
+    // parent.animate({
+    //   scrollTop: parent.scrollTop() + node.offset().top - node.height()/2,
+    // }, function() {
+    //   node.fadeTo(500, 1);
+    // });
   },
 
   handleMoveComponent: function(changeHandler, index, direction) {
