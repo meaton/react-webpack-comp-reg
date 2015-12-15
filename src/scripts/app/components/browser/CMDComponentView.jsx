@@ -91,31 +91,13 @@ var CMDComponentView = React.createClass({
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
     var cardinality = (<span>Cardinality: {minC + " - " + maxC}</span>);
-
-    var title;
-    if(this.props.isLinked) {
-      title = (
-        <div className="panel-heading">
-          {
-            this.createActionButtons({
-              title: <span>Component: <a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a> {!open && cardinality}</span>
-            })
-          }
-        </div>
-      )
-    } else {
-      title = (
-        <div className="panel-heading">
-          {this.createActionButtons({
-            title: <span>Component: <span className="componentName">{compName}</span></span>
-          })}
-        </div>
-      )
-    }
+    var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && cardinality}</span>);
 
     return (
       <div className="panel panel-info">
-        {title}
+        {this.props.isLinked?
+          (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
+          :(<div className="panel-heading">{titleText}</div>)}
         {open &&<div className="panel-body componentProps">{cardinality}</div>}
       </div>
     );
