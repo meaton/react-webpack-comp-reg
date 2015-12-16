@@ -55,28 +55,6 @@ var CMDElementForm = React.createClass({
     return true;
   },
 
-  /*=== Functions that handle changes (in this component and its children) ===*/
-
-  propagateValue: function(field, value) {
-    this.props.onElementChange({$merge: {[field]: value}});
-  },
-
-  updateElementValue: function(e) {
-    this.propagateValue(e.target.name, e.target.value);
-  },
-
-  updateElementSelectValue: function(e) {
-    var value = e.target.checked ? "true":"false";
-    this.propagateValue(e.target.name, value);
-  },
-
-  handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onElementChange({$merge: {
-      ['@ValueScheme']: type,
-      ValueScheme: valScheme
-    }});
-  },
-
   /*=== Render functions ===*/
 
   render: function () {
@@ -161,6 +139,30 @@ var CMDElementForm = React.createClass({
         </ReactCSSTransitionGroup>
       </div>);
   },
+
+  /*=== Functions that handle changes (in this component and its children) ===*/
+
+  propagateValue: function(field, value) {
+    this.props.onElementChange({$merge: {[field]: value}});
+  },
+
+  updateElementValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  updateElementSelectValue: function(e) {
+    var value = e.target.checked ? "true":"false";
+    this.propagateValue(e.target.name, value);
+  },
+
+  handleUpdateValueScheme: function(type, valScheme) {
+    this.props.onElementChange({$merge: {
+      ['@ValueScheme']: type,
+      ValueScheme: valScheme
+    }});
+  },
+
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('element', targetName, val, feedback)

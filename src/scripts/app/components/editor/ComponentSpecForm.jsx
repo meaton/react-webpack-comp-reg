@@ -117,6 +117,8 @@ var ComponentSpecForm = React.createClass({
     }
   },
 
+  /*=== Functions that handle changes (in this component and its children) ===*/
+
   handleTypeChange: function(e) {
     //pass changes to handler, the event target is input "isProfile" (value either profile or component type constant)
     this.props.onTypeChange(e.target.value);
@@ -149,6 +151,8 @@ var ComponentSpecForm = React.createClass({
   updateConceptLinkValue: function(val) {
     this.handleComponentChange({$merge: {['@ConceptLink']: val}});
   },
+
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('header', targetName, val, feedback);

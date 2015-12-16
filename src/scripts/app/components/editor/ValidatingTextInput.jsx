@@ -7,6 +7,14 @@ var React = require('react');
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 
+/**
+* ValidatingTextInput - bootstrap text input with added dynamic validation capacity
+* by means of a validation function that is passed as a required property that
+* is evaluated on blur (lost focus). Any validation message provided by that
+* function is shown in an input box "addon".
+*
+* @constructor
+*/
 var ValidatingTextInput = React.createClass({
   propTypes: {
     validate: React.PropTypes.func.isRequired,

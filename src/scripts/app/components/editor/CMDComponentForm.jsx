@@ -74,57 +74,6 @@ var CMDComponentForm = React.createClass({
     return true;
   },
 
-  /*=== Functions that handle changes (in this component and its children) ===*/
-
-  propagateValue: function(field, value) {
-    //send 'command' to merge existing spec section with this delta
-    //(see https://facebook.github.io/react/docs/update.html)
-    log.trace("Update component field:", field, "to:", value);
-    this.props.onComponentChange({$merge: {[field]: value}});
-  },
-
-  handleComponentChange: function(index, change) {
-    //an update of the child component at [index] has been requested, push up
-    this.props.onComponentChange({CMD_Component: {[index]: change}});
-  },
-
-  handleElementChange: function(index, change) {
-    var update = {CMD_Element: {[index]: change}};
-    log.trace("Update element", update);
-    this.props.onComponentChange(update);
-  },
-
-  updateComponentValue: function(e) {
-    //a property of this component has changed
-    this.propagateValue(e.target.name, e.target.value);
-  },
-
-  /*=== Functions that add new children ===*/
-
-  addNewComponent: function(evt) {
-    var spec = this.props.spec;
-    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Component);
-    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
-    log.debug("Adding new component to", spec._appId, newComp);
-    if(spec.CMD_Component == null) {
-      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
-    } else {
-      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
-    }
-  },
-
-  addNewElement: function(evt) {
-    var spec = this.props.spec;
-    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Element);
-    var newElem = { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", "_appId": appId };
-    log.debug("Adding new element to", spec._appId, newElem);
-    if(spec.CMD_Element == null) {
-      this.props.onComponentChange({$merge: {CMD_Element: [newElem]}});
-    } else {
-      this.props.onComponentChange({CMD_Element: {$push: [newElem]}});
-    }
-  },
-
   /*=== Render functions ===*/
 
   /* main render() function in CMDComponentMixin */
@@ -248,6 +197,59 @@ var CMDComponentForm = React.createClass({
   renderAfterAttributes: function() {
     return this.isOpen() ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div> : null;
   },
+
+  /*=== Functions that handle changes (in this component and its children) ===*/
+
+  propagateValue: function(field, value) {
+    //send 'command' to merge existing spec section with this delta
+    //(see https://facebook.github.io/react/docs/update.html)
+    log.trace("Update component field:", field, "to:", value);
+    this.props.onComponentChange({$merge: {[field]: value}});
+  },
+
+  handleComponentChange: function(index, change) {
+    //an update of the child component at [index] has been requested, push up
+    this.props.onComponentChange({CMD_Component: {[index]: change}});
+  },
+
+  handleElementChange: function(index, change) {
+    var update = {CMD_Element: {[index]: change}};
+    log.trace("Update element", update);
+    this.props.onComponentChange(update);
+  },
+
+  updateComponentValue: function(e) {
+    //a property of this component has changed
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  /*=== Functions that add new children ===*/
+
+  addNewComponent: function(evt) {
+    var spec = this.props.spec;
+    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Component);
+    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
+    log.debug("Adding new component to", spec._appId, newComp);
+    if(spec.CMD_Component == null) {
+      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
+    } else {
+      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
+    }
+  },
+
+  addNewElement: function(evt) {
+    var spec = this.props.spec;
+    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Element);
+    var newElem = { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", "_appId": appId };
+    log.debug("Adding new element to", spec._appId, newElem);
+    if(spec.CMD_Element == null) {
+      this.props.onComponentChange({$merge: {CMD_Element: [newElem]}});
+    } else {
+      this.props.onComponentChange({CMD_Element: {$push: [newElem]}});
+    }
+  },
+
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('component', targetName, val, feedback)

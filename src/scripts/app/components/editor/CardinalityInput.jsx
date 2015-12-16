@@ -30,19 +30,6 @@ var CardinalityInput = React.createClass({
     };
   },
 
-  /**
-   * Creates an array of values between two bounds
-   * @param  {number} min lower bound
-   * @param  {number} max upper bound
-   * @return {Array}     array with all values from min to max (including bouds)
-   */
-  integerOpts: function(min, max) {
-    return $.map($(Array(1+max-min)), function(item, index) {
-      var val = min+index;
-      return <option key={val} value={val}>{val}</option>
-    });
-  },
-
   render: function() {
     var minC = this.props.min == null ? "1" : this.props.min;
     var maxC = this.props.max == null ? "1" : this.props.max;
@@ -56,11 +43,11 @@ var CardinalityInput = React.createClass({
       <div>
         <Input type="select" name="@CardinalityMin" label="Min Occurrences" value={minC}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.props.onValueChange}>
-          {this.integerOpts(0, minUpperBound)}
+          {integerOpts(0, minUpperBound)}
         </Input>
         <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={!this.props.maxOccurrencesAllowed}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.props.onValueChange}>
-          {this.integerOpts(Math.max(1,maxLowerBound),10)}
+          {integerOpts(Math.max(1,maxLowerBound),10)}
           <option value="unbounded">unbounded</option>
         </Input>
       </div>
@@ -69,3 +56,16 @@ var CardinalityInput = React.createClass({
 });
 
 module.exports = CardinalityInput;
+
+/**
+ * Creates an array of values between two bounds
+ * @param  {number} min lower bound
+ * @param  {number} max upper bound
+ * @return {Array}     array with all values from min to max (including bouds)
+ */
+function integerOpts(min, max) {
+  return $.map($(Array(1+max-min)), function(item, index) {
+    var val = min+index;
+    return <option key={val} value={val}>{val}</option>
+  });
+}

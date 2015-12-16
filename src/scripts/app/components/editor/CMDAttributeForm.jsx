@@ -54,25 +54,6 @@ var CMDAttributeForm = React.createClass({
     return true;
   },
 
-  /*=== Functions that handle changes in this component ====*/
-
-  propagateValue: function(field, value) {
-    this.props.onAttributeChange({$merge: {[field]: value}});
-  },
-
-  updateAttributeValue: function(e) {
-    this.propagateValue(e.target.name, e.target.value);
-  },
-
-  handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onAttributeChange({$merge: {
-       Type: type,
-       ValueScheme: valScheme
-     }});
-  },
-
-  /*=== Render functions ===*/
-
   render: function () {
     var attr = this.props.spec;
     var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
@@ -110,6 +91,25 @@ var CMDAttributeForm = React.createClass({
       </div>
     );
   },
+
+  /*=== Functions that handle changes in this component ====*/
+
+  propagateValue: function(field, value) {
+    this.props.onAttributeChange({$merge: {[field]: value}});
+  },
+
+  updateAttributeValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  handleUpdateValueScheme: function(type, valScheme) {
+    this.props.onAttributeChange({$merge: {
+       Type: type,
+       ValueScheme: valScheme
+     }});
+  },
+
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('attribute', targetName, val, feedback)

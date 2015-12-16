@@ -183,7 +183,41 @@ var EditorForm = React.createClass({
     }
   },
 
-  // ACTION HANDLERS FOR CHILD COMPONENTS
+  /**
+   * Required by ComponentUsageMixin
+   */
+  renderUsageModalContent: function(errors, doContinue, doAbort) {
+    return [(
+      <Modal.Body key="body">
+        <div className="modal-desc">
+          <div>The component you are about to save is used by the following component(s) and/or profile(s):
+            <ul>{errors}</ul>
+          </div>
+        </div>
+      </Modal.Body>
+    ), (
+      <Modal.Footer key="footer">
+          <div>Changes in this component will affect the above. Do you want to proceed?</div>
+          <Button onClick={doContinue} bsStyle="primary">Yes</Button>
+          <Button onClick={doAbort}>No</Button>
+      </Modal.Footer>
+    )];
+  },
+
+  isNew: function() {
+    var routes = this.props.routes;
+    if(routes.length == 0) {
+      log.error("No routes");
+    }
+
+    var path = routes[routes.length - 1].path;
+    if(path == null) {
+      log.error("No path for route", lastRoute);
+    }
+    return path.indexOf("new") == 0 || path.indexOf("component/new") == 0 || path.indexOf("profile/new") == 0;
+  },
+
+  /*=== Event handlers for child components ====*/
 
   handleGridSpaceSelect: function(type, space, group) {
     this.getFlux().actions.switchEditorGridSpace(space, group);
@@ -207,7 +241,6 @@ var EditorForm = React.createClass({
         this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.details.linkedComponents);
       }.bind(this)
     );
-
   },
 
   handleToggleSelection: function(id) {
@@ -260,43 +293,11 @@ var EditorForm = React.createClass({
     this.getFlux().actions.collapseAll(spec);
   },
 
-  isNew: function() {
-    var routes = this.props.routes;
-    if(routes.length == 0) {
-      log.error("No routes");
-    }
-
-    var path = routes[routes.length - 1].path;
-    if(path == null) {
-      log.error("No path for route", lastRoute);
-    }
-    return path.indexOf("new") == 0 || path.indexOf("component/new") == 0 || path.indexOf("profile/new") == 0;
-  },
-
-  /**
-   * Required by ComponentUsageMixin
+  /*=== Input validation ====
+   * This ensures that all validating inputs are locally validated once more
+   * when trying to save or publish
    */
-  renderUsageModalContent: function(errors, doContinue, doAbort) {
-    return [(
-      <Modal.Body key="body">
-        <div className="modal-desc">
-          <div>The component you are about to save is used by the following component(s) and/or profile(s):
-            <ul>{errors}</ul>
-          </div>
-        </div>
-      </Modal.Body>
-    ), (
-      <Modal.Footer key="footer">
-          <div>Changes in this component will affect the above. Do you want to proceed?</div>
-          <Button onClick={doContinue} bsStyle="primary">Yes</Button>
-          <Button onClick={doAbort}>No</Button>
-      </Modal.Footer>
-    )];
-  },
 
-  // INPUT VALIDATION
-  // This ensures that all validating inputs are locally validated once more
-  // when trying to save or publish.
   validationListener: {
     add: function(item) {
       log.trace("Adding validation item", item);
