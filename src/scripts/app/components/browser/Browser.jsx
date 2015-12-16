@@ -65,30 +65,6 @@ var Browser = React.createClass({
     return (
         <section id="browser">
           <div className="browser row">
-            <DataGridFilter
-              value={this.state.items.filterText}
-              onChange={this.handleFilterTextChange} />
-            <SpaceSelector
-              type={this.state.items.type}
-              space={this.state.items.space}
-              teams={this.state.team.teams}
-              selectedTeam={this.state.items.team}
-              multiSelect={this.state.selection.allowMultiple}
-              validUserSession={this.state.auth.authState.uid != null}
-              onSpaceSelect={this.handleSpaceSelect}
-              onToggleMultipleSelect={this.handleToggleMultipleSelect} />
-            <BrowserMenuGroup
-                type={this.state.items.type}
-                space={this.state.items.space}
-                items={this.state.selection.selectedItems}
-                teams={this.state.team.teams}
-                selectedTeam={this.state.items.team}
-                loggedIn={this.state.auth.authState.uid != null}
-                multiSelect={this.state.selection.allowMultiple}
-                moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
-                moveToTeam={this.handleMoveToTeam}
-                deleteComp={this.handleDelete}
-              />
             <DataGrid
               items={this.state.items.items}
               deletedItems={this.state.items.deleted}
@@ -101,6 +77,32 @@ var Browser = React.createClass({
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
               />
+            <div className="gridControls">
+              <DataGridFilter
+                value={this.state.items.filterText}
+                onChange={this.handleFilterTextChange} />
+              <SpaceSelector
+                type={this.state.items.type}
+                space={this.state.items.space}
+                teams={this.state.team.teams}
+                selectedTeam={this.state.items.team}
+                multiSelect={this.state.selection.allowMultiple}
+                validUserSession={this.state.auth.authState.uid != null}
+                onSpaceSelect={this.handleSpaceSelect}
+                onToggleMultipleSelect={this.handleToggleMultipleSelect} />
+              <BrowserMenuGroup
+                  type={this.state.items.type}
+                  space={this.state.items.space}
+                  items={this.state.selection.selectedItems}
+                  teams={this.state.team.teams}
+                  selectedTeam={this.state.items.team}
+                  loggedIn={this.state.auth.authState.uid != null}
+                  multiSelect={this.state.selection.allowMultiple}
+                  moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
+                  moveToTeam={this.handleMoveToTeam}
+                  deleteComp={this.handleDelete}
+                />
+            </div>
           </div>
           <div className="viewer row">
             {viewer}
