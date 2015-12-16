@@ -155,6 +155,13 @@ var EditorForm = React.createClass({
               />
           </div>
           <div className="browserGroup">
+            <DataGrid
+              multiSelect={false}
+              editMode={true}
+              items={this.state.editor.grid.items}
+              loading={this.state.editor.grid.loading}
+              onRowSelect={this.handleGridRowSelect}
+              />
             <div className="gridControls">
               <DataGridFilter
                 value={this.state.editor.grid.filterText}
@@ -170,13 +177,6 @@ var EditorForm = React.createClass({
                 onSpaceSelect={this.handleGridSpaceSelect}
                 onToggleMultipleSelect={null} />
             </div>
-            <DataGrid
-              multiSelect={false}
-              editMode={true}
-              items={this.state.editor.grid.items}
-              loading={this.state.editor.grid.loading}
-              onRowSelect={this.handleGridRowSelect}
-              />
           </div>
         </div>
       );

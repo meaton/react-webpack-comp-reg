@@ -19,6 +19,33 @@
     height: 30%;
     overflow-y: auto;
     border-top-style: groove;
+    position: relative;
+
+    & > div {
+
+      position: absolute;
+      top: 0px;
+      width: 100%;
+
+      &.gridControls {
+        height: 3em;
+        overflow: visible;
+        z-index: 100;
+      }
+
+      &.grid {
+        z-index: 0;
+        padding-top: 3em;
+        height: 100%;
+
+        //table container should not scroll
+        overflow-y: hidden;
+        tbody {
+          //scroll table
+          overflow-y: auto;
+        }
+      }
+    }
   }
 
   .CMDComponent, .CMDElement, .CMDAttribute {
@@ -51,19 +78,6 @@
     &.editor-items-leave-active {
       opacity: 0.01;
       transition: opacity 300ms ease-in;
-    }
-  }
-
-  .gridControls {
-    height: 20%;
-    overflow: hidden;
-  }
-
-  .grid {
-    height: 80%;
-    overflow-y: hidden;
-    tbody {
-      overflow-y: auto;
     }
   }
 }
