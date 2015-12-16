@@ -60,7 +60,7 @@ var CardinalityInput = React.createClass({
         </Input>
         <Input type="select" name="@CardinalityMax" label="Max Occurrences" value={maxC} disabled={!this.props.maxOccurrencesAllowed}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" onChange={this.props.onValueChange}>
-          {this.integerOpts(maxLowerBound,10)}
+          {this.integerOpts(Math.max(1,maxLowerBound),10)}
           <option value="unbounded">unbounded</option>
         </Input>
       </div>
