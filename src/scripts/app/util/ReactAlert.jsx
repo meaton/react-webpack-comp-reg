@@ -64,13 +64,31 @@ module.exports = {
         }
       };
 
+      var bodyContent;
+      if (typeof renderBodyContent === "function") {
+        bodyContent = renderBodyContent(opts);
+      } else if (typeof renderBodyContent === "object") {
+        bodyContent = renderBodyContent;
+      } else {
+        bodyContent = null;
+      }
+
+      var footerContent;
+      if (typeof renderFooterContent === "function") {
+        footerContent = renderFooterContent(opts);
+      } else if (typeof renderFooterContent === "object") {
+        footerContent = renderFooterContent;
+      } else {
+        footerContent = null;
+      }
+
       return (
         <Modal.Dialog enforceFocus={true} backdrop={true}>
           <Modal.Header closeButton={true} onHide={opts.closeAlert}>
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
-          {renderBodyContent != null && (<Modal.Body>{renderBodyContent(opts)}</Modal.Body>)}
-          {renderFooterContent != null && (<Modal.Footer>{renderFooterContent(opts)}</Modal.Footer>)}
+          {bodyContent != null && (<Modal.Body>{bodyContent}</Modal.Body>)}
+          {footerContent != null && (<Modal.Footer>{footerContent}</Modal.Footer>)}
         </Modal.Dialog>
     )});
   },
