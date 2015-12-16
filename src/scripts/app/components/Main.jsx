@@ -35,6 +35,10 @@ var Main = React.createClass({
     this.checkAuthState();
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
+    // check when window/tab focuses
+    $(window).focus(function () {
+      this.checkAuthState();
+    }.bind(this));
   },
 
   componentWillUnmount: function() {
