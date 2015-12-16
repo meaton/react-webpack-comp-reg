@@ -19,7 +19,6 @@ var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
 
 var ReactAlert = require('../../util/ReactAlert');
-var Clipboard = require('clipboard');
 
 require('../../../../styles/Browser.sass');
 
@@ -148,30 +147,17 @@ var Browser = React.createClass({
   },
 
   showComponentInfo: function(item) {
-    var contentId = "componentInfoModal";
-
-    var clipboard; //initialise after dialogue shown (the DOM elements need to exist)
     ReactAlert.showModalAlert(
       "Info for " + item.name,
-      function() {
-        return (<ComponentInfo
-          id={contentId}
+      <ComponentInfo
+          id="componentInfoModal"
           className="modal-desc component-info"
           item={item}
           type={this.state.items.type}
           space={this.state.items.space}
           team={this.state.items.team}
-           />);
-      }.bind(this),
-      null, //no footer
-      function() {
-        if(clipboard) {
-          //as advised...
-          clipboard.destroy();
-        }
-      }
+           />
     );
-    clipboard = new Clipboard("#" + contentId + " .btn");
   }
 });
 

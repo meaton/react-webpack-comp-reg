@@ -16,11 +16,11 @@ module.exports = {
   showMessage: function(title, message) {
     log.debug("Alert: [", title, "]", message);
 
-    var renderBodyContent = function() { return (
+    var renderBodyContent = (
       <div className="modal-desc">
         <div>{message}</div>
       </div>
-    )};
+    );
 
     var renderFooterContent = function(opts) { return (
       <Button onClick={opts.closeAlert}>Ok</Button>
@@ -30,12 +30,11 @@ module.exports = {
   },
 
   showConfirmationDialogue: function(title, message, onYes, onNo) {
-
-    var renderBodyContent = function() { return (
+    var renderBodyContent = (
       <div className="modal-desc">
         <div>{message}</div>
       </div>
-    )};
+    );
 
     var renderFooterContent = function(opts) { return (
       <div>

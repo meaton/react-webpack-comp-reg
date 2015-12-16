@@ -4,6 +4,8 @@ var React = require("react");
 var Constants = require("../../constants");
 var Config = require('../../../config');
 
+var Clipboard = require('clipboard');
+
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
@@ -12,7 +14,7 @@ var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
 
 require('../../../../styles/Browser.sass');
 
-var Browser = React.createClass({
+var ComponentInfo = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   propTypes: {
@@ -21,6 +23,25 @@ var Browser = React.createClass({
     space: React.PropTypes.string.isRequired,
     type: React.PropTypes.string.isRequired,
     team: React.PropTypes.string
+  },
+
+  getInitialState: function() {
+    return {clipboard: null};
+  },
+
+  componentDidMount: function() {
+    var cb = new Clipboard("#" + this.props.id + " .btn");
+    log.debug("Init clipboard", cb);
+    this.setState({clipboard: cb})
+  },
+
+  componentWillUnmount: function() {
+    if(this.state.clipboard != null) {
+      log.debug("Destroying clipboard", this.state.clipboard);
+      //as advised...
+      this.state.clipboard.destroy();
+      this.setState({clipboard: null});
+    }
   },
 
   render: function(item, contentId) {
@@ -65,4 +86,4 @@ var Browser = React.createClass({
   }
 });
 
-module.exports = Browser;
+module.exports = ComponentInfo;
