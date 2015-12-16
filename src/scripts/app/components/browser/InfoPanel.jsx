@@ -19,6 +19,7 @@ var ComponentSpecView = require('./ComponentSpecView');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
+var classNames = require('classnames');
 
 require('../../../../styles/InfoPanel.sass');
 
@@ -42,7 +43,8 @@ var InfoPanel = React.createClass({
     loggedIn: React.PropTypes.bool,
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
-    onComponentToggle: React.PropTypes.func
+    onComponentToggle: React.PropTypes.func,
+    loading: React.PropTypes.bool.isRequired
   },
 
   getInitialState: function() {
@@ -120,19 +122,26 @@ var InfoPanel = React.createClass({
       commentsCount = this.props.item.commentsCount;
     }
 
+    var isProfile = ComponentSpec.isProfile(item);
+    var classes = classNames("componentInfoPanel", {"loading": this.props.loading, "profile": isProfile, "component": !isProfile});
+    var loadingSpinner = this.props.loading ? (<div className="loader spinner-loader">Loading...</div>):null;
+
     return (
-      <Tabs activeKey={this.props.activeView} onSelect={this.refreshTab} className={ComponentSpec.isProfile(item)?"profile":"component"}>
-        <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view">
+      <Tabs activeKey={this.props.activeView} onSelect={this.refreshTab} className={classes}>
+        <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={this.props.loading}>
+          {loadingSpinner}
           {viewer}
         </Tab>
-        <Tab eventKey={Constants.INFO_VIEW_XML} title="xml">
-            {(this.props.specXml != null) ?
-            <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
-              : null }
+        <Tab eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={this.props.loading}>
+          {loadingSpinner}
+          {(this.props.specXml != null) ?
+          <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
+            : null }
         </Tab>
-        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + commentsCount + ")"}>
-            {this.renderComments()}
-            {commentsForm}
+        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + commentsCount + ")"} disabled={this.props.loading}>
+          {loadingSpinner}
+          {this.renderComments()}
+          {commentsForm}
         </Tab>
       </Tabs>
     );
