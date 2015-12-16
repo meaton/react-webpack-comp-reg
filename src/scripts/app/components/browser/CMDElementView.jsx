@@ -34,6 +34,7 @@ var CMDElementView = React.createClass({
     closeAll: React.PropTypes.bool,
     expansionState: React.PropTypes.object
   },
+
   getDefaultProps: function() {
     return {
       open: true,
@@ -41,6 +42,7 @@ var CMDElementView = React.createClass({
       closeAll: false
     };
   },
+  
   render: function () {
     var self = this;
     var attrList = null;

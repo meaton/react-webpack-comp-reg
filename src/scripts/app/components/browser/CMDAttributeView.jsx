@@ -22,6 +22,7 @@ var ValueScheme = require('../ValueScheme');
 */
 var CMDAttributeView = React.createClass({
   mixins: [ImmutableRenderMixin],
+  
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     open: React.PropTypes.bool,
@@ -29,6 +30,7 @@ var CMDAttributeView = React.createClass({
     closeAll: React.PropTypes.bool,
     key: React.PropTypes.string
   },
+
   getDefaultProps: function() {
     return {
       open: true,
@@ -36,6 +38,7 @@ var CMDAttributeView = React.createClass({
       closeAll: false
     };
   },
+
   render: function () {
     var attr = this.props.spec;
     var attr_val = <ValueScheme obj={attr} enabled={false} />

@@ -41,6 +41,10 @@ var CMDComponentView = React.createClass({
     return !this.props.isLinked;
   },
 
+  /*=== Render functions ===*/
+
+  /* main render() function in CMDComponentMixin */
+  
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);

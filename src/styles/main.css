@@ -98,7 +98,7 @@ a { cursor: pointer; color: #999; }
   padding-top: .5em;
 }
 
-.main .viewer > div.show, .main .viewer > div.show > div {
+.main .viewer > div {
   height: 100%;
 }
 

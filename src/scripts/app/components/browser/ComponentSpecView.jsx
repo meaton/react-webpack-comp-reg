@@ -21,27 +21,31 @@ require('../../../../styles/ComponentViewer.sass');
 * @constructor
 */
 var ComponentSpec = React.createClass({
+  mixins: [ImmutableRenderMixin],
+
+  contextTypes: {
+    router: React.PropTypes.func,
+  },
+
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
     onComponentToggle: React.PropTypes.func
   },
-  contextTypes: {
-    router: React.PropTypes.func,
-  },
-  getInitialState: function() {
-    return { childElements: null,
-             childComponents: null
-    };
-  },
-  mixins: [ImmutableRenderMixin],
 
   getDefaultProps: function() {
     return {
       domains: require('../../../domains.js')
     };
   },
+
+  getInitialState: function() {
+    return { childElements: null,
+             childComponents: null
+    };
+  },
+
   render: function() {
     var item = this.props.spec;
 

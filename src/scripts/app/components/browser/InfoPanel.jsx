@@ -73,19 +73,6 @@ var InfoPanel = React.createClass({
     return true;
   },
 
-  refreshTab: function(index) {
-    // do a reload depending on selected tab
-    if(index === Constants.INFO_VIEW_SPEC) {
-      this.props.loadSpec();
-    }
-    if(index === Constants.INFO_VIEW_XML) {
-      this.props.loadSpecXml();
-    }
-    if(index == Constants.INFO_VIEW_COMMENTS) {
-      this.props.loadComments();
-    }
-  },
-
   render: function () {
     var item = this.props.item;
     var xmlElement = null;
@@ -172,6 +159,19 @@ var InfoPanel = React.createClass({
       );
     else
       return React.createElement('div', {className: "comment empty"}, "No Comments");
+  },
+
+  refreshTab: function(index) {
+    // do a reload depending on selected tab
+    if(index === Constants.INFO_VIEW_SPEC) {
+      this.props.loadSpec();
+    }
+    if(index === Constants.INFO_VIEW_XML) {
+      this.props.loadSpecXml();
+    }
+    if(index == Constants.INFO_VIEW_COMMENTS) {
+      this.props.loadComments();
+    }
   },
 
   handleChangeComment: function(evt) {

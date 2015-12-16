@@ -13,11 +13,12 @@ var InfoPanel = require('./InfoPanel.jsx');
 var ExpansionState = require('../../service/ExpansionState');
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 
+var classNames = require('classnames');
+
 /**
 * ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
 * @constructor
-* @mixes Loader
-* @mixes LoadingMixin
+* @mixes ComponentViewMixin
 */
 var ComponentDetailsOverview = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore"), ComponentViewMixin],
@@ -34,6 +35,28 @@ var ComponentDetailsOverview = React.createClass({
   propTypes: {
     item: React.PropTypes.object,
     type: React.PropTypes.string
+  },
+
+  render: function() {
+    return this.props.item != null && (
+      <InfoPanel  item={this.props.item}
+                  activeView={this.state.details.activeView}
+                  spec={this.state.details.spec}
+                  specXml={this.state.details.xml}
+                  comments={this.state.details.comments}
+                  newComment={this.state.details.newComment}
+                  loadSpec={this.loadSpec}
+                  loadSpecXml={this.loadXml}
+                  loadComments={this.loadComments}
+                  loading={this.state.details.loading}
+                  expansionState={this.state.details.expansionState}
+                  linkedComponents={this.state.details.linkedComponents}
+                  onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+                  deleteComment={this.deleteComment}
+                  saveComment={this.saveComment}
+                  loggedIn={this.state.auth.authState.authenticated}
+      />
+    );
   },
 
   loadSpec: function () {
@@ -54,36 +77,6 @@ var ComponentDetailsOverview = React.createClass({
 
   deleteComment: function(commentId) {
     this.getFlux().actions.deleteComment(this.props.type, this.props.item.id, commentId);
-  },
-
-  render: function() {
-    var hideClass = (this.props.item != null) ? "show" : "hide";
-    var infoPanel = (this.props.item != null) ?
-      <InfoPanel  item={this.props.item}
-                  activeView={this.state.details.activeView}
-                  spec={this.state.details.spec}
-                  specXml={this.state.details.xml}
-                  comments={this.state.details.comments}
-                  newComment={this.state.details.newComment}
-                  loadSpec={this.loadSpec}
-                  loadSpecXml={this.loadXml}
-                  loadComments={this.loadComments}
-                  loading={this.state.details.loading}
-                  expansionState={this.state.details.expansionState}
-                  linkedComponents={this.state.details.linkedComponents}
-                  onComponentToggle={this.doToggle /* from ComponentViewMixin */}
-                  deleteComment={this.deleteComment}
-                  saveComment={this.saveComment}
-                  loggedIn={this.state.auth.authState.authenticated}
-      />
-      : null;
-
-
-    return (
-      <div className={hideClass}>
-        {infoPanel}
-      </div>
-    );
   }
 
 });

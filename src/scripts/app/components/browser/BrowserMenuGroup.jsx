@@ -40,6 +40,7 @@ var BrowserMenuGroup = React.createClass({
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
   },
+
   getDefaultProps: function() {
     return {
       items: {},
@@ -47,32 +48,7 @@ var BrowserMenuGroup = React.createClass({
       moveToTeam: false
     };
   },
-  generateDeleteModal: function() {
-    var deleteIdList = [];
-    var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
-    if(selectionCount > 0)
-      Object.keys(this.props.items).forEach(function(id, index) {
-        var name = this.props.items[id].name;
-        deleteIdList.push(React.createElement('li', { key: id }, name));
-      }.bind(this));
 
-    var warnPublic = (this.props.space === Constants.SPACE_PUBLISHED)?(
-      <p>
-        <strong>Note</strong>: deletion from the public space is only allowed
-        by the owner of the item within one month after publication. If these
-        criteria are not met, you will get an error message that says
-        "forbidden".
-      </p>
-    ):null;
-
-    return (
-      <div className="modal-desc">You will delete the following item(s):
-        <ul>{deleteIdList}</ul>
-        <p>This cannot be undone.</p>
-        {warnPublic}
-      </div>
-    );
-  },
   render: function () {
     var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
@@ -118,9 +94,36 @@ var BrowserMenuGroup = React.createClass({
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
-            desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
+            desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
           {this.props.moveToTeamEnabled && this.renderMoveToTeam(selectionCount > 0)}
         </ButtonGroup>
+    );
+  },
+  
+  renderDeleteModal: function() {
+    var deleteIdList = [];
+    var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
+    if(selectionCount > 0)
+      Object.keys(this.props.items).forEach(function(id, index) {
+        var name = this.props.items[id].name;
+        deleteIdList.push(React.createElement('li', { key: id }, name));
+      }.bind(this));
+
+    var warnPublic = (this.props.space === Constants.SPACE_PUBLISHED)?(
+      <p>
+        <strong>Note</strong>: deletion from the public space is only allowed
+        by the owner of the item within one month after publication. If these
+        criteria are not met, you will get an error message that says
+        "forbidden".
+      </p>
+    ):null;
+
+    return (
+      <div className="modal-desc">You will delete the following item(s):
+        <ul>{deleteIdList}</ul>
+        <p>This cannot be undone.</p>
+        {warnPublic}
+      </div>
     );
   },
 
