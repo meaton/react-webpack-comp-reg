@@ -6,8 +6,6 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var Config = require('../../../config');
-
 // Bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
@@ -18,8 +16,7 @@ var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
 var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
-
-var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+var ComponentInfo = require('./ComponentInfo');
 
 var ReactAlert = require('../../util/ReactAlert');
 var Clipboard = require('clipboard');
@@ -156,7 +153,16 @@ var Browser = React.createClass({
     var clipboard; //initialise after dialogue shown (the DOM elements need to exist)
     ReactAlert.showModalAlert(
       "Info for " + item.name,
-      this.renderComponentInfoBody.bind(null, item, contentId),
+      function() {
+        return (<ComponentInfo
+          id={contentId}
+          className="modal-desc component-info"
+          item={item}
+          type={this.state.items.type}
+          space={this.state.items.space}
+          team={this.state.items.team}
+           />);
+      }.bind(this),
       null, //no footer
       function() {
         if(clipboard) {
@@ -166,43 +172,6 @@ var Browser = React.createClass({
       }
     );
     clipboard = new Clipboard("#" + contentId + " .btn");
-  },
-
-  renderComponentInfoBody: function(item, contentId) {
-    var bookmarkLink = Config.webappUrl + "/?itemId=" + item.id + "&registrySpace=" + ComponentRegistryClient.getRegistrySpacePath(this.state.items.space);
-    if(this.state.items.space === Constants.SPACE_TEAM) {
-      bookmarkLink += "&groupId=" + this.state.items.team;
-    }
-    var xsdLink = this.state.items.type === Constants.TYPE_PROFILE ? ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd" : null;
-
-    //not setting onChange to the inputs will generate a warning unless readOnly
-    //is set, which does not yield the desired behaviour, therefore a noop function is passed
-    var noop = function() {};
-
-    return (
-      <div id={contentId} className="modal-desc component-info">
-        <div>
-          <a href={bookmarkLink}>Bookmark link:</a>
-          <div>
-            <input id="bookmarkLink" type="text" value={bookmarkLink} onChange={noop} />
-            <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
-              <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
-            </button>
-          </div>
-        </div>
-        {xsdLink != null && (
-          <div>
-            <a href={xsdLink}>Link to xsd:</a>
-            <div>
-              <input id="xsdLink" type="text" value={xsdLink} onChange={noop} />
-              <button type="button" className="btn btn-default" data-clipboard-target="#xsdLink" title="Copy to clipboard">
-                <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
   }
 });
 
