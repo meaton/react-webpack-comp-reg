@@ -60,7 +60,7 @@ var ActionButtons = React.createClass({
             </div>
           }
           {this.props.onRemove &&
-            <a className="remove" onClick={this.props.onRemove}><span className="glyphicon glyphicon-remove-circle"></span></a>
+            <a className="remove" title="Remove" onClick={this.props.onRemove}><span className="glyphicon glyphicon-remove-circle"></span></a>
           }
         </div>
       </div>
