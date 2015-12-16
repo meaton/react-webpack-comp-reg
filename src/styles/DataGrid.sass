@@ -1,17 +1,27 @@
 .grid {
 
-  &.loading {
-    table {
-      background-color: #eee;
-      opacity: .2;
-    }
+  table {
+    transition: opacity .2s ease-in-out .2s, background-color .2s ease-in-out .2s;
+    background-color: #fff;
+    opacity: 1;
+  }
+  &.loading table {
+    background-color: #eee;
+    opacity: .2;
+  }
 
-    div.loader {
-      float: left;
-      position: relative;
-      left: 50%;
-      top: 50%;
-    }
+  div.loader {
+    transition: opacity .2s ease-in-out .5s;
+    display: none;
+    opacity: 0;
+    float: left;
+    position: relative;
+    left: 50%;
+    top: 50%;
+  }
+  &.loading div.loader {
+    display: block;
+    opacity: 1;
   }
 
   table {

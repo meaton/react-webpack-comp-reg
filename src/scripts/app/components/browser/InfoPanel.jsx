@@ -124,7 +124,7 @@ var InfoPanel = React.createClass({
 
     var isProfile = ComponentSpec.isProfile(item);
     var classes = classNames("componentInfoPanel", {"loading": this.props.loading, "profile": isProfile, "component": !isProfile});
-    var loadingSpinner = this.props.loading ? (<div className="loader spinner-loader">Loading...</div>):null;
+    var loadingSpinner = <div className="loader spinner-loader">Loading...</div>;
 
     return (
       <Tabs activeKey={this.props.activeView} onSelect={this.refreshTab} className={classes}>

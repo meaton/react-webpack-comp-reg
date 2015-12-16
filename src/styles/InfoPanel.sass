@@ -1,15 +1,35 @@
-.componentInfoPanel.loading {
-    .tab-content, .nav li {
-      background-color: #eee;
-      opacity: .2;
-    }
+.componentInfoPanel {
 
-    div.loader {
-      float: right;
-      position: relative;
-      right: 1em;
-      top: 1em;
-    }
+  //content tab
+  .tab-content, .nav li {
+    //not loading
+    transition: opacity .2s ease-in-out .2s, background-color .2s ease-in-out .2s;
+    background-color: #fff;
+    opacity: 1;
+  }
+  &.loading .tab-content, &.loading .nav li {
+    //loading
+    background-color: #eee;
+    opacity: .2;
+  }
+
+  //loading indicator
+  div.loader {
+    //not loading
+    transition: opacity .2s ease-in-out .5s;
+    display: none;
+    opacity: 0;
+    float: right;
+    position: relative;
+    right: 1em;
+    top: 1em;
+  }
+  &.loading div.loader {
+    //loading
+    display: block;
+    opacity: 1;
+  }
+
 }
 #commentsTab {
 
