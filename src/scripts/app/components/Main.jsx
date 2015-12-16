@@ -2,9 +2,12 @@ var log = require("loglevel");
 
 var React = require("react"),
     Constants = require("../constants"),
-    Fluxxor = require("fluxxor"),
-    FluxMixin = Fluxxor.FluxMixin(React),
-    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+    Fluxxor = require("fluxxor");
+
+// Mixins
+var FluxMixin = Fluxxor.FluxMixin(React);
+var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+var WindowFocusMixin = require('../mixins/WindowFocusMixin');
 
 // Components
 var AuthState = require("./AuthState.jsx").AuthState;
@@ -20,7 +23,7 @@ var Alert = require('react-bootstrap/lib/Alert');
 */
 var Main = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore")],
+  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore"), WindowFocusMixin],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -35,10 +38,10 @@ var Main = React.createClass({
     this.checkAuthState();
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
-    // check when window/tab focuses
-    $(window).focus(function () {
-      this.checkAuthState();
-    }.bind(this));
+  },
+
+  onWindowFocus: function() {
+    this.checkAuthState();
   },
 
   componentWillUnmount: function() {
