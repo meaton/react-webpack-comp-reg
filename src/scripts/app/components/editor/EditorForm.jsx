@@ -155,19 +155,21 @@ var EditorForm = React.createClass({
               />
           </div>
           <div className="browserGroup">
-            <DataGridFilter
-              value={this.state.editor.grid.filterText}
-              onChange={this.handleGridFilterTextChange} />
-            <SpaceSelector
-              type={Constants.TYPE_COMPONENTS}
-              space={this.state.editor.grid.space}
-              teams={this.state.team.teams}
-              selectedTeam={this.state.editor.grid.team}
-              allowMultiSelect={false}
-              validUserSession={true}
-              componentsOnly={true}
-              onSpaceSelect={this.handleGridSpaceSelect}
-              onToggleMultipleSelect={null} />
+            <div className="gridControls">
+              <DataGridFilter
+                value={this.state.editor.grid.filterText}
+                onChange={this.handleGridFilterTextChange} />
+              <SpaceSelector
+                type={Constants.TYPE_COMPONENTS}
+                space={this.state.editor.grid.space}
+                teams={this.state.team.teams}
+                selectedTeam={this.state.editor.grid.team}
+                allowMultiSelect={false}
+                validUserSession={true}
+                componentsOnly={true}
+                onSpaceSelect={this.handleGridSpaceSelect}
+                onToggleMultipleSelect={null} />
+            </div>
             <DataGrid
               multiSelect={false}
               editMode={true}

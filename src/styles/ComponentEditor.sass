@@ -1,30 +1,8 @@
-// $bottomPaneHeight: 345px;
-// $gridHeight: 380px;
-// $tabContentHeight: 300px;
-//
-// .browser {
-//   padding: 8px;
-// }
-//
-// .viewer {
-//   padding: 8px;
-//   min-height: $bottomPaneHeight;
-//   overflow-x: hidden;
-//   overflow-y: hidden;
-// }
-//
-// .viewer .tab-content {
-//   height: $tabContentHeight;
-//   overflow-y: auto;
-// }
-//
 #editor {
-  margin-top: 1em;
   height: 100%;
   background: #fff;
   color: #999;
-  overflow: auto;
-  padding-bottom: 4em;
+  overflow: hidden;
   position: relative;
 
   .editorContainer {
@@ -75,6 +53,19 @@
       transition: opacity 300ms ease-in;
     }
   }
+
+  .gridControls {
+    height: 20%;
+    overflow: hidden;
+  }
+
+  .grid {
+    height: 80%;
+    overflow-y: hidden;
+    tbody {
+      overflow-y: auto;
+    }
+  }
 }
 
 form#editComponent {
@@ -116,18 +107,5 @@ div.processing {
   .input-group-btn:last-child>.btn {
     margin-left: 1em;
   }
+
 }
-
-
-// .editor .ComponentViewer {
-//   overflow-x: hidden;
-//   overflow-y: auto;
-// }
-//
-// .editor .component-grid {
-//   overflow: hidden;
-// }
-//
-// .editor .actionMenu.btn-group {
-//   padding: 8px;
-// }
