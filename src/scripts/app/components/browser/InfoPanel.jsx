@@ -5,17 +5,13 @@ var log = require('loglevel');
 var React = require('react'),
     Constants = require("../../constants");
 
-var moment = require('moment-timezone');
-
 //bootstrap
-var Input = require('react-bootstrap/lib/Input');
-var ButtonInput = require('react-bootstrap/lib/ButtonInput');
 var Tabs = require('react-bootstrap/lib/Tabs');
 var Tab = require('react-bootstrap/lib/Tab');
-var Panel = require('react-bootstrap/lib/Panel');
 
 //components
 var ComponentSpecView = require('./ComponentSpecView');
+var Comments = require('./Comments');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -47,10 +43,6 @@ var InfoPanel = React.createClass({
     loading: React.PropTypes.bool.isRequired
   },
 
-  getInitialState: function() {
-    return {comment: ''};
-  },
-
   componentDidMount: function() {
     // component appears for the first time, load the current tab
     this.refreshTab(this.props.activeView);
@@ -66,48 +58,18 @@ var InfoPanel = React.createClass({
       return false;
     } //else something else has changed, update normally
 
-    if(this.props.newComment != nextProps.newComment) {
-      this.setState({comment: nextProps.newComment});
-    }
-
     return true;
   },
 
   render: function () {
+    if(this.props.spec == null) {
+      return null;
+    }
+
     var item = this.props.item;
     var xmlElement = null;
     var viewer = null;
 
-    if(this.props.spec == null)
-      return null;
-    else
-      viewer = (
-        <ComponentSpecView
-          spec={this.props.spec}
-          onComponentToggle={this.props.onComponentToggle}
-          expansionState={this.props.expansionState}
-          linkedComponents={this.props.linkedComponents}
-          />
-      );
-
-    // comments form and submission
-    var commentsForm = (this.props.loggedIn) ? (
-      <form name="commentsBox" onSubmit={this.saveComment}>
-        <Input onChange={this.handleChangeComment} ref="commentText" value={this.state.comment} id="commentText" type='textarea' label='Add Comment' placeholder='' cols="30" rows="5" />
-        <ButtonInput type='submit' value='Submit' />
-      </form>
-    ) : (
-      <p className="loginToPost">Login to enter a comment</p>
-    );
-
-    var commentsCount;
-    if(this.props.activeView == Constants.INFO_VIEW_COMMENTS) {
-      // most accurate IF the current tab is the comments tab (which means that the comments have been loaded)
-      commentsCount = this.props.comments.length;
-    } else {
-      // we got this from the item listing
-      commentsCount = this.props.item.commentsCount;
-    }
 
     var isProfile = ComponentSpec.isProfile(item);
     var classes = classNames("componentInfoPanel", {"loading": this.props.loading, "profile": isProfile, "component": !isProfile});
@@ -117,7 +79,12 @@ var InfoPanel = React.createClass({
       <Tabs activeKey={this.props.activeView} onSelect={this.refreshTab} className={classes}>
         <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={this.props.loading}>
           {loadingSpinner}
-          {viewer}
+          <ComponentSpecView
+            spec={this.props.spec}
+            onComponentToggle={this.props.onComponentToggle}
+            expansionState={this.props.expansionState}
+            linkedComponents={this.props.linkedComponents}
+            />
         </Tab>
         <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={this.props.loading}>
           {loadingSpinner}
@@ -125,40 +92,29 @@ var InfoPanel = React.createClass({
           <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
             : null }
         </Tab>
-        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + commentsCount + ")"} disabled={this.props.loading}>
+        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={this.props.loading}>
           {loadingSpinner}
-          {this.renderComments()}
-          {commentsForm}
+          <Comments
+            item={this.props.item}
+            loggedIn={this.props.loggedIn}
+            newComment={this.props.newComment}
+            comments={this.props.comments}
+            saveComment={this.props.saveComment}
+            deleteComment={this.props.deleteComment}
+            />
         </Tab>
       </Tabs>
     );
   },
 
-  renderComments: function() {
-    var comments = this.props.comments;
-    var isLoggedIn = this.props.loggedIn;
-    var commentDelete = this.deleteComment;
-
-    if(comments != null && comments.length > 0)
-      return (
-        comments.map(function(comment, index) {
-          var deleteLink = (isLoggedIn && comment.canDelete === "true" && comment.id != null) ? (
-            <span>&nbsp;<a className="delete" onClick={commentDelete.bind(this, comment)}>[delete]</a></span>
-          ) : null;
-
-          return (
-            <div key={"comment-" + index} className="comment">
-              <span className="comment-name">{comment.userName}
-              </span><span> - </span>
-              <span className="comment-date">{ (comment.commentDate == null) ? null: moment(comment.commentDate).format('LLL') }</span>
-              {deleteLink}
-              <p className="comment-comments">{comment.comments}</p>
-            </div>
-          );
-        }.bind(this))
-      );
-    else
-      return React.createElement('div', {className: "comment empty"}, "No Comments");
+  getCommentsCount: function() {
+    if(this.props.activeView == Constants.INFO_VIEW_COMMENTS) {
+      // most accurate IF the current tab is the comments tab (which means that the comments have been loaded)
+      return this.props.comments.length;
+    } else {
+      // we got this from the item listing
+      return this.props.item.commentsCount;
+    }
   },
 
   refreshTab: function(index) {
@@ -172,21 +128,6 @@ var InfoPanel = React.createClass({
     if(index == Constants.INFO_VIEW_COMMENTS) {
       this.props.loadComments();
     }
-  },
-
-  handleChangeComment: function(evt) {
-    this.setState({comment: evt.target.value});
-  },
-
-  saveComment: function(evt) {
-    evt.preventDefault();
-    log.debug("Post comment", this.state.comment);
-    this.props.saveComment(this.state.comment);
-  },
-
-  deleteComment: function(comment) {
-    log.debug("Delete comment", comment.id, comment);
-    this.props.deleteComment(comment.id);
   }
 });
 
