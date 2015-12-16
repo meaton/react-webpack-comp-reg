@@ -150,7 +150,6 @@ var Browser = React.createClass({
     ReactAlert.showModalAlert(
       "Info for " + item.name,
       <ComponentInfo
-          id="componentInfoModal"
           className="modal-desc component-info"
           item={item}
           type={this.state.items.type}

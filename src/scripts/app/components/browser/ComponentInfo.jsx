@@ -1,6 +1,7 @@
 var log = require("loglevel");
 
 var React = require("react");
+var ReactDOM = require("react-dom");
 var Constants = require("../../constants");
 var Config = require('../../../config');
 
@@ -18,7 +19,6 @@ var ComponentInfo = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   propTypes: {
-    id: React.PropTypes.string.isRequired,
     item: React.PropTypes.object.isRequired,
     space: React.PropTypes.string.isRequired,
     type: React.PropTypes.string.isRequired,
@@ -30,14 +30,14 @@ var ComponentInfo = React.createClass({
   },
 
   componentDidMount: function() {
-    var cb = new Clipboard("#" + this.props.id + " .btn");
-    log.debug("Init clipboard", cb);
+    var cb = new Clipboard("#" + ReactDOM.findDOMNode(this).id + " .btn");
+    log.trace("Init clipboard", cb);
     this.setState({clipboard: cb})
   },
 
   componentWillUnmount: function() {
     if(this.state.clipboard != null) {
-      log.debug("Destroying clipboard", this.state.clipboard);
+      log.trace("Destroying clipboard", this.state.clipboard);
       //as advised...
       this.state.clipboard.destroy();
       this.setState({clipboard: null});
@@ -60,7 +60,7 @@ var ComponentInfo = React.createClass({
     var noop = function() {};
 
     return (
-      <div id={this.props.id} className={this.props.className}>
+      <div id="componentInfoModal" className={this.props.className}>
         <div>
           <a href={bookmarkLink}>Bookmark link:</a>
           <div>

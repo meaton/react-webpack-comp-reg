@@ -117,7 +117,7 @@ module.exports = {
   },
 
   renderAlert: function(instance, elementId) {
-    log.debug("Render alert at", elementId, instance);
+    log.trace("Render alert at", elementId, instance);
     var div = React.DOM.div;
     if(instance && elementId)
       ReactDOM.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));
