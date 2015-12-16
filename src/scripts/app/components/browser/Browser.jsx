@@ -55,13 +55,6 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
-    var viewer =
-     (!item)? null :
-        <ComponentDetails
-          ref="details"
-          item={item}
-          type={this.state.items.type}
-          />
     return (
         <section id="browser">
           <div className="browser row">
@@ -105,7 +98,13 @@ var Browser = React.createClass({
             </div>
           </div>
           <div className="viewer row">
-            {viewer}
+            {item != null &&
+              <ComponentDetails
+                ref="details"
+                item={item}
+                type={this.state.items.type}
+                />
+            }
           </div>
         </section>
     );
