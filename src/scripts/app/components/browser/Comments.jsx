@@ -1,7 +1,11 @@
 'use strict';
 var log = require('loglevel');
 
+//react
 var React = require('react');
+
+//mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -15,6 +19,8 @@ var moment = require('moment-timezone');
 * @constructor
 */
 var Comments = React.createClass({
+  mixins: [ImmutableRenderMixin],
+
   propTypes: {
     comments: React.PropTypes.array.isRequired,
     item: React.PropTypes.object.isRequired,
