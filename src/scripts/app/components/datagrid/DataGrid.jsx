@@ -82,8 +82,8 @@ var DataGrid = React.createClass({
     });
 
     return (
-      <div className={classNames("grid", {"wait": this.props.loading})} id="grid">
-        {this.props.loading ? <span>Loading...</span> : null}
+      <div className={classNames("grid", {"loading": this.props.loading})} id="grid">
+        {this.props.loading && <div className="loader spinner-loader">Loading...</div>}
         <DataTablesWrapper
           ref="wrapper"
           multiple={this.props.multiSelect}
