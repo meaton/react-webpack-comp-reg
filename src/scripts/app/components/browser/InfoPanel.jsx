@@ -132,7 +132,7 @@ var InfoPanel = React.createClass({
           {loadingSpinner}
           {viewer}
         </Tab>
-        <Tab eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={this.props.loading}>
+        <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={this.props.loading}>
           {loadingSpinner}
           {(this.props.specXml != null) ?
           <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
