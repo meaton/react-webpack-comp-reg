@@ -62,14 +62,9 @@ var InfoPanel = React.createClass({
   },
 
   render: function () {
-    if(this.props.spec == null) {
-      return null;
-    }
-
     var item = this.props.item;
     var xmlElement = null;
     var viewer = null;
-
 
     var isProfile = ComponentSpec.isProfile(item);
     var classes = classNames("componentInfoPanel", {"loading": this.props.loading, "profile": isProfile, "component": !isProfile});
@@ -79,29 +74,30 @@ var InfoPanel = React.createClass({
       <Tabs activeKey={this.props.activeView} onSelect={this.refreshTab} className={classes}>
         <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={this.props.loading}>
           {loadingSpinner}
-          <ComponentSpecView
+          {this.props.spec != null && <ComponentSpecView
             spec={this.props.spec}
             onComponentToggle={this.props.onComponentToggle}
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
-            />
+            />}
         </Tab>
         <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={this.props.loading}>
           {loadingSpinner}
-          {(this.props.specXml != null) ?
-          <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
-            : null }
+          {(this.props.specXml != null) &&
+            <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
+          }
         </Tab>
         <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={this.props.loading}>
           {loadingSpinner}
-          <Comments
-            item={this.props.item}
-            loggedIn={this.props.loggedIn}
-            newComment={this.props.newComment}
-            comments={this.props.comments}
-            saveComment={this.props.saveComment}
-            deleteComment={this.props.deleteComment}
-            />
+          {this.props.item != null &&
+            <Comments
+              item={this.props.item}
+              loggedIn={this.props.loggedIn}
+              newComment={this.props.newComment}
+              comments={this.props.comments}
+              saveComment={this.props.saveComment}
+              deleteComment={this.props.deleteComment}
+              />}
         </Tab>
       </Tabs>
     );
