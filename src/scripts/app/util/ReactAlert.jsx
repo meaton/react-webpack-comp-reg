@@ -53,6 +53,13 @@ module.exports = {
     this.showModalAlert(title, renderBodyContent, renderFooterContent);
   },
 
+  /**
+   * Shows a modal dialogue with the specified content (renderers)
+   * @param  {string} title               Title
+   * @param  {object|function} renderBodyContent   if a function, called with options {closeAlertHandler}
+   * @param  {object|function} [renderFooterContent] if a function, called with options {closeAlertHandler
+   * @param  {function} [onClose]             optional callback called before closing the dialogue
+   */
   showModalAlert: function(title, renderBodyContent, renderFooterContent, onClose) {
     this.showAlert(function(closeAlert) {
       var opts = {
