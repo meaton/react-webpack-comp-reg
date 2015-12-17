@@ -1,6 +1,7 @@
 'use strict';
-
 var log = require('loglevel');
+
+var React = require('react');
 
 var ModalTrigger = require('../components/ModalTrigger');
 var ConceptRegistryModal = require('../components/editor/ConceptRegistryModal');
