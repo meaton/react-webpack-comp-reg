@@ -126,7 +126,7 @@ module.exports = function (grunt) {
 
     maven_deploy: {
       options: {
-        groupId: 'eu.clarin.component-registry',
+        groupId: 'eu.clarin.cmdi',
         artifactId: 'component-registry-react-ui',
         snapshot: true,
         file: function(options) {
