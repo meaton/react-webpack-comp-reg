@@ -2,6 +2,8 @@
 
 var log = require('loglevel');
 
+var React = require("react");
+
 //helpers
 var ExpansionState = require('../service/ExpansionState');
 

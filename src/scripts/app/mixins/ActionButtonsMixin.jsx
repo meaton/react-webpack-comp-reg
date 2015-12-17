@@ -1,5 +1,6 @@
 var log = require('loglevel');
 
+var React = require("react");
 var ReactDOM = require('react-dom');
 
 var ActionButtons = require('../components/ActionButtons');
