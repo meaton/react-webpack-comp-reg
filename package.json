@@ -41,6 +41,7 @@
     "webpack-dev-server": "~1.12.x",
     "grunt-webpack": "~1.0.x",
     "grunt-open": "~0.2.3",
+    "grunt-maven-deploy": "^0.2.x",
     "uglify-js": "^2.6.x",
     "jsx-loader": "~0.12.x",
     "style-loader": "~0.8.0",

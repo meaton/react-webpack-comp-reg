@@ -122,10 +122,39 @@ module.exports = function (grunt) {
                 configure : "jsdoc.conf.json"
             }
         }
+    },
+
+    maven_deploy: {
+      options: {
+        groupId: 'eu.clarin.component-registry',
+        artifactId: 'component-registry-react-ui',
+        snapshot: true,
+        file: function(options) {
+          return 'target/' + options.artifactId + '-' + options.version + '.' + options.packaging;
+        }
+      },
+      jar: {
+        options: {
+          packaging: 'jar',
+          goal: 'install' //deploy
+        },
+        files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
+      },
+      src: {
+        options: {
+          url: 'https://nexus.clarin.eu/content/repositories/Clarin',
+          repositoryId: 'CLARIN',
+          classifier: 'sources',
+          goal: 'install' //deploy
+        },
+        files: [{src: ['**', '!node_modules/**', '!dist/**', '!target/**'], dest: ''}]
+      }
     }
   });
 
+
   grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-maven-deploy');
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
