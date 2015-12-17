@@ -67,10 +67,10 @@
   "dist": "dist",
   "mainInput": "main",
   "mainOutput": "main",
-  "name": "CMDI-Component-Registry",
+  "name": "clarin-component-registry-react-ui",
   "private": true,
   "repository": "",
   "src": "src",
   "test": "test",
-  "version": "0.2.0"
+  "version": "1.0.0-alpha"
 }
