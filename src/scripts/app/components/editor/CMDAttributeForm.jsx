@@ -20,6 +20,7 @@ var ValidatingTextInput = require('./ValidatingTextInput');
 
 //utils
 var classNames = require('classnames');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 var Validation = require('../../service/Validation');
 
 require('../../../../styles/CMDAttribute.sass');
@@ -95,7 +96,7 @@ var CMDAttributeForm = React.createClass({
   /*=== Functions that handle changes in this component ====*/
 
   propagateValue: function(field, value) {
-    this.props.onAttributeChange({$merge: {[field]: value}});
+    this.props.onAttributeChange({$merge: changeObj(field ,value)});
   },
 
   updateAttributeValue: function(e) {

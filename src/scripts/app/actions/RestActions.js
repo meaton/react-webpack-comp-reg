@@ -158,7 +158,7 @@ var RestActions = {
     );
   },
 
-  saveComment(type, componentId, comment) {
+  saveComment: function(type, componentId, comment) {
     this.dispatch(Constants.SAVE_COMMENT, comment);
     ComponentRegistryClient.saveComment(componentId, type, comment, function(result){
         // Success
@@ -171,7 +171,7 @@ var RestActions = {
     );
   },
 
-  deleteComment(type, componentId, commentId) {
+  deleteComment: function(type, componentId, commentId) {
     ComponentRegistryClient.deleteComment(componentId, type, commentId, function(id, result){
         // Success
         this.dispatch(Constants.DELETE_COMMENT_SUCCESS, id);

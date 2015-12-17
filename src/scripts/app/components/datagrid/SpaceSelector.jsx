@@ -74,26 +74,27 @@ var SpaceSelector = React.createClass({
     this.props.onSpaceSelect(type, this.props.space, this.props.selectedTeam);
   },
 
-  types: {
-    [PROFILES]: {
+  getTypes: function() {
+    var types = {};
+    types[PROFILES] = {
       label: "Profiles"
-    },
-    [COMPONENTS]: {
+    };
+    types[COMPONENTS] = {
       label: "Components"
-    }
+    };
+    return types;
   },
 
   getSpaces: function() {
-    var spaces = {
-      [PUBLIC]: {
-        label: Constants.SPACE_NAMES[PUBLIC],
-        loginRequired: false
-      },
-      [PRIVATE]: {
-        label: Constants.SPACE_NAMES[PRIVATE],
-        loginRequired: true
-      }
-    }
+    var spaces = {}
+    spaces[PUBLIC] = {
+      label: Constants.SPACE_NAMES[PUBLIC],
+      loginRequired: false
+    };
+    spaces[PRIVATE] = {
+      label: Constants.SPACE_NAMES[PRIVATE],
+      loginRequired: true
+    };
 
     // add group spaces
     if(this.props.teams != null) {
@@ -126,7 +127,7 @@ var SpaceSelector = React.createClass({
     var spaces = this.getSpaces();
     var currentSpace = this.getCurrentSpace();
 
-    var types = this.types;
+    var types = this.getTypes();
     var currentType = this.props.type;
 
     return (

@@ -23,6 +23,7 @@ var ValidatingTextInput = require('./ValidatingTextInput');
 //utils
 var classNames = require('classnames');
 var Validation = require('../../service/Validation');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
 require('../../../../styles/CMDElement.sass');
 
@@ -143,7 +144,7 @@ var CMDElementForm = React.createClass({
   /*=== Functions that handle changes (in this component and its children) ===*/
 
   propagateValue: function(field, value) {
-    this.props.onElementChange({$merge: {[field]: value}});
+    this.props.onElementChange({$merge: changeObj(field, value)});
   },
 
   updateElementValue: function(e) {
@@ -157,7 +158,7 @@ var CMDElementForm = React.createClass({
 
   handleUpdateValueScheme: function(type, valScheme) {
     this.props.onElementChange({$merge: {
-      ['@ValueScheme']: type,
+      '@ValueScheme': type,
       ValueScheme: valScheme
     }});
   },

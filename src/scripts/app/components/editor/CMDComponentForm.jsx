@@ -25,6 +25,7 @@ var CMDComponentView = require('../browser/CMDComponentView');
 //utils
 var classNames = require('classnames');
 var Validation = require('../../service/Validation');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -204,16 +205,16 @@ var CMDComponentForm = React.createClass({
     //send 'command' to merge existing spec section with this delta
     //(see https://facebook.github.io/react/docs/update.html)
     log.trace("Update component field:", field, "to:", value);
-    this.props.onComponentChange({$merge: {[field]: value}});
+    this.props.onComponentChange({$merge: changeObj(field, value)});
   },
 
   handleComponentChange: function(index, change) {
     //an update of the child component at [index] has been requested, push up
-    this.props.onComponentChange({CMD_Component: {[index]: change}});
+    this.props.onComponentChange({CMD_Component: changeObj(index, change)});
   },
 
   handleElementChange: function(index, change) {
-    var update = {CMD_Element: {[index]: change}};
+    var update = {CMD_Element: changeObj(index, change)};
     log.trace("Update element", update);
     this.props.onComponentChange(update);
   },

@@ -25,7 +25,7 @@ var EditorActions = {
     var isProfile = (type === Constants.TYPE_PROFILE) ? "true":"false";
 
     //create updated spec with modified isProfile attribute
-    var newSpec = update(spec, {['@isProfile']: {$set: isProfile}});
+    var newSpec = update(spec, {'@isProfile': {$set: isProfile}});
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },
 
@@ -39,7 +39,7 @@ var EditorActions = {
     var newItem;
     if(change.Name) {
       // also update name in item description and root component attribute
-      newSpec = update(newSpec, {CMD_Component: {["@name"]: {$set: change.Name}}});
+      newSpec = update(newSpec, {CMD_Component: {'@name': {$set: change.Name}}});
       newItem = update(item, {$merge: {name: change.Name}});
     } else if(change.Description) {
       // also update name in item description
@@ -101,15 +101,15 @@ var EditorActions = {
 
     // create blank spec
     var spec = {
-      ["@isProfile"]: type === Constants.TYPE_PROFILE ? "true":"false",
+      "@isProfile": type === Constants.TYPE_PROFILE ? "true":"false",
       Header: {
           Name: "",
           Description: ""
       },
       CMD_Component: {
-          ["@name"]: "",
-          ["@CardinalityMin"]: "1",
-          ["@CardinalityMax"]: "1",
+          "@name": "",
+          "@CardinalityMin": "1",
+          "@CardinalityMax": "1",
           CMD_Element: [],
           CMD_Component: []
       }

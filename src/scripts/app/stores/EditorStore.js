@@ -47,7 +47,10 @@ var EditorStore = Fluxxor.createStore({
 
   getState: function() {
     // 'singleton' selectedItem associative array
-    var selectedItems = (this.selectedGridItem == null) ? {} : {[this.selectedGridItem.id]: this.selectedGridItem}
+    var selectedItems = {};
+    if(this.selectedGridItem != null) {
+      selectedItems[this.selectedGridItem.id] = this.selectedGridItem;
+    }
     return {
       type: this.type,
       item: this.item,

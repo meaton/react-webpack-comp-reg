@@ -20,7 +20,7 @@ var ComponentSpec = require('../../service/ComponentSpec');
 var Validation = require('../../service/Validation');
 var update = require('react-addons-update');
 var classNames = require('classnames');
-var md5 = require('spark-md5');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
 require('../../../../styles/ComponentViewer.sass');
 
@@ -128,14 +128,14 @@ var ComponentSpecForm = React.createClass({
     //pass changes to handler, input name maps to field name
     var field = e.target.name;
     var value = e.target.value;
-    this.props.onItemChange({[field]: value});
+    this.props.onItemChange(changeObj(field, value));
   },
 
   handleHeaderChange: function(e) {
     //pass changes to handler, input name maps to field name
     var field = e.target.name;
     var value = e.target.value;
-    this.props.onHeaderChange({[field]: value});
+    this.props.onHeaderChange(changeObj(field, value));
   },
 
   handleComponentChange: function(change) {
@@ -149,7 +149,7 @@ var ComponentSpecForm = React.createClass({
   },
 
   updateConceptLinkValue: function(val) {
-    this.handleComponentChange({$merge: {['@ConceptLink']: val}});
+    this.handleComponentChange({$merge: {'@ConceptLink': val}});
   },
 
   /*=== Validation of field values ====*/
