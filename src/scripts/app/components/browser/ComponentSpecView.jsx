@@ -4,7 +4,6 @@ var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var btnGroup = require('../../../mixins/BtnGroupEvents');
 
 //components
 var CMDComponentView = require('./CMDComponentView');
