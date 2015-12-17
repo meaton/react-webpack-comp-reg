@@ -1,5 +1,17 @@
 'use strict';
 
+// Some common tasks:
+//
+// * serve -> builds the application and starts a webpack dev server
+//
+// * build:dist -> builds the application for distribution (i.e. minifies and
+// performs other optimisations), see webpack.dist.config.js
+//
+// * maven-install -> builds for distribution, then creates and installs (in the
+// local repository) a jar that contains the build output
+//
+// If things are not working as expected, check config.js!
+
 var serverPort = 8000;
 
 var mountFolder = function (connect, dir) {
@@ -136,7 +148,8 @@ module.exports = function (grunt) {
       jar: {
         options: {
           packaging: 'jar',
-          goal: 'install' //deploy
+          goal: 'install', //deploy?
+          injectDestFolder: ''
         },
         files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
       },
@@ -171,6 +184,8 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['karma']);
 
   grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+
+  grunt.registerTask('maven-install', ['build:dist', 'maven_deploy:jar']);
 
   grunt.registerTask('default', []);
 };
