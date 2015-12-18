@@ -51,13 +51,15 @@ var CMDComponentForm = React.createClass({
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired,
     onToggleSelection: React.PropTypes.func.isRequired,
-    selectedComponentId: React.PropTypes.string
+    selectedComponentId: React.PropTypes.string,
+    overrideSelect: React.PropTypes.bool
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
 
   getDefaultProps: function() {
     return {
-      renderChildrenWhenCollapsed: true
+      renderChildrenWhenCollapsed: true,
+      overrideSelect: false
     };
   },
 
@@ -65,7 +67,7 @@ var CMDComponentForm = React.createClass({
    * used by CMDComponentMixin
    */
   isSelected: function() {
-    return this.props.spec._appId === this.props.selectedComponentId;
+    return this.props.overrideSelect || this.props.spec._appId === this.props.selectedComponentId;
   },
 
   /**

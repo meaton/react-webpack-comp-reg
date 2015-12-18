@@ -102,6 +102,8 @@ var ComponentSpecForm = React.createClass({
               <a onClick={this.props.onCollapseAll.bind(null, spec.CMD_Component)}>Collapse all</a>
             </div>
           }
+
+          {/* Form for root component (only children, properties hidden) */}
           <CMDComponentForm
             spec={spec.CMD_Component}
             hideProperties={true}
@@ -111,6 +113,7 @@ var ComponentSpecForm = React.createClass({
             onToggleSelection={this.props.onToggleSelection}
             onComponentChange={this.handleComponentChange}
             selectedComponentId={this.props.selectedComponentId}
+            overrideSelect={this.props.selectedComponentId == null /*root component is default selection*/}
             />
           </form>
         );
