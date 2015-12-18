@@ -100,9 +100,9 @@ module.exports = {
   TYPE_COMPONENTS: "components",
 
   /* ITEM SPACES */
-  SPACE_PUBLISHED: "SPACE_PUBLISHED",
-  SPACE_PRIVATE: "SPACE_PRIVATE",
-  SPACE_TEAM: "SPACE_TEAM",
+  SPACE_PUBLISHED: "public",
+  SPACE_PRIVATE: "private",
+  SPACE_TEAM: "team",
 
   SPACE_NAMES: {
     SPACE_PUBLISHED: "Public space",
