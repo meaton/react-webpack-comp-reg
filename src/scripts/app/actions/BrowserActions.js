@@ -27,7 +27,7 @@ module.exports = {
 
   /**
    * Switch to the space defined by type and registry
-   * @param  {string} type     Constants.TYPE_PROFILE or Constants.TYPE_COMPONENTS
+   * @param  {string} type     Constants.TYPE_PROFILE or Constants.TYPE_COMPONENT
    * @param  {string} registry Constants.SPACE_PRIVATE, Constants.SPACE_PUBLISHED or Constants.SPACE_TEAM
    */
   switchSpace: function(type, space, team) {

@@ -77,7 +77,7 @@ var EditorForm = React.createClass({
     if(params.type != undefined) {
       type = params.type;
     } else if (params.componentId != undefined) {
-      type = Constants.TYPE_COMPONENTS;
+      type = Constants.TYPE_COMPONENT;
     } else if (params.profileId != undefined) {
       type = Constants.TYPE_PROFILE;
     } else {
@@ -167,7 +167,7 @@ var EditorForm = React.createClass({
                 value={this.state.editor.grid.filterText}
                 onChange={this.handleGridFilterTextChange} />
               <SpaceSelector
-                type={Constants.TYPE_COMPONENTS}
+                type={Constants.TYPE_COMPONENT}
                 space={this.state.editor.grid.space}
                 teams={this.state.team.teams}
                 selectedTeam={this.state.editor.grid.team}

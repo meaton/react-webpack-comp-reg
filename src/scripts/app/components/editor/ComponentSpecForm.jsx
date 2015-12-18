@@ -76,7 +76,7 @@ var ComponentSpecForm = React.createClass({
         <form ref="editComponentForm" name="editComponent" id="editComponent" className="form-horizontal form-group">
           <div className="form-group">
             <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
-            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
+            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENT} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
           </div>
           <ValidatingTextInput type="text" name="Name" label="Name" value={spec.Header.Name}
             labelClassName="editorFormLabel" wrapperClassName="editorFormField"

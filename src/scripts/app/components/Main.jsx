@@ -51,7 +51,7 @@ var Main = React.createClass({
 
     if(itemId != null) {
       //switch to correct space and type
-      type = type || itemId.indexOf("clarin.eu:cr1:p_") >= 0?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENTS;
+      type = type || itemId.indexOf("clarin.eu:cr1:p_") >= 0?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENT;
 
       // select a specific item. If no space specified, assume public
       var itemSpace =  space || Constants.SPACE_PUBLISHED;

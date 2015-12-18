@@ -25,7 +25,7 @@ var PUBLIC = Constants.SPACE_PUBLISHED;
 var PRIVATE = Constants.SPACE_PRIVATE;
 var TEAM = Constants.SPACE_TEAM;
 
-var COMPONENTS = Constants.TYPE_COMPONENTS;
+var COMPONENTS = Constants.TYPE_COMPONENT;
 var PROFILES = Constants.TYPE_PROFILE;
 
 var TEAM_PREFIX = "team_";

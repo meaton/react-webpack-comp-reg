@@ -62,7 +62,7 @@ var BrowserMenuGroup = React.createClass({
       if(this.props.type === Constants.TYPE_PROFILE) {
         editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
           + this.props.space + "/" + itemId;
-      } else if(this.props.type === Constants.TYPE_COMPONENTS) {
+      } else if(this.props.type === Constants.TYPE_COMPONENT) {
         editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
           + this.props.space + "/" + itemId;
       }

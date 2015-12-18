@@ -67,9 +67,9 @@ var ComponentRegistryClient = {
        log.trace("Successfully loaded " + requestUrl);
        var _data = data;
        if(_data != null && _data != 'null') {
-          if(_data.hasOwnProperty("componentDescription") && type == "components")
+          if(_data.hasOwnProperty("componentDescription") && type == Constants.TYPE_COMPONENT)
             _data = data.componentDescription;
-          else if(_data.hasOwnProperty("profileDescription") && type == "profiles")
+          else if(_data.hasOwnProperty("profileDescription") && type == Constants.TYPE_PROFILE)
             _data = data.profileDescription;
 
           if(!$.isArray(_data))
@@ -357,7 +357,7 @@ saveComment: function(componentId, type, comment, success, failure) {
 
   if(type === Constants.TYPE_PROFILE) {
     comments_xml += "<componentId>" + componentId + "</componentId>";
-  } else if (type === Constants.TYPE_COMPONENTS) {
+  } else if (type === Constants.TYPE_COMPONENT) {
     comments_xml += "<componentId>" + componentId + "</componentId>";
   }
 

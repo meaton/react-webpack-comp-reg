@@ -98,8 +98,8 @@ module.exports = {
   ITEM_UPDATED: "ITEM_UPDATED",
 
   /* ITEM TYPES */
-  TYPE_PROFILE: "profiles",
-  TYPE_COMPONENTS: "components",
+  TYPE_PROFILE: "profile",
+  TYPE_COMPONENT: "component",
 
   /* ITEM SPACES */
   SPACE_PUBLISHED: "public",
