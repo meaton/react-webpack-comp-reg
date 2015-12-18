@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require("react");
-var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var log = require('loglevel');
 
@@ -87,6 +86,10 @@ var CMDComponentMixin = {
         nestedComponents = null;
       }
 
+      if(this.wrapNestedComponents) {
+        nestedComponents = this.wrapNestedComponents(nestedComponents);
+      }
+
       var afterComponents;
       if(typeof this.renderAfterComponents == "function") {
         afterComponents = this.renderAfterComponents();
@@ -96,9 +99,7 @@ var CMDComponentMixin = {
 
       return (
         <div className="components">
-          <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-            {nestedComponents}
-          </ReactCSSTransitionGroup>
+          {nestedComponents}
           {afterComponents}
         </div>
       );
@@ -141,6 +142,10 @@ var CMDComponentMixin = {
       elements = null;
     }
 
+    if(this.wrapElements) {
+      elements = this.wrapElements(elements);
+    }
+
     var afterElements;
     if(typeof this.renderAfterElements == "function") {
       afterElements = this.renderAfterElements();
@@ -150,9 +155,7 @@ var CMDComponentMixin = {
 
     return (
       <div className="elements">
-        <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-          {elements}
-        </ReactCSSTransitionGroup>
+        {elements}
         {afterElements}
       </div>
     );
@@ -163,6 +166,14 @@ var CMDComponentMixin = {
   renderAttributes: function(comp) {
     if(comp.AttributeList != undefined) {
       var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
+    }
+
+    var attributes = (attrSet != undefined && attrSet.length > 0) ?
+      $.map(attrSet, this.renderAttribute)
+      :null;
+
+    if(this.wrapAttributes) {
+      attributes = this.wrapAttributes(attributes);
     }
 
     var afterAttributes;
@@ -176,11 +187,7 @@ var CMDComponentMixin = {
     return (
       <div>
             <div className="attrList">
-              <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-                {attrSet != undefined && attrSet.length > 0 &&
-                  $.map(attrSet, this.renderAttribute)
-                }
-              </ReactCSSTransitionGroup>
+              {attributes}
             </div>
           {afterAttributes}
       </div>

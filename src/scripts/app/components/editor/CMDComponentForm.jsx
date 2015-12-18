@@ -2,6 +2,7 @@
 
 var log = require('loglevel');
 var React = require('react');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -197,6 +198,30 @@ var CMDComponentForm = React.createClass({
 
   renderAfterAttributes: function() {
     return this.isOpen() ? <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onComponentChange)}>+Attribute</a></div> : null;
+  },
+
+  wrapNestedComponents: function(components) {
+    return (
+      <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        {components}
+      </ReactCSSTransitionGroup>
+    );
+  },
+
+  wrapElements: function(elements) {
+    return (
+      <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        {elements}
+      </ReactCSSTransitionGroup>
+    );
+  },
+
+  wrapAttributes: function(attributes) {
+    return (
+      <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        {attributes}
+      </ReactCSSTransitionGroup>
+    );
   },
 
   /*=== Functions that handle changes (in this component and its children) ===*/
