@@ -70,6 +70,8 @@ module.exports = {
 
   /* toggle item selection in the browser */
   SELECT_BROWSER_ITEM: "SELECT_BROWSER_ITEM",
+  /* when failed to select (by id)*/
+  SELECT_BROWSER_ITEM_FAILED: "SELECT_BROWSER_ITEM_FAILED",
   /* toggle selection mode */
   SWITCH_MULTIPLE_SELECT: "SWITCH_MULTIPLE_SELECT",
   /* switch space (registry (private, public, group...) and type (components/profiles)) */
@@ -105,9 +107,9 @@ module.exports = {
   SPACE_TEAM: "team",
 
   SPACE_NAMES: {
-    SPACE_PUBLISHED: "Public space",
-    SPACE_PRIVATE: "Private space",
-    SPACE_TEAM: "Team space"
+    public: "Public space",
+    private: "Private space",
+    team: "Team space"
   },
 
   /* INFO VIEWS */
