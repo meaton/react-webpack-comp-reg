@@ -71,27 +71,6 @@ var NotFound = React.createClass({
   }
 });
 
-// react-router configuration
-// var routes = (
-    // <Route handler={Main} path={Config.deploy.path} >
-    //   <NotFoundRoute handler={NotFound}/>
-    //   <Route name="browser" handler={Browser} />
-    //   <Route name="import" handler={NotFound /*Import*/} />
-    //   <Route path="editor" handler={Editor}>
-    //     <Route name="component" path="component/:space/:componentId" handler={EditorForm} />
-    //     <Route name="newComponent" path="component/new/:space/:componentId" handler={EditorForm} />
-    //     <Route name="profile" path="profile/:space/:profileId" handler={EditorForm} />
-    //     <Route name="newProfile" path="profile/new/:space/:profileId" handler={EditorForm} />
-    //     <Route name="newEditor" path="new/:space/:type" handler={EditorForm} />
-    //   </Route>
-    //   <DefaultRoute handler={Browser} />
-    // </Route>
-// );
-
-// manage defined routes and history with react-router
-// Router.run(routes, Router.HistoryLocation, function(Handler) {
-//   React.render(<Handler flux={flux} />, document.getElementById("app"));
-// });
 var createFluxComponent = function(Component, props) {
   return <Component {...props} flux={flux} />;
 };

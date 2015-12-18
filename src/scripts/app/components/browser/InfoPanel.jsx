@@ -42,27 +42,30 @@ var InfoPanel = React.createClass({
     onComponentToggle: React.PropTypes.func,
     loading: React.PropTypes.bool.isRequired
   },
-
-  componentDidMount: function() {
-    // component appears for the first time, load the current tab
-    this.refreshTab(this.props.activeView);
-  },
-
-  shouldComponentUpdate: function(nextProps, nextState) {
-    // component props have been updated, could be an item change
-    if(getId(this.props.item) != getId(nextProps.item)) {
-      // item changed, reload current tab
-      log.trace("Item changed!", this.props.item, nextProps.item);
-      this.refreshTab(this.props.activeView);
-      // don't update now, reload should already trigger an update
-      return false;
-    } //else something else has changed, update normally
-
-    return true;
-  },
+  //
+  // componentDidMount: function() {
+  //   // component appears for the first time, load the current tab
+  //   this.refreshTab(this.props.activeView);
+  // },
+  //
+  // shouldComponentUpdate: function(nextProps, nextState) {
+  //   // component props have been updated, could be an item change
+  //   if(getId(this.props.item) != getId(nextProps.item)) {
+  //     // item changed, reload current tab
+  //     log.trace("Item changed!", this.props.item, nextProps.item);
+  //     this.refreshTab(this.props.activeView);
+  //     // don't update now, reload should already trigger an update
+  //     return false;
+  //   } //else something else has changed, update normally
+  //
+  //   return true;
+  // },
 
   render: function () {
     var item = this.props.item;
+    if(item == null) {
+      return null;
+    }
     var xmlElement = null;
     var viewer = null;
 

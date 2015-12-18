@@ -38,16 +38,16 @@ var ComponentDetailsOverview = React.createClass({
   },
 
   render: function() {
-    return this.props.item != null && (
+    return (
       <InfoPanel  item={this.props.item}
                   activeView={this.state.details.activeView}
                   spec={this.state.details.spec}
                   specXml={this.state.details.xml}
                   comments={this.state.details.comments}
                   newComment={this.state.details.newComment}
-                  loadSpec={this.loadSpec}
-                  loadSpecXml={this.loadXml}
-                  loadComments={this.loadComments}
+                  loadSpec={this.props.loadSpec.bind(null, this.props.item.id)}
+                  loadSpecXml={this.props.loadSpecXml.bind(null, this.props.item.id)}
+                  loadComments={this.props.loadComments.bind(null, this.props.item.id)}
                   loading={this.state.details.loading}
                   expansionState={this.state.details.expansionState}
                   linkedComponents={this.state.details.linkedComponents}
@@ -57,18 +57,6 @@ var ComponentDetailsOverview = React.createClass({
                   loggedIn={this.state.auth.authState.authenticated}
       />
     );
-  },
-
-  loadSpec: function () {
-    this.getFlux().actions.loadComponentSpec(this.props.type, this.props.item.id);
-  },
-
-  loadXml: function () {
-    this.getFlux().actions.loadComponentSpecXml(this.props.type, this.props.item);
-  },
-
-  loadComments: function() {
-    this.getFlux().actions.loadComments(this.props.type, this.props.item.id);
   },
 
   saveComment: function(comment) {

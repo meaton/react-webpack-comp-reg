@@ -1,3 +1,4 @@
+'use strict';
 var log = require("loglevel");
 
 var React = require("react"),
@@ -99,6 +100,9 @@ var Browser = React.createClass({
                 ref="details"
                 item={item}
                 type={this.state.items.type}
+                loadSpec={this.loadSpec}
+                loadSpecXml={this.loadXml}
+                loadComments={this.loadComments}
                 />
             }
           </div>
@@ -114,6 +118,18 @@ var Browser = React.createClass({
     this.getFlux().actions.loadTeams();
   },
 
+  loadSpec: function (itemId) {
+    this.getFlux().actions.loadComponentSpec(this.state.items.type, itemId);
+  },
+
+  loadXml: function (itemId) {
+    this.getFlux().actions.loadComponentSpecXml(this.state.items.type, itemId);
+  },
+
+  loadComments: function(itemId) {
+    this.getFlux().actions.loadComments(this.state.items.type, itemId);
+  },
+
   handleToggleMultipleSelect: function() {
     this.getFlux().actions.switchMultipleSelect();
   },
@@ -125,6 +141,19 @@ var Browser = React.createClass({
 
   handleRowSelect: function(item, target) {
     this.getFlux().actions.selectBrowserItem(item);
+
+    log.debug("Item", item);
+
+    var index = this.state.details.activeView;
+    if(index === Constants.INFO_VIEW_SPEC) {
+      this.loadSpec(item.id);
+    }
+    if(index === Constants.INFO_VIEW_XML) {
+      this.loadXml(item.id);
+    }
+    if(index == Constants.INFO_VIEW_COMMENTS) {
+      this.loadComments(item.id);
+    }
   },
 
   handleDelete: function(componentInUsageCb) {

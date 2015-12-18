@@ -34,6 +34,41 @@ var Main = React.createClass({
     };
   },
 
+  componentWillMount: function() {
+    // select space and item according to params
+    log.debug("Location", this.props.location);
+
+    var queryParams = this.props.location.query;
+
+    var itemId = queryParams.item || queryParams.itemId;
+    var space = queryParams.registrySpace || queryParams.space;
+    if(space === "group") {
+      // "team" used to be "group"
+      space = Constants.SPACE_TEAM;
+    }
+    var type = queryParams.type;
+    var team = queryParams.teamId || queryParams.groupId;
+
+    if(itemId != null) {
+      //switch to correct space and type
+      type = type || itemId.indexOf("clarin.eu:cr1:p_") >= 0?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENTS;
+
+      // select a specific item. If no space specified, assume public
+      var itemSpace =  space || Constants.SPACE_PUBLISHED;
+      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team);
+      this.getFlux().actions.switchSpace(type, space, team);
+      this.getFlux().actions.loadItems(type, space, team);
+      this.getFlux().actions.selectBrowserItemId(type, itemId, space, team);
+      this.getFlux().actions.loadComponentSpec(type, itemId);
+    } else if(space != null || type != null) {
+      // space specified (but not item). If no type specified, assume profile.
+      type = type || Constants.TYPE_PROFILE;
+      space = space || Constants.SPACE_PUBLISHED;
+      this.getFlux().actions.switchSpace(type, space, team);
+      this.getFlux().actions.loadItems(type, space, team);
+    }
+  },
+
   componentDidMount: function() {
     this.checkAuthState();
     // check auth state every 30s

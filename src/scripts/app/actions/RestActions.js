@@ -80,9 +80,9 @@ var RestActions = {
     }.bind(this), currentset);
   },
 
-  loadComponentSpecXml: function(type, item) {
+  loadComponentSpecXml: function(type, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
-    ComponentRegistryClient.loadSpec(type, item.id, "text", function(specXml){
+    ComponentRegistryClient.loadSpec(type, itemId, "text", function(specXml){
         // success
         this.dispatch(Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, specXml);
       }.bind(this),
