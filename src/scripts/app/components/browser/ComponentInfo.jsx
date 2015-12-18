@@ -22,7 +22,8 @@ var ComponentInfo = React.createClass({
     item: React.PropTypes.object.isRequired,
     space: React.PropTypes.string.isRequired,
     type: React.PropTypes.string.isRequired,
-    team: React.PropTypes.string
+    team: React.PropTypes.string,
+    history: React.PropTypes.object.isRequired
   },
 
   getInitialState: function() {
@@ -49,10 +50,15 @@ var ComponentInfo = React.createClass({
     var space = this.props.space;
     var type = this.props.type;
 
-    var bookmarkLink = Config.webappUrl + "/?itemId=" + item.id + "&registrySpace=" + ComponentRegistryClient.getRegistrySpacePath(space);
+    var query = {
+      itemId: item.id,
+      registrySpace: ComponentRegistryClient.getRegistrySpacePath(space)
+    };
     if(space === Constants.SPACE_TEAM) {
-      bookmarkLink += "&groupId=" + this.props.team;
+      query.groupId = this.props.team;
     }
+    var bookmarkLink = Config.webappUrl + this.props.history.createHref("/", query);
+
     var xsdLink = type === Constants.TYPE_PROFILE ? ComponentRegistryClient.getRegistryUrl(type, item.id) + "/xsd" : null;
 
     //not setting onChange to the inputs will generate a warning unless readOnly
