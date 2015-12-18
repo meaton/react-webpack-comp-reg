@@ -55,6 +55,7 @@ var DataTablesRow = React.createClass({
         {this.props.buttonBefore && (
           <td className="add">
             <Button
+              bsSize="xsmall"
               ref="addButton"
               title="Click to link this component to the seleceted component in the editor"
               onClick={this.buttonClick}
