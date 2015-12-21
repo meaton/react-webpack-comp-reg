@@ -1,4 +1,5 @@
 {
+  "loglevel": "info",
   "cors": true,
   "REST": {
     "url": "http://localhost:8080/ComponentRegistry",

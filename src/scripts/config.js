@@ -3,13 +3,18 @@ var Config =
   (typeof getComponentRegistryConfig == 'function' // function can provide external configuration
     && getComponentRegistryConfig() != null) ? getComponentRegistryConfig() : {
   //default config
-  cors: true,
-  REST: {
-    url: "http://localhost:8080/ComponentRegistry",
-    auth: { username: "user", password: "passwd" } //in case of CORS
+  //NOTE: changes here will only have effect if no configuration has been preloaded! (see index.html)
+  "loglevel": "info",
+  "cors": true,
+  "REST": {
+    "url": "http://localhost:8080/ComponentRegistry",
+    "auth": {  //needed in case of CORS
+      "username": "user",
+      "password": "passwd"
+    }
   },
-  deploy: {
-    path: '/'
+  "deploy": {
+    "path": '/'
   }
 }
 
