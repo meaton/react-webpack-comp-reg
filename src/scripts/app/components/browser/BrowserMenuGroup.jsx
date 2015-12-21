@@ -69,7 +69,7 @@ var BrowserMenuGroup = React.createClass({
 
       if(editorRoute != null) {
         editorLink = (
-          <LinkContainer to={editorRoute} disabled={this.props.multiSelect}>
+          <LinkContainer to={editorRoute} disabled={this.props.multiSelect || !this.props.loggedIn}>
             <Button
               bsStyle="primary">
                 {editBtnLabel}
