@@ -8,6 +8,7 @@ var React = require("react"),
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 var WindowFocusMixin = require('../mixins/WindowFocusMixin');
+var History = require('react-router').History;
 
 // Components
 var AuthState = require("./AuthState.jsx").AuthState;
@@ -23,7 +24,7 @@ var Alert = require('react-bootstrap/lib/Alert');
 */
 var Main = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore"), WindowFocusMixin],
+  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore"), WindowFocusMixin, History],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -97,7 +98,10 @@ var Main = React.createClass({
           <PageHeader>CMDI Component Registry <small>React.js front end alpha</small></PageHeader>
 
           <div className="auth-login">
-            <AuthState authState={this.state.auth.authState} />
+            <AuthState
+              authState={this.state.auth.authState}
+              history={this.history}
+              location={this.props.location} />
           </div>
 
             <div className="main container-fluid">
