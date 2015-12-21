@@ -1,12 +1,15 @@
 /** @module General configuration for Component Registry REST service */
-var Config = {
+var Config =
+  (typeof getComponentRegistryConfig == 'function' // function can provide external configuration
+    && getComponentRegistryConfig() != null) ? getComponentRegistryConfig() : {
+  //default config
   cors: true,
   REST: {
     protocol: "http",
     host: 'localhost',
     port: '8080',
     path: '/ComponentRegistry',
-    auth: { username: "seaton", password: "compreg" } //in case of CORS
+    auth: { username: "user", password: "passwd" } //in case of CORS
   },
   deploy: {
     path: '/'
