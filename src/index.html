@@ -37,6 +37,8 @@
     }
   </script>
   <script type="text/javascript">
+    const configUrl = './compRegConfig.jsp';
+
     //external configuration may be available (should be provided by the back end)
     var config = null; //we will set this later, if found
     function getComponentRegistryConfig() {
@@ -45,11 +47,11 @@
 
     //try to load the external configuration before starting the app
     $.ajax({
-      url: './compRegConfig.jsp',
+      url: configUrl,
       dataType: "json",
       success: function(result) {
         config = result;
-        console.log(JSON.stringify(config));
+        console.log("Read configuration from '" + configUrl + "': ", JSON.stringify(config));
       },
       error: function(jqxhr, status, error) {
         console.log("Configuration could not be loaded: " + error);
