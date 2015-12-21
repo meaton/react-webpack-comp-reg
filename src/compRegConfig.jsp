@@ -1,13 +1,10 @@
 {
   "cors": true,
   "REST": {
-    "protocol": "http",
-    "host": "localhost",
-    "port": "8080",
-    "path": "/ComponentRegistry",
+    "url": "http://localhost:8080/ComponentRegistry",
     "auth": {
       "username": "user",
-      "password": "passwd" 
+      "password": "passwd"
     }
   },
   "deploy": {
