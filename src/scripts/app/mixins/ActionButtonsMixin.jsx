@@ -134,7 +134,7 @@ var ActionButtonsMixin = {
     return (
       <ActionButtons
         container={this}
-        onMove={this.beforeMove.bind(null, this.props.onMove)}
+        onMove={this.props.onMove ? this.beforeMove.bind(null, this.props.onMove) : null}
         onRemove={this.props.onRemove}
         moveUpEnabled={!this.props.isFirst}
         moveDownEnabled={!this.props.isLast}
