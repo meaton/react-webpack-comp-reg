@@ -88,9 +88,11 @@ var BrowserMenuGroup = React.createClass({
             <Button>Create new</Button>
           </LinkContainer>
           {editorLink}
+          {/*
           <LinkContainer to="/import" disabled={!this.props.loggedIn}>
             <Button>Import</Button>
           </LinkContainer>
+          */}
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
@@ -99,7 +101,7 @@ var BrowserMenuGroup = React.createClass({
         </ButtonGroup>
     );
   },
-  
+
   renderDeleteModal: function() {
     var deleteIdList = [];
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
