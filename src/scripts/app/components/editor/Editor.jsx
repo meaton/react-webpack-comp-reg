@@ -29,9 +29,8 @@ var Editor = React.createClass({
 
   componentDidMount: function() {
     if(!this.isAuthenticated()) {
-      if(AuthUtil.triggerLogin()) {
-        loginForm.submit();
-      } else {
+      log.debug("Editor requires authentication");
+      if(!AuthUtil.triggerLogin()) {
         alert("Please authenticate manually by pressing the login button");
         log.warn("Could not trigger login, login form not found on page");
       }

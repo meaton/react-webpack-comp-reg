@@ -44,7 +44,7 @@ var AuthState = React.createClass({
     } else {
       var redirectUrl = Config.webappUrl + this.props.history.createHref(this.props.location.pathname + this.props.location.search);
       return (
-        <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + redirectUrl } method="POST">
+        <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + encodeURIComponent(redirectUrl) } method="POST">
           <button type="submit">login</button>
         </form>
       );

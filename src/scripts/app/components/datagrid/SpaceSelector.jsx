@@ -160,7 +160,7 @@ var SpaceSelector = React.createClass({
                   )}.bind(this)
                 )
               ):(
-                <MenuItem disabled={true} onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
+                <MenuItem onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
               )
             }
           </DropdownButton>
