@@ -29,6 +29,16 @@ var corsRequestParams = (Config.cors) ?
   }} : {};
 
 
+function getRegistryUrl(type, id) {
+  var typepath = '/registry/' + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
+  var requestUrl = restUrl + typepath;
+  if(id == null) {
+    return requestUrl;
+  } else {
+    return requestUrl + "/" + id;
+  }
+}
+
 var ComponentRegistryClient = {
 
   getRegistrySpacePath: function(space) {
@@ -43,18 +53,8 @@ var ComponentRegistryClient = {
     }
   },
 
-  getRegistryUrl: function(type, id) {
-    var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles':'/registry/components';
-    var requestUrl = restUrl + typepath;
-    if(id == null) {
-      return requestUrl;
-    } else {
-      return requestUrl + "/" + id;
-    }
-  },
-
   loadComponents: function(type, space, group, handleSuccess, handleFailure) {
-    var requestUrl = this.getRegistryUrl(type);
+    var requestUrl = getRegistryUrl(type);
 
     var registrySpace = (space != null) ? this.getRegistrySpacePath(space): "";
     var teamId = (space == Constants.SPACE_TEAM) ? group : null;
@@ -93,7 +93,7 @@ var ComponentRegistryClient = {
 
  loadSpec: function(type, id, raw_type, handleSuccess, handleFailure) {
   var self = this;
-  var requestUrl = this.getRegistryUrl(type, id);
+  var requestUrl = getRegistryUrl(type, id);
   $.ajax($.extend({
     url: requestUrl,
     dataType: (raw_type != undefined) ? raw_type : "json",
@@ -296,11 +296,11 @@ normaliseValueScheme: function(valueScheme) {
 },
 
 deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
-  var url = restUrl + '/registry/' + type + '/' + itemId;
+  var requestUrl = getRegistryUrl(type, itemId);
 
   $.ajax($.extend({
     type: 'DELETE',
-    url: url,
+    url: requestUrl,
     success: function(data) {
       handleSuccess(data);
     }.bind(this),
