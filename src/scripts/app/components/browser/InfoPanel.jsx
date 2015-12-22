@@ -12,6 +12,7 @@ var Tab = require('react-bootstrap/lib/Tab');
 //components
 var ComponentSpecView = require('./ComponentSpecView');
 var Comments = require('./Comments');
+var XmlPanel = require('./XmlPanel');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -69,7 +70,7 @@ var InfoPanel = React.createClass({
         <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={this.props.loading}>
           {loadingSpinner}
           {(this.props.specXml != null) &&
-            <pre><code ref="xmlcode" className="language-markup">{formatXml(this.props.specXml.substring(55))}</code></pre>
+            <XmlPanel xml={this.props.specXml} />
           }
         </Tab>
         <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={this.props.loading}>
@@ -111,46 +112,5 @@ var InfoPanel = React.createClass({
     }
   }
 });
-
-/* GIST kurtsson/3f1c8efc0ccd549c9e31 */
-function formatXml(xml) {
-  var formatted = '';
-  var reg = /(>)(<)(\/*)/g;
-  xml = xml.toString().replace(reg, '$1\r\n$2$3');
-  var pad = 0;
-  var nodes = xml.split('\r\n');
-  for(var n in nodes) {
-    var node = nodes[n];
-    var indent = 0;
-    if (node.match(/.+<\/\w[^>]*>$/)) {
-      indent = 0;
-    } else if (node.match(/^<\/\w/)) {
-      if (pad !== 0) {
-        pad -= 1;
-      }
-    } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
-      indent = 1;
-    } else {
-      indent = 0;
-    }
-
-    var padding = '';
-    for (var i = 0; i < pad; i++) {
-      padding += '  ';
-    }
-
-    formatted += padding + node + '\r\n';
-    pad += indent;
-  }
-  return formatted; //.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;');
-}
-
-function getId(item) {
-  if(item == null) {
-    return null;
-  } else {
-    return item.id;
-  }
-}
 
 module.exports = InfoPanel;
