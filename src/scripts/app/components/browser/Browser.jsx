@@ -24,6 +24,8 @@ var RssLink = require('./RssLink');
 
 var ReactAlert = require('../../util/ReactAlert');
 
+var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+
 require('../../../../styles/Browser.sass');
 
 var Browser = React.createClass({
@@ -59,6 +61,9 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
+    var rssLink = ComponentRegistryClient.getRegistryUrl(this.state.items.type) + "/rss";
+    //TODO: private/team space this.state.items.space this.state.items.team
+
     return (
         <section id="browser">
           <div className="browser row">
@@ -75,10 +80,7 @@ var Browser = React.createClass({
               onToggleSort={this.toggleSort}
               />
             <div className="gridControls">
-              <RssLink
-                  type={this.state.items.type}
-                  space={this.state.items.space}
-                  team={this.state.items.team} />
+              <RssLink link={rssLink}/>
               <DataGridFilter
                 value={this.state.items.filterText}
                 onChange={this.handleFilterTextChange}
