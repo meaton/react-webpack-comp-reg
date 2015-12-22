@@ -75,8 +75,17 @@ var ComponentRegistryClient = {
           else if(_data.hasOwnProperty("profileDescription") && type == Constants.TYPE_PROFILE)
             _data = data.profileDescription;
 
-          if(!$.isArray(_data))
+          if(!$.isArray(_data)) {
             _data = [_data];
+          }
+
+          _data = _data.map(function(item){
+            //comments count is provided as string, better (e.g. for sorting) to turn into integer
+            if(item.commentsCount) {
+              item.commentsCount = parseInt(item.commentsCount);
+            }
+            return item;
+          });
 
           handleSuccess(_data);
         } else {
