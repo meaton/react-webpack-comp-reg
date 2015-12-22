@@ -23,14 +23,14 @@ var ExpansionState = require('../../service/ExpansionState');
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 var classNames = require('classnames');
 
-require('../../../../styles/InfoPanel.sass');
+require('../../../../styles/ComponentDetailsPanel.sass');
 
 /**
-* ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
+* ComponentDetailsPanel - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
 * @constructor
 * @mixes ComponentViewMixin
 */
-var ComponentDetailsOverview = React.createClass({
+var ComponentDetailsPanel = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore"), ComponentViewMixin],
 
   // Required by StoreWatchMixin
@@ -128,4 +128,4 @@ var ComponentDetailsOverview = React.createClass({
 
 });
 
-module.exports = ComponentDetailsOverview;
+module.exports = ComponentDetailsPanel;
