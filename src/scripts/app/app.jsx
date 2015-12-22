@@ -82,13 +82,11 @@ ReactDOM.render((
       <IndexRoute component={Browser} />
       <Route path="browser" component={Browser} />
       <Route path="import" component={NotFound /*Import*/} />
-      <Route path="editor" component={Editor}>
-        <Route path="component/:space/:componentId" component={EditorForm} />
-        <Route path="component/new/:space/:componentId" component={EditorForm} />
-        <Route path="profile/:space/:profileId" component={EditorForm} />
-        <Route path="profile/new/:space/:profileId" component={EditorForm} />
-        <Route path="new/:space/:type" component={EditorForm} />
-      </Route>
+      <Route path="editor/component/:space/:componentId" component={Editor} />
+      <Route path="editor/component/new/:space/:componentId" component={Editor} />
+      <Route path="editor/profile/:space/:profileId" component={Editor} />
+      <Route path="editor/profile/new/:space/:profileId" component={Editor} />
+      <Route path="editor/new/:space/:type" component={Editor} />
       <Route path="*" component={NotFound}/>
     </Route>
   </Router>

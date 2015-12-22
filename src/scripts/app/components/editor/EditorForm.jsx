@@ -14,10 +14,7 @@ var Modal = require('react-bootstrap/lib/Modal');
 
 //components
 var ComponentSpecForm = require("./ComponentSpecForm"),
-    EditorMenuGroup = require("./EditorMenuGroup"),
-    DataGrid = require("../datagrid/DataGrid.jsx"),
-    SpaceSelector = require("../datagrid/SpaceSelector.jsx"),
-    DataGridFilter = require("../datagrid/DataGridFilter.jsx");
+    EditorMenuGroup = require("./EditorMenuGroup");
 
 //mixins
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
@@ -35,7 +32,7 @@ var ReactAlert = require('../../util/ReactAlert');
 */
 var EditorForm = React.createClass({
   mixins: [FluxMixin, History, ComponentViewMixin, ComponentUsageMixin,
-    StoreWatchMixin("ComponentDetailsStore", "EditorStore")],
+    StoreWatchMixin("ComponentDetailsStore", "EditorStore", "TeamStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -59,125 +56,51 @@ var EditorForm = React.createClass({
     }
   },
 
-  componentDidMount: function() {
-    var params = this.props.params;
-    log.debug("Editor - location:", this.location, "params:", params);
-
-    // set application state through actions, after this avoid using params directly
-
-    // determine id - take either from componentId or profileId
-    // may be null in case of a new item
-    var id = params.componentId;
-    if(id == undefined) {
-      id = params.profileId;
-    }
-
-    // determine type
-    var type;
-    if(params.type != undefined) {
-      type = params.type;
-    } else if (params.componentId != undefined) {
-      type = Constants.TYPE_COMPONENT;
-    } else if (params.profileId != undefined) {
-      type = Constants.TYPE_PROFILE;
-    } else {
-      log.error("Unknown type for editor", params);
-    }
-
-    var space = params.space;
-
-    // initialise editor
-    this.getFlux().actions.openEditor(type, space, id);
-
-    // further initialisation of the editor depending on parameters
-    if(this.isNew() && id == undefined) {
-      // create new component
-      this.getFlux().actions.newComponentSpec(type, space);
-      // create new item description
-      this.getFlux().actions.newItem(type, space);
-    } else {
-      // load the spec for editing
-      this.getFlux().actions.loadComponentSpec(type, id);
-      // load the item for editing
-      this.getFlux().actions.loadItem(type, id);
-    }
-
-    this.getFlux().actions.loadTeams();
-    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team);
-  },
-
   render: function () {
     if(this.state.details.loading || this.state.editor.item == null) {
       return (<div>Loading component...</div>);
     } else {
-      var newItem = this.isNew();
       var editorClasses = classNames('editorGroup',
       {
         'processing': this.state.editor.processing,
         'open': true
       });
       return (
-        <div className="editorContainer">
-          <div className={editorClasses}>
+        <div className={editorClasses}>
 
-            {/* 'hook' for editor modals */}
-            <div id="typeModalContainer"></div>
-            <div id="ccrModalContainer"></div>
+          {/* 'hook' for editor modals */}
+          <div id="typeModalContainer"></div>
+          <div id="ccrModalContainer"></div>
 
-            <h3>
-              {this.state.editor.type === Constants.TYPE_PROFILE
-                ? (newItem?"New profile":"Edit profile")
-                :(newItem?"New component":"Edit component")}
-            </h3>
+          <h3>
+            {this.state.editor.type === Constants.TYPE_PROFILE
+              ? (this.props.isNew?"New profile":"Edit profile")
+              :(this.props.isNew?"New component":"Edit component")}
+          </h3>
 
-            <EditorMenuGroup
-              isNew={newItem}
-              onSave={this.handleSave}
-              onSaveNew={this.handleSaveNew}
-              onPublish={this.handlePublish}
-              disabled={this.state.editor.processing}
+          <EditorMenuGroup
+            isNew={this.props.isNew}
+            onSave={this.handleSave}
+            onSaveNew={this.handleSaveNew}
+            onPublish={this.handlePublish}
+            disabled={this.state.editor.processing}
+          />
+
+          <ComponentSpecForm
+            spec={this.state.details.spec}
+            item={this.state.editor.item}
+            expansionState={this.state.details.expansionState}
+            linkedComponents={this.state.details.linkedComponents}
+            onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+            onTypeChange={this.setType}
+            onHeaderChange={this.updateHeader}
+            onItemChange={this.updateItem}
+            onComponentChange={this.updateComponentSpec}
+            onToggleSelection={this.handleToggleSelection}
+            selectedComponentId={this.state.editor.selectedComponentId}
+            onExpandAll={this.expandAll}
+            onCollapseAll={this.collapseAll}
             />
-
-            <ComponentSpecForm
-              spec={this.state.details.spec}
-              item={this.state.editor.item}
-              expansionState={this.state.details.expansionState}
-              linkedComponents={this.state.details.linkedComponents}
-              onComponentToggle={this.doToggle /* from ComponentViewMixin */}
-              onTypeChange={this.setType}
-              onHeaderChange={this.updateHeader}
-              onItemChange={this.updateItem}
-              onComponentChange={this.updateComponentSpec}
-              onToggleSelection={this.handleToggleSelection}
-              selectedComponentId={this.state.editor.selectedComponentId}
-              onExpandAll={this.expandAll}
-              onCollapseAll={this.collapseAll}
-              />
-          </div>
-          <div className="browserGroup">
-            <DataGrid
-              multiSelect={false}
-              editMode={true}
-              items={this.state.editor.grid.items}
-              loading={this.state.editor.grid.loading}
-              onRowSelect={this.handleGridRowSelect}
-              />
-            <div className="gridControls">
-              <DataGridFilter
-                value={this.state.editor.grid.filterText}
-                onChange={this.handleGridFilterTextChange} />
-              <SpaceSelector
-                type={Constants.TYPE_COMPONENT}
-                space={this.state.editor.grid.space}
-                teams={this.state.team.teams}
-                selectedTeam={this.state.editor.grid.team}
-                allowMultiSelect={false}
-                validUserSession={true}
-                componentsOnly={true}
-                onSpaceSelect={this.handleGridSpaceSelect}
-                onToggleMultipleSelect={null} />
-            </div>
-          </div>
         </div>
       );
     }
@@ -204,44 +127,8 @@ var EditorForm = React.createClass({
     )];
   },
 
-  isNew: function() {
-    var routes = this.props.routes;
-    if(routes.length == 0) {
-      log.error("No routes");
-    }
-
-    var path = routes[routes.length - 1].path;
-    if(path == null) {
-      log.error("No path for route", lastRoute);
-    }
-    return path.indexOf("new") == 0 || path.indexOf("component/new") == 0 || path.indexOf("profile/new") == 0;
-  },
-
   /*=== Event handlers for child components ====*/
 
-  handleGridSpaceSelect: function(type, space, group) {
-    this.getFlux().actions.switchEditorGridSpace(space, group);
-    this.getFlux().actions.loadEditorGridItems(space, group);
-  },
-
-  handleGridFilterTextChange: function(evt) {
-    this.getFlux().actions.setGridFilterText(evt.target.value);
-  },
-
-  handleGridRowSelect: function(itemId) {
-    var targetComponentId = this.state.editor.selectedComponentId;
-    if(targetComponentId == null) {
-      //no selection? add to root component
-      targetComponentId = this.state.details.spec.CMD_Component._appId;
-    }
-    // row selected means item should be added to selected component
-    this.getFlux().actions.insertComponentById(this.state.details.spec, targetComponentId, itemId,
-      function(newSpec) {
-        // make sure the newly added linked component is loaded
-        this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.details.linkedComponents);
-      }.bind(this)
-    );
-  },
 
   handleToggleSelection: function(id) {
     this.getFlux().actions.toggleComponentSelection(id);
