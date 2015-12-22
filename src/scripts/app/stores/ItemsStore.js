@@ -51,7 +51,9 @@ var ItemsStore = Fluxxor.createStore({
       space: this.space,
       team: this.team,
       filterText: this.filterText,
-      sortState: this.sortState
+      sortState: this.sortState,
+      filteredSize: this.filteredItems.length,
+      unfilteredSize: this.items.length
     };
   },
 

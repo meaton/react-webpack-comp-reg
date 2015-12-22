@@ -221,11 +221,22 @@ div.component-info {
   float: right;
   clear: right;
 
+  &>div, &>span {
+    display: inline-block;
+  }
+
   input {
+    display: inline-block;
     max-width: 8em;
     margin-right: 1em;
     max-height: 1em;
     margin-top: 2px;
     padding: .4em;
+  }
+
+  span.filterCount {
+    margin-right: .5em;
+    min-width: 9em;
+    text-align: right;
   }
 }

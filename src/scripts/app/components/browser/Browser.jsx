@@ -76,7 +76,10 @@ var Browser = React.createClass({
             <div className="gridControls">
               <DataGridFilter
                 value={this.state.items.filterText}
-                onChange={this.handleFilterTextChange} />
+                onChange={this.handleFilterTextChange}
+                numberShown={this.state.items.filteredSize}
+                numberTotal={this.state.items.unfilteredSize}
+                 />
               <SpaceSelector
                 type={this.state.items.type}
                 space={this.state.items.space}
