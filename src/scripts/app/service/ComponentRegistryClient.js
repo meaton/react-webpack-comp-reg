@@ -28,18 +28,17 @@ var corsRequestParams = (Config.cors) ?
       withCredentials: true
   }} : {};
 
-
-function getRegistryUrl(type, id) {
-  var typepath = '/registry/' + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
-  var requestUrl = restUrl + typepath;
-  if(id == null) {
-    return requestUrl;
-  } else {
-    return requestUrl + "/" + id;
-  }
-}
-
 var ComponentRegistryClient = {
+
+  getRegistryUrl: function(type, id) {
+    var typepath = '/registry/' + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
+    var requestUrl = restUrl + typepath;
+    if(id == null) {
+      return requestUrl;
+    } else {
+      return requestUrl + "/" + id;
+    }
+  },
 
   getRegistrySpacePath: function(space) {
     if(space == Constants.SPACE_PUBLISHED) {
@@ -54,7 +53,7 @@ var ComponentRegistryClient = {
   },
 
   loadComponents: function(type, space, group, handleSuccess, handleFailure) {
-    var requestUrl = getRegistryUrl(type);
+    var requestUrl = this.getRegistryUrl(type);
 
     var registrySpace = (space != null) ? this.getRegistrySpacePath(space): "";
     var teamId = (space == Constants.SPACE_TEAM) ? group : null;
@@ -102,7 +101,7 @@ var ComponentRegistryClient = {
 
  loadSpec: function(type, id, raw_type, handleSuccess, handleFailure) {
   var self = this;
-  var requestUrl = getRegistryUrl(type, id);
+  var requestUrl = this.getRegistryUrl(type, id);
   $.ajax($.extend({
     url: requestUrl,
     dataType: (raw_type != undefined) ? raw_type : "json",
@@ -305,17 +304,17 @@ normaliseValueScheme: function(valueScheme) {
 },
 
 deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
-  var requestUrl = getRegistryUrl(type, itemId);
+  var requestUrl = ComponentRegistryClient.getRegistryUrl(type, itemId);
 
   $.ajax($.extend({
     type: 'DELETE',
     url: requestUrl,
     success: function(data) {
       handleSuccess(data);
-    }.bind(this),
+    },
     error: function(xhr, status, err) {
       handleFailure(err);
-    }.bind(this)
+    }
   }, corsRequestParams));
 },
 
