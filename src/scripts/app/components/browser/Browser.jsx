@@ -61,8 +61,6 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
-    var rssLink = ComponentRegistryClient.getRegistryUrl(this.state.items.type) + "/rss";
-    //TODO: private/team space this.state.items.space this.state.items.team
 
     return (
         <section id="browser">
@@ -80,7 +78,7 @@ var Browser = React.createClass({
               onToggleSort={this.toggleSort}
               />
             <div className="gridControls">
-              <RssLink link={rssLink}/>
+              <RssLink link={this.getRssLink()}/>
               <DataGridFilter
                 value={this.state.items.filterText}
                 onChange={this.handleFilterTextChange}
@@ -203,6 +201,16 @@ var Browser = React.createClass({
           history={this.history}
            />
     );
+  },
+
+  getRssLink: function() {
+    // make an rss link for the current space/type selection state
+    var rssLink = ComponentRegistryClient.getRegistryUrl(this.state.items.type) + "/rss"
+      + "?registrySpace=" + ComponentRegistryClient.getRegistrySpacePath(this.state.items.space);
+    if(this.state.items.space === Constants.SPACE_TEAM) {
+      rssLink += "&groupId=" + this.state.items.team;
+    }
+    return rssLink;
   }
 });
 
