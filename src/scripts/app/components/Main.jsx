@@ -104,10 +104,10 @@ var Main = React.createClass({
               location={this.props.location} />
           </div>
 
-            <div className="main container-fluid">
-              <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
-              {this.props.children}
-            </div>
+          <div className="main container-fluid">
+            <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
+            {this.props.children}
+          </div>
         </div>
     );
   }

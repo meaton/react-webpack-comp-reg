@@ -36,6 +36,8 @@ var AuthState = React.createClass({
           &nbsp;
           <a href={adminUrl + "/userSettings"} target="_blank">&nbsp;settings</a>
           &nbsp;
+          <a href={Config.webappUrl + "/documentation.jsp"}>help</a>
+          &nbsp;
           {authState.isAdmin ? (
             <a href={adminUrl} target="_blank">admin</a>
           ) : null}
@@ -44,9 +46,13 @@ var AuthState = React.createClass({
     } else {
       var redirectUrl = Config.webappUrl + this.props.history.createHref(this.props.location.pathname + this.props.location.search);
       return (
-        <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + encodeURIComponent(redirectUrl) } method="POST">
-          <button type="submit">login</button>
-        </form>
+        <div>
+          <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + encodeURIComponent(redirectUrl) } method="POST">
+            <button type="submit">login</button>
+            &nbsp;
+            <a href={Config.webappUrl + "/documentation.jsp"}>Help</a>
+          </form>
+        </div>
       );
     }
   }
