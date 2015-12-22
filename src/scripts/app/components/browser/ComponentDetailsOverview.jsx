@@ -6,14 +6,24 @@ var React = require("react"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var Constants = require("../../constants");
+
+//bootstrap
+var Tabs = require('react-bootstrap/lib/Tabs');
+var Tab = require('react-bootstrap/lib/Tab');
+
 //components
-var InfoPanel = require('./InfoPanel.jsx');
+var ComponentSpecView = require('./ComponentSpecView');
+var Comments = require('./Comments');
+var XmlPanel = require('./XmlPanel');
 
 //helpers
+var ComponentSpec = require('../../service/ComponentSpec');
 var ExpansionState = require('../../service/ExpansionState');
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
-
 var classNames = require('classnames');
+
+require('../../../../styles/InfoPanel.sass');
 
 /**
 * ComponentDetailsOverview - displays the loaded CMDI Profile, full schema and comments in Bootstrap tabbed-panes.
@@ -37,26 +47,75 @@ var ComponentDetailsOverview = React.createClass({
     type: React.PropTypes.string
   },
 
-  render: function() {
+  render: function () {
+    var item = this.props.item;
+    if(item == null) {
+      return null;
+    }
+
+    var spec = this.state.details.spec;
+    var specXml = this.state.details.xml;
+    var loading = this.state.details.loading;
+
+    var isProfile = ComponentSpec.isProfile(item);
+    var classes = classNames("componentInfoPanel", {"loading": loading, "profile": isProfile, "component": !isProfile});
+
+    var loadingSpinner = <div className="loader spinner-loader">Loading...</div>;
+
     return (
-      <InfoPanel  item={this.props.item}
-                  activeView={this.state.details.activeView}
-                  spec={this.state.details.spec}
-                  specXml={this.state.details.xml}
-                  comments={this.state.details.comments}
-                  newComment={this.state.details.newComment}
-                  loadSpec={this.props.loadSpec.bind(null, this.props.item.id)}
-                  loadSpecXml={this.props.loadSpecXml.bind(null, this.props.item.id)}
-                  loadComments={this.props.loadComments.bind(null, this.props.item.id)}
-                  loading={this.state.details.loading}
-                  expansionState={this.state.details.expansionState}
-                  linkedComponents={this.state.details.linkedComponents}
-                  onComponentToggle={this.doToggle /* from ComponentViewMixin */}
-                  deleteComment={this.deleteComment}
-                  saveComment={this.saveComment}
-                  loggedIn={this.state.auth.authState.authenticated}
-      />
+      <Tabs activeKey={this.state.details.activeView} onSelect={this.refreshTab} className={classes}>
+        <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={loading}>
+          {loadingSpinner}
+          {spec != null && <ComponentSpecView
+            spec={spec}
+            onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+            expansionState={this.state.details.expansionState}
+            linkedComponents={this.state.details.linkedComponents}
+            />}
+        </Tab>
+        <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={loading}>
+          {loadingSpinner}
+          {(specXml != null) &&
+            <XmlPanel xml={specXml} />
+          }
+        </Tab>
+        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={loading}>
+          {loadingSpinner}
+          {item != null &&
+            <Comments
+              item={item}
+              loggedIn={this.state.auth.authState.authenticated}
+              newComment={this.state.details.newComment}
+              comments={this.state.details.comments}
+              saveComment={this.saveComment}
+              deleteComment={this.deleteComment}
+              />}
+        </Tab>
+      </Tabs>
     );
+  },
+
+  refreshTab: function(index) {
+    // do a reload depending on selected tab
+    if(index === Constants.INFO_VIEW_SPEC) {
+      this.props.loadSpec(this.props.item.id);
+    }
+    if(index === Constants.INFO_VIEW_XML) {
+      this.props.loadSpecXml(this.props.item.id);
+    }
+    if(index == Constants.INFO_VIEW_COMMENTS) {
+      this.props.loadComments(this.props.item.id);
+    }
+  },
+
+  getCommentsCount: function() {
+    if(this.state.details.activeView == Constants.INFO_VIEW_COMMENTS) {
+      // most accurate IF the current tab is the comments tab (which means that the comments have been loaded)
+      return this.state.details.comments.length;
+    } else {
+      // we got this from the item listing
+      return this.props.item.commentsCount;
+    }
   },
 
   saveComment: function(comment) {
