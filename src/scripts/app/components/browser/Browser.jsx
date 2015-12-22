@@ -20,6 +20,7 @@ var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetails = require('./ComponentDetailsOverview');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
+var RssLink = require('./RssLink');
 
 var ReactAlert = require('../../util/ReactAlert');
 
@@ -74,6 +75,10 @@ var Browser = React.createClass({
               onToggleSort={this.toggleSort}
               />
             <div className="gridControls">
+              <RssLink
+                  type={this.state.items.type}
+                  space={this.state.items.space}
+                  team={this.state.items.team} />
               <DataGridFilter
                 value={this.state.items.filterText}
                 onChange={this.handleFilterTextChange}
