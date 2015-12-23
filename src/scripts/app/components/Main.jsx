@@ -37,7 +37,7 @@ var Main = React.createClass({
 
   componentWillMount: function() {
     // select space and item according to params
-    log.debug("Location", this.props.location);
+    log.trace("Location", this.props.location);
 
     var queryParams = this.props.location.query;
 
@@ -56,10 +56,12 @@ var Main = React.createClass({
 
       // select a specific item. If no space specified, assume public
       var itemSpace =  space || Constants.SPACE_PUBLISHED;
-      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team, "- view:", browserview);
+      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team);
       this.getFlux().actions.switchSpace(type, itemSpace, team);
       this.getFlux().actions.loadItems(type, itemSpace, team);
       this.getFlux().actions.selectBrowserItemId(type, itemId, itemSpace, team);
+
+      //TODO support alternatively selecting xml/comments ('browserview' parameter)?
       this.getFlux().actions.loadComponentSpec(type, itemId);
     } else if(space != null || type != null) {
       // space specified (but not item). If no type specified, assume profile.
