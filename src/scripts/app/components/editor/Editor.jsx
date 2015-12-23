@@ -67,6 +67,14 @@ var Editor = React.createClass({
       return (
           <div className="editorContainer">
             <EditorForm
+                item={this.state.editor.item}
+                type={this.state.editor.type}
+                spec={this.state.details.spec}
+                loading={this.state.details.loading}
+                processing={this.state.editor.processing}
+                expansionState={this.state.details.expansionState}
+                linkedComponents={this.state.details.linkedComponents}
+                selectedComponentId={this.state.editor.selectedComponentId}
                 isNew={this.isNew()}
               />
             <div className="browserGroup">

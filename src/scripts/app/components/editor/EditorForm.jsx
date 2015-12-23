@@ -5,8 +5,7 @@ var Constants = require("../../constants");
 
 var React = require("react"),
     Fluxxor = require("fluxxor"),
-    FluxMixin = Fluxxor.FluxMixin(React),
-    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+    FluxMixin = Fluxxor.FluxMixin(React);
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -31,17 +30,18 @@ var ReactAlert = require('../../util/ReactAlert');
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, History, ComponentViewMixin, ComponentUsageMixin,
-    StoreWatchMixin("ComponentDetailsStore", "EditorStore", "TeamStore")],
+  mixins: [FluxMixin, History, ComponentViewMixin, ComponentUsageMixin],
 
-  // Required by StoreWatchMixin
-  getStateFromFlux: function() {
-    var flux = this.getFlux();
-    return {
-      details: flux.store("ComponentDetailsStore").getState(),
-      editor: flux.store("EditorStore").getState(),
-      team: flux.store("TeamStore").getState()
-    };
+  propTypes: {
+    item: React.PropTypes.object,
+    spec: React.PropTypes.object.isRequired,
+    type: React.PropTypes.string.isRequired,
+    loading: React.PropTypes.bool.isRequired,
+    processing: React.PropTypes.bool.isRequired,
+    expansionState: React.PropTypes.object.isRequired,
+    linkedComponents: React.PropTypes.object.isRequired,
+    selectedComponentId: React.PropTypes.string,
+    isNew: React.PropTypes.bool.isRequired
   },
 
   childContextTypes: {
@@ -57,12 +57,12 @@ var EditorForm = React.createClass({
   },
 
   render: function () {
-    if(this.state.details.loading || this.state.editor.item == null) {
+    if(this.props.loading || this.props.item == null) {
       return (<div>Loading component...</div>);
     } else {
       var editorClasses = classNames('editorGroup',
       {
-        'processing': this.state.editor.processing,
+        'processing': this.props.processing,
         'open': true
       });
       return (
@@ -73,7 +73,7 @@ var EditorForm = React.createClass({
           <div id="ccrModalContainer"></div>
 
           <h3>
-            {this.state.editor.type === Constants.TYPE_PROFILE
+            {this.props.type === Constants.TYPE_PROFILE
               ? (this.props.isNew?"New profile":"Edit profile")
               :(this.props.isNew?"New component":"Edit component")}
           </h3>
@@ -83,21 +83,21 @@ var EditorForm = React.createClass({
             onSave={this.handleSave}
             onSaveNew={this.handleSaveNew}
             onPublish={this.handlePublish}
-            disabled={this.state.editor.processing}
+            disabled={this.props.processing}
           />
 
           <ComponentSpecForm
-            spec={this.state.details.spec}
-            item={this.state.editor.item}
-            expansionState={this.state.details.expansionState}
-            linkedComponents={this.state.details.linkedComponents}
+            spec={this.props.spec}
+            item={this.props.item}
+            expansionState={this.props.expansionState}
+            linkedComponents={this.props.linkedComponents}
             onComponentToggle={this.doToggle /* from ComponentViewMixin */}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
             onComponentChange={this.updateComponentSpec}
             onToggleSelection={this.handleToggleSelection}
-            selectedComponentId={this.state.editor.selectedComponentId}
+            selectedComponentId={this.props.selectedComponentId}
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
             />
@@ -136,19 +136,19 @@ var EditorForm = React.createClass({
 
   handleSave: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.saveComponentSpec(this.state.details.spec, this.state.editor.item, this.afterSuccess, this.handleUsageWarning);
+      this.getFlux().actions.saveComponentSpec(this.props.spec, this.props.item, this.afterSuccess, this.handleUsageWarning);
     }
   },
 
   handleSaveNew: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.saveNewComponentSpec(this.state.details.spec, this.state.editor.item, this.afterSuccess);
+      this.getFlux().actions.saveNewComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
     }
   },
 
   handlePublish: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.publishComponentSpec(this.state.details.spec, this.state.editor.item, this.afterSuccess);
+      this.getFlux().actions.publishComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
     }
   },
 
@@ -157,19 +157,19 @@ var EditorForm = React.createClass({
   },
 
   setType: function(type) {
-    this.getFlux().actions.setType(this.state.details.spec, type);
+    this.getFlux().actions.setType(this.props.spec, type);
   },
 
   updateHeader: function(change) {
-    this.getFlux().actions.updateHeader(this.state.details.spec, this.state.editor.item, change);
+    this.getFlux().actions.updateHeader(this.props.spec, this.props.item, change);
   },
 
   updateItem: function(change) {
-    this.getFlux().actions.updateItem(this.state.editor.item, change);
+    this.getFlux().actions.updateItem(this.props.item, change);
   },
 
   updateComponentSpec: function(change) {
-    this.getFlux().actions.updateSpec(this.state.details.spec, change);
+    this.getFlux().actions.updateSpec(this.props.spec, change);
   },
 
   expandAll: function(spec) {
