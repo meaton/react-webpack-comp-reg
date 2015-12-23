@@ -7,9 +7,15 @@ var React = require('react');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
+//components
+var RssLink = require('./RssLink');
+
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var ButtonInput = require('react-bootstrap/lib/ButtonInput');
+
+//service
+var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
 
 //utils
 var moment = require('moment-timezone');
@@ -24,6 +30,7 @@ var Comments = React.createClass({
   propTypes: {
     comments: React.PropTypes.array.isRequired,
     item: React.PropTypes.object.isRequired,
+    type: React.PropTypes.string.isRequired,
     loggedIn: React.PropTypes.bool.isRequired,
     saveComment: React.PropTypes.func.isRequired,
     deleteComment: React.PropTypes.func.isRequired,
@@ -41,8 +48,10 @@ var Comments = React.createClass({
   },
 
   render: function () {
+    var rssLink = ComponentRegistryClient.getRegistryUrl(this.props.type, this.props.item.id) + "/comments/rss";
     return (
       <div>
+        <RssLink link={rssLink} />
         {this.renderComments()}
         {this.renderForm()}
       </div>

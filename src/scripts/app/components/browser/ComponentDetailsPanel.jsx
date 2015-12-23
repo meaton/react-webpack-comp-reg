@@ -84,6 +84,7 @@ var ComponentDetailsPanel = React.createClass({
           {item != null &&
             <Comments
               item={item}
+              type={this.props.type}
               loggedIn={this.state.auth.authState.authenticated}
               newComment={this.state.details.newComment}
               comments={this.state.details.comments}
