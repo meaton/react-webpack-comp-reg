@@ -56,10 +56,10 @@ var Main = React.createClass({
 
       // select a specific item. If no space specified, assume public
       var itemSpace =  space || Constants.SPACE_PUBLISHED;
-      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team);
-      this.getFlux().actions.switchSpace(type, space, team);
-      this.getFlux().actions.loadItems(type, space, team);
-      this.getFlux().actions.selectBrowserItemId(type, itemId, space, team);
+      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team, "- view:", browserview);
+      this.getFlux().actions.switchSpace(type, itemSpace, team);
+      this.getFlux().actions.loadItems(type, itemSpace, team);
+      this.getFlux().actions.selectBrowserItemId(type, itemId, itemSpace, team);
       this.getFlux().actions.loadComponentSpec(type, itemId);
     } else if(space != null || type != null) {
       // space specified (but not item). If no type specified, assume profile.

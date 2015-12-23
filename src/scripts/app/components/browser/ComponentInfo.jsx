@@ -52,7 +52,7 @@ var ComponentInfo = React.createClass({
 
     var query = {
       itemId: item.id,
-      registrySpace: ComponentRegistryClient.getRegistrySpacePath(space)
+      registrySpace: space
     };
     if(space === Constants.SPACE_TEAM) {
       query.groupId = this.props.team;
