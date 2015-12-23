@@ -13,11 +13,13 @@ var RssLink = require('./RssLink');
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var ButtonInput = require('react-bootstrap/lib/ButtonInput');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //service
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
 
 //utils
+var ReactAlert = require('../../util/ReactAlert');
 var moment = require('moment-timezone');
 
 /**
@@ -66,15 +68,32 @@ var Comments = React.createClass({
     if(comments != null && comments.length > 0)
       return (
         comments.map(function(comment, index) {
+          var commentDate = (comment.commentDate == null) ? null: moment(comment.commentDate).format('LLL');
+
+          var doRemove = function(){
+              ReactAlert.showConfirmationDialogue(
+                "Remove comment?",
+                <p>
+                  About to remove the following comment posted by {comment.userName} on {commentDate}:
+                  <pre>{comment.comments}</pre>
+                  This cannot be undone! Are you sure?
+                </p>,
+                commentDelete.bind(this, comment));
+          }.bind(this);
+
           var deleteLink = (isLoggedIn && comment.canDelete === "true" && comment.id != null) ? (
-            <span>&nbsp;<a className="delete" onClick={commentDelete.bind(this, comment)}>[delete]</a></span>
+            <span>&nbsp;
+              <a className="delete" title="Remove comment" onClick={doRemove} >
+                <Glyphicon glyph="remove" />
+              </a>
+            </span>
           ) : null;
 
           return (
             <div key={"comment-" + index} className="comment">
               <span className="comment-name">{comment.userName}
               </span><span> - </span>
-              <span className="comment-date">{ (comment.commentDate == null) ? null: moment(comment.commentDate).format('LLL') }</span>
+              <span className="comment-date">{commentDate}</span>
               {deleteLink}
               <p className="comment-comments">{comment.comments}</p>
             </div>
