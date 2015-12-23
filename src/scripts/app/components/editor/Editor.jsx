@@ -13,6 +13,8 @@ var EditorForm = require("./EditorForm"),
     SpaceSelector = require("../datagrid/SpaceSelector.jsx"),
     DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 
+var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
+
 var AuthUtil = require('../AuthState').AuthUtil;
 
 require('../../../../styles/ComponentEditor.sass');
@@ -24,7 +26,8 @@ require('../../../../styles/ComponentEditor.sass');
 * @constructor
 */
 var Editor = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore","ComponentDetailsStore", "EditorStore", "TeamStore")],
+  mixins: [FluxMixin, ComponentViewMixin,
+            StoreWatchMixin("AuthenticationStore","ComponentDetailsStore", "EditorStore", "TeamStore")],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -76,6 +79,7 @@ var Editor = React.createClass({
                 linkedComponents={this.state.details.linkedComponents}
                 selectedComponentId={this.state.editor.selectedComponentId}
                 isNew={this.isNew()}
+                onComponentToggle={this.doToggle /* from ComponentViewMixin */}
               />
             <div className="browserGroup">
               <DataGrid

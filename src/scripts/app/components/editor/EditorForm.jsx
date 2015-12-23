@@ -16,7 +16,6 @@ var ComponentSpecForm = require("./ComponentSpecForm"),
     EditorMenuGroup = require("./EditorMenuGroup");
 
 //mixins
-var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 var History = require("react-router").History;
 
@@ -30,7 +29,7 @@ var ReactAlert = require('../../util/ReactAlert');
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, History, ComponentViewMixin, ComponentUsageMixin],
+  mixins: [FluxMixin, History, ComponentUsageMixin],
 
   propTypes: {
     item: React.PropTypes.object,
@@ -91,7 +90,7 @@ var EditorForm = React.createClass({
             item={this.props.item}
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
-            onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+            onComponentToggle={this.props.onComponentToggle}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
