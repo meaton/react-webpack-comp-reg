@@ -65,7 +65,7 @@ var CMDElementForm = React.createClass({
     log.trace("Element", this.props.spec._appId, " open state:", open);
 
     var elem = this.props.spec;
-    var elemInspect = elem.elemId; // require('util').inspect(elem);
+    var elemInspect = elem.elemId;
 
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
@@ -76,24 +76,6 @@ var CMDElementForm = React.createClass({
     var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
 
     var multilingual = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
-
-    // elem props
-    var editableProps = open ? (
-      <div className="form-horizontal form-group">
-        <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-          onChange={this.updateElementValue} validate={this.validate} />
-        <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-          onChange={this.updateElementValue} validate={this.validate}
-          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
-        <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
-        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
-        <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
-      </div>
-    ): null;
 
     //putting it all together...
     return (
@@ -106,12 +88,27 @@ var CMDElementForm = React.createClass({
           </div>
           {open && (
             <div className="panel-body">
-              {editableProps}
+              <div className="form-horizontal form-group">
+                <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
+                  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+                  onChange={this.updateElementValue} validate={this.validate} />
+                <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
+                  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+                  onChange={this.updateElementValue} validate={this.validate}
+                  buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+                <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
+                <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
+                <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
+              </div>
             </div>
           )}
         </div>
         {this.renderAttributes(elem)}
-        {this.isOpen() && <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>}
+        {this.isOpen() &&
+          <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
+        }
       </div>
     );
   },

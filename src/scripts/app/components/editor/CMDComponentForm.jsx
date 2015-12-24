@@ -12,14 +12,10 @@ var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
-
 //components
 var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
-var ActionButtons = require('../ActionButtons');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
