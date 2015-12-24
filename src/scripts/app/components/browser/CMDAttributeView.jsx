@@ -5,10 +5,6 @@ var React = require('react');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-
 //components
 var ValueScheme = require('../ValueScheme');
 
@@ -22,7 +18,7 @@ var ValueScheme = require('../ValueScheme');
 */
 var CMDAttributeView = React.createClass({
   mixins: [ImmutableRenderMixin],
-  
+
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     open: React.PropTypes.bool,

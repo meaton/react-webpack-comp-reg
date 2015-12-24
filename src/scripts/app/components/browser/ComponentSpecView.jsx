@@ -61,7 +61,6 @@ var ComponentSpec = React.createClass({
 
       return (
           <div className={rootClasses}>
-            {/*errors*/}
             <div className="rootProperties">
               <ul>
                 <li><span>Name:</span> <b>{item.Header.Name}</b></li>

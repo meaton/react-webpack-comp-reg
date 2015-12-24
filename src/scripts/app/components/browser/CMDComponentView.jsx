@@ -9,16 +9,9 @@ var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
-
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
-
-//utils
-var update = require('react-addons-update');;
-var md5 = require('spark-md5');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -44,7 +37,7 @@ var CMDComponentView = React.createClass({
   /*=== Render functions ===*/
 
   /* main render() function in CMDComponentMixin */
-  
+
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);

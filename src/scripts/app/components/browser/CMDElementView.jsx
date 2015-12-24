@@ -5,17 +5,9 @@ var React = require('react');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
-
 //components
 var CMDAttributeView = require('./CMDAttributeView');
 var ValueScheme = require('../ValueScheme');
-
-//utils
-var update = require('react-addons-update');
-var classNames = require('classnames');
-var md5 = require('spark-md5');
 
 require('../../../../styles/CMDElement.sass');
 
@@ -42,7 +34,7 @@ var CMDElementView = React.createClass({
       closeAll: false
     };
   },
-  
+
   render: function () {
     var self = this;
     var attrList = null;
