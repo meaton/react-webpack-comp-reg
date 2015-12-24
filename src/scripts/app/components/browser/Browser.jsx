@@ -17,7 +17,7 @@ var Modal = require('react-bootstrap/lib/Modal');
 var DataGrid = require("../datagrid/DataGrid.jsx");
 var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
 var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
-var ComponentDetails = require('./ComponentDetailsPanel');
+var ComponentDetailsPanel = require('./ComponentDetailsPanel');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
 var RssLink = require('./RssLink');
@@ -110,7 +110,7 @@ var Browser = React.createClass({
           </div>
           <div className="viewer row">
             {item != null &&
-              <ComponentDetails
+              <ComponentDetailsPanel
                 ref="details"
                 item={item}
                 type={this.state.items.type}
