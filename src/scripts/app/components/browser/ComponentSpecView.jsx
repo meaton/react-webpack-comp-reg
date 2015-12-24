@@ -4,7 +4,6 @@ var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var btnGroup = require('../../../mixins/BtnGroupEvents');
 
 //components
 var CMDComponentView = require('./CMDComponentView');
@@ -21,27 +20,31 @@ require('../../../../styles/ComponentViewer.sass');
 * @constructor
 */
 var ComponentSpec = React.createClass({
+  mixins: [ImmutableRenderMixin],
+
+  contextTypes: {
+    router: React.PropTypes.func,
+  },
+
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
     onComponentToggle: React.PropTypes.func
   },
-  contextTypes: {
-    router: React.PropTypes.func,
-  },
-  getInitialState: function() {
-    return { childElements: null,
-             childComponents: null
-    };
-  },
-  mixins: [ImmutableRenderMixin],
 
   getDefaultProps: function() {
     return {
       domains: require('../../../domains.js')
     };
   },
+
+  getInitialState: function() {
+    return { childElements: null,
+             childComponents: null
+    };
+  },
+
   render: function() {
     var item = this.props.spec;
 
@@ -58,7 +61,6 @@ var ComponentSpec = React.createClass({
 
       return (
           <div className={rootClasses}>
-            {/*errors*/}
             <div className="rootProperties">
               <ul>
                 <li><span>Name:</span> <b>{item.Header.Name}</b></li>

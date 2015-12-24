@@ -47,7 +47,7 @@ window.flux = flux;
 /* Logging */
 
 // global log level
-log.setLevel(log.levels.DEBUG);
+log.setLevel(Config.loglevel || log.levels.INFO);
 
 // register on dispatch events
 if(log.getLevel() <= log.levels.DEBUG) {
@@ -71,27 +71,6 @@ var NotFound = React.createClass({
   }
 });
 
-// react-router configuration
-// var routes = (
-    // <Route handler={Main} path={Config.deploy.path} >
-    //   <NotFoundRoute handler={NotFound}/>
-    //   <Route name="browser" handler={Browser} />
-    //   <Route name="import" handler={NotFound /*Import*/} />
-    //   <Route path="editor" handler={Editor}>
-    //     <Route name="component" path="component/:space/:componentId" handler={EditorForm} />
-    //     <Route name="newComponent" path="component/new/:space/:componentId" handler={EditorForm} />
-    //     <Route name="profile" path="profile/:space/:profileId" handler={EditorForm} />
-    //     <Route name="newProfile" path="profile/new/:space/:profileId" handler={EditorForm} />
-    //     <Route name="newEditor" path="new/:space/:type" handler={EditorForm} />
-    //   </Route>
-    //   <DefaultRoute handler={Browser} />
-    // </Route>
-// );
-
-// manage defined routes and history with react-router
-// Router.run(routes, Router.HistoryLocation, function(Handler) {
-//   React.render(<Handler flux={flux} />, document.getElementById("app"));
-// });
 var createFluxComponent = function(Component, props) {
   return <Component {...props} flux={flux} />;
 };
@@ -103,13 +82,11 @@ ReactDOM.render((
       <IndexRoute component={Browser} />
       <Route path="browser" component={Browser} />
       <Route path="import" component={NotFound /*Import*/} />
-      <Route path="editor" component={Editor}>
-        <Route path="component/:space/:componentId" component={EditorForm} />
-        <Route path="component/new/:space/:componentId" component={EditorForm} />
-        <Route path="profile/:space/:profileId" component={EditorForm} />
-        <Route path="profile/new/:space/:profileId" component={EditorForm} />
-        <Route path="new/:space/:type" component={EditorForm} />
-      </Route>
+      <Route path="editor/component/:space/:componentId" component={Editor} />
+      <Route path="editor/component/new/:space/:componentId" component={Editor} />
+      <Route path="editor/profile/:space/:profileId" component={Editor} />
+      <Route path="editor/profile/new/:space/:profileId" component={Editor} />
+      <Route path="editor/new/:space/:type" component={Editor} />
       <Route path="*" component={NotFound}/>
     </Route>
   </Router>

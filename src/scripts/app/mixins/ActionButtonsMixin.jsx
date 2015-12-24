@@ -1,6 +1,10 @@
 var log = require('loglevel');
 
-var ActionButtons = require('../components/editor/ActionButtons');
+var React = require("react");
+var ReactDOM = require('react-dom');
+
+var ActionButtons = require('../components/ActionButtons');
+var ReactAlert = require('../util/ReactAlert');
 
 function $remove(index) {
   //update command: remove at index
@@ -49,6 +53,34 @@ var ActionButtonsMixin = {
     };
   },
 
+  getInitialState: function() {
+    return {wasMoved: false}
+  },
+
+  beforeMove: function(handler, direction) {
+    // start animation on move
+    $(ReactDOM.findDOMNode(this)).fadeTo(200, .1, function() {
+      this.setState({wasMoved: true});
+      handler(direction);
+    }.bind(this));
+  },
+
+  componentDidUpdate: function(prevProps) {
+    // finish animation on move
+    if(this.state.wasMoved) {
+      var node = $(ReactDOM.findDOMNode(this));
+      node.fadeTo(500, 1);
+      this.setState({wasMoved: false});
+    }
+
+    //TODO: scroll to new pos?
+    // parent.animate({
+    //   scrollTop: parent.scrollTop() + node.offset().top - node.height()/2,
+    // }, function() {
+    //   node.fadeTo(500, 1);
+    // });
+  },
+
   handleMoveComponent: function(changeHandler, index, direction) {
     log.debug("Move component",index,direction, "in", this.props.spec);
     changeHandler({CMD_Component: $move(direction, index, this.props.spec.CMD_Component)});
@@ -56,7 +88,9 @@ var ActionButtonsMixin = {
 
   handleRemoveComponent: function(changeHandler, index) {
     log.debug("Remove component",index, "from", this.props.spec);
-    changeHandler({CMD_Component: $remove(index)});
+    ReactAlert.showConfirmationDialogue("Remove component?", "Are you sure that you want to remove this component?", function() {
+        changeHandler({CMD_Component: $remove(index)});
+    });
   },
 
   handleMoveElement: function(changeHandler, index, direction) {
@@ -66,7 +100,9 @@ var ActionButtonsMixin = {
 
   handleRemoveElement: function(changeHandler, index) {
     log.debug("Remove element",index, "from", this.props.spec);
-    changeHandler({CMD_Element: $remove(index)});
+    ReactAlert.showConfirmationDialogue("Remove element?", "Are you sure that you want to remove this element?", function() {
+      changeHandler({CMD_Element: $remove(index)});
+    });
   },
 
   handleMoveAttribute: function(changeHandler, index, direction) {
@@ -76,13 +112,15 @@ var ActionButtonsMixin = {
 
   handleRemoveAttribute: function(changeHandler, index) {
     log.debug("Remove attribute",index, "from", this.props.spec);
-    var attrs = this.props.spec.AttributeList.Attribute;
-    if(index == 0 && $.isArray(attrs) && attrs.length == 1) {
-      // removal of last attribute: remove AttributeList
-      changeHandler({AttributeList: {$set: null}});
-    } else {
-      changeHandler({AttributeList: {Attribute: $remove(index)}});
-    }
+    ReactAlert.showConfirmationDialogue("Remove attribute?", "Are you sure that you want to remove this attribute?", function() {
+      var attrs = this.props.spec.AttributeList.Attribute;
+      if(index == 0 && $.isArray(attrs) && attrs.length == 1) {
+        // removal of last attribute: remove AttributeList
+        changeHandler({AttributeList: {$set: null}});
+      } else {
+        changeHandler({AttributeList: {Attribute: $remove(index)}});
+      }
+    }.bind(this));
   },
 
   createActionButtons: function(props) {
@@ -95,7 +133,8 @@ var ActionButtonsMixin = {
     }
     return (
       <ActionButtons
-        onMove={this.props.onMove}
+        container={this}
+        onMove={this.props.onMove ? this.beforeMove.bind(null, this.props.onMove) : null}
         onRemove={this.props.onRemove}
         moveUpEnabled={!this.props.isFirst}
         moveDownEnabled={!this.props.isLast}

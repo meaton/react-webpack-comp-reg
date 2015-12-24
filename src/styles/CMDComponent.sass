@@ -1,31 +1,44 @@
-.CMDComponent {
+.CMDComponent, .componentInsertionTarget {
   display: inline-block;
   float: left;
   clear: both;
 
   min-width: 40em;
-  padding: .5em;
   margin: .5em 2em;
 
-  background-color: #fff;
+  &.open {
+    border-left-width: 4px;
+  }
+  &.linked {
+    .panel {
+      border-width: 1px;
+      border-color: #999;
+      border-style: dashed;
+    }
+  }
 
-  border: 1px solid;
-  border-color: #ccc;
-  border-radius: 8px;
+  a.componentLink {
+    color: #000099;
+  }
 }
-.CMDComponent a.componentLink {
-  color: #000099;
-}
-.CMDComponent.open {
-  border-left-width: 4px;
-}
-.CMDComponent.selected {
-  background-color: #eeffff;
-}
-.CMDComponent.linked {
-  border-width: 2px;
-  border-color: #00f;
-}
-.componentName {
+
+.componentName, .componentLink {
   font-weight: bold;
+}
+
+.componentInsertionTarget {
+  margin-left: 3em;
+  padding: .5em;
+  border: 1px dashed #999;
+  width: auto;
+}
+
+#editor {
+  .CMDComponent.selected {
+    background: #f9f9f9;
+
+    &, &:hover {
+      border-left: 3px solid #333;
+    }
+  }
 }

@@ -1,5 +1,17 @@
 'use strict';
 
+// Some common tasks:
+//
+// * serve -> builds the application and starts a webpack dev server
+//
+// * build:dist -> builds the application for distribution (i.e. minifies and
+// performs other optimisations), see webpack.dist.config.js
+//
+// * maven-install -> builds for distribution, then creates and installs (in the
+// local repository) a jar that contains the build output
+//
+// If things are not working as expected, check config.js!
+
 var serverPort = 8000;
 
 var mountFolder = function (connect, dir) {
@@ -122,10 +134,40 @@ module.exports = function (grunt) {
                 configure : "jsdoc.conf.json"
             }
         }
+    },
+
+    maven_deploy: {
+      options: {
+        groupId: 'eu.clarin.cmdi',
+        artifactId: 'component-registry-react-ui',
+        snapshot: true,
+        file: function(options) {
+          return 'target/' + options.artifactId + '-' + options.version + '.' + options.packaging;
+        }
+      },
+      jar: {
+        options: {
+          packaging: 'jar',
+          goal: 'install', //deploy?
+          injectDestFolder: ''
+        },
+        files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
+      },
+      src: {
+        options: {
+          url: 'https://nexus.clarin.eu/content/repositories/Clarin',
+          repositoryId: 'CLARIN',
+          classifier: 'sources',
+          goal: 'install' //deploy
+        },
+        files: [{src: ['**', '!node_modules/**', '!dist/**', '!target/**'], dest: ''}]
+      }
     }
   });
 
+
   grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-maven-deploy');
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -142,6 +184,8 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['karma']);
 
   grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+
+  grunt.registerTask('maven-install', ['build:dist', 'maven_deploy:jar']);
 
   grunt.registerTask('default', []);
 };

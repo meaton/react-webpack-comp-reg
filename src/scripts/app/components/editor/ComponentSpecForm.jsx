@@ -20,7 +20,7 @@ var ComponentSpec = require('../../service/ComponentSpec');
 var Validation = require('../../service/Validation');
 var update = require('react-addons-update');
 var classNames = require('classnames');
-var md5 = require('spark-md5');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
 require('../../../../styles/ComponentViewer.sass');
 
@@ -76,7 +76,7 @@ var ComponentSpecForm = React.createClass({
         <form ref="editComponentForm" name="editComponent" id="editComponent" className="form-horizontal form-group">
           <div className="form-group">
             <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
-            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENTS} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
+            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENT} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
           </div>
           <ValidatingTextInput type="text" name="Name" label="Name" value={spec.Header.Name}
             labelClassName="editorFormLabel" wrapperClassName="editorFormField"
@@ -102,6 +102,8 @@ var ComponentSpecForm = React.createClass({
               <a onClick={this.props.onCollapseAll.bind(null, spec.CMD_Component)}>Collapse all</a>
             </div>
           }
+
+          {/* Form for root component (only children, properties hidden) */}
           <CMDComponentForm
             spec={spec.CMD_Component}
             hideProperties={true}
@@ -111,11 +113,14 @@ var ComponentSpecForm = React.createClass({
             onToggleSelection={this.props.onToggleSelection}
             onComponentChange={this.handleComponentChange}
             selectedComponentId={this.props.selectedComponentId}
+            overrideSelect={this.props.selectedComponentId == null /*root component is default selection*/}
             />
           </form>
         );
     }
   },
+
+  /*=== Functions that handle changes (in this component and its children) ===*/
 
   handleTypeChange: function(e) {
     //pass changes to handler, the event target is input "isProfile" (value either profile or component type constant)
@@ -126,14 +131,14 @@ var ComponentSpecForm = React.createClass({
     //pass changes to handler, input name maps to field name
     var field = e.target.name;
     var value = e.target.value;
-    this.props.onItemChange({[field]: value});
+    this.props.onItemChange(changeObj(field, value));
   },
 
   handleHeaderChange: function(e) {
     //pass changes to handler, input name maps to field name
     var field = e.target.name;
     var value = e.target.value;
-    this.props.onHeaderChange({[field]: value});
+    this.props.onHeaderChange(changeObj(field, value));
   },
 
   handleComponentChange: function(change) {
@@ -147,8 +152,10 @@ var ComponentSpecForm = React.createClass({
   },
 
   updateConceptLinkValue: function(val) {
-    this.handleComponentChange({$merge: {['@ConceptLink']: val}});
+    this.handleComponentChange({$merge: {'@ConceptLink': val}});
   },
+
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('header', targetName, val, feedback);

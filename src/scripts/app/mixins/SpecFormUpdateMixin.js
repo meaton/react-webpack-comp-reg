@@ -1,8 +1,8 @@
 'use strict';
 
 var log = require('loglevel');
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
 var ComponentSpec = require('../service/ComponentSpec');
-
 /**
 * SpecFormUpdateMixin - Common functions and properties for the specification
 * form components for updating properties and children
@@ -98,7 +98,7 @@ var SpecFormUpdateMixin = {
   },
 
   handleAttributeChange: function(onChange, index, change) {
-    var update = {AttributeList: {Attribute: {[index]: change}}};
+    var update = {AttributeList: {Attribute: changeObj(index, change)}};
     log.trace("Update attribute", update);
     onChange(update);
   }

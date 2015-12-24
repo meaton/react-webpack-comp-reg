@@ -18,6 +18,9 @@ var Validation = require('./Validation');
 
 var ComponentSpec = require('../service/ComponentSpec');
 
+var PROFILES_PATH = "profiles";
+var COMPONENTS_PATH = "components";
+
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
     password: Config.REST.auth.password,
@@ -25,8 +28,17 @@ var corsRequestParams = (Config.cors) ?
       withCredentials: true
   }} : {};
 
-
 var ComponentRegistryClient = {
+
+  getRegistryUrl: function(type, id) {
+    var typepath = '/registry/' + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
+    var requestUrl = restUrl + typepath;
+    if(id == null) {
+      return requestUrl;
+    } else {
+      return requestUrl + "/" + id;
+    }
+  },
 
   getRegistrySpacePath: function(space) {
     if(space == Constants.SPACE_PUBLISHED) {
@@ -37,16 +49,6 @@ var ComponentRegistryClient = {
     }
     if(space == Constants.SPACE_TEAM) {
       return "group";
-    }
-  },
-
-  getRegistryUrl: function(type, id) {
-    var typepath = (type === Constants.TYPE_PROFILE)?'/registry/profiles':'/registry/components';
-    var requestUrl = restUrl + typepath;
-    if(id == null) {
-      return requestUrl;
-    } else {
-      return requestUrl + "/" + id;
     }
   },
 
@@ -67,13 +69,22 @@ var ComponentRegistryClient = {
        log.trace("Successfully loaded " + requestUrl);
        var _data = data;
        if(_data != null && _data != 'null') {
-          if(_data.hasOwnProperty("componentDescription") && type == "components")
+          if(_data.hasOwnProperty("componentDescription") && type == Constants.TYPE_COMPONENT)
             _data = data.componentDescription;
-          else if(_data.hasOwnProperty("profileDescription") && type == "profiles")
+          else if(_data.hasOwnProperty("profileDescription") && type == Constants.TYPE_PROFILE)
             _data = data.profileDescription;
 
-          if(!$.isArray(_data))
+          if(!$.isArray(_data)) {
             _data = [_data];
+          }
+
+          _data = _data.map(function(item){
+            //comments count is provided as string, better (e.g. for sorting) to turn into integer
+            if(item.commentsCount) {
+              item.commentsCount = parseInt(item.commentsCount);
+            }
+            return item;
+          });
 
           handleSuccess(_data);
         } else {
@@ -158,7 +169,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   fd.append('domainName', item.domainName);
   fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
-  var typeSpace = ComponentSpec.isProfile(spec) ? "profiles" : "components";
+  var typeSpace = ComponentSpec.isProfile(spec) ? PROFILES_PATH : COMPONENTS_PATH;
   var url = restUrl + '/registry/' + typeSpace;
   if(update) url += '/' + profileId + '/' + actionType;
 
@@ -293,17 +304,17 @@ normaliseValueScheme: function(valueScheme) {
 },
 
 deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
-  var url = restUrl + '/registry/' + type + '/' + itemId;
+  var requestUrl = ComponentRegistryClient.getRegistryUrl(type, itemId);
 
   $.ajax($.extend({
     type: 'DELETE',
-    url: url,
+    url: requestUrl,
     success: function(data) {
       handleSuccess(data);
-    }.bind(this),
+    },
     error: function(xhr, status, err) {
       handleFailure(err);
-    }.bind(this)
+    }
   }, corsRequestParams));
 },
 
@@ -326,7 +337,7 @@ transferComponent: function(itemId, teamId, handleSuccess, handleFailure) {
 },
 
 loadComments: function(componentId, type, success, failure) {
-  var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
+  var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
 
   $.ajax($.extend({
     url: restUrl + '/registry/' + reg_type + '/' + componentId + '/comments',
@@ -350,14 +361,14 @@ loadComments: function(componentId, type, success, failure) {
 
 saveComment: function(componentId, type, comment, success, failure) {
   var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
-  var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
+  var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
   var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/';
 
   var fd = new FormData();
 
   if(type === Constants.TYPE_PROFILE) {
     comments_xml += "<componentId>" + componentId + "</componentId>";
-  } else if (type === Constants.TYPE_COMPONENTS) {
+  } else if (type === Constants.TYPE_COMPONENT) {
     comments_xml += "<componentId>" + componentId + "</componentId>";
   }
 
@@ -387,7 +398,7 @@ saveComment: function(componentId, type, comment, success, failure) {
 },
 
 deleteComment: function(componentId, type, commentId, success, failure) {
-  var reg_type = (type === Constants.TYPE_PROFILE) ? "profiles" : "components";
+  var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
   var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/' + commentId;
 
   $.ajax($.extend({

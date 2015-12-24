@@ -17,12 +17,17 @@ var DataGridFilter = React.createClass({
 
   propTypes: {
     value: React.PropTypes.string,
-    onChange: React.PropTypes.func.isRequired
+    onChange: React.PropTypes.func.isRequired,
+    numberShown: React.PropTypes.number,
+    numberTotal: React.PropTypes.number
   },
   render: function() {
     return (
       <div className="gridFilter">
         <Input type="search" value={this.props.value} onChange={this.props.onChange} />
+        {this.props.numberShown != null && this.props.numberTotal != null &&
+          <span className="filterCount">Showing {this.props.numberShown} of {this.props.numberTotal}</span>
+        }
       </div>
     )
   }

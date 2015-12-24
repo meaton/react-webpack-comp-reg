@@ -2,6 +2,7 @@
 var log = require('loglevel');
 
 var React = require('react');
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -22,6 +23,7 @@ var ValidatingTextInput = require('./ValidatingTextInput');
 //utils
 var classNames = require('classnames');
 var Validation = require('../../service/Validation');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
 require('../../../../styles/CMDElement.sass');
 
@@ -54,10 +56,92 @@ var CMDElementForm = React.createClass({
     return true;
   },
 
+  /*=== Render functions ===*/
+
+  render: function () {
+    var self = this;
+    var open = this.isOpen();
+
+    log.trace("Element", this.props.spec._appId, " open state:", open);
+
+    var elem = this.props.spec;
+    var elemInspect = elem.elemId;
+
+    var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
+    var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
+    var cardOpt = !open ? ( <span>Cardinality: {minC + " - " + maxC}</span> ) : null;
+
+    // classNames
+    var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
+    var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
+
+    var multilingual = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
+
+    //putting it all together...
+    return (
+      <div className={elementClasses}>
+        <div className='panel panel-warning'>
+          <div className="panel-heading">
+            {this.createActionButtons({ /* from ActionButtonsMixin */
+              title: <span>Element: <span className="elementName">{elemName}</span> {cardOpt}</span>
+            })}
+          </div>
+          {open && (
+            <div className="panel-body">
+              <div className="form-horizontal form-group">
+                <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
+                  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+                  onChange={this.updateElementValue} validate={this.validate} />
+                <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
+                  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+                  onChange={this.updateElementValue} validate={this.validate}
+                  buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+                <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
+                <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
+                <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
+              </div>
+            </div>
+          )}
+        </div>
+        {this.renderAttributes(elem)}
+        {this.isOpen() &&
+          <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>
+        }
+      </div>
+    );
+  },
+
+  renderAttributes: function(elem) {
+    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
+    return (
+      <div className="attrList">
+        <ReactCSSTransitionGroup transitionName="editor-items" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        {
+          (attrSet != undefined && attrSet.length > 0) &&
+          $.map(attrSet, function(attr, index) {
+            return <CMDAttributeForm
+                      key={attr._appId}
+                      spec={attr}
+                      onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
+                      onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
+                      onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
+                      isFirst={index == 0}
+                      isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
+                      checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
+                      {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+                      />
+                  }.bind(this))
+        }
+        </ReactCSSTransitionGroup>
+      </div>);
+  },
+
   /*=== Functions that handle changes (in this component and its children) ===*/
 
   propagateValue: function(field, value) {
-    this.props.onElementChange({$merge: {[field]: value}});
+    this.props.onElementChange({$merge: changeObj(field, value)});
   },
 
   updateElementValue: function(e) {
@@ -71,84 +155,12 @@ var CMDElementForm = React.createClass({
 
   handleUpdateValueScheme: function(type, valScheme) {
     this.props.onElementChange({$merge: {
-      ['@ValueScheme']: type,
+      '@ValueScheme': type,
       ValueScheme: valScheme
     }});
   },
 
-  /*=== Render functions ===*/
-
-  render: function () {
-    var self = this;
-    var open = this.isOpen();
-
-    log.trace("Element", this.props.spec._appId, " open state:", open);
-
-    var elem = this.props.spec;
-    var elemInspect = elem.elemId; // require('util').inspect(elem);
-
-    var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
-    var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
-    var cardOpt = !open ? ( <span>Cardinality: {minC + " - " + maxC}</span> ) : null;
-
-    // classNames
-    var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
-    var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
-
-    var multilingual = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
-
-    // elem props
-    var editableProps = open ? (
-      <div className="form-horizontal form-group">
-        <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-          onChange={this.updateElementValue} validate={this.validate} />
-        <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-          onChange={this.updateElementValue} validate={this.validate}
-          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
-        <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
-        <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
-        <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
-      </div>
-    ): null;
-
-    //putting it all together...
-    return (
-      <div className={elementClasses}>
-        {this.createActionButtons() /* from ActionButtonsMixin */}
-        <span>Element: <a className="elementLink" onClick={this.toggleExpansionState}>{elemName}</a></span> {cardOpt}
-        {editableProps}
-        {this.renderAttributes(elem)}
-        {this.isOpen() && <div className="addAttribute controlLinks"><a onClick={this.addNewAttribute.bind(this, this.props.onElementChange)}>+Attribute</a></div>}
-      </div>
-    );
-  },
-
-  renderAttributes: function(elem) {
-    var attrSet = (elem.AttributeList != undefined && $.isArray(elem.AttributeList.Attribute)) ? elem.AttributeList.Attribute : elem.AttributeList;
-    return (attrSet == undefined)?null:(
-      <div className="attrList">Attributes:
-        {
-          (attrSet != undefined && attrSet.length > 0) ?
-          $.map(attrSet, function(attr, index) {
-            return <CMDAttributeForm
-                      key={attr._appId}
-                      spec={attr}
-                      onAttributeChange={this.handleAttributeChange.bind(this, this.props.onElementChange, index)}
-                      onMove={this.handleMoveAttribute.bind(this, this.props.onElementChange, index)}
-                      onRemove={this.handleRemoveAttribute.bind(this, this.props.onElementChange, index)}
-                      isFirst={index == 0}
-                      isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
-                      checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
-                      {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
-                      />
-                  }.bind(this)) : <span>No Attributes</span>
-        }
-      </div>);
-  },
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('element', targetName, val, feedback)

@@ -21,11 +21,11 @@ var ButtonModal = React.createClass({
     var desc = this.props.desc;
     var renderBodyContent = function() {
       if(typeof desc === "string") {
-        return (<p className="modal-desc">this.props.desc</p>);
+        return (<p className="modal-desc">{desc}</p>);
       } else {
         return desc;
       }
-    };
+    }.bind(this);
 
     var action = this.props.action;
     var renderFooterContent = function(opts) {

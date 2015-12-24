@@ -32,15 +32,17 @@ var DataTablesWrapper = React.createClass({
 
   render: function() {
     var className = classNames("table table-striped", {
-      multipleSelection: (this.props.multiple),
-      withInfoLink: (this.props.onClickInfo != null)
+      multipleSelection: this.props.multiple,
+      withInfoLink: this.props.onClickInfo != null,
+      editMode: this.props.editMode
     });
 
     return (
       <table className={className} id="testtable">
         <thead>
           <tr>
-            {(this.props.multiple || this.props.editMode) && <th className="checkboxCell"/> }
+            {(this.props.multiple) && <th className="checkboxCell"/> }
+            {(this.props.editMode) && <th className="add"/> }
             <th {...this.createHeaderProps('name')}>Name</th>
             <th {...this.createHeaderProps('groupName')}>Group Name</th>
             <th {...this.createHeaderProps('domainName')}>Domain Name</th>

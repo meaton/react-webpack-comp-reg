@@ -9,6 +9,8 @@ var ImmutabilityUtil = require('../util/ImmutabilityUtil');
 var remove = ImmutabilityUtil.remove,
     update = ImmutabilityUtil.update;
 
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
+
 var SelectionStore = Fluxxor.createStore({
   initialize: function(options) {
     this.selectedItems = {};
@@ -49,7 +51,7 @@ var SelectionStore = Fluxxor.createStore({
     }
 
     // select identified item
-    this.selectedItems = update(this.selectedItems, {[item.id]: {$set: item}});
+    this.selectedItems = update(this.selectedItems, changeObj(item.id, {$set: item}));
     this.emit("change");
   },
 
@@ -68,6 +70,7 @@ var SelectionStore = Fluxxor.createStore({
     log.debug("Removing deleted items from selection");
     // remove deleted items from selection
     this.selectedItems = remove(this.selectedItems, ids);
+    this.currentItem = null;
     this.emit("change");
   },
 

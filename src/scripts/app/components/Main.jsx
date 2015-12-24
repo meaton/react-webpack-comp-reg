@@ -2,9 +2,13 @@ var log = require("loglevel");
 
 var React = require("react"),
     Constants = require("../constants"),
-    Fluxxor = require("fluxxor"),
-    FluxMixin = Fluxxor.FluxMixin(React),
-    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+    Fluxxor = require("fluxxor");
+
+// Mixins
+var FluxMixin = Fluxxor.FluxMixin(React);
+var StoreWatchMixin = Fluxxor.StoreWatchMixin;
+var WindowFocusMixin = require('../mixins/WindowFocusMixin');
+var History = require('react-router').History;
 
 // Components
 var AuthState = require("./AuthState.jsx").AuthState;
@@ -20,7 +24,7 @@ var Alert = require('react-bootstrap/lib/Alert');
 */
 var Main = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore")],
+  mixins: [FluxMixin, StoreWatchMixin("AuthenticationStore", "MessageStore"), WindowFocusMixin, History],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -31,10 +35,51 @@ var Main = React.createClass({
     };
   },
 
+  componentWillMount: function() {
+    // select space and item according to params
+    log.trace("Location", this.props.location);
+
+    var queryParams = this.props.location.query;
+
+    var itemId = queryParams.item || queryParams.itemId;
+    var space = queryParams.registrySpace || queryParams.space;
+    if(space === "group") {
+      // "team" used to be "group"
+      space = Constants.SPACE_TEAM;
+    }
+    var type = queryParams.type;
+    var team = queryParams.teamId || queryParams.groupId;
+
+    if(itemId != null) {
+      //switch to correct space and type
+      type = type || itemId.indexOf("clarin.eu:cr1:p_") >= 0?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENT;
+
+      // select a specific item. If no space specified, assume public
+      var itemSpace =  space || Constants.SPACE_PUBLISHED;
+      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team);
+      this.getFlux().actions.switchSpace(type, itemSpace, team);
+      this.getFlux().actions.loadItems(type, itemSpace, team);
+      this.getFlux().actions.selectBrowserItemId(type, itemId, itemSpace, team);
+
+      //TODO support alternatively selecting xml/comments ('browserview' parameter)?
+      this.getFlux().actions.loadComponentSpec(type, itemId);
+    } else if(space != null || type != null) {
+      // space specified (but not item). If no type specified, assume profile.
+      type = type || Constants.TYPE_PROFILE;
+      space = space || Constants.SPACE_PUBLISHED;
+      this.getFlux().actions.switchSpace(type, space, team);
+      this.getFlux().actions.loadItems(type, space, team);
+    }
+  },
+
   componentDidMount: function() {
     this.checkAuthState();
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
+  },
+
+  onWindowFocus: function() {
+    this.checkAuthState();
   },
 
   componentWillUnmount: function() {
@@ -52,16 +97,19 @@ var Main = React.createClass({
   render: function() {
     return (
         <div id="app-root">
-          <PageHeader>CMDI Component Registry <small>React.js Prototype beta</small></PageHeader>
+          <PageHeader>CMDI Component Registry <small>React.js front end alpha</small></PageHeader>
 
           <div className="auth-login">
-            <AuthState authState={this.state.auth.authState} />
+            <AuthState
+              authState={this.state.auth.authState}
+              history={this.history}
+              location={this.props.location} />
           </div>
 
-            <div className="main container-fluid">
-              <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
-              {this.props.children}
-            </div>
+          <div className="main container-fluid">
+            <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
+            {this.props.children}
+          </div>
         </div>
     );
   }

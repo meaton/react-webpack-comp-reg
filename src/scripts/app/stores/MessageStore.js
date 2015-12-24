@@ -5,6 +5,7 @@ var Fluxxor = require("fluxxor"),
     React = require('react');
 
 var update = require('react-addons-update');
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
 
 var MessageStore = Fluxxor.createStore({
   initialize: function(options) {
@@ -25,7 +26,8 @@ var MessageStore = Fluxxor.createStore({
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleError,
       Constants.SAVE_COMMENT_FAILURE, this.handleError,
       Constants.DELETE_COMMENT_FAILURE, this.handleError,
-      Constants.SAVE_COMMENT_FAILURE, this.handleError
+      Constants.SAVE_COMMENT_FAILURE, this.handleError,
+      Constants.SELECT_BROWSER_ITEM_FAILED, this.handleError
     );
   },
 
@@ -41,7 +43,7 @@ var MessageStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleDismiss(msgId) {
+  handleDismiss: function(msgId) {
     if(this.messages.hasOwnProperty(msgId)) {
       //copy all messages to new object except one with msgId
       //TODO: nicer way of removing one property in immutable way?
@@ -100,6 +102,6 @@ function addMessage(messages, type, obj) {
       message: message
     }
 
-    return update(messages, {[id]: {$set: newMsg}});
+    return update(messages, changeObj(id, {$set: newMsg}));
   }
 }

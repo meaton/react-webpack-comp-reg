@@ -11,6 +11,8 @@ var ItemsFilter = require('../service/ItemsFilter');
 var remove = ImmutabilityUtil.remove,
     update = ImmutabilityUtil.update;
 
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
+
 var ItemsStore = Fluxxor.createStore({
   initialize: function(options) {
       this.items = [], //items to be shown in browser
@@ -49,7 +51,9 @@ var ItemsStore = Fluxxor.createStore({
       space: this.space,
       team: this.team,
       filterText: this.filterText,
-      sortState: this.sortState
+      sortState: this.sortState,
+      filteredSize: this.filteredItems.length,
+      unfilteredSize: this.items.length
     };
   },
 
@@ -82,7 +86,7 @@ var ItemsStore = Fluxxor.createStore({
     this.loading = true;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.removed = update(this.removed, {[id]: {$set: Constants.DELETE_STATE_DELETING}});
+      this.removed = update(this.removed, changeObj(id, {$set: Constants.DELETE_STATE_DELETING}));
     }
     this.emit("change");
   },
@@ -91,7 +95,7 @@ var ItemsStore = Fluxxor.createStore({
     this.loading = false;
     for(var i=0; i<ids.length; i++) {
       var id=ids[i];
-      this.removed = update(this.removed, {[id]: {$set: Constants.DELETE_STATE_DELETED}});
+      this.removed = update(this.removed, changeObj(id, {$set: Constants.DELETE_STATE_DELETED}));
     }
     this.emit("change");
   },

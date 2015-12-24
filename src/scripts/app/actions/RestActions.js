@@ -24,7 +24,7 @@ var RestActions = {
 
   loadEditorGridItems: function(space, team) {
     this.dispatch(Constants.LOAD_EDITOR_ITEMS);
-    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENTS, space, team, function(items){
+    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENT, space, team, function(items){
         // Success
         this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
       }.bind(this),
@@ -80,9 +80,9 @@ var RestActions = {
     }.bind(this), currentset);
   },
 
-  loadComponentSpecXml: function(type, item) {
+  loadComponentSpecXml: function(type, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
-    ComponentRegistryClient.loadSpec(type, item.id, "text", function(specXml){
+    ComponentRegistryClient.loadSpec(type, itemId, "text", function(specXml){
         // success
         this.dispatch(Constants.LOAD_COMPONENT_SPEC_XML_SUCCES, specXml);
       }.bind(this),
@@ -158,7 +158,7 @@ var RestActions = {
     );
   },
 
-  saveComment(type, componentId, comment) {
+  saveComment: function(type, componentId, comment) {
     this.dispatch(Constants.SAVE_COMMENT, comment);
     ComponentRegistryClient.saveComment(componentId, type, comment, function(result){
         // Success
@@ -171,7 +171,7 @@ var RestActions = {
     );
   },
 
-  deleteComment(type, componentId, commentId) {
+  deleteComment: function(type, componentId, commentId) {
     ComponentRegistryClient.deleteComment(componentId, type, commentId, function(id, result){
         // Success
         this.dispatch(Constants.DELETE_COMMENT_SUCCESS, id);
@@ -271,7 +271,7 @@ function loadComponentsById(ids, collected, callback) {
     loadComponentsById(ids, collected, callback);
   } else {
     // load current id
-    ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENTS, id, "json", function(spec){
+    ComponentRegistryClient.loadSpec(Constants.TYPE_COMPONENT, id, "json", function(spec){
         log.info("Loaded", id, ":", spec.Header.Name);
 
         if(spec == undefined) {
@@ -313,7 +313,7 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
   var save = function() {
     ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(result){
         // success
-        var type = (result["@isProfile"] === "true")?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENTS;
+        var type = (result["@isProfile"] === "true")?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENT;
         this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, {
           item: result.description,
           type: type,

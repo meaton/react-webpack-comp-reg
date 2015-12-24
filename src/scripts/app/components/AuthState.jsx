@@ -1,10 +1,11 @@
 'use strict';
+var log = require('loglevel');
 
 // React
 var React = require('react');
 
 // Config
-var Config = require('../../config').Config;
+var Config = require('../../config');
 var adminUrl = require('../../config').adminUrl;
 var restUrl = require('../../config').restUrl;
 var authUrl = restUrl + "/authentication"
@@ -20,7 +21,9 @@ var AuthState = React.createClass({
   mixins: [ImmutableRenderMixin],
 
   propTypes: {
-    authState: React.PropTypes.object.isRequired
+    authState: React.PropTypes.object.isRequired,
+    history: React.PropTypes.object.isRequired,
+    location: React.PropTypes.object.isRequired
   },
 
   render: function () {
@@ -33,16 +36,23 @@ var AuthState = React.createClass({
           &nbsp;
           <a href={adminUrl + "/userSettings"} target="_blank">&nbsp;settings</a>
           &nbsp;
+          <a href={Config.webappUrl + "/documentation.jsp"}>help</a>
+          &nbsp;
           {authState.isAdmin ? (
             <a href={adminUrl} target="_blank">admin</a>
           ) : null}
         </div>
       );
     } else {
+      var redirectUrl = Config.webappUrl + this.props.history.createHref(this.props.location.pathname + this.props.location.search);
       return (
-        <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + window.location.protocol + "//" + window.location.host + Config.deploy.path } method="POST">
-          <button type="submit">login</button>
-        </form>
+        <div>
+          <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + encodeURIComponent(redirectUrl) } method="POST">
+            <button type="submit">login</button>
+            &nbsp;
+            <a href={Config.webappUrl + "/documentation.jsp"}>Help</a>
+          </form>
+        </div>
       );
     }
   }

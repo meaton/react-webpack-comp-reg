@@ -13,14 +13,14 @@ module.exports = {
 
   defaultContainer: "alert-container",
 
-  showMessage: function(container, title, message) {
+  showMessage: function(title, message) {
     log.debug("Alert: [", title, "]", message);
 
-    var renderBodyContent = function() { return (
+    var renderBodyContent = (
       <div className="modal-desc">
         <div>{message}</div>
       </div>
-    )};
+    );
 
     var renderFooterContent = function(opts) { return (
       <Button onClick={opts.closeAlert}>Ok</Button>
@@ -29,13 +29,12 @@ module.exports = {
     this.showModalAlert(title, renderBodyContent, renderFooterContent);
   },
 
-  showConfirmationDialogue: function(container, title, message, onYes, onNo) {
-
-    var renderBodyContent = function() { return (
+  showConfirmationDialogue: function(title, message, onYes, onNo) {
+    var renderBodyContent = (
       <div className="modal-desc">
         <div>{message}</div>
       </div>
-    )};
+    );
 
     var renderFooterContent = function(opts) { return (
       <div>
@@ -53,6 +52,13 @@ module.exports = {
     this.showModalAlert(title, renderBodyContent, renderFooterContent);
   },
 
+  /**
+   * Shows a modal dialogue with the specified content (renderers)
+   * @param  {string} title               Title
+   * @param  {object|function} renderBodyContent   if a function, called with options {closeAlertHandler}
+   * @param  {object|function} [renderFooterContent] if a function, called with options {closeAlertHandler
+   * @param  {function} [onClose]             optional callback called before closing the dialogue
+   */
   showModalAlert: function(title, renderBodyContent, renderFooterContent, onClose) {
     this.showAlert(function(closeAlert) {
       var opts = {
@@ -64,13 +70,31 @@ module.exports = {
         }
       };
 
+      var bodyContent;
+      if (typeof renderBodyContent === "function") {
+        bodyContent = renderBodyContent(opts);
+      } else if (typeof renderBodyContent === "object") {
+        bodyContent = renderBodyContent;
+      } else {
+        bodyContent = null;
+      }
+
+      var footerContent;
+      if (typeof renderFooterContent === "function") {
+        footerContent = renderFooterContent(opts);
+      } else if (typeof renderFooterContent === "object") {
+        footerContent = renderFooterContent;
+      } else {
+        footerContent = null;
+      }
+
       return (
         <Modal.Dialog enforceFocus={true} backdrop={true}>
           <Modal.Header closeButton={true} onHide={opts.closeAlert}>
             <Modal.Title>{title}</Modal.Title>
           </Modal.Header>
-          {renderBodyContent != null && (<Modal.Body>{renderBodyContent(opts)}</Modal.Body>)}
-          {renderFooterContent != null && (<Modal.Footer>{renderFooterContent(opts)}</Modal.Footer>)}
+          {bodyContent != null && (<Modal.Body>{bodyContent}</Modal.Body>)}
+          {footerContent != null && (<Modal.Footer>{footerContent}</Modal.Footer>)}
         </Modal.Dialog>
     )});
   },
@@ -93,7 +117,7 @@ module.exports = {
   },
 
   renderAlert: function(instance, elementId) {
-    log.debug("Render alert at", elementId, instance);
+    log.trace("Render alert at", elementId, instance);
     var div = React.DOM.div;
     if(instance && elementId)
       ReactDOM.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));

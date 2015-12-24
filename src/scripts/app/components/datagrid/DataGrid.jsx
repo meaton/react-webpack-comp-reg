@@ -11,6 +11,9 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var DataTablesWrapper = require("./DataTablesWrapper.jsx"),
     DataTablesRow = require("./DataTablesRow.jsx")
 
+//utils
+var classNames = require("classnames");
+
 require('../../../../styles/DataGrid.sass');
 
 var DataGrid = React.createClass({
@@ -33,7 +36,8 @@ var DataGrid = React.createClass({
   getDefaultProps: function() {
     return {
       selectedItems: {},
-      rowSelectAllowed: true
+      rowSelectAllowed: true,
+      editMode: false
     };
   },
 
@@ -78,8 +82,8 @@ var DataGrid = React.createClass({
     });
 
     return (
-      <div className={"grid" + (this.props.loading?" wait":"")} id="grid">
-        {this.props.loading ? <span>Loading...</span> : null}
+      <div className={classNames("grid", {"loading": this.props.loading})} id="grid">
+        {this.props.loading && <div className="loader spinner-loader">Loading...</div>}
         <DataTablesWrapper
           ref="wrapper"
           multiple={this.props.multiSelect}

@@ -2,6 +2,7 @@
 
 var log = require('loglevel');
 var _ = require('lodash');
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
 
 var React = require('react');
 var update = require('react-addons-update');
@@ -21,7 +22,7 @@ function updateCommandInComponent(spec, appId, command) {
         var childCommand = updateCommandInComponent(child, appId, command);
         if(childCommand != null) {
           // this means we have a match - wrap command to make it work on this level
-          return {CMD_Component: {[i]: childCommand}};
+          return {CMD_Component: changeObj(i, childCommand)};
         }
       }
     }
@@ -56,7 +57,7 @@ var ComponentSpec = {
    * @param  {[type]} innerCommand update command to perform, e.g {foo: {$set: 'bar'}}
    * @return {[type]}              the updated spec (or original spec if the command could not be executed)
    */
-  updateInComponent(spec, appId, innerCommand) {
+  updateInComponent: function(spec, appId, innerCommand) {
     log.trace("Updating", appId, "in", spec, "with", innerCommand);
     var command = updateCommandInComponent(spec.CMD_Component, appId, innerCommand);
     if(command == null) {
@@ -90,7 +91,7 @@ var ComponentSpec = {
     return ids;
   },
 
-  isProfile(spec) {
+  isProfile: function(spec) {
     return spec['@isProfile']=="true";
   }
 

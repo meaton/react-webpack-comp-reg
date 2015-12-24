@@ -1,5 +1,6 @@
 var React = require('react');
 var update = require('react-addons-update');
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
 
 module.exports = {
   /**
@@ -22,8 +23,6 @@ module.exports = {
 
   setChildState: function(state, id, value) {
     // 'update' object to set value of 'id' property to 'value'
-    return update(state, {
-      [id]: {$set: value}
-    });
+    return update(state, changeObj(id, {$set: value}));
   }
 }

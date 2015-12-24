@@ -30,7 +30,7 @@ module.exports = {
 
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    //new webpack.optimize.UglifyJsPlugin(), //disabled because it has issues with dynamic object index syntax (in particular ExpansionState.js)
+    new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin()
   ],

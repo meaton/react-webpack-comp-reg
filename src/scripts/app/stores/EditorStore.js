@@ -12,7 +12,7 @@ var update = require('react-addons-update');
 
 var EditorStore = Fluxxor.createStore({
   initialize: function(options) {
-    this.type = Constants.TYPE_COMPONENTS; //components or profiles
+    this.type = Constants.TYPE_COMPONENT; //components or profiles
     this.item = null;
     this.processing = false;
     this.selectedComponentId = null;
@@ -47,7 +47,10 @@ var EditorStore = Fluxxor.createStore({
 
   getState: function() {
     // 'singleton' selectedItem associative array
-    var selectedItems = (this.selectedGridItem == null) ? {} : {[this.selectedGridItem.id]: this.selectedGridItem}
+    var selectedItems = {};
+    if(this.selectedGridItem != null) {
+      selectedItems[this.selectedGridItem.id] = this.selectedGridItem;
+    }
     return {
       type: this.type,
       item: this.item,

@@ -40,6 +40,7 @@ var BrowserMenuGroup = React.createClass({
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
   },
+
   getDefaultProps: function() {
     return {
       items: {},
@@ -47,7 +48,61 @@ var BrowserMenuGroup = React.createClass({
       moveToTeam: false
     };
   },
-  generateDeleteModal: function() {
+
+  render: function () {
+    var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
+    var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
+
+    var editorLink = null;
+    var editBtnLabel = isPublished ? "Edit as new" : "Edit";
+
+    if(selectionCount == 1) {
+      var itemId = Object.keys(this.props.items)[0];
+      var editorRoute = null;
+      if(this.props.type === Constants.TYPE_PROFILE) {
+        editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
+          + this.props.space + "/" + itemId;
+      } else if(this.props.type === Constants.TYPE_COMPONENT) {
+        editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
+          + this.props.space + "/" + itemId;
+      }
+
+      if(editorRoute != null) {
+        editorLink = (
+          <LinkContainer to={editorRoute} disabled={this.props.multiSelect || !this.props.loggedIn}>
+            <Button
+              bsStyle="primary">
+                {editBtnLabel}
+            </Button>
+          </LinkContainer>
+        );
+      }
+    } else {
+      editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
+    }
+
+    return (
+        <ButtonGroup className="actionMenu">
+          <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
+            disabled={!this.props.loggedIn}>
+            <Button>Create new</Button>
+          </LinkContainer>
+          {editorLink}
+          {/*
+          <LinkContainer to="/import" disabled={!this.props.loggedIn}>
+            <Button>Import</Button>
+          </LinkContainer>
+          */}
+          <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
+            btnLabel="Delete"
+            title="Delete items"
+            desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
+          {this.props.moveToTeamEnabled && this.renderMoveToTeam(selectionCount > 0)}
+        </ButtonGroup>
+    );
+  },
+
+  renderDeleteModal: function() {
     var deleteIdList = [];
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
     if(selectionCount > 0)
@@ -71,56 +126,6 @@ var BrowserMenuGroup = React.createClass({
         <p>This cannot be undone.</p>
         {warnPublic}
       </div>
-    );
-  },
-  render: function () {
-    var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
-    var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
-
-    var editorLink = null;
-    var editBtnLabel = isPublished ? "Edit as new" : "Edit";
-
-    if(selectionCount == 1) {
-      var itemId = Object.keys(this.props.items)[0];
-      var editorRoute = null;
-      if(this.props.type === Constants.TYPE_PROFILE) {
-        editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
-          + this.props.space + "/" + itemId;
-      } else if(this.props.type === Constants.TYPE_COMPONENTS) {
-        editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
-          + this.props.space + "/" + itemId;
-      }
-
-      if(editorRoute != null) {
-        editorLink = (
-          <LinkContainer to={editorRoute} disabled={this.props.multiSelect}>
-            <Button
-              bsStyle="primary">
-                {editBtnLabel}
-            </Button>
-          </LinkContainer>
-        );
-      }
-    } else {
-      editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
-    }
-
-    return (
-        <ButtonGroup className="actionMenu">
-          <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
-            disabled={!this.props.loggedIn}>
-            <Button>Create new</Button>
-          </LinkContainer>
-          {editorLink}
-          <LinkContainer to="/import" disabled={!this.props.loggedIn}>
-            <Button>Import</Button>
-          </LinkContainer>
-          <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
-            btnLabel="Delete"
-            title="Delete items"
-            desc={selectionCount == 0 ? null : this.generateDeleteModal()} />
-          {this.props.moveToTeamEnabled && this.renderMoveToTeam(selectionCount > 0)}
-        </ButtonGroup>
     );
   },
 
@@ -153,7 +158,7 @@ var BrowserMenuGroup = React.createClass({
       // moving out of private space cannot be undone, show warning
       var title = "Move component(s) or profile(s) into team space";
       var message = "Items, once moved to a team space, can not be moved back to your workspace. Do you want to move this item?";
-      ReactAlert.showConfirmationDialogue(this, title, message, this.props.moveToTeam.bind(null, teamId));
+      ReactAlert.showConfirmationDialogue(title, message, this.props.moveToTeam.bind(null, teamId));
     }
   },
 

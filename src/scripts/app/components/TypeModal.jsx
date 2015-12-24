@@ -16,6 +16,7 @@ var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var Tabs = require('react-bootstrap/lib/Tabs');
 var Tab = require('react-bootstrap/lib/Tab');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //service
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
@@ -107,15 +108,27 @@ var TypeModal = React.createClass({
         items = [items];
       }
       var newRow = update(items[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
-
-      var newEnum;
-      if($.isArray(this.state.enumeration.item)) {
-        newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
-      } else {
-        newEnum = update(this.state.enumeration, { item: {$set: newRow}});
-      }
-      this.setState({ enumeration: newEnum });
+      this.updateConceptLink(rowIndex, newRow);
     }
+  },
+  removeConceptLink: function(rowIndex) {
+    if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
+      var items = this.state.enumeration.item;
+      if(!$.isArray(items)) {
+        items = [items];
+      }
+      var newRow = update(items[rowIndex], { '@ConceptLink': { $set: null } });
+      this.updateConceptLink(rowIndex, newRow);
+    }
+  },
+  updateConceptLink(rowIndex, newRow) {
+    var newEnum;
+    if($.isArray(this.state.enumeration.item)) {
+      newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
+    } else {
+      newEnum = update(this.state.enumeration, { item: {$set: newRow}});
+    }
+    this.setState({ enumeration: newEnum });
   },
   addNewRow: function() {
     var val = this.state.enumeration;
@@ -196,7 +209,10 @@ var TypeModal = React.createClass({
 
           return {
             value: (value) ?
-            (<span><a href={value} target="_blank">{value}</a></span>) :
+            (<span>
+              <a href={value} target="_blank">{value}</a> &nbsp;
+              <a onClick={self.removeConceptLink.bind(self, rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>
+            </span>) :
             (<span>
               {modal}
             </span>)
@@ -208,7 +224,7 @@ var TypeModal = React.createClass({
           return {
               value: (
                 <span>
-                  <span onClick={self.removeRow.bind(self, rowIndex)} style={{cursor: 'pointer'}}>&#10007;</span>
+                  <Glyphicon glyph="remove-circle" onClick={self.removeRow.bind(self, rowIndex)} style={{cursor: 'pointer'}} title="Remove item" />
                 </span>
               )
           };

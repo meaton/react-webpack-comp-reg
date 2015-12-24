@@ -1,4 +1,28 @@
-.browser .grid {
+.grid {
+
+  table {
+    transition: opacity .2s ease-in-out .2s, background-color .2s ease-in-out .2s;
+    background-color: #fff;
+    opacity: 1;
+  }
+  &.loading table {
+    background-color: #eee;
+    opacity: .2;
+  }
+
+  div.loader {
+    transition: opacity .2s ease-in-out .5s;
+    display: none;
+    opacity: 0;
+    float: left;
+    position: relative;
+    left: 50%;
+    top: 50%;
+  }
+  &.loading div.loader {
+    display: block;
+    opacity: 1;
+  }
 
   table {
       position: relative;
@@ -6,6 +30,7 @@
       height: 100%;
       width: 100%;
       border-bottom: 1px ridge #ccc;
+      margin: 0px;
   }
 
   thead {
@@ -140,6 +165,18 @@
     }
   }
 
+  table.editMode {
+    tbody td, thead th {
+      &.commentsCount {
+        width: 7%;
+      }
+
+      &.add {
+        width: 3%;
+      }
+    }
+  }
+
   // Column widths - with multiple selection
   table.multipleSelection {
     tbody td, thead th {
@@ -176,5 +213,28 @@ div.component-info {
         color: #999;
       }
     }
+  }
+}
+
+.gridFilter {
+  display: block;
+  float: right;
+
+  &>div, &>span {
+    display: inline-block;
+  }
+
+  input {
+    display: inline-block;
+    max-width: 8em;
+    margin-right: 1em;
+    max-height: 1em;
+    margin-top: 2px;
+    padding: .4em;
+  }
+
+  span.filterCount {
+    margin-right: 1em;
+    min-width: 9em;
   }
 }

@@ -6,6 +6,7 @@ var Fluxxor = require("fluxxor"),
 var log = require('loglevel');
 
 var update = require('react-addons-update');
+var changeObj = require('../util/ImmutabilityUtil').changeObj;
 
 var ComponentSpecStore = Fluxxor.createStore({
   initialize: function(options) {
@@ -71,7 +72,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     // reset view state
     this.activeView = Constants.INFO_VIEW_SPEC;
     // reset expansion state
-    this.expansionState = {[spec.CMD_Component._appId]: true};
+    this.expansionState = changeObj(spec.CMD_Component._appId, true);
     // reset linked components state
     if(linkedComponents == undefined) {
       this.linkedComponents = {};

@@ -1,5 +1,7 @@
 'use strict';
 
+var React = require("react");
+
 var log = require('loglevel');
 
 //helpers
@@ -17,14 +19,12 @@ var CMDComponentMixin = {
     /* determines whether 'envelope' with properties should be hidden */
     hideProperties: React.PropTypes.bool,
     isLinked:  React.PropTypes.bool,
-    linkedComponents: React.PropTypes.object,
-    actionButtons: React.PropTypes.object
+    linkedComponents: React.PropTypes.object
   },
 
   getDefaultProps: function() {
     return {
-      hideProperties: false,
-      actionButtons: null
+      hideProperties: false
     };
   },
 
@@ -45,14 +45,14 @@ var CMDComponentMixin = {
       comp = comp[0];
 
     // classNames
-    var viewClasses = classNames('componentBody');
+    var viewClasses = classNames('componentBody', {'panel-group': open});
     var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': (this.isSelected && this.isSelected()), 'linked': this.props.isLinked });
 
     var children = (open || this.props.renderChildrenWhenCollapsed)?(
       <div className={viewClasses}>
-        <div>{this.renderAttributes(comp)}</div>
-        <div className="childElements">{this.renderElements(comp)}</div>
-        <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>
+          <div>{this.renderAttributes(comp)}</div>
+          <div className="childElements">{this.renderElements(comp)}</div>
+          <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>
       </div>
     ):null;
 
@@ -63,7 +63,6 @@ var CMDComponentMixin = {
       // envelope with properties and children
       return (
         <div className={componentClasses}>
-          {this.props.actionButtons}
           {this.renderComponentProperties(comp)}
           {children}
         </div>
@@ -85,6 +84,10 @@ var CMDComponentMixin = {
         nestedComponents = compComps.map(this.callRenderNestedComponent);
       } else {
         nestedComponents = null;
+      }
+
+      if(this.wrapNestedComponents) {
+        nestedComponents = this.wrapNestedComponents(nestedComponents);
       }
 
       var afterComponents;
@@ -139,6 +142,10 @@ var CMDComponentMixin = {
       elements = null;
     }
 
+    if(this.wrapElements) {
+      elements = this.wrapElements(elements);
+    }
+
     var afterElements;
     if(typeof this.renderAfterElements == "function") {
       afterElements = this.renderAfterElements();
@@ -161,6 +168,14 @@ var CMDComponentMixin = {
       var attrSet = $.isArray(comp.AttributeList.Attribute) ? comp.AttributeList.Attribute : [comp.AttributeList.Attribute];
     }
 
+    var attributes = (attrSet != undefined && attrSet.length > 0) ?
+      $.map(attrSet, this.renderAttribute)
+      :null;
+
+    if(this.wrapAttributes) {
+      attributes = this.wrapAttributes(attributes);
+    }
+
     var afterAttributes;
     if(typeof this.renderAfterAttributes == "function") {
       afterAttributes = this.renderAfterAttributes();
@@ -171,13 +186,10 @@ var CMDComponentMixin = {
     var self = this;
     return (
       <div>
-        {(attrSet != undefined && attrSet.length > 0)? (
-          <div className="attrList">
-            Attributes:
-            {$.map(attrSet, this.renderAttribute)}
-          </div>
-        ):null}
-        {afterAttributes}
+            <div className="attrList">
+              {attributes}
+            </div>
+          {afterAttributes}
       </div>
     );
   }

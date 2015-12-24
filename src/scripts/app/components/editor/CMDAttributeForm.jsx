@@ -20,6 +20,7 @@ var ValidatingTextInput = require('./ValidatingTextInput');
 
 //utils
 var classNames = require('classnames');
+var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 var Validation = require('../../service/Validation');
 
 require('../../../../styles/CMDAttribute.sass');
@@ -54,25 +55,6 @@ var CMDAttributeForm = React.createClass({
     return true;
   },
 
-  /*=== Functions that handle changes in this component ====*/
-
-  propagateValue: function(field, value) {
-    this.props.onAttributeChange({$merge: {[field]: value}});
-  },
-
-  updateAttributeValue: function(e) {
-    this.propagateValue(e.target.name, e.target.value);
-  },
-
-  handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onAttributeChange({$merge: {
-       Type: type,
-       ValueScheme: valScheme
-     }});
-  },
-
-  /*=== Render functions ===*/
-
   render: function () {
     var attr = this.props.spec;
     var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
@@ -95,17 +77,40 @@ var CMDAttributeForm = React.createClass({
 
     return (
       <div className={attrClasses}>
-        {this.createActionButtons() /* from ActionButtonsMixin */}
-        <span>Attribute: <a className="attributeLink" onClick={this.toggleExpansionState}>{attrName}</a></span>
-        {editableProps}
-      </div>
-    );
-    return (
-      <div className="attrAttr">
-        {attr.Name} {attr_val}
+        <div className="panel panel-success">
+          <div className="panel-heading">
+            {this.createActionButtons({ /* from ActionButtonsMixin */
+              title: <span>Attribute: <span className="attrName">{attrName}</span></span>
+            })}
+          </div>
+          {open &&
+            <div className="panel-body">
+              {editableProps}
+            </div>
+          }
+        </div>
       </div>
     );
   },
+
+  /*=== Functions that handle changes in this component ====*/
+
+  propagateValue: function(field, value) {
+    this.props.onAttributeChange({$merge: changeObj(field ,value)});
+  },
+
+  updateAttributeValue: function(e) {
+    this.propagateValue(e.target.name, e.target.value);
+  },
+
+  handleUpdateValueScheme: function(type, valScheme) {
+    this.props.onAttributeChange({$merge: {
+       Type: type,
+       ValueScheme: valScheme
+     }});
+  },
+
+  /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('attribute', targetName, val, feedback)

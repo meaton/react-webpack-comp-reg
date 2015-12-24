@@ -3,7 +3,6 @@
 var log = require('loglevel');
 
 var React = require('react');
-var Router = require('react-router');
 
 //router bootstrap
 var LinkButton = require('../LinkButton');
@@ -13,17 +12,11 @@ var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonModal = require('../ButtonModal');
 
-var Constants = require('../../constants');
-var Config = require('../../../config');
-
 /**
 * BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.
 * @constructor
-* @mixes Router.State
-* @mixes Router.Navigation
 */
 var EditorMenuGroup = React.createClass({
-  mixins: [Router.State, Router.Navigation],
   propTypes: {
     isNew: React.PropTypes.bool,
     onSave: React.PropTypes.func,

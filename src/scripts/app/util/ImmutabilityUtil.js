@@ -7,6 +7,12 @@ module.exports = {
 
   update: update,
 
+  changeObj: function(key, value) {
+    var obj = {};
+    obj[key] = value;
+    return obj;
+  },
+
   /**
    * Immutable helper function that clones an associative object except for one or more keys
    * @param  {[type]} object       object to remove from

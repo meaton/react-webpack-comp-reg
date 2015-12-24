@@ -5,17 +5,9 @@ var React = require('react');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
-
 //components
 var CMDAttributeView = require('./CMDAttributeView');
 var ValueScheme = require('../ValueScheme');
-
-//utils
-var update = require('react-addons-update');
-var classNames = require('classnames');
-var md5 = require('spark-md5');
 
 require('../../../../styles/CMDElement.sass');
 
@@ -34,6 +26,7 @@ var CMDElementView = React.createClass({
     closeAll: React.PropTypes.bool,
     expansionState: React.PropTypes.object
   },
+
   getDefaultProps: function() {
     return {
       open: true,
@@ -41,6 +34,7 @@ var CMDElementView = React.createClass({
       closeAll: false
     };
   },
+
   render: function () {
     var self = this;
     var attrList = null;
@@ -55,7 +49,7 @@ var CMDElementView = React.createClass({
     }
     if(elem.AttributeList != undefined) {
       attrList = (
-        <div className="attrList">AttributeList:
+        <div className="attrList">
           {
             (attrSet != undefined && attrSet.length > 0) ?
             $.map(attrSet, function(attr, index) {
@@ -72,24 +66,31 @@ var CMDElementView = React.createClass({
 
     return (
       <div className="CMDElement">
-        <span>Element: </span>
-        <span className="elementName">{elem['@name']}</span> { valueScheme }
-        <ul className="elemAttrs">
-          {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
-            <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
-          )}
+        <div className="panel panel-warning">
+          <div className="panel-heading">
+            <span>Element: </span>
+            <span className="elementName">{elem['@name']}</span>
+          </div>
+          <div className="panel-body">
+            <div className="valueScheme">Value scheme: {valueScheme}</div>
+            <ul className="elemAttrs">
+              {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
+                <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
+              )}
 
-          {elem.hasOwnProperty("@Documentation") && (
-            <li className="attrElem">Documentation: {elem['@Documentation']}</li>
-          )}
+              {elem.hasOwnProperty("@Documentation") && (
+                <li className="attrElem">Documentation: {elem['@Documentation']}</li>
+              )}
 
-          {elem.hasOwnProperty("@DisplayPriority") && (
-            <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
-          )}
+              {elem.hasOwnProperty("@DisplayPriority") && (
+                <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
+              )}
 
-          <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
-          <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
-        </ul>
+              <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
+              <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
+            </ul>
+          </div>
+        </div>
         {attrList}
       </div>
       );

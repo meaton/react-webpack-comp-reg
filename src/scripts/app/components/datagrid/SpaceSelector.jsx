@@ -25,10 +25,10 @@ var PUBLIC = Constants.SPACE_PUBLISHED;
 var PRIVATE = Constants.SPACE_PRIVATE;
 var TEAM = Constants.SPACE_TEAM;
 
-var COMPONENTS = Constants.TYPE_COMPONENTS;
+var COMPONENTS = Constants.TYPE_COMPONENT;
 var PROFILES = Constants.TYPE_PROFILE;
 
-var TEAM_PREFIX = "group_";
+var TEAM_PREFIX = "team_";
 
 /**
 * SpaceSelector - selector or switcher between public, private and/or group spaces and component or profile types.
@@ -74,26 +74,27 @@ var SpaceSelector = React.createClass({
     this.props.onSpaceSelect(type, this.props.space, this.props.selectedTeam);
   },
 
-  types: {
-    [PROFILES]: {
+  getTypes: function() {
+    var types = {};
+    types[PROFILES] = {
       label: "Profiles"
-    },
-    [COMPONENTS]: {
+    };
+    types[COMPONENTS] = {
       label: "Components"
-    }
+    };
+    return types;
   },
 
   getSpaces: function() {
-    var spaces = {
-      [PUBLIC]: {
-        label: Constants.SPACE_NAMES[PUBLIC],
-        loginRequired: false
-      },
-      [PRIVATE]: {
-        label: Constants.SPACE_NAMES[PRIVATE],
-        loginRequired: true
-      }
-    }
+    var spaces = {}
+    spaces[PUBLIC] = {
+      label: Constants.SPACE_NAMES[PUBLIC],
+      loginRequired: false
+    };
+    spaces[PRIVATE] = {
+      label: Constants.SPACE_NAMES[PRIVATE],
+      loginRequired: true
+    };
 
     // add group spaces
     if(this.props.teams != null) {
@@ -113,9 +114,15 @@ var SpaceSelector = React.createClass({
   getCurrentSpace: function() {
     if(this.props.space == PUBLIC || this.props.space == PRIVATE) {
       return this.props.space;
-    } else if(this.props.space == Constants.SPACE_TEAM && this.props.selectedTeam != null) {
-      return TEAM_PREFIX + this.props.selectedTeam;
+    } else if(this.props.space == Constants.SPACE_TEAM) {
+      if(this.props.selectedTeam != null) {
+        return TEAM_PREFIX + this.props.selectedTeam;
+      } else {
+        log.error("Selected team space without a team id");
+        return null;
+      }
     } else {
+      log.error("Unknown space", this.props.space);
       return null;
     }
   },
@@ -126,15 +133,22 @@ var SpaceSelector = React.createClass({
     var spaces = this.getSpaces();
     var currentSpace = this.getCurrentSpace();
 
-    var types = this.types;
+    var types = this.getTypes();
     var currentType = this.props.type;
+
+    var space = spaces[currentSpace];
+    if(space == null) {
+      var spaceLabel = currentSpace;
+    } else {
+      var spaceLabel = space.label;
+    }
 
     return (
       <div className="left">
         <ButtonGroup className="space_selector">
 
           {/* Public, private, teams */}
-          <DropdownButton id="spaceDropDown" title={spaces[currentSpace].label}>
+          <DropdownButton id="spaceDropDown" title={spaceLabel}>
               {(this.props.validUserSession || currentSpace != PUBLIC)?(
                   Object.keys(spaces).map(function(spaceKey) {return (
                     <MenuItem
@@ -146,7 +160,7 @@ var SpaceSelector = React.createClass({
                   )}.bind(this)
                 )
               ):(
-                <MenuItem disabled={true} onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
+                <MenuItem onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
               )
             }
           </DropdownButton>

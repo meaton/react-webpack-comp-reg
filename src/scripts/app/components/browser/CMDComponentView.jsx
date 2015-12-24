@@ -7,18 +7,11 @@ var React = require('react');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
-
-
-//bootstrap
-var Input = require('react-bootstrap/lib/Input');
+var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
-
-//utils
-var update = require('react-addons-update');;
-var md5 = require('spark-md5');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -29,7 +22,7 @@ require('../../../../styles/CMDComponent.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDComponentView = React.createClass({
-  mixins: [ImmutableRenderMixin, CMDComponentMixin, ToggleExpansionMixin],
+  mixins: [ImmutableRenderMixin, CMDComponentMixin, ToggleExpansionMixin, ActionButtonsMixin],
 
   /* props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
 
@@ -40,6 +33,10 @@ var CMDComponentView = React.createClass({
   getDefaultOpenState: function() {
     return !this.props.isLinked;
   },
+
+  /*=== Render functions ===*/
+
+  /* main render() function in CMDComponentMixin */
 
   renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked && !linkedSpecAvailable) {
@@ -54,8 +51,6 @@ var CMDComponentView = React.createClass({
         linkedComponents={this.props.linkedComponents}
         onToggle={this.props.onToggle}
         isLinked={isLinked}
-        onMove={this.props.editMode && this.handleMoveComponent.bind(this, this.props.onComponentChange, index)}
-        onRemove={this.props.editMode && this.handleRemoveComponent.bind(this, this.props.onComponentChange, index)}
         isFirst={index == 0}
         isLast={index == this.props.spec.CMD_Component.length - 1}
         />);
@@ -82,31 +77,25 @@ var CMDComponentView = React.createClass({
     else
       compId = null;
 
-    if(!this.isOpen() && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
+    var open = this.isOpen();
+
+    if(!open && (compId != null && !comp.hasOwnProperty('@name') && this.props.componentName != null))
        compName = this.props.componentName;
     else if(comp.hasOwnProperty("@name"))
-      compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-
-    var title;
-    if(this.props.isLinked) {
-      title = (
-        <div><span>Component: </span><a className="componentLink" onClick={this.toggleExpansionState}>{compName}</a></div>
-      )
-    } else {
-      title = (
-        <div><span>Component: </span><span className="componentName">{compName}</span></div>
-      )
-    }
+      compName = comp['@name'];
 
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
-    var compProps = (<div>Number of occurrences: {minC + " - " + maxC}</div>);
+    var cardinality = (<span>Cardinality: {minC + " - " + maxC}</span>);
+    var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && cardinality}</span>);
 
     return (
-      <div>
-        {title}
-        <div className="componentProps">{compProps}</div>
+      <div className="panel panel-info">
+        {this.props.isLinked?
+          (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
+          :(<div className="panel-heading">{titleText}</div>)}
+        {open &&<div className="panel-body componentProps">{cardinality}</div>}
       </div>
     );
   }
