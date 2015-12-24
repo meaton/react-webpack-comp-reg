@@ -10,4 +10,4 @@ This front end communicates with the Component Registry REST interface (source c
 - [Bootstrap](http://getbootstrap.com/) through [react-boostrap](https://react-bootstrap.github.io) components
 - [Jsonix](https://github.com/highsource/jsonix) for XML serialisation
 
-More information, including UML diagrams, can be found in the project's [wiki](wiki).
+More information, including UML diagrams, can be found in the project's [wiki](../../wiki).
