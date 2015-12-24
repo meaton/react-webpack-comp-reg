@@ -31,7 +31,7 @@ require('../../../../styles/ComponentDetailsPanel.sass');
 * @mixes ComponentViewMixin
 */
 var ComponentDetailsPanel = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore"), ComponentViewMixin],
+  mixins: [FluxMixin, StoreWatchMixin("ComponentDetailsStore", "AuthenticationStore"), ComponentViewMixin],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
