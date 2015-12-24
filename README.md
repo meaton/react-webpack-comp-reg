@@ -10,4 +10,9 @@ This front end communicates with the Component Registry REST interface (source c
 - [Bootstrap](http://getbootstrap.com/) through [react-boostrap](https://react-bootstrap.github.io) components
 - [Jsonix](https://github.com/highsource/jsonix) for XML serialisation
 
+Build tools:
+- Grunt
+- Webpack
+- grunt-maven-deploy for creating and deploying a Maven artifact to be used in the combined front end/back end package
+
 More information, including UML diagrams, can be found in the project's [wiki](../../wiki).
