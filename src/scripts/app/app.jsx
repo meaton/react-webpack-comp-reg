@@ -71,12 +71,13 @@ var NotFound = React.createClass({
   }
 });
 
+/* Routing */
+
 var createFluxComponent = function(Component, props) {
   return <Component {...props} flux={flux} />;
 };
 
-//note: root path used to be {Config.deploy.path}, changed this when upgraded to react-router 1.0.0
-ReactDOM.render((
+var routing = (
   <Router createElement={createFluxComponent}>
     <Route path="/" component={Main}>
       <IndexRoute component={Browser} />
@@ -90,5 +91,8 @@ ReactDOM.render((
       <Route path="*" component={NotFound}/>
     </Route>
   </Router>
-), document.getElementById("app"));
+);
+
+// Start the React application by rendering the router into the container element
+ReactDOM.render(routing, document.getElementById("app"));
 log.info("Application started");
