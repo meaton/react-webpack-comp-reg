@@ -18,6 +18,8 @@ var AlertsView = require("./AlertsView.jsx");
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 var Alert = require('react-bootstrap/lib/Alert');
 
+var ReactAlert = require('../util/ReactAlert');
+
 /***
 * Main - Default component and entry point to the application.
 * @constructor
@@ -76,6 +78,19 @@ var Main = React.createClass({
     this.checkAuthState();
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
+
+    ReactAlert.showMessage("Component Registry beta instance",
+    <div>
+      <p>
+        This instance of the Component Registry is for testing purposes only. Do
+        not use any of the components or profiles in this registry for production
+        purposes as they are not guaranteed to persist.
+      </p>
+      <p>
+        Please send any issues reports, questions or remarks to <a href="twan@clarin.eu">twan@clarin.eu</a>.
+        Thanks for trying out the new Component Registry!
+      </p>
+  </div>);
   },
 
   onWindowFocus: function() {
