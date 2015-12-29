@@ -26,6 +26,8 @@ var Config = require("../../config").Config;
 
 var ReactAlert = require('../util/ReactAlert');
 
+var ReactAlert = require('../util/ReactAlert');
+
 /***
 * Main - Default component and entry point to the application.
 * @constructor
