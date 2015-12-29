@@ -97,7 +97,7 @@ var Main = React.createClass({
   render: function() {
     return (
         <div id="app-root">
-          <PageHeader>CMDI Component Registry <small>React.js front end alpha</small></PageHeader>
+          <PageHeader>CMDI Component Registry <small>2.0 <em>beta</em></small></PageHeader>
 
           <div className="auth-login">
             <AuthState
