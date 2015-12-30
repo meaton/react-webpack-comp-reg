@@ -87,7 +87,7 @@ var CMDComponentView = React.createClass({
     var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
     var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
 
-    var cardinality = (<span>Cardinality: {minC + " - " + maxC}</span>);
+    var cardinality = (<span>Number of occurrences: {minC + " - " + maxC}</span>);
     var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && cardinality}</span>);
 
     return (
