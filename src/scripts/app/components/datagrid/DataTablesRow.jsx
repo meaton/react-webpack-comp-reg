@@ -17,7 +17,6 @@ var DataTablesRow = React.createClass({
 
   propTypes: {
     data: React.PropTypes.object.isRequired,
-    multiple: React.PropTypes.bool.isRequired,
     selected: React.PropTypes.bool.isRequired,
     rowSelectAllowed: React.PropTypes.bool,
     onClick: React.PropTypes.func,
@@ -28,11 +27,11 @@ var DataTablesRow = React.createClass({
     return { buttonBefore: false, className: "unknown", rowSelectAllowed: true };
   },
   rowClick: function(val, evt) {
+    evt.preventDefault();
     evt.stopPropagation();
-    this.props.onClick(val, this);
+    this.props.onClick(val, evt);
   },
   buttonClick: function(evt) {
-    //TODO: handle add button event
     evt.stopPropagation();
     evt.currentTarget.blur();
 
@@ -46,12 +45,6 @@ var DataTablesRow = React.createClass({
     var registrationDate = data.registrationDate.substr(0,10);
     return (
       <tr onClick={this.props.buttonBefore ? null : this.rowClick.bind(this, this.props.data)} key={this.props.data.id} className={(this.props.selected) ? "selected " + this.props.className : this.props.className}>
-        {this.props.multiple && ( /*if multiple select, add a checkbox to visually indicate this mode - notice there's no event handler because the change bubbles up to the row click event */
-          <td className="checkboxCell">
-            <input type="checkbox" name="componentCb" value={this.props.data.id} checked={(this.props.selected) ? "checked" : ""} />
-          </td>
-        )}
-
         {this.props.buttonBefore && (
           <td className="add">
             <Button

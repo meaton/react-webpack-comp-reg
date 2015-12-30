@@ -44,7 +44,6 @@ var SpaceSelector = React.createClass({
     allowMultiSelect: React.PropTypes.bool,
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
-    onToggleMultipleSelect: React.PropTypes.func,
     teams: React.PropTypes.array,
     selectedTeam: React.PropTypes.string
   },
@@ -180,12 +179,6 @@ var SpaceSelector = React.createClass({
                 )}
             </DropdownButton>
         )}
-
-          {/* Toggle multiselect */}
-          {showMultiSelect && (
-            <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"}
-                    onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>
-          )}
 
         </ButtonGroup>
       </div>
