@@ -83,7 +83,7 @@ var CMDComponentForm = React.createClass({
     log.trace("Component", this.props.spec._appId, " open state:", open);
 
     var compName = (comp['@name'] == "") ? "[New Component]" : comp['@name'];
-    var cardOpt = !open? ( <span>Cardinality: {(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}</span> ) : null;
+    var cardOpt = !open? ( <span>&nbsp;[{(comp['@CardinalityMin'] || 1) + " - " + (comp['@CardinalityMax'] || 1)}]</span> ) : null;
 
     var editableProps = open?(
       <div className="panel-body componentProps">

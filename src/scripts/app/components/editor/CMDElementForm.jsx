@@ -69,7 +69,7 @@ var CMDElementForm = React.createClass({
 
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
-    var cardOpt = !open ? ( <span>Cardinality: {minC + " - " + maxC}</span> ) : null;
+    var cardOpt = !open ? ( <span>&nbsp;[{minC + " - " + maxC}]</span> ) : null;
 
     // classNames
     var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });

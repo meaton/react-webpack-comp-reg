@@ -35,7 +35,7 @@ var ActionButtons = React.createClass({
               <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-expand"></span></a>
             }
             {this.props.isExpanded &&
-              <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-collapse-up"></span></a>
+              <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-collapse-down"></span></a>
             }
           </div>
         )}
