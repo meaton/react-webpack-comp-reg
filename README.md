@@ -16,3 +16,15 @@ Build tools:
 - grunt-maven-deploy for creating and deploying a Maven artifact to be used in the combined front end/back end package
 
 More information, including UML diagrams, can be found in the project's [wiki](../../wiki).
+
+## Getting started quickly
+To run the application in development mode:
+- Start the Component Registry back end/REST service (see CLARIN [wiki](https://trac.clarin.eu/wiki/ComponentRegistryAndEditor) or [SVN](https://svn.clarin.eu/ComponentRegistry))
+- Adapt the configuration in `compRegConfig.jsp` to match the back end root location
+- Install dependencies by running `npm install`
+- Start the webpack dev server by running `grunt serve`
+
+To integrate with the back end:
+- Run `grunt maven-install`
+- Make sure that the artifact matches the configuration of the maven-dependency-plugin in the `pom.xml` file of the back end project
+- Build the back end (`mvn package`) and start it within Tomcat
