@@ -69,8 +69,8 @@ var CMDElementForm = React.createClass({
 
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
-    var cardOpt = !open ? ( <span>&nbsp;[{minC + " - " + maxC}]</span> ) : null;
-
+    var cardOpt = !open && ( <span>&nbsp;[{minC + " - " + maxC}]</span> );
+    var type = !open && (<ValueScheme obj={elem} enabled={false} />)
     // classNames
     var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
     var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
@@ -83,7 +83,7 @@ var CMDElementForm = React.createClass({
         <div className='panel panel-warning'>
           <div className="panel-heading">
             {this.createActionButtons({ /* from ActionButtonsMixin */
-              title: <span>Element: <span className="elementName">{elemName}</span> {cardOpt}</span>
+              title: <span>Element: <span className="elementName">{elemName}</span> {type} {cardOpt}</span>
             })}
           </div>
           {open && (
