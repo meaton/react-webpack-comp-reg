@@ -15,7 +15,7 @@ module.exports = {
     //get item
     ComponentRegistryClient.loadItem(id, function(item) {
       //select
-      this.dispatch(Constants.SELECT_BROWSER_ITEM, item);
+      this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
     }.bind(this), function(err) {
       this.dispatch(Constants.SELECT_BROWSER_ITEM_FAILED, "Failed to load item with ID " + id);
     }.bind(this));
