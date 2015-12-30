@@ -21,7 +21,10 @@ div {
   margin: 0;
 }
 
-a { cursor: pointer; color: #999; }
+a {
+  cursor: pointer;
+  color: #336;
+}
 
 
 .left {
@@ -47,7 +50,7 @@ a { cursor: pointer; color: #999; }
   height: 100%;
   margin-top: 60px; /* filled by header */
   background: #fff;
-  color: #999;
+  color: #333;
   overflow: hidden;
 }
 
