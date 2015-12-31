@@ -124,6 +124,10 @@
     }
   }
 
+  tbody td {
+    cursor: default;
+  }
+
   tbody td, thead th {
       float: left;
       height: 3em;
@@ -135,16 +139,6 @@
       a {
         color: #666;
       }
-  }
-
-  table.multipleSelection {
-    tbody td {
-      //disallow text selection to prevent selection on shift
-      user-select: none; /* CSS3 */
-      -ms-user-select: none; /* IE 10+ */
-      -moz-user-select: none; /* Gecko */
-      -webkit-user-select: none; /* Webkit */
-    }
   }
 
   // Column widths - default
