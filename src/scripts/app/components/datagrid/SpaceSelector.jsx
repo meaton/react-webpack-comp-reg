@@ -40,8 +40,6 @@ var SpaceSelector = React.createClass({
     space: React.PropTypes.string,
     type: React.PropTypes.string,
     componentsOnly: React.PropTypes.bool,
-    multiSelect: React.PropTypes.bool,
-    allowMultiSelect: React.PropTypes.bool,
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
     teams: React.PropTypes.array,
@@ -50,8 +48,6 @@ var SpaceSelector = React.createClass({
 
   getDefaultProps: function() {
     return {
-      allowMultiSelect: true,
-      multiSelect: false,
       componentsOnly: false,
       teams: [],
       selectedTeam: null
@@ -127,8 +123,6 @@ var SpaceSelector = React.createClass({
   },
 
   render: function() {
-    var showMultiSelect = this.props.allowMultiSelect;
-
     var spaces = this.getSpaces();
     var currentSpace = this.getCurrentSpace();
 

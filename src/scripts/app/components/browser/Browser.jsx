@@ -90,7 +90,6 @@ var Browser = React.createClass({
                 space={this.state.items.space}
                 teams={this.state.team.teams}
                 selectedTeam={this.state.items.team}
-                multiSelect={this.state.selection.allowMultiple}
                 validUserSession={this.state.auth.authState.uid != null}
                 onSpaceSelect={this.handleSpaceSelect} />
               <BrowserMenuGroup
