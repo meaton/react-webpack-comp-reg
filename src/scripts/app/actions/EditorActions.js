@@ -73,6 +73,20 @@ var EditorActions = {
 
     // create a new specification using immutability utils...
     var newSpec = updateInComponent(spec, componentAppId, {$apply: function(comp){
+      //check whether component to link is already present
+      if($.isArray(comp.CMD_Component)) {
+        log.debug("Checking children in", comp);
+        for(var i=0;i<comp.CMD_Component.length;i++) {
+          var child = comp.CMD_Component[i];
+          log.debug("Child:", child);
+          if(child['@ComponentId'] === itemId) {
+            log.warn("Child with id",itemId,"already exists in component!");
+            //TODO: callback to inform the user that this component cannot be added
+            return comp; //return unchanged
+          }
+        }
+      }
+
       // return a modified component that has a new component declaration...
       //
       // first we need a new unique appId
