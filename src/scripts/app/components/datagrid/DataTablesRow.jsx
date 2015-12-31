@@ -77,8 +77,8 @@ var DataTablesRow = React.createClass({
               </a>
               <Dropdown.Menu className="dropdown-menu-right">
                 {this.props.onClickInfo && <MenuItem onClick={this.props.onClickInfo.bind(null, this.props.data)}>Show info</MenuItem>}
-                {this.props.onClickDownloadXml && <MenuItem>Download XML</MenuItem>}
-                {this.props.onClickDownloadXsd && <MenuItem>Download XSD</MenuItem>}
+                {this.props.onClickDownloadXml && <MenuItem onClick={this.props.onClickDownloadXml.bind(null, this.props.data)}>Download XML</MenuItem>}
+                {this.props.onClickDownloadXsd && <MenuItem onClick={this.props.onClickDownloadXsd.bind(null, this.props.data)}>Download XSD</MenuItem>}
               </Dropdown.Menu>
             </Dropdown>
           </td>
