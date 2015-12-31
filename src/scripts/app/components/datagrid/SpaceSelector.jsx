@@ -40,19 +40,14 @@ var SpaceSelector = React.createClass({
     space: React.PropTypes.string,
     type: React.PropTypes.string,
     componentsOnly: React.PropTypes.bool,
-    multiSelect: React.PropTypes.bool,
-    allowMultiSelect: React.PropTypes.bool,
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
-    onToggleMultipleSelect: React.PropTypes.func,
     teams: React.PropTypes.array,
     selectedTeam: React.PropTypes.string
   },
 
   getDefaultProps: function() {
     return {
-      allowMultiSelect: true,
-      multiSelect: false,
       componentsOnly: false,
       teams: [],
       selectedTeam: null
@@ -128,8 +123,6 @@ var SpaceSelector = React.createClass({
   },
 
   render: function() {
-    var showMultiSelect = this.props.allowMultiSelect;
-
     var spaces = this.getSpaces();
     var currentSpace = this.getCurrentSpace();
 
@@ -180,12 +173,6 @@ var SpaceSelector = React.createClass({
                 )}
             </DropdownButton>
         )}
-
-          {/* Toggle multiselect */}
-          {showMultiSelect && (
-            <Button bsStyle={(this.props.multiSelect) ? "primary" : "info"}
-                    onClick={this.props.onToggleMultipleSelect}>Toggle Select Mode</Button>
-          )}
 
         </ButtonGroup>
       </div>

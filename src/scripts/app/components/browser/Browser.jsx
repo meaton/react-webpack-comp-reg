@@ -70,12 +70,12 @@ var Browser = React.createClass({
               deletedItems={this.state.items.deleted}
               selectedItems={this.state.selection.selectedItems}
               loading={this.state.items.loading}
-              multiSelect={this.state.selection.allowMultiple}
               editMode={false}
               onRowSelect={this.handleRowSelect}
               onClickInfo={this.showComponentInfo}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
+              multiSelect={this.state.selection.allowMultiple}
               />
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
@@ -90,10 +90,8 @@ var Browser = React.createClass({
                 space={this.state.items.space}
                 teams={this.state.team.teams}
                 selectedTeam={this.state.items.team}
-                multiSelect={this.state.selection.allowMultiple}
                 validUserSession={this.state.auth.authState.uid != null}
-                onSpaceSelect={this.handleSpaceSelect}
-                onToggleMultipleSelect={this.handleToggleMultipleSelect} />
+                onSpaceSelect={this.handleSpaceSelect} />
               <BrowserMenuGroup
                   type={this.state.items.type}
                   space={this.state.items.space}
@@ -101,7 +99,6 @@ var Browser = React.createClass({
                   teams={this.state.team.teams}
                   selectedTeam={this.state.items.team}
                   loggedIn={this.state.auth.authState.uid != null}
-                  multiSelect={this.state.selection.allowMultiple}
                   moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
                   moveToTeam={this.handleMoveToTeam}
                   deleteComp={this.handleDelete}
@@ -144,17 +141,13 @@ var Browser = React.createClass({
     this.getFlux().actions.loadComments(this.state.items.type, itemId);
   },
 
-  handleToggleMultipleSelect: function() {
-    this.getFlux().actions.switchMultipleSelect();
-  },
-
   handleSpaceSelect: function(type, registry, group) {
     this.getFlux().actions.switchSpace(type, registry, group);
     this.getFlux().actions.loadItems(type, registry, group);
   },
 
-  handleRowSelect: function(item, target) {
-    this.getFlux().actions.selectBrowserItem(item);
+  handleRowSelect: function(item, multiSelect) {
+    this.getFlux().actions.selectBrowserItem(item, multiSelect);
 
     log.debug("Item", item);
 

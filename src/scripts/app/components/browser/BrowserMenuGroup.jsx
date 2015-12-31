@@ -35,7 +35,6 @@ var BrowserMenuGroup = React.createClass({
     items: React.PropTypes.object,
     teams: React.PropTypes.array,
     loggedIn: React.PropTypes.bool.isRequired,
-    multiSelect: React.PropTypes.bool.isRequired,
     moveToTeamEnabled: React.PropTypes.bool,
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
@@ -52,6 +51,7 @@ var BrowserMenuGroup = React.createClass({
   render: function () {
     var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
+    var singleSelection = (selectionCount == 1);
 
     var editorLink = null;
     var editBtnLabel = isPublished ? "Edit as new" : "Edit";
@@ -69,7 +69,7 @@ var BrowserMenuGroup = React.createClass({
 
       if(editorRoute != null) {
         editorLink = (
-          <LinkContainer to={editorRoute} disabled={this.props.multiSelect || !this.props.loggedIn}>
+          <LinkContainer to={editorRoute} disabled={!singleSelection || !this.props.loggedIn}>
             <Button
               bsStyle="primary">
                 {editBtnLabel}
