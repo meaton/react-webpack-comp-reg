@@ -96,7 +96,7 @@ var DataGrid = React.createClass({
   },
 
   rowClick: function(val, evt) {
-    var multiSelect = evt.shiftKey;
+    var multiSelect = evt.metaKey || evt.ctrlKey;
     this.props.onRowSelect(val, multiSelect);
   }
 });
