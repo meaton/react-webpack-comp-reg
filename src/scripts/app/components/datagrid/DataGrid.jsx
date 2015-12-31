@@ -28,8 +28,10 @@ var DataGrid = React.createClass({
     onRowSelect: React.PropTypes.func,
     rowSelectAllowed: React.PropTypes.bool,
     onClickInfo: React.PropTypes.func,
+    onClickDownloadXml: React.PropTypes.func,
+    onClickDownloadXsd: React.PropTypes.func,
     onToggleSort: React.PropTypes.func,
-    sortState: React.PropTypes.object,
+    sortState: React.PropTypes.object
   },
 
   getDefaultProps: function() {
@@ -74,6 +76,8 @@ var DataGrid = React.createClass({
           className={className}
           rowSelectAllowed={self.props.rowSelectAllowed}
           onClickInfo={self.props.onClickInfo}
+          onClickDownloadXml={self.props.onClickDownloadXml}
+          onClickDownloadXsd={self.props.onClickDownloadXsd}
           >
         </DataTablesRow>
      );
@@ -88,6 +92,8 @@ var DataGrid = React.createClass({
           sortState={this.props.sortState}
           onToggleSort={this.props.onToggleSort}
           onClickInfo={this.props.onClickInfo}
+          onClickDownloadXml={this.props.onClickDownloadXml}
+          onClickDownloadXsd={this.props.onClickDownloadXsd}
           multiSelect={this.props.multiSelect}>
          {x}
         </DataTablesWrapper>
@@ -96,7 +102,7 @@ var DataGrid = React.createClass({
   },
 
   rowClick: function(val, evt) {
-    var multiSelect = evt.shiftKey;
+    var multiSelect = evt.metaKey || evt.ctrlKey;
     this.props.onRowSelect(val, multiSelect);
   }
 });

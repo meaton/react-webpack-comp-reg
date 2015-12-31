@@ -73,6 +73,8 @@ var Browser = React.createClass({
               editMode={false}
               onRowSelect={this.handleRowSelect}
               onClickInfo={this.showComponentInfo}
+              onClickDownloadXml={this.handleDownloadXml}
+              onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
               multiSelect={this.state.selection.allowMultiple}
@@ -180,6 +182,16 @@ var Browser = React.createClass({
 
   toggleSort: function(column) {
     this.getFlux().actions.toggleSortState(column);
+  },
+
+  handleDownloadXml: function(item, evt) {
+    evt.stopPropagation();
+    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xml";
+  },
+
+  handleDownloadXsd: function(item, evt) {
+    evt.stopPropagation();
+    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd";
   },
 
   showComponentInfo: function(item) {
