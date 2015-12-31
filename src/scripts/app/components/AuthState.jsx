@@ -34,7 +34,7 @@ var AuthState = React.createClass({
         <div className="auth-logged-in">
           {authState.displayName}
           &nbsp;
-          <a href={adminUrl + "/userSettings"} target="_blank">&nbsp;settings</a>
+          <a href={adminUrl + "/userSettings"} target="_blank">settings</a>
           &nbsp;
           <a href={Config.webappUrl + "/documentation.jsp"}>help</a>
           &nbsp;

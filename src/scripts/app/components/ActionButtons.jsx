@@ -35,7 +35,7 @@ var ActionButtons = React.createClass({
               <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-expand"></span></a>
             }
             {this.props.isExpanded &&
-              <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-collapse-up"></span></a>
+              <a className="expand" onClick={this.props.onToggleExpansion}><span className="glyphicon glyphicon-collapse-down"></span></a>
             }
           </div>
         )}
@@ -43,8 +43,8 @@ var ActionButtons = React.createClass({
           <div className="select">
             <a className="toggleSelect" onClick={this.props.onToggleSelection}>
               {this.props.isSelected ?
-                <span title="Unselect" className="glyphicon glyphicon-star"></span>
-                :<span title="Select to add other components into this component" className="glyphicon glyphicon-star-empty"></span>
+                <span title="Unselect" className="glyphicon glyphicon-check"></span>
+                :<span title="Select to add other components into this component" className="glyphicon glyphicon-unchecked"></span>
               }
             </a>
           </div>

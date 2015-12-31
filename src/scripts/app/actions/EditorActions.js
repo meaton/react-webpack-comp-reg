@@ -67,12 +67,28 @@ var EditorActions = {
     this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
   },
 
-  insertComponentById: function(spec, componentAppId, itemId, cb) {
+  insertComponentById: function(spec, componentAppId, itemId, cb, cbFailure) {
     // We want to insert a new component (by reference with itemId) in spec's
     // child component with the matching component 'appId'
 
+    var error = null;
+
     // create a new specification using immutability utils...
     var newSpec = updateInComponent(spec, componentAppId, {$apply: function(comp){
+      //check whether component to link is already present
+      if($.isArray(comp.CMD_Component)) {
+        log.debug("Checking children in", comp);
+        for(var i=0;i<comp.CMD_Component.length;i++) {
+          var child = comp.CMD_Component[i];
+          log.debug("Child:", child);
+          if(child['@ComponentId'] === itemId) {
+            log.warn("Child with id",itemId,"already exists in component!");
+            error = "The component is already linked from this parent. A component can only be linked once per parent component.";
+            return comp; //return unchanged
+          }
+        }
+      }
+
       // return a modified component that has a new component declaration...
       //
       // first we need a new unique appId
@@ -90,9 +106,15 @@ var EditorActions = {
         return update(comp, {CMD_Component: {$set: [newComponent]}});
       }
     }});
-    this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
-    if(cb != null) {
-      cb(newSpec);
+    if(error == null) {
+      this.dispatch(Constants.COMPONENT_SPEC_UPDATED, newSpec);
+      if(cb != null) {
+        cb(newSpec);
+      }
+    } else {
+      if(cbFailure != null) {
+        cbFailure(error);
+      }
     }
   },
 

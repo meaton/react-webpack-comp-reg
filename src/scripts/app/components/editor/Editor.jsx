@@ -16,6 +16,7 @@ var EditorForm = require("./EditorForm"),
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 
 var AuthUtil = require('../AuthState').AuthUtil;
+var ReactAlert = require('../../util/ReactAlert');
 
 require('../../../../styles/ComponentEditor.sass');
 
@@ -133,7 +134,10 @@ var Editor = React.createClass({
       function(newSpec) {
         // make sure the newly added linked component is loaded
         this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.details.linkedComponents);
-      }.bind(this)
+      }.bind(this),
+      function(error) {
+        ReactAlert.showMessage("Cannot link component", error);
+      }
     );
   },
 

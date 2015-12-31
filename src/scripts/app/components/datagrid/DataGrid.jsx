@@ -23,7 +23,6 @@ var DataGrid = React.createClass({
     items: React.PropTypes.array.isRequired,
     selectedItems: React.PropTypes.object,
     loading: React.PropTypes.bool.isRequired,
-    multiSelect: React.PropTypes.bool.isRequired,
     editMode: React.PropTypes.bool.isRequired,
     deletedItems: React.PropTypes.object,
     onRowSelect: React.PropTypes.func,
@@ -69,7 +68,6 @@ var DataGrid = React.createClass({
         <DataTablesRow
           data={d}
           key={d.id}
-          multiple={self.props.multiSelect}
           buttonBefore={addButton}
           onClick={self.rowClick}
           selected={selectedContext[d.id]?true:false}
@@ -86,19 +84,20 @@ var DataGrid = React.createClass({
         {this.props.loading && <div className="loader spinner-loader">Loading...</div>}
         <DataTablesWrapper
           ref="wrapper"
-          multiple={this.props.multiSelect}
           editMode={this.props.editMode}
           sortState={this.props.sortState}
           onToggleSort={this.props.onToggleSort}
-          onClickInfo={this.props.onClickInfo} >
+          onClickInfo={this.props.onClickInfo}
+          multiSelect={this.props.multiSelect}>
          {x}
         </DataTablesWrapper>
       </div>
    );
   },
 
-  rowClick: function(val, target, addComponent) {
-    this.props.onRowSelect(val, target);
+  rowClick: function(val, evt) {
+    var multiSelect = evt.shiftKey;
+    this.props.onRowSelect(val, multiSelect);
   }
 });
 

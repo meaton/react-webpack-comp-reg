@@ -4,6 +4,7 @@
     transition: opacity .2s ease-in-out .2s, background-color .2s ease-in-out .2s;
     background-color: #fff;
     opacity: 1;
+    color: #666;
   }
   &.loading table {
     background-color: #eee;
@@ -130,6 +131,20 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      a {
+        color: #666;
+      }
+  }
+
+  table.multipleSelection {
+    tbody td {
+      //disallow text selection to prevent selection on shift
+      user-select: none; /* CSS3 */
+      -ms-user-select: none; /* IE 10+ */
+      -moz-user-select: none; /* Gecko */
+      -webkit-user-select: none; /* Webkit */
+    }
   }
 
   // Column widths - default
@@ -141,7 +156,7 @@
   }
 
   // Column widths - static
-  table, table.multipleSelection {
+  table {
     tbody td, thead th {
       &.name {
         width: 20%;
@@ -173,18 +188,6 @@
 
       &.add {
         width: 3%;
-      }
-    }
-  }
-
-  // Column widths - with multiple selection
-  table.multipleSelection {
-    tbody td, thead th {
-      width: 65% * .2;
-
-      &.checkboxCell {
-        width: 5%;
-        text-align: center;
       }
     }
   }

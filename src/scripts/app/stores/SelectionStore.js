@@ -34,8 +34,12 @@ var SelectionStore = Fluxxor.createStore({
     };
   },
 
-  handleSelectItem: function(item) {
+  handleSelectItem: function(obj) {
+    var item = obj.item;
+    var multi = obj.multi;
+
     this.currentItem = item;
+    this.allowMultiple = (multi === true);
 
     if(this.allowMultiple) {
       // we may already have a selection, check if we want to unselect
@@ -77,7 +81,7 @@ var SelectionStore = Fluxxor.createStore({
   handleComponentSaved: function(result) {
     //select the newly saved component
     this.allowMultiple = false;
-    this.handleSelectItem(result.item);
+    this.handleSelectItem({item: result.item});
   }
 
 });
