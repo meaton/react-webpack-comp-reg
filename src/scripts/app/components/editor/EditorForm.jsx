@@ -22,6 +22,7 @@ var History = require("react-router").History;
 //utils
 var classNames = require('classnames');
 var ReactAlert = require('../../util/ReactAlert');
+var ComponentSpec = require('../../service/ComponentSpec');
 
 /**
 * EditorForm - Form routing endpoint for spec editor, either new/existing component/profile
@@ -59,6 +60,9 @@ var EditorForm = React.createClass({
     if(this.props.loading || this.props.item == null) {
       return (<div>Loading component...</div>);
     } else {
+      //if type changed for an existing component, it can only be saved as new
+      var saveDisallowed = !this.props.isNew && ((this.props.type === Constants.TYPE_PROFILE) != ComponentSpec.isProfile(this.props.spec));
+
       var editorClasses = classNames('editorGroup',
       {
         'processing': this.props.processing,
@@ -78,7 +82,7 @@ var EditorForm = React.createClass({
           </h3>
 
           <EditorMenuGroup
-            isNew={this.props.isNew}
+            isNew={this.props.isNew || saveDisallowed}
             onSave={this.handleSave}
             onSaveNew={this.handleSaveNew}
             onPublish={this.handlePublish}
