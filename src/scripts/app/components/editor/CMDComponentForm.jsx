@@ -135,7 +135,7 @@ var CMDComponentForm = React.createClass({
         // linked components do not get a form
         var link = this.props.spec.CMD_Component[index];
         return (
-          <div className="linkedComponentForm">
+          <div key={componentProperties.key + "_linkform"} className="linkedComponentForm">
             Component: {spec['@name']}
             <CardinalityInput min={link['@CardinalityMin']} max={link['@CardinalityMax']} onValueChange={this.updateChildComponentValue.bind(this, index)} />
             <CMDComponentView
