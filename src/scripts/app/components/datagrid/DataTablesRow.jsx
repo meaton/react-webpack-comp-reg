@@ -4,6 +4,9 @@ var React = require('react');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
+var Dropdown = require('react-bootstrap/lib/Dropdown');
+var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -21,7 +24,8 @@ var DataTablesRow = React.createClass({
     rowSelectAllowed: React.PropTypes.bool,
     onClick: React.PropTypes.func,
     className: React.PropTypes.string,
-    onClickInfo: React.PropTypes.func
+    onClickInfo: React.PropTypes.func,
+    onClickDownload: React.PropTypes.func
   },
   getDefaultProps: function() {
     return { buttonBefore: false, className: "unknown", rowSelectAllowed: true };
@@ -64,11 +68,23 @@ var DataTablesRow = React.createClass({
         <td className="registrationDate">{registrationDate}</td>
         <td className="commentsCount">{data.commentsCount}</td>
 
-        {this.props.onClickInfo != null && (
+        {(this.props.onClickInfo != null || this.props.onClickDownload != null) && (
           <td className="infoLink">
-            <a onClick={this.props.onClickInfo.bind(null, this.props.data)} title="Component details">
-              <span className="glyphicon glyphicon-info-sign"></span>
-            </a>
+            <Dropdown id={"options-"+this.props.data.id}>
+              <Dropdown.Toggle bsSize="small">
+                <Glyphicon glyph="star" />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <MenuItem eventKey="info">Get info</MenuItem>
+                <MenuItem eventKey="xml">Download XML</MenuItem>
+                <MenuItem eventKey="xsd">Download XSD</MenuItem>
+              </Dropdown.Menu>
+            </Dropdown>
+            {
+            // <a onClick={this.props.onClickInfo.bind(null, this.props.data)} title="Component details">
+            //   <span className="glyphicon glyphicon-info-sign"></span>
+            // </a>
+            }
           </td>
         )}
       </tr>
