@@ -133,10 +133,18 @@ var CMDComponentForm = React.createClass({
     if(isLinked) {
       if(linkedSpecAvailable) {
         // linked components do not get a form
-        return (<CMDComponentView
-          {... componentProperties}
-          {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
-          />);
+        var link = this.props.spec.CMD_Component[index];
+        return (
+          <div className="linkedComponentForm">
+            Component: {spec['@name']}
+            <CardinalityInput min={link['@CardinalityMin']} max={link['@CardinalityMax']} onValueChange={this.updateChildComponentValue.bind(this, index)} />
+            <CMDComponentView
+              link={link}
+              {... componentProperties}
+              {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
+            />
+          </div>
+          );
       } else {
         return (<div className="CMDComponent" key={compId + "_" + index}>Component {compId} loading...</div>);
       }
@@ -245,6 +253,13 @@ var CMDComponentForm = React.createClass({
   updateComponentValue: function(e) {
     //a property of this component has changed
     this.propagateValue(e.target.name, e.target.value);
+  },
+
+  updateChildComponentValue: function(index, e) {
+    var field = e.target.name;
+    var value = e.target.value;
+    log.debug("Update property of child component",index,field,"=",value);
+    this.handleComponentChange(index, {$merge: changeObj(field, value)});
   },
 
   /*=== Functions that add new children ===*/
