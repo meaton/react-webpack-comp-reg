@@ -33,7 +33,8 @@ var DataTablesWrapper = React.createClass({
   render: function() {
     var className = classNames("table table-striped", {
       withInfoLink: this.props.onClickInfo != null,
-      editMode: this.props.editMode
+      editMode: this.props.editMode,
+      multipleSelection: this.props.multiSelect
     });
 
     return (

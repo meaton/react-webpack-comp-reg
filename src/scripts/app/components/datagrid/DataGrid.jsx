@@ -87,7 +87,8 @@ var DataGrid = React.createClass({
           editMode={this.props.editMode}
           sortState={this.props.sortState}
           onToggleSort={this.props.onToggleSort}
-          onClickInfo={this.props.onClickInfo} >
+          onClickInfo={this.props.onClickInfo}
+          multiSelect={this.props.multiSelect}>
          {x}
         </DataTablesWrapper>
       </div>

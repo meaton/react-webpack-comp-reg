@@ -75,6 +75,7 @@ var Browser = React.createClass({
               onClickInfo={this.showComponentInfo}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
+              multiSelect={this.state.selection.allowMultiple}
               />
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
