@@ -73,7 +73,8 @@ var Browser = React.createClass({
               editMode={false}
               onRowSelect={this.handleRowSelect}
               onClickInfo={this.showComponentInfo}
-              onClickDownload={this.handleDownload}
+              onClickDownloadXml={this.handleDownloadXml}
+              onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
               multiSelect={this.state.selection.allowMultiple}
@@ -183,14 +184,12 @@ var Browser = React.createClass({
     this.getFlux().actions.toggleSortState(column);
   },
 
-  handleDownload: function(item, format) {
-    if(format === "xml") {
+  handleDownloadXml: function(item, format) {
       //TODO
-    } else if(format === "xsd") {
+  },
+
+  handleDownloadXsd: function(item, format) {
       //TODO
-    } else {
-      log.error("Unknown download format", format);
-    }
   },
 
   showComponentInfo: function(item) {

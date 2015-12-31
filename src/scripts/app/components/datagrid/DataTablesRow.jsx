@@ -25,7 +25,8 @@ var DataTablesRow = React.createClass({
     onClick: React.PropTypes.func,
     className: React.PropTypes.string,
     onClickInfo: React.PropTypes.func,
-    onClickDownload: React.PropTypes.func
+    onClickDownloadXml: React.PropTypes.func,
+    onClickDownloadXsd: React.PropTypes.func
   },
   getDefaultProps: function() {
     return { buttonBefore: false, className: "unknown", rowSelectAllowed: true };
@@ -71,20 +72,15 @@ var DataTablesRow = React.createClass({
         {(this.props.onClickInfo != null || this.props.onClickDownload != null) && (
           <td className="infoLink">
             <Dropdown id={"options-"+this.props.data.id}>
-              <Dropdown.Toggle bsSize="small">
-                <Glyphicon glyph="star" />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <MenuItem eventKey="info">Get info</MenuItem>
-                <MenuItem eventKey="xml">Download XML</MenuItem>
-                <MenuItem eventKey="xsd">Download XSD</MenuItem>
+              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.stopPropagation() && e.preventDefault();}}>
+                <Glyphicon glyph="chevron-down" />
+              </a>
+              <Dropdown.Menu className="dropdown-menu-right">
+                {this.props.onClickInfo && <MenuItem onClick={this.props.onClickInfo.bind(null, this.props.data)}>Show info</MenuItem>}
+                {this.props.onClickDownloadXml && <MenuItem>Download XML</MenuItem>}
+                {this.props.onClickDownloadXsd && <MenuItem>Download XSD</MenuItem>}
               </Dropdown.Menu>
             </Dropdown>
-            {
-            // <a onClick={this.props.onClickInfo.bind(null, this.props.data)} title="Component details">
-            //   <span className="glyphicon glyphicon-info-sign"></span>
-            // </a>
-            }
           </td>
         )}
       </tr>
