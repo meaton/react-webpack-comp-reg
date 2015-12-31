@@ -102,8 +102,12 @@ var DataGrid = React.createClass({
   },
 
   rowClick: function(val, evt) {
-    var multiSelect = evt.metaKey || evt.ctrlKey;
-    this.props.onRowSelect(val, multiSelect);
+    var requestMultiSelect = evt.metaKey || evt.ctrlKey;
+    if(requestMultiSelect
+      || this.props.multiSelect
+      || !this.props.selectedItems[val.id]) { // otherwise no update needed, item already selected
+      this.props.onRowSelect(val, requestMultiSelect);
+    }
   }
 });
 
