@@ -102,7 +102,8 @@ var CMDComponentView = React.createClass({
         {this.props.isLinked?
           (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
           :(<div className="panel-heading">{titleText}</div>)}
-        {open &&<div className="panel-body componentProps">Number of occurrences: {cardinality}</div>}
+        {open && !this.props.hideCardinality && <div className="panel-body componentProps">Number of occurrences: {cardinality}</div>}
+        {open && this.props.formElements}
       </div>
     );
   }

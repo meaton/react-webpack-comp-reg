@@ -132,14 +132,21 @@ var CMDComponentForm = React.createClass({
 
     if(isLinked) {
       if(linkedSpecAvailable) {
-        // linked components do not get a form
+        // linked components do not get a full form, but cardinality can be edited
         var link = this.props.spec.CMD_Component[index];
+        // we're hiding the cardinality in the view and replacing it with an inline form
+        var formElements = (
+          <div className="componentProps">
+            <CardinalityInput min={link['@CardinalityMin']} max={link['@CardinalityMax']} onValueChange={this.updateChildComponentValue.bind(this, index)} />
+          </div>
+        );
+
         return (
           <div key={componentProperties.key + "_linkform"} className="linkedComponentForm">
-            Component: {spec['@name']}
-            <CardinalityInput min={link['@CardinalityMin']} max={link['@CardinalityMax']} onValueChange={this.updateChildComponentValue.bind(this, index)} />
             <CMDComponentView
               link={link}
+              hideCardinality={true}
+              formElements={formElements}
               {... componentProperties}
               {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
             />
