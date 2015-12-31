@@ -134,10 +134,14 @@ var CMDComponentForm = React.createClass({
       if(linkedSpecAvailable) {
         // linked components do not get a full form, but cardinality can be edited
         var link = this.props.spec.CMD_Component[index];
+        var minC = link['@CardinalityMin'];
+        if(minC == null) minC = "1";
+        var maxC = link['@CardinalityMax'];
+        if(maxC == null) maxC = "1";
         // we're hiding the cardinality in the view and replacing it with an inline form
         var formElements = (
           <div className="componentProps">
-            <CardinalityInput min={link['@CardinalityMin']} max={link['@CardinalityMax']} onValueChange={this.updateChildComponentValue.bind(this, index)} />
+            <CardinalityInput min={minC} max={maxC} onValueChange={this.updateChildComponentValue.bind(this, index)} />
           </div>
         );
 
