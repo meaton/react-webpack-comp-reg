@@ -72,7 +72,7 @@ var DataTablesRow = React.createClass({
         {(this.props.onClickInfo != null || this.props.onClickDownloadXml != null || this.props.onClickDownloadXsd != null) && (
           <td className="infoLink">
             <Dropdown id={"options-"+this.props.data.id}>
-              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}}>
+              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}} onContextMenu={function(e){e.preventDefault(); e.target.click();}}>
                 <Glyphicon glyph="menu-down" />
               </a>
               <Dropdown.Menu className="dropdown-menu-right">
