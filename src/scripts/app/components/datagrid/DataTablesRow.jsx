@@ -69,11 +69,11 @@ var DataTablesRow = React.createClass({
         <td className="registrationDate">{registrationDate}</td>
         <td className="commentsCount">{data.commentsCount}</td>
 
-        {(this.props.onClickInfo != null || this.props.onClickDownload != null) && (
+        {(this.props.onClickInfo != null || this.props.onClickDownloadXml != null || this.props.onClickDownloadXsd != null) && (
           <td className="infoLink">
             <Dropdown id={"options-"+this.props.data.id}>
-              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.stopPropagation() && e.preventDefault();}}>
-                <Glyphicon glyph="chevron-down" />
+              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}}>
+                <Glyphicon glyph="menu-down" />
               </a>
               <Dropdown.Menu className="dropdown-menu-right">
                 {this.props.onClickInfo && <MenuItem onClick={this.props.onClickInfo.bind(null, this.props.data)}>Show info</MenuItem>}
