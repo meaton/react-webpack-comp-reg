@@ -70,7 +70,7 @@ var Browser = React.createClass({
     var item = this.state.selection.currentItem;
 
     return (
-        <section id="browser" className={classNames({"detailsExpanded": this.state.detailsExpanded})}>
+        <section id="browser" className={classNames({"detailsCollapsed": !this.state.detailsExpanded})}>
           <div className="browser row">
             <DataGrid
               items={this.state.items.items}
@@ -116,7 +116,7 @@ var Browser = React.createClass({
           </div>
           <div className="viewer row">
             <PanelExpandCollapseButton
-              title="Expand/collapse components table"
+              title="Expand/collapse component details"
               expanded={this.state.detailsExpanded}
               onClick={this.toggleDetailsExpansion} />
             {item != null &&

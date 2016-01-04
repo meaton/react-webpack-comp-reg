@@ -68,39 +68,45 @@ var ComponentDetailsPanel = React.createClass({
 
     var loadingSpinner = <div className="loader spinner-loader">Loading...</div>;
 
-    return (
-      <Tabs activeKey={this.state.details.activeView} onSelect={this.refreshTab} className={classes} disabled={collapsed}>
-        <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={loading}>
-          {loadingSpinner}
-          {spec != null && !collapsed &&
-            <ComponentSpecView
-              spec={spec}
-              onComponentToggle={this.doToggle /* from ComponentViewMixin */}
-              expansionState={this.state.details.expansionState}
-              linkedComponents={this.state.details.linkedComponents}
-              />}
-        </Tab>
-        <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={loading}>
-          {loadingSpinner}
-          {specXml != null && !collapsed &&
-            <XmlPanel xml={specXml} />
-          }
-        </Tab>
-        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={loading}>
-          {loadingSpinner}
-          {item != null && !collapsed &&
-            <Comments
-              item={item}
-              type={this.props.type}
-              loggedIn={this.state.auth.authState.authenticated}
-              newComment={this.state.details.newComment}
-              comments={this.state.details.comments}
-              saveComment={this.saveComment}
-              deleteComment={this.deleteComment}
-              />}
-        </Tab>
-      </Tabs>
-    );
+    if(this.props.collapsed) {
+      return (
+        <p className="panelDescription">Component details (expand to see)</p>
+      )
+    } else {
+      return (
+        <Tabs activeKey={this.state.details.activeView} onSelect={this.refreshTab} className={classes}>
+          <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={loading}>
+            {loadingSpinner}
+            {spec != null &&
+              <ComponentSpecView
+                spec={spec}
+                onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+                expansionState={this.state.details.expansionState}
+                linkedComponents={this.state.details.linkedComponents}
+                />}
+          </Tab>
+          <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={loading}>
+            {loadingSpinner}
+            {specXml != null &&
+              <XmlPanel xml={specXml} />
+            }
+          </Tab>
+          <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={loading}>
+            {loadingSpinner}
+            {item != null &&
+              <Comments
+                item={item}
+                type={this.props.type}
+                loggedIn={this.state.auth.authState.authenticated}
+                newComment={this.state.details.newComment}
+                comments={this.state.details.comments}
+                saveComment={this.saveComment}
+                deleteComment={this.deleteComment}
+                />}
+          </Tab>
+        </Tabs>
+      );
+    }
   },
 
   refreshTab: function(index) {

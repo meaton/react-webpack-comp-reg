@@ -2,13 +2,14 @@
 
   height: 100%;
 
-  .browser { height: 90%; }
-  .viewer { height: 10%; }
-
-  &.detailsExpanded {
-    .browser { height: 50%; }
-    .viewer { height: 50%; }
+  &.detailsCollapsed {
+    .browser { height: 90%; }
+    .viewer { height: 10%; }
   }
+
+  //default (expanded) state
+  .browser { height: 50%; }
+  .viewer { height: 50%; }
 
   .browser, .viewer {
     overflow-y: hidden;
@@ -56,6 +57,12 @@
       float: right;
       margin-right: .5em;
     }
+  }
+
+  &.detailsCollapsed .viewer .panelDescription {
+    width: 100%;
+    text-align: center;
+    padding: 1%;
   }
 
 }
