@@ -195,6 +195,14 @@
     }
   }
 
+  &.disabled {
+
+    & , & * {
+    background-color: #eee;
+    opacity: .8;
+    }
+  }
+
 }
 
 div.component-info {
@@ -237,6 +245,7 @@ div.component-info {
     max-height: 1em;
     margin-top: 2px;
     padding: .4em;
+    background: inherit;
   }
 
   span.filterCount {

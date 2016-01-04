@@ -16,7 +16,6 @@ var ActionButtons = React.createClass({
     moveDownEnabled: React.PropTypes.bool,
     onToggleExpansion: React.PropTypes.func,
     isExpanded: React.PropTypes.bool,
-    onToggleSelection: React.PropTypes.func,
     isSelected: React.PropTypes.bool,
     title: React.PropTypes.object
   },
@@ -39,16 +38,6 @@ var ActionButtons = React.createClass({
             }
           </div>
         )}
-        {this.props.onToggleSelection &&
-          <div className="select">
-            <a className="toggleSelect" onClick={this.props.onToggleSelection}>
-              {this.props.isSelected ?
-                <span title="Unselect" className="glyphicon glyphicon-check"></span>
-                :<span title="Select to add other components into this component" className="glyphicon glyphicon-unchecked"></span>
-              }
-            </a>
-          </div>
-        }
         <div className="title">
           {this.props.title}
         </div>

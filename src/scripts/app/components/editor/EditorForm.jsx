@@ -94,12 +94,14 @@ var EditorForm = React.createClass({
             item={this.props.item}
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
+            componentLinkingMode={this.props.componentLinkingMode}
             onComponentToggle={this.props.onComponentToggle}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
             onComponentChange={this.updateComponentSpec}
-            onToggleSelection={this.handleToggleSelection}
+            onStartComponentLink={this.handleStartComponentLink}
+            onCancelComponentLink={this.handleCancelComponentLink}
             selectedComponentId={this.props.selectedComponentId}
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
@@ -132,9 +134,12 @@ var EditorForm = React.createClass({
 
   /*=== Event handlers for child components ====*/
 
+  handleStartComponentLink: function(id) {
+    this.getFlux().actions.startComponentLink(id);
+  },
 
-  handleToggleSelection: function(id) {
-    this.getFlux().actions.toggleComponentSelection(id);
+  handleCancelComponentLink: function() {
+    this.getFlux().actions.cancelComponentLink();
   },
 
   handleSave: function() {

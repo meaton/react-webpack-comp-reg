@@ -68,6 +68,7 @@ var EditorActions = {
   },
 
   insertComponentById: function(spec, componentAppId, itemId, cb, cbFailure) {
+    this.dispatch(Constants.COMPLETE_COMPONENT_LINK);
     // We want to insert a new component (by reference with itemId) in spec's
     // child component with the matching component 'appId'
 
@@ -161,8 +162,12 @@ var EditorActions = {
     this.dispatch(Constants.GRID_FILTER_TEXT_CHANGE, value);
   },
 
-  toggleComponentSelection: function(id) {
-    this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id);
+  startComponentLink: function(id) {
+    this.dispatch(Constants.START_COMPONENT_LINK, id);
+  },
+
+  cancelComponentLink: function() {
+    this.dispatch(Constants.COMPLETE_COMPONENT_LINK);
   },
 
   expandAll: function(spec) {

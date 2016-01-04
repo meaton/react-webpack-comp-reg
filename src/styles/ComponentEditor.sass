@@ -9,17 +9,28 @@
     height: 100%;
   }
 
+  .editorContainer.expandedGrid {
+    .editorGroup {
+      height: 49%;
+    }
+    .browserGroup {
+      height: 50%;
+    }
+  }
+
   .editorGroup {
-    height: 69%;
+    height: 74%; //non-linking mode
     overflow-y: auto;
     margin-bottom: 1%;
+    transition: height 0.4s;
   }
 
   .browserGroup {
-    height: 30%;
+    height: 25%; //non-linking mode
     overflow-y: auto;
     border-top-style: groove;
     position: relative;
+    transition: height 0.4s;
 
     & > div {
 
@@ -31,6 +42,11 @@
         height: 3em;
         overflow: visible;
         z-index: 100;
+
+        .gridExpansionToggler {
+          float: right;
+          margin-right: .5em;
+        }
       }
 
       &.grid {
