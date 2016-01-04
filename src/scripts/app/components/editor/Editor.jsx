@@ -13,8 +13,7 @@ var EditorForm = require("./EditorForm"),
     SpaceSelector = require("../datagrid/SpaceSelector.jsx"),
     DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 
-var Button = require('react-bootstrap/lib/Button');
-var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+var PanelExpandCollapseButton = require('../PanelExpandCollapseButton');
 
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 
@@ -104,12 +103,11 @@ var Editor = React.createClass({
                 disabled={gridDisabled}
                 />
               <div className="gridControls">
-                <Button className="gridExpansionToggler" bsSize="small"
+                <PanelExpandCollapseButton
                   title="Expand/collapse components table"
-                  onClick={this.toggleGridExpansion} disabled={this.state.editor.componentLinkingMode}>
-                  {gridExpanded && <Glyphicon glyph="menu-down"/>}
-                  {!gridExpanded && <Glyphicon glyph="menu-up"/>}
-                </Button>
+                  expanded={gridExpanded}
+                  onClick={this.toggleGridExpansion}
+                  disabled={this.state.editor.componentLinkingMode} />
                 <DataGridFilter
                   value={this.state.editor.grid.filterText}
                   onChange={this.handleGridFilterTextChange}
