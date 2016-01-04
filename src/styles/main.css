@@ -86,25 +86,6 @@ a {
   overflow: visible;
 }
 
-#browser {
-  height: 100%;
-}
-
-.main .browser {
-  height: 50%;
-  overflow-y: hidden;
-}
-
-.main .viewer {
-  height: 50%;
-  overflow-y: hidden;
-  padding-top: .5em;
-}
-
-.main .viewer > div {
-  height: 100%;
-}
-
 .buttonContainer {
   display: inline-block;
 }

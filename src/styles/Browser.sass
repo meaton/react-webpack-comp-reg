@@ -1,30 +1,56 @@
-.browser {
+#browser {
 
-  position: relative;
+  height: 100%;
 
-  & > div {
+  .browser.row {
 
-    position: absolute;
-    top: 0px;
-    width: 100%;
+    position: relative;
 
-    &.gridControls {
-      height: 4em;
-      z-index: 100;
+    & > div {
+
+      position: absolute;
+      top: 0px;
+      width: 100%;
+
+      &.gridControls {
+        height: 4em;
+        z-index: 100;
+      }
+
+      &.grid {
+        padding-top: 4em;
+        height: 100%;
+        clear: both;
+        z-index: 0;
+      }
+
     }
 
-    &.grid {
-      padding-top: 4em;
+    .rssLink {
+      float: right;
+      clear: right;
+      margin-right: .5em;
+    }
+  }
+
+  .browser {
+    height: 50%;
+    overflow-y: hidden;
+  }
+
+  .viewer {
+    height: 50%;
+    overflow-y: hidden;
+    padding-top: .5em;
+
+    & > div {
       height: 100%;
-      clear: both;
-      z-index: 0;
     }
 
+    .panelExpansionToggler {
+      float: right;
+      margin-right: .5em;
+    }
   }
 
-  .rssLink {
-    float: right;
-    clear: right;
-    margin-right: .5em;
-  }
 }

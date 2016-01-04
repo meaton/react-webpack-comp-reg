@@ -21,10 +21,13 @@ var ComponentDetailsPanel = require('./ComponentDetailsPanel');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
 var RssLink = require('./RssLink');
+var PanelExpandCollapseButton = require('../PanelExpandCollapseButton');
 
 var ReactAlert = require('../../util/ReactAlert');
 
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+
+var classNames = require('classnames');
 
 require('../../../../styles/Browser.sass');
 
@@ -47,6 +50,10 @@ var Browser = React.createClass({
     };
   },
 
+  getInitialState: function() {
+    return { detailsExpanded: true };
+  },
+
   componentDidMount: function() {
     this.loadItems();
     this.loadTeams();
@@ -63,7 +70,7 @@ var Browser = React.createClass({
     var item = this.state.selection.currentItem;
 
     return (
-        <section id="browser">
+        <section id="browser" className={classNames({"detailsExpanded": this.state.detailsExpanded})}>
           <div className="browser row">
             <DataGrid
               items={this.state.items.items}
@@ -108,6 +115,10 @@ var Browser = React.createClass({
             </div>
           </div>
           <div className="viewer row">
+            <PanelExpandCollapseButton
+              title="Expand/collapse components table"
+              expanded={this.state.detailsExpanded}
+              onClick={this.toggleDetailsExpansion} />
             {item != null &&
               <ComponentDetailsPanel
                 ref="details"
@@ -206,6 +217,10 @@ var Browser = React.createClass({
           history={this.history}
            />
     );
+  },
+
+  toggleDetailsExpansion: function() {
+    this.setState({detailsExpanded: !this.state.detailsExpanded});
   },
 
   getRssLink: function() {
