@@ -19,6 +19,11 @@ var CardinalityInput = require('./CardinalityInput');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
+//bootstrap
+var Dropdown = require('react-bootstrap/lib/Dropdown');
+var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
 //utils
 var classNames = require('classnames');
 var Validation = require('../../service/Validation');
@@ -203,14 +208,32 @@ var CMDComponentForm = React.createClass({
   renderAfterComponents: function() {
     return (
       <div>
-        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Linked component will be inserted here (select from table below).<br /><a onClick={this.props.onCancelComponentLink}>Cancel linking</a></div>}
+        {this.isSelected() &&
+          <div className="componentInsertionTarget" title="Use the table below to link a component into this component">
+            <a title="Cancel linking" className="cancelLink" onClick={this.props.onCancelComponentLink}><Glyphicon glyph="remove"/></a>
+            Linked component will be inserted here (select from table below).<br />
+          </div>}
         {this.isOpen() && /*TODO: turn into nice dropdown*/
           <div className="addComponent">
-            {!this.isSelected() && /*disabled if already selected for link insertion */
-              <div><a onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}>+Existing component</a></div>
-            }
-            <a onClick={this.addNewComponent}>+Inline component</a>
-          </div>}
+            <Dropdown id={"componentAddMenu-"+this.props.spec._appId}>
+              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}}>
+                +Component
+              </a>
+              <Dropdown.Menu>
+                {!this.isSelected() &&
+                  <MenuItem onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}
+                    title="Link an existing component by selecting an item from the components table">
+                    Link existing component
+                  </MenuItem>
+                }
+                <MenuItem onClick={this.addNewComponent}
+                  title="Create a new component that is defined locally (not for reuse elsewhere)">
+                  Create inline component
+                </MenuItem>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        }
       </div>
     );
   },
