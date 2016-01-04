@@ -81,6 +81,7 @@ var Editor = React.createClass({
                 linkedComponents={this.state.details.linkedComponents}
                 selectedComponentId={this.state.editor.selectedComponentId}
                 isNew={this.isNew()}
+                componentLinkingMode={this.state.editor.componentLinkingMode}
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
               />
             <div className="browserGroup">

@@ -113,7 +113,7 @@ var ComponentSpecForm = React.createClass({
             onStartComponentLink={this.props.onStartComponentLink}
             onComponentChange={this.handleComponentChange}
             selectedComponentId={this.props.selectedComponentId}
-            overrideSelect={this.props.selectedComponentId == null /*root component is default selection*/}
+            componentLinkingMode={this.props.componentLinkingMode}
             />
           </form>
         );

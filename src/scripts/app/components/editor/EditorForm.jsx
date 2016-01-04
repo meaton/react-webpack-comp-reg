@@ -94,6 +94,7 @@ var EditorForm = React.createClass({
             item={this.props.item}
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
+            componentLinkingMode={this.props.componentLinkingMode}
             onComponentToggle={this.props.onComponentToggle}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
@@ -131,7 +132,6 @@ var EditorForm = React.createClass({
   },
 
   /*=== Event handlers for child components ====*/
-
 
   handleStartComponentLink: function(id) {
     this.getFlux().actions.startComponentLink(id);

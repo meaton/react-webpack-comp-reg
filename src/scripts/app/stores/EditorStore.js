@@ -42,7 +42,7 @@ var EditorStore = Fluxxor.createStore({
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
       Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace,
       Constants.GRID_FILTER_TEXT_CHANGE, this.handleFilterTextChange,
-      Constants.TOGGLE_COMPONENT_SELECTION, this.handleToggleComponentSelection
+      Constants.START_COMPONENT_LINK, this.handleStartComponentLink
     );
   },
 
@@ -71,8 +71,9 @@ var EditorStore = Fluxxor.createStore({
   handleOpenEditor: function(obj) {
     this.type = obj.type;
 
-    // reset component selection state
+    // reset component linking/selection state
     this.selectedComponentId = null;
+    this.componentLinkingMode = false;
 
     this.emit("change");
   },
@@ -115,14 +116,9 @@ var EditorStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleToggleComponentSelection: function(id) {
-    if(id === this.selectedComponentId) {
-      log.debug("Unselected", id);
-      this.selectedComponentId = null;
-    } else {
-      log.debug("Select", id, "instead of", this.selectedComponentId);
-      this.selectedComponentId = id;
-    }
+  handleStartComponentLink: function(id) {
+    this.selectedComponentId = id;
+    this.componentLinkingMode = true;
     this.emit("change");
   },
 

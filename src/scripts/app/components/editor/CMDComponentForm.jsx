@@ -47,15 +47,13 @@ var CMDComponentForm = React.createClass({
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired,
     onStartComponentLink: React.PropTypes.func.isRequired,
-    selectedComponentId: React.PropTypes.string,
-    overrideSelect: React.PropTypes.bool
+    selectedComponentId: React.PropTypes.string
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
 
   getDefaultProps: function() {
     return {
-      renderChildrenWhenCollapsed: true,
-      overrideSelect: false
+      renderChildrenWhenCollapsed: true
     };
   },
 
@@ -63,7 +61,7 @@ var CMDComponentForm = React.createClass({
    * used by CMDComponentMixin
    */
   isSelected: function() {
-    return this.props.overrideSelect || this.props.spec._appId === this.props.selectedComponentId;
+    return this.props.componentLinkingMode && this.props.spec._appId === this.props.selectedComponentId;
   },
 
   /**
@@ -166,6 +164,7 @@ var CMDComponentForm = React.createClass({
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onStartComponentLink={this.props.onStartComponentLink}
+        componentLinkingMode={this.props.componentLinkingMode}
         checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
         />);
     }
@@ -202,7 +201,7 @@ var CMDComponentForm = React.createClass({
   renderAfterComponents: function() {
     return (
       <div>
-        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Added component will be inserted here</div>}
+        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Linked component will be inserted here</div>}
         {this.isOpen() && /*TODO: turn into nice dropdown*/
           <div className="addComponent">
             <a onClick={this.addNewComponent}>+Component</a><br />

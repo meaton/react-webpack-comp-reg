@@ -162,7 +162,7 @@ var EditorActions = {
   },
 
   startComponentLink: function(id) {
-    this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id); //TODO replace with new flag
+    this.dispatch(Constants.START_COMPONENT_LINK, id);
   },
 
   expandAll: function(spec) {
