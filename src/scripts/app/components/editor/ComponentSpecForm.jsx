@@ -42,7 +42,7 @@ var ComponentSpecForm = React.createClass({
     onHeaderChange: React.PropTypes.func.isRequired,
     onItemChange: React.PropTypes.func.isRequired,
     onComponentChange: React.PropTypes.func.isRequired,
-    onToggleSelection: React.PropTypes.func.isRequired,
+    onStartComponentLink: React.PropTypes.func.isRequired,
     selectedComponentId: React.PropTypes.string,
     onExpandAll: React.PropTypes.func,
     onCollapseAll: React.PropTypes.func
@@ -110,7 +110,7 @@ var ComponentSpecForm = React.createClass({
             onToggle={this.props.onComponentToggle}
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
-            onToggleSelection={this.props.onToggleSelection}
+            onStartComponentLink={this.props.onStartComponentLink}
             onComponentChange={this.handleComponentChange}
             selectedComponentId={this.props.selectedComponentId}
             overrideSelect={this.props.selectedComponentId == null /*root component is default selection*/}

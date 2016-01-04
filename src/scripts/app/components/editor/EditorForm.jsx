@@ -99,7 +99,7 @@ var EditorForm = React.createClass({
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
             onComponentChange={this.updateComponentSpec}
-            onToggleSelection={this.handleToggleSelection}
+            onStartComponentLink={this.handleStartComponentLink}
             selectedComponentId={this.props.selectedComponentId}
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
@@ -133,8 +133,8 @@ var EditorForm = React.createClass({
   /*=== Event handlers for child components ====*/
 
 
-  handleToggleSelection: function(id) {
-    this.getFlux().actions.toggleComponentSelection(id);
+  handleStartComponentLink: function(id) {
+    this.getFlux().actions.startComponentLink(id);
   },
 
   handleSave: function() {

@@ -161,8 +161,8 @@ var EditorActions = {
     this.dispatch(Constants.GRID_FILTER_TEXT_CHANGE, value);
   },
 
-  toggleComponentSelection: function(id) {
-    this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id);
+  startComponentLink: function(id) {
+    this.dispatch(Constants.TOGGLE_COMPONENT_SELECTION, id); //TODO replace with new flag
   },
 
   expandAll: function(spec) {

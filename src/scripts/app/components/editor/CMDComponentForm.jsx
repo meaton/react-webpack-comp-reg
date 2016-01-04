@@ -46,7 +46,7 @@ var CMDComponentForm = React.createClass({
 
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired,
-    onToggleSelection: React.PropTypes.func.isRequired,
+    onStartComponentLink: React.PropTypes.func.isRequired,
     selectedComponentId: React.PropTypes.string,
     overrideSelect: React.PropTypes.bool
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
@@ -105,7 +105,6 @@ var CMDComponentForm = React.createClass({
         <div className="panel-heading">
         {this.createActionButtons({
           title: title,
-          onToggleSelection: this.props.onToggleSelection.bind(null, appId),
           isSelected: this.isSelected()
         })}
         </div>
@@ -166,7 +165,7 @@ var CMDComponentForm = React.createClass({
         {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
-        onToggleSelection={this.props.onToggleSelection}
+        onStartComponentLink={this.props.onStartComponentLink}
         checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
         />);
     }
@@ -204,7 +203,11 @@ var CMDComponentForm = React.createClass({
     return (
       <div>
         {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Added component will be inserted here</div>}
-        {this.isOpen() && <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>}
+        {this.isOpen() && /*TODO: turn into nice dropdown*/
+          <div className="addComponent">
+            <a onClick={this.addNewComponent}>+Component</a><br />
+            <a onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}>+Existing component</a>
+          </div>}
       </div>
     );
   },
