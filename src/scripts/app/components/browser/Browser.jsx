@@ -51,7 +51,10 @@ var Browser = React.createClass({
   },
 
   getInitialState: function() {
-    return { detailsCollapsed: false };
+    return {
+      detailsCollapsed: false,
+      detailsMaximised: false
+    };
   },
 
   componentDidMount: function() {
@@ -119,6 +122,12 @@ var Browser = React.createClass({
               title="Expand/collapse component details"
               expanded={!this.state.detailsCollapsed}
               onClick={this.toggleDetailsExpansion} />
+            {!this.state.detailsCollapsed && /*maximise*/ //TODO: different icon!
+            <PanelExpandCollapseButton
+              title="Toggle maximisation of component details"
+              expanded={this.state.detailsMaximised}
+              onClick={this.toggleMaximiseExpansion} />
+            }
             {item != null &&
               <ComponentDetailsPanel
                 ref="details"
@@ -222,6 +231,10 @@ var Browser = React.createClass({
 
   toggleDetailsExpansion: function() {
     this.setState({detailsCollapsed: !this.state.detailsCollapsed});
+  },
+
+  toggleMaximiseExpansion: function() {
+    this.setState({detailsMaximised: !this.state.detailsMaximised});
   },
 
   getRssLink: function() {
