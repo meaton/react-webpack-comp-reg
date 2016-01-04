@@ -26,11 +26,23 @@
   font-weight: bold;
 }
 
+
+/* The animation code */
+@keyframes pulse {
+    0%   {background-color: inherit;}
+    50%  {background-color: #ccc;}
+    100% {background-color: inherit;}
+}
+
 .componentInsertionTarget {
   margin-left: 3em;
   padding: .5em;
   border: 1px dashed #999;
   width: auto;
+  //pulse
+  animation-name: pulse;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
 }
 
 #editor {
