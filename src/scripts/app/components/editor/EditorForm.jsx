@@ -101,6 +101,7 @@ var EditorForm = React.createClass({
             onItemChange={this.updateItem}
             onComponentChange={this.updateComponentSpec}
             onStartComponentLink={this.handleStartComponentLink}
+            onCancelComponentLink={this.handleCancelComponentLink}
             selectedComponentId={this.props.selectedComponentId}
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
@@ -135,6 +136,10 @@ var EditorForm = React.createClass({
 
   handleStartComponentLink: function(id) {
     this.getFlux().actions.startComponentLink(id);
+  },
+
+  handleCancelComponentLink: function() {
+    this.getFlux().actions.cancelComponentLink();
   },
 
   handleSave: function() {

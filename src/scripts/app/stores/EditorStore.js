@@ -42,7 +42,8 @@ var EditorStore = Fluxxor.createStore({
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
       Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace,
       Constants.GRID_FILTER_TEXT_CHANGE, this.handleFilterTextChange,
-      Constants.START_COMPONENT_LINK, this.handleStartComponentLink
+      Constants.START_COMPONENT_LINK, this.handleStartComponentLink,
+      Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink
     );
   },
 
@@ -119,6 +120,11 @@ var EditorStore = Fluxxor.createStore({
   handleStartComponentLink: function(id) {
     this.selectedComponentId = id;
     this.componentLinkingMode = true;
+    this.emit("change");
+  },
+
+  handleCompleteComponentLink: function() {
+    this.componentLinkingMode = false;
     this.emit("change");
   },
 

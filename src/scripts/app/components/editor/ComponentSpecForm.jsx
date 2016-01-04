@@ -43,6 +43,7 @@ var ComponentSpecForm = React.createClass({
     onItemChange: React.PropTypes.func.isRequired,
     onComponentChange: React.PropTypes.func.isRequired,
     onStartComponentLink: React.PropTypes.func.isRequired,
+    onCancelComponentLink: React.PropTypes.func.isRequired,
     selectedComponentId: React.PropTypes.string,
     onExpandAll: React.PropTypes.func,
     onCollapseAll: React.PropTypes.func
@@ -111,6 +112,7 @@ var ComponentSpecForm = React.createClass({
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
             onStartComponentLink={this.props.onStartComponentLink}
+            onCancelComponentLink={this.props.onCancelComponentLink}
             onComponentChange={this.handleComponentChange}
             selectedComponentId={this.props.selectedComponentId}
             componentLinkingMode={this.props.componentLinkingMode}

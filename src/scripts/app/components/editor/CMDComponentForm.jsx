@@ -47,6 +47,7 @@ var CMDComponentForm = React.createClass({
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired,
     onStartComponentLink: React.PropTypes.func.isRequired,
+    onCancelComponentLink: React.PropTypes.func.isRequired,
     selectedComponentId: React.PropTypes.string
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
@@ -164,6 +165,7 @@ var CMDComponentForm = React.createClass({
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onStartComponentLink={this.props.onStartComponentLink}
+        onCancelComponentLink={this.props.onCancelComponentLink}
         componentLinkingMode={this.props.componentLinkingMode}
         checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
         />);
@@ -201,11 +203,13 @@ var CMDComponentForm = React.createClass({
   renderAfterComponents: function() {
     return (
       <div>
-        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Linked component will be inserted here</div>}
+        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Linked component will be inserted here (select from table below).<br /><a onClick={this.props.onCancelComponentLink}>Cancel linking</a></div>}
         {this.isOpen() && /*TODO: turn into nice dropdown*/
           <div className="addComponent">
-            <a onClick={this.addNewComponent}>+Component</a><br />
-            <a onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}>+Existing component</a>
+            {!this.isSelected() && /*disabled if already selected for link insertion */
+              <div><a onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}>+Existing component</a></div>
+            }
+            <a onClick={this.addNewComponent}>+Inline component</a>
           </div>}
       </div>
     );

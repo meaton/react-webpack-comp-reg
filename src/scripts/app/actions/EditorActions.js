@@ -68,6 +68,7 @@ var EditorActions = {
   },
 
   insertComponentById: function(spec, componentAppId, itemId, cb, cbFailure) {
+    this.dispatch(Constants.COMPLETE_COMPONENT_LINK);
     // We want to insert a new component (by reference with itemId) in spec's
     // child component with the matching component 'appId'
 
@@ -163,6 +164,10 @@ var EditorActions = {
 
   startComponentLink: function(id) {
     this.dispatch(Constants.START_COMPONENT_LINK, id);
+  },
+
+  cancelComponentLink: function() {
+    this.dispatch(Constants.COMPLETE_COMPONENT_LINK);
   },
 
   expandAll: function(spec) {
