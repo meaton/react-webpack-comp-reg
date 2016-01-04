@@ -13,10 +13,15 @@ var EditorForm = require("./EditorForm"),
     SpaceSelector = require("../datagrid/SpaceSelector.jsx"),
     DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 
+var Button = require('react-bootstrap/lib/Button');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 
 var AuthUtil = require('../AuthState').AuthUtil;
 var ReactAlert = require('../../util/ReactAlert');
+
+var classNames = require('classnames');
 
 require('../../../../styles/ComponentEditor.sass');
 
@@ -39,6 +44,10 @@ var Editor = React.createClass({
       editor: flux.store("EditorStore").getState(),
       team: flux.store("TeamStore").getState()
     };
+  },
+
+  getInitialState: function() {
+    return { expandedGrid: false };
   },
 
   componentDidMount: function() {
@@ -68,9 +77,10 @@ var Editor = React.createClass({
 
   renderContent: function() {
     var gridDisabled = !this.state.editor.componentLinkingMode;
+    var gridExpanded = this.state.expandedGrid || this.state.editor.componentLinkingMode;
     if(this.isAuthenticated()) {
       return (
-          <div className="editorContainer">
+          <div className={classNames("editorContainer", {"expandedGrid": gridExpanded})}>
             <EditorForm
                 item={this.state.editor.item}
                 type={this.state.editor.type}
@@ -94,6 +104,12 @@ var Editor = React.createClass({
                 disabled={gridDisabled}
                 />
               <div className="gridControls">
+                <Button className="gridExpansionToggler" bsSize="small"
+                  title="Expand/collapse components table"
+                  onClick={this.toggleGridExpansion} disabled={this.state.editor.componentLinkingMode}>
+                  {gridExpanded && <Glyphicon glyph="menu-down"/>}
+                  {!gridExpanded && <Glyphicon glyph="menu-up"/>}
+                </Button>
                 <DataGridFilter
                   value={this.state.editor.grid.filterText}
                   onChange={this.handleGridFilterTextChange}
@@ -144,6 +160,10 @@ var Editor = React.createClass({
         ReactAlert.showMessage("Cannot link component", error);
       }
     );
+  },
+
+  toggleGridExpansion: function() {
+    this.setState({expandedGrid: !this.state.expandedGrid});
   },
 
   isAuthenticated: function() {
