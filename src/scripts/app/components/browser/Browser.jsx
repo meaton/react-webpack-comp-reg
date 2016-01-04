@@ -51,7 +51,7 @@ var Browser = React.createClass({
   },
 
   getInitialState: function() {
-    return { detailsExpanded: true };
+    return { detailsCollapsed: false };
   },
 
   componentDidMount: function() {
@@ -70,7 +70,7 @@ var Browser = React.createClass({
     var item = this.state.selection.currentItem;
 
     return (
-        <section id="browser" className={classNames({"detailsCollapsed": !this.state.detailsExpanded})}>
+        <section id="browser" className={classNames({"detailsCollapsed": this.state.detailsCollapsed})}>
           <div className="browser row">
             <DataGrid
               items={this.state.items.items}
@@ -117,7 +117,7 @@ var Browser = React.createClass({
           <div className="viewer row">
             <PanelExpandCollapseButton
               title="Expand/collapse component details"
-              expanded={this.state.detailsExpanded}
+              expanded={!this.state.detailsCollapsed}
               onClick={this.toggleDetailsExpansion} />
             {item != null &&
               <ComponentDetailsPanel
@@ -127,7 +127,7 @@ var Browser = React.createClass({
                 loadSpec={this.loadSpec}
                 loadSpecXml={this.loadXml}
                 loadComments={this.loadComments}
-                collapsed={!this.state.detailsExpanded}
+                collapsed={this.state.detailsCollapsed}
                 />
             }
           </div>
@@ -221,7 +221,7 @@ var Browser = React.createClass({
   },
 
   toggleDetailsExpansion: function() {
-    this.setState({detailsExpanded: !this.state.detailsExpanded});
+    this.setState({detailsCollapsed: !this.state.detailsCollapsed});
   },
 
   getRssLink: function() {

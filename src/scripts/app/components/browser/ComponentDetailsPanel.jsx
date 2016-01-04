@@ -70,7 +70,7 @@ var ComponentDetailsPanel = React.createClass({
 
     if(this.props.collapsed) {
       return (
-        <p className="panelDescription">Component details (expand to see)</p>
+        <p className="panelDescription">Component details (hidden)</p>
       )
     } else {
       return (
