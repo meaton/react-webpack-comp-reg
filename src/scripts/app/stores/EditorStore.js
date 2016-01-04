@@ -15,7 +15,8 @@ var EditorStore = Fluxxor.createStore({
     this.type = Constants.TYPE_COMPONENT; //components or profiles
     this.item = null;
     this.processing = false;
-    this.selectedComponentId = null;
+    this.componentLinkingMode = false;
+    this.selectedComponentId = null; //selected for linking
 
     this.gridSpace = Constants.SPACE_PUBLISHED;
     this.gridTeam = null;
@@ -54,6 +55,7 @@ var EditorStore = Fluxxor.createStore({
     return {
       type: this.type,
       item: this.item,
+      componentLinkingMode: this.componentLinkingMode,
       selectedComponentId: this.selectedComponentId,
       processing: this.processing,
       grid: {

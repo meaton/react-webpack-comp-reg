@@ -67,6 +67,7 @@ var Editor = React.createClass({
   },
 
   renderContent: function() {
+    var gridDisabled = !this.state.editor.componentLinkingMode;
     if(this.isAuthenticated()) {
       return (
           <div className="editorContainer">
@@ -89,11 +90,14 @@ var Editor = React.createClass({
                 items={this.state.editor.grid.items}
                 loading={this.state.editor.grid.loading}
                 onRowSelect={this.handleGridRowSelect}
+                disabled={gridDisabled}
                 />
               <div className="gridControls">
                 <DataGridFilter
                   value={this.state.editor.grid.filterText}
-                  onChange={this.handleGridFilterTextChange} />
+                  onChange={this.handleGridFilterTextChange}
+                  disabled={gridDisabled}
+                  />
                 <SpaceSelector
                   type={Constants.TYPE_COMPONENT}
                   space={this.state.editor.grid.space}
