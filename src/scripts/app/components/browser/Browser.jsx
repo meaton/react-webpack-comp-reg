@@ -127,6 +127,7 @@ var Browser = React.createClass({
                 loadSpec={this.loadSpec}
                 loadSpecXml={this.loadXml}
                 loadComments={this.loadComments}
+                collapsed={!this.state.detailsExpanded}
                 />
             }
           </div>

@@ -2,8 +2,20 @@
 
   height: 100%;
 
-  .browser.row {
+  .browser { height: 90%; }
+  .viewer { height: 10%; }
 
+  &.detailsExpanded {
+    .browser { height: 50%; }
+    .viewer { height: 50%; }
+  }
+
+  .browser, .viewer {
+    overflow-y: hidden;
+    transition: height 0.4s;
+  }
+
+  .browser.row {
     position: relative;
 
     & > div {
@@ -33,14 +45,7 @@
     }
   }
 
-  .browser {
-    height: 50%;
-    overflow-y: hidden;
-  }
-
-  .viewer {
-    height: 50%;
-    overflow-y: hidden;
+  .viewer.row {
     padding-top: .5em;
 
     & > div {
