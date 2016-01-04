@@ -113,7 +113,6 @@ var Editor = React.createClass({
                 <DataGridFilter
                   value={this.state.editor.grid.filterText}
                   onChange={this.handleGridFilterTextChange}
-                  disabled={gridDisabled}
                   />
                 <SpaceSelector
                   type={Constants.TYPE_COMPONENT}
