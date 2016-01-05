@@ -31,7 +31,7 @@ var DataTablesWrapper = React.createClass({
   },
 
   render: function() {
-    var hasInfoLink = this.props.onClickInfo != null || this.props.onClickDownload != null;
+    var hasInfoLink = this.props.hasOptionsMenu;
     var className = classNames("table table-striped", {
       withInfoLink: hasInfoLink,
       editMode: this.props.editMode,

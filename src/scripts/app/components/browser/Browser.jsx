@@ -15,6 +15,7 @@ var Modal = require('react-bootstrap/lib/Modal');
 
 // Components
 var DataGrid = require("../datagrid/DataGrid.jsx");
+var ItemOptionsDropdown = require('./ItemOptionsDropdown');
 var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
 var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetailsPanel = require('./ComponentDetailsPanel');
@@ -85,12 +86,10 @@ var Browser = React.createClass({
               loading={this.state.items.loading}
               editMode={false}
               onRowSelect={this.handleRowSelect}
-              onClickInfo={this.showComponentInfo}
-              onClickDownloadXml={this.handleDownloadXml}
-              onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
               multiSelect={this.state.selection.allowMultiple}
+              itemOptionsDropdownCreator={this.createItemOptionsDropdown}
               />
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
@@ -245,6 +244,16 @@ var Browser = React.createClass({
       detailsMaximised: !this.state.detailsMaximised,
       detailsCollapsed: false
     });
+  },
+
+  createItemOptionsDropdown: function(item) {
+    return (
+      <ItemOptionsDropdown
+        item={item}
+        onClickInfo={this.showComponentInfo}
+        onClickDownloadXml={this.handleDownloadXml}
+        onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null} />
+    );
   },
 
   getRssLink: function() {
