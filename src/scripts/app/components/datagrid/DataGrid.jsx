@@ -48,7 +48,7 @@ var DataGrid = React.createClass({
     var addButton = (this.props.editMode) ? true : false;
     var multiSelect = this.props.multiSelect;
 
-    var x = this.props.items.map(function(d, index){
+    var itemRows = this.props.items.map(function(d, index){
      var className = (index+1) % 2 ? "odd" : "even";
 
      // deal with deletion
@@ -99,7 +99,8 @@ var DataGrid = React.createClass({
           onToggleSort={this.props.onToggleSort}
           multiSelect={this.props.multiSelect}
           hasOptionsMenu={this.props.itemOptionsDropdownCreator != null}>
-            {x}
+            {this.props.children}
+            {itemRows}
         </DataTablesWrapper>
       </div>
    );

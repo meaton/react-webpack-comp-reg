@@ -89,8 +89,14 @@ var Browser = React.createClass({
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
               multiSelect={this.state.selection.allowMultiple}
-              itemOptionsDropdownCreator={this.createItemOptionsDropdown}
-              />
+              itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
+              {this.state.items.filteredSize == 0 && this.state.items.unfilteredSize != null && (
+                <tr><td className="hiddenByFilterMessage">
+                  {this.state.items.unfilteredSize} item(s) hidden by filter
+                  (<a onClick={this.clearFilter}>clear</a>).
+                </td></tr>
+              )}
+            </DataGrid>
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
               <DataGridFilter
@@ -202,6 +208,10 @@ var Browser = React.createClass({
 
   handleFilterTextChange: function(evt) {
     this.getFlux().actions.setFilterText(evt.target.value);
+  },
+
+  clearFilter: function(evt) {
+    this.getFlux().actions.setFilterText(null);
   },
 
   toggleSort: function(column) {
