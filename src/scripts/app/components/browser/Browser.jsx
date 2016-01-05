@@ -90,11 +90,13 @@ var Browser = React.createClass({
               onToggleSort={this.toggleSort}
               multiSelect={this.state.selection.allowMultiple}
               itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
-              {this.state.items.filteredSize == 0 && this.state.items.unfilteredSize != null && (
-                <tr><td className="hiddenByFilterMessage">
-                  {this.state.items.unfilteredSize} item(s) hidden by filter
-                  (<a onClick={this.clearFilter}>clear</a>).
-                </td></tr>
+              {!this.state.items.loading  /* show a message in the table if all results are excluded by filter */
+                && this.state.items.filteredSize == 0
+                && this.state.items.unfilteredSize != null && (
+                  <tr><td className="hiddenByFilterMessage">
+                    {this.state.items.unfilteredSize} item(s) hidden by filter
+                    (<a onClick={this.clearFilter}>clear</a>).
+                  </td></tr>
               )}
             </DataGrid>
             <div className="gridControls">
