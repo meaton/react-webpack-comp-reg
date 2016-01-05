@@ -66,7 +66,7 @@ var DataTablesRow = React.createClass({
         <td className="commentsCount">{data.commentsCount}</td>
 
         {this.props.optionsMenu != null &&
-          <td className="infoLink">{this.props.optionsMenu}</td>
+          <td className="itemMenu">{this.props.optionsMenu}</td>
         }
       </tr>
     )
