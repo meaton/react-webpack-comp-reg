@@ -10,6 +10,30 @@
   a.elementLink {
     color: #000099;
   }
+
+  .valueScheme {
+
+    & > .form-group {
+      display: inline-block;
+      width: 60%;
+    }
+  }
+
+  .valueScheme, .elemAttrs li {
+      span {
+        display: inline-block;
+
+        &.attrLabel {
+          width: 40%;
+          text-align: right;
+          padding-right: 1em;
+        }
+
+        &.attrValue {
+          width: 60%;
+        }
+      }
+  }
 }
 
 .elementName, .elementLink {
