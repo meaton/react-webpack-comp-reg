@@ -40,7 +40,7 @@ var CMDAttributeView = React.createClass({
     var attr_val = <ValueScheme obj={attr} enabled={false} />
     var conceptLink = attr.ConceptLink;
     return (
-      <div className="panel panel-success attrAttr">
+      <div className="panel panel-success">
         <div className="panel-heading">
           <span>Attribute: </span>
           <span className="elementName">{attr.Name}</span>
