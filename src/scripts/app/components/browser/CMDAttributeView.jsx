@@ -38,6 +38,7 @@ var CMDAttributeView = React.createClass({
   render: function () {
     var attr = this.props.spec;
     var attr_val = <ValueScheme obj={attr} enabled={false} />
+    var conceptLink = attr.ConceptLink;
     return (
       <div className="panel panel-success attrAttr">
         <div className="panel-heading">
@@ -45,7 +46,15 @@ var CMDAttributeView = React.createClass({
           <span className="elementName">{attr.Name}</span>
         </div>
         <div className="panel-body">
-          <div className="valueScheme">Value scheme: {attr_val}</div>
+          <div className="valueScheme"><span className="attrLabel">Value scheme:</span>{attr_val}</div>
+          <ul className="attrAttrs">
+            {(conceptLink != null && conceptLink !== "") && (
+              <li className="attrElem">
+                <span className="attrLabel">ConceptLink:</span>
+                <span className="attrValue"><a href={conceptLink} target="_blank">{conceptLink}</a></span>
+              </li>
+            )}
+          </ul>
         </div>
       </div>
     );
