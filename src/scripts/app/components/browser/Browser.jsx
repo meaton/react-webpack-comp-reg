@@ -139,7 +139,7 @@ var Browser = React.createClass({
               expandGlyph="fullscreen"
               collapseGlyph="resize-small"
               />
-            {item != null &&
+            {item != null ? (
               <ComponentDetailsPanel
                 ref="details"
                 item={item}
@@ -149,6 +149,11 @@ var Browser = React.createClass({
                 loadComments={this.loadComments}
                 collapsed={this.state.detailsCollapsed}
                 />
+            ) : (
+              <div className="noSelectionMessage">
+                <p>Select a component or profile in the table to see its details</p>
+              </div>
+            )
             }
           </div>
         </section>
