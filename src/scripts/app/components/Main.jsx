@@ -97,13 +97,15 @@ var Main = React.createClass({
   render: function() {
     return (
         <div id="app-root">
-          <PageHeader>CMDI Component Registry <small>React.js front end alpha</small></PageHeader>
+          <div id="header">
+            <PageHeader>CMDI Component Registry <small>React.js front end beta</small></PageHeader>
 
-          <div className="auth-login">
-            <AuthState
-              authState={this.state.auth.authState}
-              history={this.history}
-              location={this.props.location} />
+            <div className="auth-login">
+              <AuthState
+                authState={this.state.auth.authState}
+                history={this.history}
+                location={this.props.location} />
+            </div>
           </div>
 
           <div className="main container-fluid">
