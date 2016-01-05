@@ -71,9 +71,12 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
-
+    var classes = classNames({
+      "detailsCollapsed": this.state.detailsCollapsed,
+      "detailsMaximised": this.state.detailsMaximised
+    });
     return (
-        <section id="browser" className={classNames({"detailsCollapsed": this.state.detailsCollapsed})}>
+        <section id="browser" className={classes}>
           <div className="browser row">
             <DataGrid
               items={this.state.items.items}
@@ -122,12 +125,13 @@ var Browser = React.createClass({
               title="Expand/collapse component details"
               expanded={!this.state.detailsCollapsed}
               onClick={this.toggleDetailsExpansion} />
-            {!this.state.detailsCollapsed && /*maximise*/ //TODO: different icon!
             <PanelExpandCollapseButton
               title="Toggle maximisation of component details"
               expanded={this.state.detailsMaximised}
-              onClick={this.toggleMaximiseExpansion} />
-            }
+              onClick={this.toggleMaximiseExpansion}
+              expandGlyph="fullscreen"
+              collapseGlyph="resize-small"
+              />
             {item != null &&
               <ComponentDetailsPanel
                 ref="details"
@@ -230,11 +234,17 @@ var Browser = React.createClass({
   },
 
   toggleDetailsExpansion: function() {
-    this.setState({detailsCollapsed: !this.state.detailsCollapsed});
+    this.setState({
+      detailsCollapsed: !this.state.detailsCollapsed,
+      detailsMaximised: false
+    });
   },
 
   toggleMaximiseExpansion: function() {
-    this.setState({detailsMaximised: !this.state.detailsMaximised});
+    this.setState({
+      detailsMaximised: !this.state.detailsMaximised,
+      detailsCollapsed: false
+    });
   },
 
   getRssLink: function() {
