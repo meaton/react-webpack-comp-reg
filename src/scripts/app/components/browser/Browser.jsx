@@ -21,10 +21,13 @@ var ComponentDetailsPanel = require('./ComponentDetailsPanel');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
 var RssLink = require('./RssLink');
+var PanelExpandCollapseButton = require('../PanelExpandCollapseButton');
 
 var ReactAlert = require('../../util/ReactAlert');
 
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+
+var classNames = require('classnames');
 
 require('../../../../styles/Browser.sass');
 
@@ -47,6 +50,13 @@ var Browser = React.createClass({
     };
   },
 
+  getInitialState: function() {
+    return {
+      detailsCollapsed: false,
+      detailsMaximised: false
+    };
+  },
+
   componentDidMount: function() {
     this.loadItems();
     this.loadTeams();
@@ -61,9 +71,12 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
-
+    var classes = classNames({
+      "detailsCollapsed": this.state.detailsCollapsed,
+      "detailsMaximised": this.state.detailsMaximised
+    });
     return (
-        <section id="browser">
+        <section id="browser" className={classes}>
           <div className="browser row">
             <DataGrid
               items={this.state.items.items}
@@ -108,6 +121,17 @@ var Browser = React.createClass({
             </div>
           </div>
           <div className="viewer row">
+            <PanelExpandCollapseButton
+              title="Expand/collapse component details"
+              expanded={!this.state.detailsCollapsed}
+              onClick={this.toggleDetailsExpansion} />
+            <PanelExpandCollapseButton
+              title="Toggle maximisation of component details"
+              expanded={this.state.detailsMaximised}
+              onClick={this.toggleMaximiseExpansion}
+              expandGlyph="fullscreen"
+              collapseGlyph="resize-small"
+              />
             {item != null &&
               <ComponentDetailsPanel
                 ref="details"
@@ -116,6 +140,7 @@ var Browser = React.createClass({
                 loadSpec={this.loadSpec}
                 loadSpecXml={this.loadXml}
                 loadComments={this.loadComments}
+                collapsed={this.state.detailsCollapsed}
                 />
             }
           </div>
@@ -206,6 +231,20 @@ var Browser = React.createClass({
           history={this.history}
            />
     );
+  },
+
+  toggleDetailsExpansion: function() {
+    this.setState({
+      detailsCollapsed: !this.state.detailsCollapsed,
+      detailsMaximised: false
+    });
+  },
+
+  toggleMaximiseExpansion: function() {
+    this.setState({
+      detailsMaximised: !this.state.detailsMaximised,
+      detailsCollapsed: false
+    });
   },
 
   getRssLink: function() {

@@ -26,10 +26,11 @@ var DataTablesRow = React.createClass({
     className: React.PropTypes.string,
     onClickInfo: React.PropTypes.func,
     onClickDownloadXml: React.PropTypes.func,
-    onClickDownloadXsd: React.PropTypes.func
+    onClickDownloadXsd: React.PropTypes.func,
+    disabled: React.PropTypes.bool
   },
   getDefaultProps: function() {
-    return { buttonBefore: false, className: "unknown", rowSelectAllowed: true };
+    return { buttonBefore: false, className: "unknown", rowSelectAllowed: true, disabled: false };
   },
   rowClick: function(val, evt) {
     evt.preventDefault();
@@ -57,7 +58,7 @@ var DataTablesRow = React.createClass({
               ref="addButton"
               title="Click to link this component to the seleceted component in the editor"
               onClick={this.buttonClick}
-              disabled={!this.props.rowSelectAllowed}>+</Button>
+              disabled={this.props.disabled || !this.props.rowSelectAllowed}>+</Button>
           </td>
         )}
 

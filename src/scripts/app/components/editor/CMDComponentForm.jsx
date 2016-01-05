@@ -19,6 +19,11 @@ var CardinalityInput = require('./CardinalityInput');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
+//bootstrap
+var Dropdown = require('react-bootstrap/lib/Dropdown');
+var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
 //utils
 var classNames = require('classnames');
 var Validation = require('../../service/Validation');
@@ -46,16 +51,15 @@ var CMDComponentForm = React.createClass({
 
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired,
-    onToggleSelection: React.PropTypes.func.isRequired,
-    selectedComponentId: React.PropTypes.string,
-    overrideSelect: React.PropTypes.bool
+    onStartComponentLink: React.PropTypes.func.isRequired,
+    onCancelComponentLink: React.PropTypes.func.isRequired,
+    selectedComponentId: React.PropTypes.string
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
 
   getDefaultProps: function() {
     return {
-      renderChildrenWhenCollapsed: true,
-      overrideSelect: false
+      renderChildrenWhenCollapsed: true
     };
   },
 
@@ -63,7 +67,7 @@ var CMDComponentForm = React.createClass({
    * used by CMDComponentMixin
    */
   isSelected: function() {
-    return this.props.overrideSelect || this.props.spec._appId === this.props.selectedComponentId;
+    return this.props.componentLinkingMode && this.props.spec._appId === this.props.selectedComponentId;
   },
 
   /**
@@ -105,7 +109,6 @@ var CMDComponentForm = React.createClass({
         <div className="panel-heading">
         {this.createActionButtons({
           title: title,
-          onToggleSelection: this.props.onToggleSelection.bind(null, appId),
           isSelected: this.isSelected()
         })}
         </div>
@@ -166,7 +169,9 @@ var CMDComponentForm = React.createClass({
         {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
-        onToggleSelection={this.props.onToggleSelection}
+        onStartComponentLink={this.props.onStartComponentLink}
+        onCancelComponentLink={this.props.onCancelComponentLink}
+        componentLinkingMode={this.props.componentLinkingMode}
         checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
         />);
     }
@@ -203,8 +208,32 @@ var CMDComponentForm = React.createClass({
   renderAfterComponents: function() {
     return (
       <div>
-        {this.isSelected() && <div className="componentInsertionTarget" title="Use the table below to link a component into this component">Added component will be inserted here</div>}
-        {this.isOpen() && <div className="addComponent"><a onClick={this.addNewComponent}>+Component</a></div>}
+        {this.isSelected() &&
+          <div className="componentInsertionTarget" title="Use the table below to link a component into this component">
+            <a title="Cancel linking" className="cancelLink" onClick={this.props.onCancelComponentLink}><Glyphicon glyph="remove"/></a>
+            Linked component will be inserted here (select from table below).<br />
+          </div>}
+        {this.isOpen() && /*TODO: turn into nice dropdown*/
+          <div className="addComponent">
+            <Dropdown id={"componentAddMenu-"+this.props.spec._appId}>
+              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}}>
+                +Component
+              </a>
+              <Dropdown.Menu>
+                {!this.isSelected() &&
+                  <MenuItem onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}
+                    title="Link an existing component by selecting an item from the components table">
+                    Link existing component
+                  </MenuItem>
+                }
+                <MenuItem onClick={this.addNewComponent}
+                  title="Create a new component that is defined locally (not for reuse elsewhere)">
+                  Create inline component
+                </MenuItem>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        }
       </div>
     );
   },

@@ -31,14 +31,16 @@ var DataGrid = React.createClass({
     onClickDownloadXml: React.PropTypes.func,
     onClickDownloadXsd: React.PropTypes.func,
     onToggleSort: React.PropTypes.func,
-    sortState: React.PropTypes.object
+    sortState: React.PropTypes.object,
+    disabled: React.PropTypes.bool
   },
 
   getDefaultProps: function() {
     return {
       selectedItems: {},
       rowSelectAllowed: true,
-      editMode: false
+      editMode: false,
+      disabled: false
     };
   },
 
@@ -78,13 +80,14 @@ var DataGrid = React.createClass({
           onClickInfo={self.props.onClickInfo}
           onClickDownloadXml={self.props.onClickDownloadXml}
           onClickDownloadXsd={self.props.onClickDownloadXsd}
+          disabled={self.props.disabled}
           >
         </DataTablesRow>
      );
     });
 
     return (
-      <div className={classNames("grid", {"loading": this.props.loading})} id="grid">
+      <div className={classNames("grid", {"loading": this.props.loading, "disabled": this.props.disabled})} id="grid">
         {this.props.loading && <div className="loader spinner-loader">Loading...</div>}
         <DataTablesWrapper
           ref="wrapper"
@@ -102,8 +105,12 @@ var DataGrid = React.createClass({
   },
 
   rowClick: function(val, evt) {
-    var multiSelect = evt.metaKey || evt.ctrlKey;
-    this.props.onRowSelect(val, multiSelect);
+    var requestMultiSelect = evt.metaKey || evt.ctrlKey;
+    if(requestMultiSelect
+      || this.props.multiSelect
+      || !this.props.selectedItems[val.id]) { // otherwise no update needed, item already selected
+      this.props.onRowSelect(val, requestMultiSelect);
+    }
   }
 });
 

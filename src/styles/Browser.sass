@@ -1,30 +1,73 @@
-.browser {
+#browser {
 
-  position: relative;
+  height: 100%;
 
-  & > div {
+  &.detailsCollapsed {
+    .browser { height: 90%; }
+    .viewer { height: 10%; }
+  }
 
-    position: absolute;
-    top: 0px;
-    width: 100%;
+  &.detailsMaximised {
+    .browser { height: 0%; }
+    .viewer { height: 100%; }
+  }
 
-    &.gridControls {
-      height: 4em;
-      z-index: 100;
+  //default (expanded) state
+  .browser { height: 50%; }
+  .viewer { height: 50%; }
+
+  .browser, .viewer {
+    overflow-y: hidden;
+    transition: height 0.4s;
+  }
+
+  .browser.row {
+    position: relative;
+
+    & > div {
+
+      position: absolute;
+      top: 0px;
+      width: 100%;
+
+      &.gridControls {
+        height: 4em;
+        z-index: 100;
+      }
+
+      &.grid {
+        padding-top: 4em;
+        height: 100%;
+        clear: both;
+        z-index: 0;
+      }
+
     }
 
-    &.grid {
-      padding-top: 4em;
+    .rssLink {
+      float: right;
+      clear: right;
+      margin-right: .5em;
+    }
+  }
+
+  .viewer.row {
+    padding-top: .5em;
+
+    & > div {
       height: 100%;
-      clear: both;
-      z-index: 0;
     }
 
+    .panelExpansionToggler {
+      float: right;
+      margin-right: .5em;
+    }
   }
 
-  .rssLink {
-    float: right;
-    clear: right;
-    margin-right: .5em;
+  &.detailsCollapsed .viewer .panelDescription {
+    width: 100%;
+    text-align: center;
+    padding: 1%;
   }
+
 }
