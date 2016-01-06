@@ -112,6 +112,16 @@ var Main = React.createClass({
             <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
             {this.props.children}
           </div>
+
+          <div className="footer">
+            <div className="version">Version xyz</div>
+            <div className="logo">
+              <a href="https://www.clarin.eu">
+                <img src="https://infra.clarin.eu/content/Centre_Registry/CLARIN_style/1.0//CLARIN-Logo_4C14pure3_noextraneouscanvas.png" />
+              </a>
+            </div>
+            <div className="contact">Contact us</div>
+          </div>
         </div>
     );
   }
