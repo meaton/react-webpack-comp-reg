@@ -26,7 +26,7 @@ var Main = React.createClass({
             </tr>
             <tr>
               <td>License:</td>
-              <td>GPL</td>
+              <td><a href="http://www.gnu.org/licenses/gpl-3.0.html">GPL version 3</a></td>
             </tr>
             <tr>
               <td>Source code:</td>
