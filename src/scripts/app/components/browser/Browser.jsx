@@ -92,7 +92,7 @@ var Browser = React.createClass({
               itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
               {!this.state.items.loading  /* show a message in the table if all results are excluded by filter */
                 && this.state.items.filteredSize == 0
-                && this.state.items.unfilteredSize != null && (
+                && this.state.items.unfilteredSize != 0 && (
                   <tr><td className="hiddenByFilterMessage">
                     {this.state.items.unfilteredSize} item(s) hidden by filter
                     (<a onClick={this.clearFilter}>clear</a>).
