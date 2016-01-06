@@ -27,7 +27,7 @@ var actions = require("./actions");
 var Config = require('../config').Config;
 
 // main stylesheets
-require('../../styles/main.css');
+require('../../styles/main.sass');
 require('../../styles/normalize.css');
 
 /* Flux */

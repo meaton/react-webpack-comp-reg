@@ -10,7 +10,7 @@
 .componentBody, .componentProps {
   padding-left: 25px;
 }
-.elemAttrs {
+.elemAttrs, .attrAttrs {
   padding: 0;
 
   li {
@@ -23,11 +23,37 @@
 .edit-mode .hide-field {
   display: none
 }
-.tab-content {
-  height: 100%;
-  padding-bottom: 5em;
-  overflow-y: auto;
-}
+
 .valueScheme {
+
   font-weight: bold;
+  & > .form-group {
+    font-weight: normal;
+    display: inline-block;
+    width: 60%;
+  }
+}
+
+.valueScheme, .elemAttrs li, .attrAttrs li {
+    span {
+      display: inline-block;
+
+      vertical-align: top;
+
+      &.attrLabel {
+        width: 40%;
+        text-align: right;
+        padding-right: 1em;
+      }
+
+      &.attrValue {
+        width: 60%;
+      }
+    }
+}
+
+.attrList {
+  .panel {
+    max-width: 40em;
+  }
 }

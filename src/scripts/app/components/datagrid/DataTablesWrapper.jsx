@@ -31,9 +31,9 @@ var DataTablesWrapper = React.createClass({
   },
 
   render: function() {
-    var hasInfoLink = this.props.onClickInfo != null || this.props.onClickDownload != null;
+    var hasItemMenu = this.props.hasOptionsMenu;
     var className = classNames("table table-striped", {
-      withInfoLink: hasInfoLink,
+      withItemMenu: hasItemMenu,
       editMode: this.props.editMode,
       multipleSelection: this.props.multiSelect
     });
@@ -50,7 +50,7 @@ var DataTablesWrapper = React.createClass({
             <th {...this.createHeaderProps('description')}>Description</th>
             <th {...this.createHeaderProps('registrationDate')}>Registration Date</th>
             <th {...this.createHeaderProps('commentsCount')}>Comments</th>
-            {hasInfoLink && <th className="infoLink"/>}
+            {hasItemMenu && <th className="itemMenu"/>}
           </tr>
         </thead>
         <tbody>

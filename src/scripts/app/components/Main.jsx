@@ -13,10 +13,16 @@ var History = require('react-router').History;
 // Components
 var AuthState = require("./AuthState.jsx").AuthState;
 var AlertsView = require("./AlertsView.jsx");
+var About = require("./About");
 
 // Boostrap
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 var Alert = require('react-bootstrap/lib/Alert');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
+var ReactAlert = require('../util/ReactAlert');
+
+var Config = require("../../config").Config;
 
 /***
 * Main - Default component and entry point to the application.
@@ -97,21 +103,37 @@ var Main = React.createClass({
   render: function() {
     return (
         <div id="app-root">
-          <PageHeader>CMDI Component Registry <small>React.js front end alpha</small></PageHeader>
+          <div id="header">
+            <PageHeader>CMDI Component Registry</PageHeader>
 
-          <div className="auth-login">
-            <AuthState
-              authState={this.state.auth.authState}
-              history={this.history}
-              location={this.props.location} />
+            <div className="auth-login">
+              <AuthState
+                authState={this.state.auth.authState}
+                history={this.history}
+                location={this.props.location} />
+            </div>
           </div>
 
           <div className="main container-fluid">
             <AlertsView messages={this.state.messages.messages} onDismiss={this.handleDismissMessage} />
             {this.props.children}
           </div>
+
+          <div className="footer">
+            <div className="version"><a title="About" onClick={this.showAbout}><Glyphicon glyph="info-sign" />&nbsp;Version {Config.backEndVersion}</a></div>
+            <div className="logo">
+              <a href="https://www.clarin.eu">
+                <img src="https://infra.clarin.eu/content/Centre_Registry/CLARIN_style/1.0//CLARIN-Logo_4C14pure3_noextraneouscanvas.png" />
+              </a>
+            </div>
+            <div className="contact"><a title="Contact" href="mailto:cmdi@clarin.eu"><Glyphicon glyph="envelope" />&nbsp;Contact us</a></div>
+          </div>
         </div>
     );
+  },
+
+  showAbout: function() {
+    ReactAlert.showMessage("About CLARIN Component Registry", <About/>);
   }
 });
 

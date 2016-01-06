@@ -31,6 +31,7 @@
       width: 100%;
 
       &.gridControls {
+        margin-top: .5em;
         height: 4em;
         z-index: 100;
       }
@@ -49,13 +50,32 @@
       clear: right;
       margin-right: .5em;
     }
+
+    table td.hiddenByFilterMessage {
+      width: 100%;
+
+      a {
+        color: #f00;
+      }
+    }
   }
 
   .viewer.row {
     padding-top: .5em;
 
     & > div {
-      height: 100%;
+      height: 80%;
+      height: calc(100% - 40px);
+
+      &.noSelectionMessage {
+        display: flex;
+
+        p {
+          margin: auto;
+          text-align: center;
+          font-size: 200%;
+        }
+      }
     }
 
     .panelExpansionToggler {

@@ -4,9 +4,6 @@ var React = require('react');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
-var Dropdown = require('react-bootstrap/lib/Dropdown');
-var MenuItem = require('react-bootstrap/lib/MenuItem');
-var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -24,10 +21,8 @@ var DataTablesRow = React.createClass({
     rowSelectAllowed: React.PropTypes.bool,
     onClick: React.PropTypes.func,
     className: React.PropTypes.string,
-    onClickInfo: React.PropTypes.func,
-    onClickDownloadXml: React.PropTypes.func,
-    onClickDownloadXsd: React.PropTypes.func,
-    disabled: React.PropTypes.bool
+    disabled: React.PropTypes.bool,
+    optionsMenu: React.PropTypes.object
   },
   getDefaultProps: function() {
     return { buttonBefore: false, className: "unknown", rowSelectAllowed: true, disabled: false };
@@ -70,20 +65,9 @@ var DataTablesRow = React.createClass({
         <td className="registrationDate">{registrationDate}</td>
         <td className="commentsCount">{data.commentsCount}</td>
 
-        {(this.props.onClickInfo != null || this.props.onClickDownloadXml != null || this.props.onClickDownloadXsd != null) && (
-          <td className="infoLink">
-            <Dropdown id={"options-"+this.props.data.id}>
-              <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}} onContextMenu={function(e){e.preventDefault(); e.target.click();}}>
-                <Glyphicon glyph="menu-down" />
-              </a>
-              <Dropdown.Menu className="dropdown-menu-right">
-                {this.props.onClickInfo && <MenuItem onClick={this.props.onClickInfo.bind(null, this.props.data)}>Show info</MenuItem>}
-                {this.props.onClickDownloadXml && <MenuItem onClick={this.props.onClickDownloadXml.bind(null, this.props.data)}>Download XML</MenuItem>}
-                {this.props.onClickDownloadXsd && <MenuItem onClick={this.props.onClickDownloadXsd.bind(null, this.props.data)}>Download XSD</MenuItem>}
-              </Dropdown.Menu>
-            </Dropdown>
-          </td>
-        )}
+        {this.props.optionsMenu != null &&
+          <td className="itemMenu">{this.props.optionsMenu}</td>
+        }
       </tr>
     )
   }

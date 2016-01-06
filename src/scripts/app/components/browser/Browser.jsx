@@ -15,6 +15,7 @@ var Modal = require('react-bootstrap/lib/Modal');
 
 // Components
 var DataGrid = require("../datagrid/DataGrid.jsx");
+var ItemOptionsDropdown = require('./ItemOptionsDropdown');
 var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
 var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetailsPanel = require('./ComponentDetailsPanel');
@@ -85,13 +86,19 @@ var Browser = React.createClass({
               loading={this.state.items.loading}
               editMode={false}
               onRowSelect={this.handleRowSelect}
-              onClickInfo={this.showComponentInfo}
-              onClickDownloadXml={this.handleDownloadXml}
-              onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
               multiSelect={this.state.selection.allowMultiple}
-              />
+              itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
+              {!this.state.items.loading  /* show a message in the table if all results are excluded by filter */
+                && this.state.items.filteredSize == 0
+                && this.state.items.unfilteredSize != 0 && (
+                  <tr><td className="hiddenByFilterMessage">
+                    {this.state.items.unfilteredSize} item(s) hidden by filter
+                    (<a onClick={this.clearFilter}>clear</a>).
+                  </td></tr>
+              )}
+            </DataGrid>
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
               <DataGridFilter
@@ -132,7 +139,7 @@ var Browser = React.createClass({
               expandGlyph="fullscreen"
               collapseGlyph="resize-small"
               />
-            {item != null &&
+            {item != null ? (
               <ComponentDetailsPanel
                 ref="details"
                 item={item}
@@ -142,6 +149,11 @@ var Browser = React.createClass({
                 loadComments={this.loadComments}
                 collapsed={this.state.detailsCollapsed}
                 />
+            ) : (
+              <div className="noSelectionMessage">
+                <p>Select a component or profile in the table to see its details</p>
+              </div>
+            )
             }
           </div>
         </section>
@@ -205,6 +217,10 @@ var Browser = React.createClass({
     this.getFlux().actions.setFilterText(evt.target.value);
   },
 
+  clearFilter: function(evt) {
+    this.getFlux().actions.setFilterText(null);
+  },
+
   toggleSort: function(column) {
     this.getFlux().actions.toggleSortState(column);
   },
@@ -245,6 +261,16 @@ var Browser = React.createClass({
       detailsMaximised: !this.state.detailsMaximised,
       detailsCollapsed: false
     });
+  },
+
+  createItemOptionsDropdown: function(item) {
+    return (
+      <ItemOptionsDropdown
+        item={item}
+        onClickInfo={this.showComponentInfo}
+        onClickDownloadXml={this.handleDownloadXml}
+        onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null} />
+    );
   },
 
   getRssLink: function() {

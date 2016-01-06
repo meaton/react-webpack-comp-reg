@@ -27,12 +27,10 @@ var DataGrid = React.createClass({
     deletedItems: React.PropTypes.object,
     onRowSelect: React.PropTypes.func,
     rowSelectAllowed: React.PropTypes.bool,
-    onClickInfo: React.PropTypes.func,
-    onClickDownloadXml: React.PropTypes.func,
-    onClickDownloadXsd: React.PropTypes.func,
     onToggleSort: React.PropTypes.func,
     sortState: React.PropTypes.object,
-    disabled: React.PropTypes.bool
+    disabled: React.PropTypes.bool,
+    itemOptionsDropdownCreator: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -50,7 +48,7 @@ var DataGrid = React.createClass({
     var addButton = (this.props.editMode) ? true : false;
     var multiSelect = this.props.multiSelect;
 
-    var x = this.props.items.map(function(d, index){
+    var itemRows = this.props.items.map(function(d, index){
      var className = (index+1) % 2 ? "odd" : "even";
 
      // deal with deletion
@@ -68,6 +66,13 @@ var DataGrid = React.createClass({
        }
      }
 
+     var optionsMenu;
+     if(self.props.itemOptionsDropdownCreator != null) {
+       optionsMenu = self.props.itemOptionsDropdownCreator(d);
+     } else {
+       optionsMenu = null;
+     }
+
      return (
         <DataTablesRow
           data={d}
@@ -77,10 +82,8 @@ var DataGrid = React.createClass({
           selected={selectedContext[d.id]?true:false}
           className={className}
           rowSelectAllowed={self.props.rowSelectAllowed}
-          onClickInfo={self.props.onClickInfo}
-          onClickDownloadXml={self.props.onClickDownloadXml}
-          onClickDownloadXsd={self.props.onClickDownloadXsd}
           disabled={self.props.disabled}
+          optionsMenu={optionsMenu}
           >
         </DataTablesRow>
      );
@@ -94,11 +97,10 @@ var DataGrid = React.createClass({
           editMode={this.props.editMode}
           sortState={this.props.sortState}
           onToggleSort={this.props.onToggleSort}
-          onClickInfo={this.props.onClickInfo}
-          onClickDownloadXml={this.props.onClickDownloadXml}
-          onClickDownloadXsd={this.props.onClickDownloadXsd}
-          multiSelect={this.props.multiSelect}>
-         {x}
+          multiSelect={this.props.multiSelect}
+          hasOptionsMenu={this.props.itemOptionsDropdownCreator != null}>
+            {this.props.children}
+            {itemRows}
         </DataTablesWrapper>
       </div>
    );
