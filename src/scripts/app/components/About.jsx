@@ -10,9 +10,9 @@ var Main = React.createClass({
     return(
       <div className="aboutBox">
         <p>
-          The <a href="https://www.clarin.eu">CLARIN</a> Component Registry
-          provides long term storage and easy browsing, creation and editing of
-          components and profiles.
+          The CMDI Component Registry provides long term storage and easy
+          browsing, creation and editing of components and profiles for
+          the <a href="https://www.clarin.eu">CLARIN</a> infrastructure.
         </p>
         <table>
           <tbody>

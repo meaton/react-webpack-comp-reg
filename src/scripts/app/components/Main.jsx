@@ -133,7 +133,7 @@ var Main = React.createClass({
   },
 
   showAbout: function() {
-    ReactAlert.showMessage("About CLARIN Component Registry", <About/>);
+    ReactAlert.showMessage("About CMDI Component Registry", <About/>);
   }
 });
 
