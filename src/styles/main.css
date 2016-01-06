@@ -157,3 +157,13 @@ a {
     text-align: right;
     right: 1em;
   }
+
+.aboutBox table {
+  margin: 1em;
+}
+.aboutBox table td {
+  vertical-align: top;
+}
+.aboutBox table td:first-child {
+  width: 8em;
+}

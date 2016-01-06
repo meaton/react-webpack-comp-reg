@@ -17,6 +17,9 @@ var AlertsView = require("./AlertsView.jsx");
 // Boostrap
 var PageHeader = require('react-bootstrap/lib/PageHeader');
 var Alert = require('react-bootstrap/lib/Alert');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
+var ReactAlert = require('../util/ReactAlert');
 
 /***
 * Main - Default component and entry point to the application.
@@ -98,7 +101,7 @@ var Main = React.createClass({
     return (
         <div id="app-root">
           <div id="header">
-            <PageHeader>CMDI Component Registry <small>React.js front end beta</small></PageHeader>
+            <PageHeader>CMDI Component Registry</PageHeader>
 
             <div className="auth-login">
               <AuthState
@@ -114,16 +117,48 @@ var Main = React.createClass({
           </div>
 
           <div className="footer">
-            <div className="version">Version xyz</div>
+            <div className="version"><a title="About" onClick={this.showAbout}><Glyphicon glyph="info-sign" />&nbsp;Version 2.0-beta</a></div>
             <div className="logo">
               <a href="https://www.clarin.eu">
                 <img src="https://infra.clarin.eu/content/Centre_Registry/CLARIN_style/1.0//CLARIN-Logo_4C14pure3_noextraneouscanvas.png" />
               </a>
             </div>
-            <div className="contact">Contact us</div>
+            <div className="contact"><a title="Contact" href="mailto:cmdi@clarin.eu"><Glyphicon glyph="envelope" />&nbsp;Contact us</a></div>
           </div>
         </div>
     );
+  },
+
+  showAbout: function() {
+    ReactAlert.showMessage("About CLARIN Component Registry", (
+      <div className="aboutBox">
+        <p>
+          The <a href="https://www.clarin.eu">CLARIN</a> Component Registry
+          provides long term storage and easy browsing, creation and editing of
+          components and profiles.
+        </p>
+        <table>
+          <tr>
+            <td>Version:</td>
+            <td>2.0-beta</td>
+          </tr>
+          <tr>
+            <td>License:</td>
+            <td>GPL</td>
+          </tr>
+          <tr>
+            <td>Source code:</td>
+            <td><a href="https://github.com/clarin-eric">https://github.com/clarin-eric</a></td>
+          </tr>
+          <tr>
+            <td>Written by:</td>
+            <td>Patrick Duin, Twan Goosen, Mitchell Seaton, Olha Shkaravska, George Georgovassilis, Jean-Charles Ferrieres</td>
+          </tr>
+        </table>
+        <p>Go to <a href="https://www.clarin.eu/cmdi">www.clarin.eu/cmdi</a> for more information.<br/>
+        Email <a href="mailto:cmdi@clarin.eu">cmdi@clarin.eu</a> for questions/support.</p>
+      </div>
+    ));
   }
 });
 
