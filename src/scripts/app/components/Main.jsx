@@ -13,6 +13,7 @@ var History = require('react-router').History;
 // Components
 var AuthState = require("./AuthState.jsx").AuthState;
 var AlertsView = require("./AlertsView.jsx");
+var About = require("./About");
 
 // Boostrap
 var PageHeader = require('react-bootstrap/lib/PageHeader');
@@ -130,39 +131,7 @@ var Main = React.createClass({
   },
 
   showAbout: function() {
-    ReactAlert.showMessage("About CLARIN Component Registry", (
-      <div className="aboutBox">
-        <p>
-          The <a href="https://www.clarin.eu">CLARIN</a> Component Registry
-          provides long term storage and easy browsing, creation and editing of
-          components and profiles.
-        </p>
-        <table>
-          <tr>
-            <td>Back end version:</td>
-            <td>2.0-beta</td>
-          </tr>
-          <tr>
-            <td>Front end version:</td>
-            <td>1.0-beta</td>
-          </tr>
-          <tr>
-            <td>License:</td>
-            <td>GPL</td>
-          </tr>
-          <tr>
-            <td>Source code:</td>
-            <td><a href="https://github.com/clarin-eric">https://github.com/clarin-eric</a></td>
-          </tr>
-          <tr>
-            <td>Written by:</td>
-            <td>Patrick Duin, Twan Goosen, Mitchell Seaton, Olha Shkaravska, George Georgovassilis, Jean-Charles Ferrieres</td>
-          </tr>
-        </table>
-        <p>Go to <a href="https://www.clarin.eu/cmdi">www.clarin.eu/cmdi</a> for more information.<br/>
-        Email <a href="mailto:cmdi@clarin.eu">cmdi@clarin.eu</a> for questions/support.</p>
-      </div>
-    ));
+    ReactAlert.showMessage("About CLARIN Component Registry", <About/>);
   }
 });
 
