@@ -79,7 +79,7 @@ var Editor = React.createClass({
     var gridExpanded = this.state.expandedGrid || this.state.editor.componentLinkingMode;
     if(this.isAuthenticated()) {
       return (
-          <div className={classNames("editorContainer", {"expandedGrid": gridExpanded})}>
+          <div className={classNames("editorContainer", "row", {"expandedGrid": gridExpanded})}>
             <EditorForm
                 item={this.state.editor.item}
                 type={this.state.editor.type}
