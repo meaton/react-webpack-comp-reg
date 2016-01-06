@@ -18,11 +18,11 @@ var Main = React.createClass({
           <tbody>
             <tr>
               <td>Back end version:</td>
-              <td>{Config.backendVersion || "unknown"}</td>
+              <td>{Config.backEndVersion || "unknown"}</td>
             </tr>
             <tr>
               <td>Front end version:</td>
-              <td>1.0-beta</td>
+              <td>{Config.frontEndVersion || "unknown"}</td>
             </tr>
             <tr>
               <td>License:</td>

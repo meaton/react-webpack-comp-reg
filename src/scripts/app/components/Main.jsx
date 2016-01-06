@@ -22,6 +22,8 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 var ReactAlert = require('../util/ReactAlert');
 
+var Config = require("../../config").Config;
+
 /***
 * Main - Default component and entry point to the application.
 * @constructor
@@ -118,7 +120,7 @@ var Main = React.createClass({
           </div>
 
           <div className="footer">
-            <div className="version"><a title="About" onClick={this.showAbout}><Glyphicon glyph="info-sign" />&nbsp;Version 2.0-beta</a></div>
+            <div className="version"><a title="About" onClick={this.showAbout}><Glyphicon glyph="info-sign" />&nbsp;Version {Config.backEndVersion}</a></div>
             <div className="logo">
               <a href="https://www.clarin.eu">
                 <img src="https://infra.clarin.eu/content/Centre_Registry/CLARIN_style/1.0//CLARIN-Logo_4C14pure3_noextraneouscanvas.png" />
