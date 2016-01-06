@@ -144,8 +144,8 @@
   // Column widths - default
   table {
     tbody td, thead th {
-      //5 non-fixed columns
-      width: 70% * .2;
+      //3 non-fixed columns
+      width: 40% * .33;
     }
   }
 
@@ -154,6 +154,14 @@
     tbody td, thead th {
       &.name {
         width: 20%;
+      }
+
+      &.description {
+        width: 20%;
+      }
+
+      &.registrationDate {
+        width: 10%;
       }
 
       &.commentsCount {
