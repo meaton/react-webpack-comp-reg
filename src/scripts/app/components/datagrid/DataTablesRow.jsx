@@ -61,7 +61,7 @@ var DataTablesRow = React.createClass({
         <td className="groupName">{data.groupName}</td>
         <td className="domainName">{data.domainName}</td>
         <td className="creatorName">{data.creatorName}</td>
-        <td className="description">{data.description}</td>
+        <td className="description" title={data.description}>{data.description}</td>
         <td className="registrationDate">{registrationDate}</td>
         <td className="commentsCount">{data.commentsCount}</td>
 
