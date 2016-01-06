@@ -170,17 +170,25 @@ a {
     text-align: right;
     right: 1em;
   }
+.aboutBox {
+  table {
+    margin: 1em;
 
-.aboutBox table {
-  margin: 1em;
-}
-.aboutBox table td {
-  vertical-align: top;
-}
-.aboutBox table td:first-child {
-  width: 12em;
-  text-align: right;
-  padding-right: 1em;
+    td {
+      vertical-align: top;
+
+      &:first-child {
+        width: 12em;
+        text-align: right;
+        padding-right: 1em;
+      }
+    }
+  }
+  .licence {
+    border: 1px dotted;
+    padding: .5em;
+    font-size: 60%;
+  }
 }
 
 #alert-container {
