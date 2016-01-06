@@ -22,7 +22,7 @@ var RssLink = React.createClass({
   render: function() {
     return (
       <div className="rssLink">
-        <Button href={this.props.link} title="RSS feed" target="_blank"><span className="glyphicon">&nbsp;</span></Button>
+        <a href={this.props.link} title="RSS feed" target="_blank"><span>[RSS]</span></a>
       </div>
     )
   }
