@@ -139,8 +139,12 @@ var Main = React.createClass({
         </p>
         <table>
           <tr>
-            <td>Version:</td>
+            <td>Back end version:</td>
             <td>2.0-beta</td>
+          </tr>
+          <tr>
+            <td>Front end version:</td>
+            <td>1.0-beta</td>
           </tr>
           <tr>
             <td>License:</td>
