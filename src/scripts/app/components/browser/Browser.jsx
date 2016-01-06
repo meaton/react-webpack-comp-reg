@@ -149,10 +149,10 @@ var Browser = React.createClass({
                 loadComments={this.loadComments}
                 collapsed={this.state.detailsCollapsed}
                 />
-            ) : (
-              <div className="noSelectionMessage">
-                <p>Select a component or profile in the table to see its details</p>
-              </div>
+            ) : !this.state.items.loading && (
+                <div className="noSelectionMessage">
+                  <p>Select a component or profile in the table to see its details</p>
+                </div>
             )
             }
           </div>
