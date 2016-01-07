@@ -109,6 +109,9 @@ module.exports = function (grunt) {
             dest: '<%= pkg.dist %>/images/'
           },
           {
+            //copy libraries for inclusion via html header
+            cwd: '<%= pkg.src %>',
+            nonull: true,
             expand: true,
             src: ['libjs/**'],
             dest: '<%= pkg.dist %>/'
