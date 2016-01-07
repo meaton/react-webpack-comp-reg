@@ -20,11 +20,105 @@
   }
 
   .editorGroup {
-    height: 90%; //non-linking mode
-    overflow-y: auto;
-    margin-bottom: 1%;
-    transition: height 0.4s;
-    padding-left: 1em;
+      height: 90%; //non-linking mode
+      overflow-y: auto;
+      margin-bottom: 1%;
+      transition: height 0.4s;
+      padding-left: 1em;
+
+    .CMDComponent, .CMDElement, .CMDAttribute {
+      padding-left: 1em;
+
+      .panel {
+        .panel-heading {
+          padding: 0 1em;
+          line-height: 2.5;
+        }
+        .panel-body {
+          padding: 1em 0 0 1em;
+        }
+      }
+    }
+
+    .CMDComponent, .CMDElement {
+      border-left: 2px solid #f9f9f9;
+
+      &:hover {
+        border-left: 2px solid #999;
+        background: #f9f9f9;
+      }
+
+    }
+
+    // animate item appearance and removal in editor
+    .editor-items-enter {
+      opacity: 0.01;
+
+      &.editor-items-enter-active {
+        opacity: 1;
+        transition: opacity 500ms ease-in;
+      }
+    }
+
+    .editor-items-leave {
+      opacity: 1;
+
+      &.editor-items-leave-active {
+        opacity: 0.01;
+        transition: opacity 300ms ease-in;
+      }
+    }
+
+    form#editComponent {
+      padding-left: 2em;
+
+      .rootProperties {
+        .control-label {
+          width: 8em;
+        }
+
+        .editorFormField {
+          width: 40em;
+          display: inline-block;
+        }
+      }
+    }
+
+    .addComponent, .addElement, .attrList {
+      clear: both;
+    }
+
+    .attrList {
+        margin: .5em 2em;
+    }
+
+    .form-horizontal {
+
+      .form-group {
+        /* override react style */
+        margin-right: auto;
+        margin-left: auto;
+        margin-bottom: .5em;
+      }
+
+      .editorFormLabel, .control-label {
+        width: 20%;
+        text-align: right;
+        padding-right: 1em;
+        display: inline-block;
+        vertical-align: top;
+        word-wrap: break-word;
+      }
+
+      .editorFormField {
+        width: 75%;
+        display: inline-block;
+      }
+
+      .input-group-btn:last-child>.btn {
+        margin-left: 1em;
+      }
+    }
   }
 
   .browserGroup {
@@ -76,107 +170,10 @@
       }
     }
   }
-
-  .CMDComponent, .CMDElement, .CMDAttribute {
-    padding-left: 1em;
-
-    .panel {
-      .panel-heading {
-        padding: 0 1em;
-        line-height: 2.5;
-      }
-    }
-  }
-
-  .CMDComponent, .CMDElement {
-    border-left: 2px solid #f9f9f9;
-
-    &:hover {
-      border-left: 2px solid #999;
-      background: #f9f9f9;
-    }
-
-  }
-
-  // animate item appearance and removal in editor
-  .editor-items-enter {
-    opacity: 0.01;
-
-    &.editor-items-enter-active {
-      opacity: 1;
-      transition: opacity 500ms ease-in;
-    }
-  }
-
-  .editor-items-leave {
-    opacity: 1;
-
-    &.editor-items-leave-active {
-      opacity: 0.01;
-      transition: opacity 300ms ease-in;
-    }
-  }
-
-  form#editComponent {
-    padding-left: 2em;
-
-    .rootProperties {
-      .control-label {
-        width: 8em;
-      }
-
-      .editorFormField {
-        width: 40em;
-        display: inline-block;
-      }
-    }
-
-    //panels can be a bit tighter in the editor
-    .panel-body {
-      padding: 1em 0 0 1em;
-    }
-  }
-
 }
 
 
 div.processing {
   cursor: wait;
   background-color: #f9feff;
-}
-
-.addComponent, .addElement, .attrList {
-  clear: both;
-}
-
-.attrList {
-    margin: .5em 2em;
-}
-
-.form-horizontal {
-
-  .form-group {
-    /* override react style */
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  .editorFormLabel, .control-label {
-    width: 20%;
-    text-align: right;
-    padding-right: 1em;
-    display: inline-block;
-    vertical-align: top;
-    word-wrap: break-word;
-  }
-
-  .editorFormField {
-    width: 75%;
-    display: inline-block;
-  }
-
-  .input-group-btn:last-child>.btn {
-    margin-left: 1em;
-  }
-
 }
