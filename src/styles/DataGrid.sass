@@ -11,16 +11,17 @@
     opacity: .2;
   }
 
-  div.loader {
+  div.spinner {
     transition: opacity .2s ease-in-out .5s;
     display: none;
     opacity: 0;
     float: left;
     position: relative;
     left: 50%;
-    top: 50%;
+    top: 40%;
+    top: calc(50% - 20px);
   }
-  &.loading div.loader {
+  &.loading div.spinner {
     display: block;
     opacity: 1;
   }

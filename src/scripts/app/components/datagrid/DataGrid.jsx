@@ -13,6 +13,7 @@ var DataTablesWrapper = require("./DataTablesWrapper.jsx"),
 
 //utils
 var classNames = require("classnames");
+var Spinner = require("../../util/Spinner");
 
 require('../../../../styles/DataGrid.sass');
 
@@ -91,7 +92,7 @@ var DataGrid = React.createClass({
 
     return (
       <div className={classNames("grid", {"loading": this.props.loading, "disabled": this.props.disabled})} id="grid">
-        {this.props.loading && <div className="loader spinner-loader">Loading...</div>}
+        {this.props.loading && <Spinner />}
         <DataTablesWrapper
           ref="wrapper"
           editMode={this.props.editMode}
