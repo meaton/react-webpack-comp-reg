@@ -75,6 +75,7 @@ var ComponentSpec = React.createClass({
               expansionState={this.props.expansionState}
               linkedComponents={this.props.linkedComponents}
               />
+            <div className="end">&nbsp;</div>
           </div>
         );
     }
