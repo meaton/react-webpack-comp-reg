@@ -108,6 +108,11 @@ module.exports = function (grunt) {
             src: ['<%= pkg.src %>/images/*'],
             dest: '<%= pkg.dist %>/images/'
           },
+          {
+            expand: true,
+            src: ['libjs/**'],
+            dest: '<%= pkg.dist %>/'
+          },
         ]
       }
     },
