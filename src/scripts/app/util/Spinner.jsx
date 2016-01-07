@@ -5,6 +5,10 @@ var React = require("react");
 //stylesheet
 require('spinkit/scss/spinners/8-circle.scss');
 
+/**
+* Spinner - Component based on spinkit, see <http://tobiasahlin.com/spinkit/>
+* @constructor
+*/
 var Spinner = React.createClass({
   render: function() {
     return(
