@@ -24,7 +24,7 @@ var Config = require('../../../config');
 var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 
 /**
-* BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.
+* BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the data grid (default route) or on the current item in the editor.
 * @constructor
 */
 var BrowserMenuGroup = React.createClass({
