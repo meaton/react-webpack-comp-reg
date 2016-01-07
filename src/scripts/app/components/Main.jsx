@@ -104,7 +104,7 @@ var Main = React.createClass({
     return (
         <div id="app-root">
           <div id="header">
-            <PageHeader>CMDI Component Registry</PageHeader>
+            <PageHeader className="hidden-xs">CMDI Component Registry</PageHeader>
 
             <div className="auth-login">
               <AuthState
