@@ -1,3 +1,5 @@
+$row-height: 2.5em;
+
 .grid {
 
   table {
@@ -39,7 +41,7 @@
   thead {
       position: absolute;
       top: 0px;
-      height: 3em;
+      height: $row-height;
       width: 100%;
 
       // prevent tbody scrolling over header
@@ -51,9 +53,9 @@
       position: absolute;
       top: 0px;
       width: 100%;
-      margin-top: 3em; /* counter height of table head */
+      margin-top: $row-height; /* counter height of table head */
       height: 90%; /* fallback */
-      height: calc(100% - 3em);
+      height: calc(100% - $row-height);
       overflow-y: scroll;
   }
 
@@ -101,7 +103,7 @@
         height: 30px;
         text-align: left;
         padding-left: 2px;
-        border-bottom: 0;
+        border-bottom: 0 !important;
 
         &.sortable {
           //simulate a link
@@ -132,8 +134,8 @@
 
   tbody td, thead th {
       float: left;
-      height: 3em;
-      line-height: 3em;
+      height: $row-height;
+      line-height: $row-height;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
