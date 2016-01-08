@@ -22,6 +22,8 @@ var update = require('react-addons-update');
 var classNames = require('classnames');
 var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
+var domains = require('../../../domains.js');
+
 require('../../../../styles/ComponentViewer.sass');
 
 /**
@@ -47,12 +49,6 @@ var ComponentSpecForm = React.createClass({
     selectedComponentId: React.PropTypes.string,
     onExpandAll: React.PropTypes.func,
     onCollapseAll: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      domains: require('../../../domains.js')
-    };
   },
 
   render: function() {
@@ -92,7 +88,7 @@ var ComponentSpecForm = React.createClass({
               onChange={this.handleHeaderChange} validate={this.validate} />
             <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
               <option value="">Select a domain...</option>
-              {this.props.domains.map(function(domain, index) {
+              {domains.map(function(domain, index) {
                 return <option key={index} value={domain.data}>{domain.label}</option>
               })}
             </Input>
