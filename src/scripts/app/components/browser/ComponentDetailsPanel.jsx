@@ -16,6 +16,7 @@ var Tab = require('react-bootstrap/lib/Tab');
 var ComponentSpecView = require('./ComponentSpecView');
 var Comments = require('./Comments');
 var XmlPanel = require('./XmlPanel');
+var Spinner = require('../../util/Spinner');
 
 //helpers
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -44,7 +45,12 @@ var ComponentDetailsPanel = React.createClass({
 
   propTypes: {
     item: React.PropTypes.object,
-    type: React.PropTypes.string
+    type: React.PropTypes.string,
+    collapsed: React.PropTypes.bool
+  },
+
+  getDefaultProps: function() {
+    return {collapsed: false};
   },
 
   render: function () {
@@ -57,43 +63,51 @@ var ComponentDetailsPanel = React.createClass({
     var specXml = this.state.details.xml;
     var loading = this.state.details.loading;
 
+    var collapsed = this.props.collapsed;
     var isProfile = ComponentSpec.isProfile(item);
     var classes = classNames("componentInfoPanel", {"loading": loading, "profile": isProfile, "component": !isProfile});
 
-    var loadingSpinner = <div className="loader spinner-loader">Loading...</div>;
+    var loadingSpinner = <Spinner />
 
-    return (
-      <Tabs activeKey={this.state.details.activeView} onSelect={this.refreshTab} className={classes}>
-        <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={loading}>
-          {loadingSpinner}
-          {spec != null && <ComponentSpecView
-            spec={spec}
-            onComponentToggle={this.doToggle /* from ComponentViewMixin */}
-            expansionState={this.state.details.expansionState}
-            linkedComponents={this.state.details.linkedComponents}
-            />}
-        </Tab>
-        <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={loading}>
-          {loadingSpinner}
-          {(specXml != null) &&
-            <XmlPanel xml={specXml} />
-          }
-        </Tab>
-        <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={loading}>
-          {loadingSpinner}
-          {item != null &&
-            <Comments
-              item={item}
-              type={this.props.type}
-              loggedIn={this.state.auth.authState.authenticated}
-              newComment={this.state.details.newComment}
-              comments={this.state.details.comments}
-              saveComment={this.saveComment}
-              deleteComment={this.deleteComment}
-              />}
-        </Tab>
-      </Tabs>
-    );
+    if(this.props.collapsed) {
+      return (
+        <p className="panelDescription">Component details (hidden)</p>
+      )
+    } else {
+      return (
+        <Tabs activeKey={this.state.details.activeView} onSelect={this.refreshTab} className={classes}>
+          <Tab eventKey={Constants.INFO_VIEW_SPEC} title="view" disabled={loading}>
+            {loadingSpinner}
+            {spec != null &&
+              <ComponentSpecView
+                spec={spec}
+                onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+                expansionState={this.state.details.expansionState}
+                linkedComponents={this.state.details.linkedComponents}
+                />}
+          </Tab>
+          <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={loading}>
+            {loadingSpinner}
+            {specXml != null &&
+              <XmlPanel xml={specXml} />
+            }
+          </Tab>
+          <Tab id="commentsTab" eventKey={Constants.INFO_VIEW_COMMENTS} title={"Comments (" + this.getCommentsCount() + ")"} disabled={loading}>
+            {loadingSpinner}
+            {item != null &&
+              <Comments
+                item={item}
+                type={this.props.type}
+                loggedIn={this.state.auth.authState.authenticated}
+                newComment={this.state.details.newComment}
+                comments={this.state.details.comments}
+                saveComment={this.saveComment}
+                deleteComment={this.deleteComment}
+                />}
+          </Tab>
+        </Tabs>
+      );
+    }
   },
 
   refreshTab: function(index) {

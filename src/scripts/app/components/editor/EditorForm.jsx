@@ -22,6 +22,7 @@ var History = require("react-router").History;
 //utils
 var classNames = require('classnames');
 var ReactAlert = require('../../util/ReactAlert');
+var ComponentSpec = require('../../service/ComponentSpec');
 
 /**
 * EditorForm - Form routing endpoint for spec editor, either new/existing component/profile
@@ -59,6 +60,9 @@ var EditorForm = React.createClass({
     if(this.props.loading || this.props.item == null) {
       return (<div>Loading component...</div>);
     } else {
+      //if type changed for an existing component, it can only be saved as new
+      var saveDisallowed = !this.props.isNew && ((this.props.type === Constants.TYPE_PROFILE) != ComponentSpec.isProfile(this.props.spec));
+
       var editorClasses = classNames('editorGroup',
       {
         'processing': this.props.processing,
@@ -72,13 +76,13 @@ var EditorForm = React.createClass({
           <div id="ccrModalContainer"></div>
 
           <h3>
-            {this.props.type === Constants.TYPE_PROFILE
-              ? (this.props.isNew?"New profile":"Edit profile")
-              :(this.props.isNew?"New component":"Edit component")}
+            {ComponentSpec.isProfile(this.props.spec)
+              ? (this.props.isNew||saveDisallowed?"New profile":"Edit profile")
+              :(this.props.isNew||saveDisallowed?"New component":"Edit component")}
           </h3>
 
           <EditorMenuGroup
-            isNew={this.props.isNew}
+            isNew={this.props.isNew || saveDisallowed}
             onSave={this.handleSave}
             onSaveNew={this.handleSaveNew}
             onPublish={this.handlePublish}
@@ -90,12 +94,14 @@ var EditorForm = React.createClass({
             item={this.props.item}
             expansionState={this.props.expansionState}
             linkedComponents={this.props.linkedComponents}
+            componentLinkingMode={this.props.componentLinkingMode}
             onComponentToggle={this.props.onComponentToggle}
             onTypeChange={this.setType}
             onHeaderChange={this.updateHeader}
             onItemChange={this.updateItem}
             onComponentChange={this.updateComponentSpec}
-            onToggleSelection={this.handleToggleSelection}
+            onStartComponentLink={this.handleStartComponentLink}
+            onCancelComponentLink={this.handleCancelComponentLink}
             selectedComponentId={this.props.selectedComponentId}
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
@@ -128,9 +134,12 @@ var EditorForm = React.createClass({
 
   /*=== Event handlers for child components ====*/
 
+  handleStartComponentLink: function(id) {
+    this.getFlux().actions.startComponentLink(id);
+  },
 
-  handleToggleSelection: function(id) {
-    this.getFlux().actions.toggleComponentSelection(id);
+  handleCancelComponentLink: function() {
+    this.getFlux().actions.cancelComponentLink();
   },
 
   handleSave: function() {

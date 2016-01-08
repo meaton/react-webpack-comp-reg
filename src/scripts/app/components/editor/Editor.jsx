@@ -13,9 +13,14 @@ var EditorForm = require("./EditorForm"),
     SpaceSelector = require("../datagrid/SpaceSelector.jsx"),
     DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 
+var PanelExpandCollapseButton = require('../PanelExpandCollapseButton');
+
 var ComponentViewMixin = require('../../mixins/ComponentViewMixin');
 
 var AuthUtil = require('../AuthState').AuthUtil;
+var ReactAlert = require('../../util/ReactAlert');
+
+var classNames = require('classnames');
 
 require('../../../../styles/ComponentEditor.sass');
 
@@ -38,6 +43,10 @@ var Editor = React.createClass({
       editor: flux.store("EditorStore").getState(),
       team: flux.store("TeamStore").getState()
     };
+  },
+
+  getInitialState: function() {
+    return { expandedGrid: false };
   },
 
   componentDidMount: function() {
@@ -66,9 +75,11 @@ var Editor = React.createClass({
   },
 
   renderContent: function() {
+    var gridDisabled = !this.state.editor.componentLinkingMode;
+    var gridExpanded = this.state.expandedGrid || this.state.editor.componentLinkingMode;
     if(this.isAuthenticated()) {
       return (
-          <div className="editorContainer">
+          <div className={classNames("editorContainer", "row", {"expandedGrid": gridExpanded})}>
             <EditorForm
                 item={this.state.editor.item}
                 type={this.state.editor.type}
@@ -79,30 +90,51 @@ var Editor = React.createClass({
                 linkedComponents={this.state.details.linkedComponents}
                 selectedComponentId={this.state.editor.selectedComponentId}
                 isNew={this.isNew()}
+                componentLinkingMode={this.state.editor.componentLinkingMode}
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
               />
             <div className="browserGroup">
-              <DataGrid
-                multiSelect={false}
-                editMode={true}
-                items={this.state.editor.grid.items}
-                loading={this.state.editor.grid.loading}
-                onRowSelect={this.handleGridRowSelect}
-                />
+              {gridExpanded && (
+                <DataGrid
+                  multiSelect={false}
+                  editMode={true}
+                  items={this.state.editor.grid.items}
+                  loading={this.state.editor.grid.loading}
+                  onRowSelect={this.handleGridRowSelect}
+                  disabled={gridDisabled}
+                  />
+              )}
               <div className="gridControls">
-                <DataGridFilter
-                  value={this.state.editor.grid.filterText}
-                  onChange={this.handleGridFilterTextChange} />
-                <SpaceSelector
-                  type={Constants.TYPE_COMPONENT}
-                  space={this.state.editor.grid.space}
-                  teams={this.state.team.teams}
-                  selectedTeam={this.state.editor.grid.team}
-                  allowMultiSelect={false}
-                  validUserSession={true}
-                  componentsOnly={true}
-                  onSpaceSelect={this.handleGridSpaceSelect}
-                  onToggleMultipleSelect={null} />
+                <PanelExpandCollapseButton
+                  title="Expand/collapse components table"
+                  expanded={gridExpanded}
+                  onClick={this.toggleGridExpansion}
+                  disabled={this.state.editor.componentLinkingMode} />
+                {gridExpanded && (
+                  <DataGridFilter
+                    value={this.state.editor.grid.filterText}
+                    onChange={this.handleGridFilterTextChange}
+                    />
+                )}
+                {gridExpanded && (
+                  <SpaceSelector
+                    type={Constants.TYPE_COMPONENT}
+                    space={this.state.editor.grid.space}
+                    teams={this.state.team.teams}
+                    selectedTeam={this.state.editor.grid.team}
+                    allowMultiSelect={false}
+                    validUserSession={true}
+                    componentsOnly={true}
+                    onSpaceSelect={this.handleGridSpaceSelect}
+                    onToggleMultipleSelect={null} />
+                )}
+                {gridDisabled ?
+                  (<p className="gridInstructions">To link in an existing a component, click <em>+Component</em> on the target component above</p>)
+                  :(<p className="gridInstructions">
+                      Click the <em>+</em> button next to the component you want to link in from the table below
+                      (<a onClick={function(){this.getFlux().actions.cancelComponentLink()}.bind(this)}>cancel</a>)
+                    </p>)
+                  }
               </div>
             </div>
           </div>
@@ -133,8 +165,15 @@ var Editor = React.createClass({
       function(newSpec) {
         // make sure the newly added linked component is loaded
         this.getFlux().actions.loadLinkedComponentSpecs(newSpec, this.state.details.linkedComponents);
-      }.bind(this)
+      }.bind(this),
+      function(error) {
+        ReactAlert.showMessage("Cannot link component", error);
+      }
     );
+  },
+
+  toggleGridExpansion: function() {
+    this.setState({expandedGrid: !this.state.expandedGrid});
   },
 
   isAuthenticated: function() {

@@ -8,6 +8,8 @@
       "password": "passwd"
     }
   },
+  "backEndVersion": "NOT SET",
+  "frontEndVersion": "NOT SET",
   "deploy": {
     "path": "/"
   }

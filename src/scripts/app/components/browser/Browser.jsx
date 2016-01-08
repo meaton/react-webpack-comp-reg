@@ -15,16 +15,20 @@ var Modal = require('react-bootstrap/lib/Modal');
 
 // Components
 var DataGrid = require("../datagrid/DataGrid.jsx");
+var ItemOptionsDropdown = require('./ItemOptionsDropdown');
 var SpaceSelector = require("../datagrid/SpaceSelector.jsx");
 var DataGridFilter = require("../datagrid/DataGridFilter.jsx");
 var ComponentDetailsPanel = require('./ComponentDetailsPanel');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
 var RssLink = require('./RssLink');
+var PanelExpandCollapseButton = require('../PanelExpandCollapseButton');
 
 var ReactAlert = require('../../util/ReactAlert');
 
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+
+var classNames = require('classnames');
 
 require('../../../../styles/Browser.sass');
 
@@ -47,6 +51,13 @@ var Browser = React.createClass({
     };
   },
 
+  getInitialState: function() {
+    return {
+      detailsCollapsed: false,
+      detailsMaximised: false
+    };
+  },
+
   componentDidMount: function() {
     this.loadItems();
     this.loadTeams();
@@ -61,22 +72,33 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
-
+    var classes = classNames({
+      "detailsCollapsed": this.state.detailsCollapsed,
+      "detailsMaximised": this.state.detailsMaximised
+    });
     return (
-        <section id="browser">
+        <section id="browser" className={classes}>
           <div className="browser row">
             <DataGrid
               items={this.state.items.items}
               deletedItems={this.state.items.deleted}
               selectedItems={this.state.selection.selectedItems}
               loading={this.state.items.loading}
-              multiSelect={this.state.selection.allowMultiple}
               editMode={false}
               onRowSelect={this.handleRowSelect}
-              onClickInfo={this.showComponentInfo}
               sortState={this.state.items.sortState}
               onToggleSort={this.toggleSort}
-              />
+              multiSelect={this.state.selection.allowMultiple}
+              itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
+              {!this.state.items.loading  /* show a message in the table if all results are excluded by filter */
+                && this.state.items.filteredSize == 0
+                && this.state.items.unfilteredSize != 0 && (
+                  <tr><td className="hiddenByFilterMessage">
+                    {this.state.items.unfilteredSize} item(s) hidden by filter
+                    (<a onClick={this.clearFilter}>clear</a>).
+                  </td></tr>
+              )}
+            </DataGrid>
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
               <DataGridFilter
@@ -90,10 +112,8 @@ var Browser = React.createClass({
                 space={this.state.items.space}
                 teams={this.state.team.teams}
                 selectedTeam={this.state.items.team}
-                multiSelect={this.state.selection.allowMultiple}
                 validUserSession={this.state.auth.authState.uid != null}
-                onSpaceSelect={this.handleSpaceSelect}
-                onToggleMultipleSelect={this.handleToggleMultipleSelect} />
+                onSpaceSelect={this.handleSpaceSelect} />
               <BrowserMenuGroup
                   type={this.state.items.type}
                   space={this.state.items.space}
@@ -101,7 +121,6 @@ var Browser = React.createClass({
                   teams={this.state.team.teams}
                   selectedTeam={this.state.items.team}
                   loggedIn={this.state.auth.authState.uid != null}
-                  multiSelect={this.state.selection.allowMultiple}
                   moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
                   moveToTeam={this.handleMoveToTeam}
                   deleteComp={this.handleDelete}
@@ -109,7 +128,18 @@ var Browser = React.createClass({
             </div>
           </div>
           <div className="viewer row">
-            {item != null &&
+            <PanelExpandCollapseButton
+              title="Expand/collapse component details"
+              expanded={!this.state.detailsCollapsed}
+              onClick={this.toggleDetailsExpansion} />
+            <PanelExpandCollapseButton
+              title="Toggle maximisation of component details"
+              expanded={this.state.detailsMaximised}
+              onClick={this.toggleMaximiseExpansion}
+              expandGlyph="fullscreen"
+              collapseGlyph="resize-small"
+              />
+            {item != null ? (
               <ComponentDetailsPanel
                 ref="details"
                 item={item}
@@ -117,7 +147,13 @@ var Browser = React.createClass({
                 loadSpec={this.loadSpec}
                 loadSpecXml={this.loadXml}
                 loadComments={this.loadComments}
+                collapsed={this.state.detailsCollapsed}
                 />
+            ) : !this.state.items.loading && (
+                <div className="noSelectionMessage">
+                  <p>Select a component or profile in the table to see its details</p>
+                </div>
+            )
             }
           </div>
         </section>
@@ -144,17 +180,13 @@ var Browser = React.createClass({
     this.getFlux().actions.loadComments(this.state.items.type, itemId);
   },
 
-  handleToggleMultipleSelect: function() {
-    this.getFlux().actions.switchMultipleSelect();
-  },
-
   handleSpaceSelect: function(type, registry, group) {
     this.getFlux().actions.switchSpace(type, registry, group);
     this.getFlux().actions.loadItems(type, registry, group);
   },
 
-  handleRowSelect: function(item, target) {
-    this.getFlux().actions.selectBrowserItem(item);
+  handleRowSelect: function(item, multiSelect) {
+    this.getFlux().actions.selectBrowserItem(item, multiSelect);
 
     log.debug("Item", item);
 
@@ -185,8 +217,22 @@ var Browser = React.createClass({
     this.getFlux().actions.setFilterText(evt.target.value);
   },
 
+  clearFilter: function(evt) {
+    this.getFlux().actions.setFilterText(null);
+  },
+
   toggleSort: function(column) {
     this.getFlux().actions.toggleSortState(column);
+  },
+
+  handleDownloadXml: function(item, evt) {
+    evt.stopPropagation();
+    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xml";
+  },
+
+  handleDownloadXsd: function(item, evt) {
+    evt.stopPropagation();
+    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd";
   },
 
   showComponentInfo: function(item) {
@@ -200,6 +246,30 @@ var Browser = React.createClass({
           team={this.state.items.team}
           history={this.history}
            />
+    );
+  },
+
+  toggleDetailsExpansion: function() {
+    this.setState({
+      detailsCollapsed: !this.state.detailsCollapsed,
+      detailsMaximised: false
+    });
+  },
+
+  toggleMaximiseExpansion: function() {
+    this.setState({
+      detailsMaximised: !this.state.detailsMaximised,
+      detailsCollapsed: false
+    });
+  },
+
+  createItemOptionsDropdown: function(item) {
+    return (
+      <ItemOptionsDropdown
+        item={item}
+        onClickInfo={this.showComponentInfo}
+        onClickDownloadXml={this.handleDownloadXml}
+        onClickDownloadXsd={this.state.items.type === Constants.TYPE_PROFILE ? this.handleDownloadXsd : null} />
     );
   },
 

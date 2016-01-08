@@ -1,25 +1,30 @@
+$row-height: 2.5em;
+
 .grid {
 
   table {
     transition: opacity .2s ease-in-out .2s, background-color .2s ease-in-out .2s;
     background-color: #fff;
     opacity: 1;
+    color: #666;
   }
   &.loading table {
     background-color: #eee;
     opacity: .2;
   }
 
-  div.loader {
+  div.spinner {
     transition: opacity .2s ease-in-out .5s;
     display: none;
     opacity: 0;
     float: left;
     position: relative;
     left: 50%;
-    top: 50%;
+    top: 40%;
+    top: calc(50% - 20px);
+    margin: 0;
   }
-  &.loading div.loader {
+  &.loading div.spinner {
     display: block;
     opacity: 1;
   }
@@ -36,7 +41,7 @@
   thead {
       position: absolute;
       top: 0px;
-      height: 3em;
+      height: $row-height;
       width: 100%;
 
       // prevent tbody scrolling over header
@@ -48,9 +53,9 @@
       position: absolute;
       top: 0px;
       width: 100%;
-      margin-top: 3em; /* counter height of table head */
+      margin-top: $row-height; /* counter height of table head */
       height: 90%; /* fallback */
-      height: calc(100% - 3em);
+      height: calc(100% - $row-height);
       overflow-y: scroll;
   }
 
@@ -98,7 +103,7 @@
         height: 30px;
         text-align: left;
         padding-left: 2px;
-        border-bottom: 0;
+        border-bottom: 0 !important;
 
         &.sortable {
           //simulate a link
@@ -123,28 +128,44 @@
     }
   }
 
+  tbody td {
+    cursor: default;
+  }
+
   tbody td, thead th {
       float: left;
-      height: 3em;
-      line-height: 3em;
+      height: $row-height;
+      line-height: $row-height;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      a {
+        color: #666;
+      }
   }
 
   // Column widths - default
   table {
     tbody td, thead th {
-      //5 non-fixed columns
-      width: 70% * .2;
+      //3 non-fixed columns
+      width: 40% * .33;
     }
   }
 
   // Column widths - static
-  table, table.multipleSelection {
+  table {
     tbody td, thead th {
       &.name {
         width: 20%;
+      }
+
+      &.description {
+        width: 20%;
+      }
+
+      &.registrationDate {
+        width: 10%;
       }
 
       &.commentsCount {
@@ -153,13 +174,13 @@
     }
   }
 
-  table.withInfoLink {
+  table.withItemMenu {
     tbody td, thead th {
       &.commentsCount {
         width: 7%;
       }
 
-      &.infoLink {
+      &.itemMenu {
         width: 3%;
       }
     }
@@ -177,17 +198,22 @@
     }
   }
 
-  // Column widths - with multiple selection
-  table.multipleSelection {
-    tbody td, thead th {
-      width: 65% * .2;
+  tbody td.itemMenu {
+    overflow-x: visible;
+    overflow-y: visible;
 
-      &.checkboxCell {
-        width: 5%;
-        text-align: center;
-      }
+    .dropdown {
+
     }
   }
+
+  // &.disabled {
+  //
+  //   & , & * {
+  //   background-color: #eee;
+  //   opacity: .8;
+  //   }
+  // }
 
 }
 
@@ -231,6 +257,7 @@ div.component-info {
     max-height: 1em;
     margin-top: 2px;
     padding: .4em;
+    background: inherit;
   }
 
   span.filterCount {

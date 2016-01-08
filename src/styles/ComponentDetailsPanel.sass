@@ -1,5 +1,10 @@
 .componentInfoPanel {
 
+  .tab-content {
+    height: 100%;
+    overflow-y: auto;
+  }
+
   //content tab
   .tab-content, .nav li {
     //not loading
@@ -13,7 +18,7 @@
   }
 
   //loading indicator
-  div.loader {
+  div.spinner {
     //not loading
     transition: opacity .2s ease-in-out .5s;
     display: none;
@@ -22,8 +27,9 @@
     position: relative;
     right: 1em;
     top: 1em;
+    margin: 0;
   }
-  &.loading div.loader {
+  &.loading div.spinner {
     //loading
     display: block;
     opacity: 1;
@@ -85,7 +91,15 @@
 }
 
 #xmlTab {
+  overflow-y: hidden;
+  height: 100%;
+  padding-bottom: 1em;
+
   pre {
-    margin: 1em;
+    border: 1px #999 solid;
+    width: 99%;
+    height: 99%;
+    margin: .5%;
+    overflow-y: auto;
   }
 }

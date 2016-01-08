@@ -65,7 +65,7 @@ var CMDAttributeForm = React.createClass({
 
     var editableProps = open?(
       <div className="form-horizontal form-group">
-        <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name}
+        <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name} wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate} />
         <ValidatingTextInput ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"

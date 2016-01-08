@@ -72,22 +72,33 @@ var CMDElementView = React.createClass({
             <span className="elementName">{elem['@name']}</span>
           </div>
           <div className="panel-body">
-            <div className="valueScheme">Value scheme: {valueScheme}</div>
+            <div className="valueScheme"><span className="attrLabel">Value scheme:</span>{valueScheme}</div>
             <ul className="elemAttrs">
               {(elem.hasOwnProperty("@ConceptLink") && elem["@ConceptLink"] !== "") && (
-                <li className="attrElem">ConceptLink: <a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></li>
+                <li className="attrElem"><span className="attrLabel">ConceptLink:</span>
+                <span className="attrValue"><a href={elem["@ConceptLink"]} target="_blank">{elem['@ConceptLink']}</a></span>
+                </li>
               )}
 
               {elem.hasOwnProperty("@Documentation") && (
-                <li className="attrElem">Documentation: {elem['@Documentation']}</li>
+                <li className="attrElem"><span className="attrLabel">Documentation:</span>
+                <span className="attrValue">{elem['@Documentation']}</span>
+                </li>
               )}
 
               {elem.hasOwnProperty("@DisplayPriority") && (
-                <li className="attrElem">DisplayPriority: {elem['@DisplayPriority']}</li>
+                <li className="attrElem"><span className="attrLabel">DisplayPriority:</span>
+                <span className="attrValue">{elem['@DisplayPriority']}</span>
+                </li>
               )}
 
-              <li className="attrElem">Number of occurrences: {minC} - {maxC}</li>
-              <li className="attrElem">Multilingual: {multilingual ? "yes" : "no"}</li>
+              <li className="attrElem"><span className="attrLabel">Number of occurrences:</span>
+              <span className="attrValue">{minC} - {maxC}</span>
+              </li>
+
+              <li className="attrElem"><span className="attrLabel">Multilingual:</span>
+              <span className="attrValue">{multilingual ? "yes" : "no"}</span>
+              </li>
             </ul>
           </div>
         </div>

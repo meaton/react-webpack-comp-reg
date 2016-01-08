@@ -24,8 +24,10 @@ require('../../../../styles/CMDComponent.sass');
 var CMDComponentView = React.createClass({
   mixins: [ImmutableRenderMixin, CMDComponentMixin, ToggleExpansionMixin, ActionButtonsMixin],
 
-  /* props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
-
+  /* other props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
+  propTypes: {
+    link: React.PropTypes.object /* if linked, this is the CMD_Component element defined in the parent */
+  },
   /**
    * Components should be closed by default iff they are linked
    * @return {boolean}
@@ -42,6 +44,7 @@ var CMDComponentView = React.createClass({
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);
     } else {
+      var link = isLinked ? this.props.spec.CMD_Component[index] : null;
       // forward child expansion state
       return (<CMDComponentView
         key={spec._appId}
@@ -53,6 +56,7 @@ var CMDComponentView = React.createClass({
         isLinked={isLinked}
         isFirst={index == 0}
         isLast={index == this.props.spec.CMD_Component.length - 1}
+        link={link}
         />);
     }
   },
@@ -84,18 +88,22 @@ var CMDComponentView = React.createClass({
     else if(comp.hasOwnProperty("@name"))
       compName = comp['@name'];
 
-    var minC = (comp.hasOwnProperty('@CardinalityMin')) ? comp['@CardinalityMin'] : 1;
-    var maxC = (comp.hasOwnProperty('@CardinalityMax')) ? comp['@CardinalityMax'] : 1;
+    var minC = this.props.link != null ? this.props.link['@CardinalityMin'] : comp['@CardinalityMin'];
+    if(minC == null) minC = 1;
 
-    var cardinality = (<span>Cardinality: {minC + " - " + maxC}</span>);
-    var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && cardinality}</span>);
+    var maxC = this.props.link != null ? this.props.link['@CardinalityMax'] : comp['@CardinalityMax'];
+    if(maxC == null) maxC = 1;
+
+    var cardinality = (<span>{minC + " - " + maxC}</span>);
+    var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}</span>);
 
     return (
       <div className="panel panel-info">
         {this.props.isLinked?
           (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
           :(<div className="panel-heading">{titleText}</div>)}
-        {open &&<div className="panel-body componentProps">{cardinality}</div>}
+        {open && !this.props.hideCardinality && <div className="panel-body componentProps">Number of occurrences: {cardinality}</div>}
+        {open && this.props.formElements}
       </div>
     );
   }

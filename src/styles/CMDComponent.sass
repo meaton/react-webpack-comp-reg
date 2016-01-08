@@ -3,8 +3,8 @@
   float: left;
   clear: both;
 
-  min-width: 40em;
-  margin: .5em 2em;
+  width: 50em;
+  margin: .5em 0 0 2em;
 
   &.open {
     border-left-width: 4px;
@@ -26,16 +26,34 @@
   font-weight: bold;
 }
 
+/* The animation code */
+@keyframes pulse {
+    0%   {background-color: inherit;}
+    50%  {background-color: #ccc;}
+    100% {background-color: inherit;}
+}
+
 .componentInsertionTarget {
   margin-left: 3em;
   padding: .5em;
   border: 1px dashed #999;
   width: auto;
+  //pulse
+  animation-name: pulse;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+
+  .cancelLink {
+    float: right;
+    display: block;
+  }
 }
 
 #editor {
   .CMDComponent.selected {
     background: #f9f9f9;
+    border-top: #000 solid 2px;
+    padding-top: 2px;
 
     &, &:hover {
       border-left: 3px solid #333;

@@ -10,6 +10,9 @@ var adminUrl = require('../../config').adminUrl;
 var restUrl = require('../../config').restUrl;
 var authUrl = restUrl + "/authentication"
 
+//Bootstrap
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
 // Mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
@@ -32,14 +35,14 @@ var AuthState = React.createClass({
     if(authState.authenticated) {
       return (
         <div className="auth-logged-in">
-          {authState.displayName}
+          <Glyphicon glyph="user" />&nbsp;{authState.displayName}
           &nbsp;
-          <a href={adminUrl + "/userSettings"} target="_blank">&nbsp;settings</a>
+          <a href={adminUrl + "/userSettings"} target="_blank"><Glyphicon glyph="cog" />&nbsp;settings</a>
           &nbsp;
-          <a href={Config.webappUrl + "/documentation.jsp"}>help</a>
+          <a href={Config.webappUrl + "/documentation.jsp"}><Glyphicon glyph="question-sign" />&nbsp;help</a>
           &nbsp;
           {authState.isAdmin ? (
-            <a href={adminUrl} target="_blank">admin</a>
+            <a href={adminUrl} target="_blank"><Glyphicon glyph="wrench" />&nbsp;admin</a>
           ) : null}
         </div>
       );
@@ -48,9 +51,9 @@ var AuthState = React.createClass({
       return (
         <div>
           <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + encodeURIComponent(redirectUrl) } method="POST">
-            <button type="submit">login</button>
+            <a href="#" onClick={function(evt){evt.preventDefault(); $("form#login").submit();}}><Glyphicon glyph="user" />&nbsp;Login</a>
             &nbsp;
-            <a href={Config.webappUrl + "/documentation.jsp"}>Help</a>
+            <a href={Config.webappUrl + "/documentation.jsp"}><Glyphicon glyph="question-sign" />&nbsp;Help</a>
           </form>
         </div>
       );

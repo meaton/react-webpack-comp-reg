@@ -32,9 +32,13 @@ var ValueScheme = React.createClass({
     };
   },
 
-  render: function() {
+  componentDidMount: function() {
 
-      var obj=this.props.obj;
+  },
+
+  render: function() {
+      var obj = this.props.obj;
+      var enabled = this.props.enabled;
       var valueSchemeAttr = obj['@ValueScheme']; // element, e.g. 'string'
       var typeElem = obj.Type; //attribute, e.g. 'string'
       var valueSchemeElem = obj['ValueScheme']; // element or attribute, contains 'pattern' or 'enumeration'
@@ -73,21 +77,26 @@ var ValueScheme = React.createClass({
             valueScheme = valueScheme.pattern;
           else { // elem
             var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
-            return (this.props.enabled) ? (
-              <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="col-xs-1" wrapperClassName="col-xs-2">
-                {$.map(enumItems, function(item, index) {
-                  return (<option key={obj._appId + index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</option>);
-                })}
-              </Input>
-            ) : (
-              <DropdownButton id={"values_" + obj._appId} bsSize="small" title={(enumItems.length > 0 && typeof enumItems[0] != "string") ? enumItems[0]['$'] : enumItems[0]}>
-                {
-                  $.map(enumItems, function(item, index) {
-                    return (<MenuItem key={obj._appId + index} eventKey={index}>{(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}</MenuItem>);
-                  })
-                }
-              </DropdownButton>
-            );
+            var items = $.map(enumItems, function(item, index) {
+              return (
+                <option key={obj._appId + index} disabled={!enabled}>
+                  {(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}
+                </option>
+              );
+            });
+            if(enabled) {
+              return (
+                <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
+                  {items}
+                </Input>
+              );
+            } else {
+              return (
+                <Input ref="typeInput" type="select">
+                  {items}
+                </Input>
+              );
+            }
           }
 
         } else if(obj.Type != undefined) // attr

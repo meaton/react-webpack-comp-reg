@@ -33,12 +33,6 @@ var ComponentSpec = React.createClass({
     onComponentToggle: React.PropTypes.func
   },
 
-  getDefaultProps: function() {
-    return {
-      domains: require('../../../domains.js')
-    };
-  },
-
   getInitialState: function() {
     return { childElements: null,
              childComponents: null
@@ -75,6 +69,7 @@ var ComponentSpec = React.createClass({
               expansionState={this.props.expansionState}
               linkedComponents={this.props.linkedComponents}
               />
+            <div className="end">&nbsp;</div>
           </div>
         );
     }
