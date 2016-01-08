@@ -22,6 +22,8 @@ var update = require('react-addons-update');
 var classNames = require('classnames');
 var changeObj = require('../../util/ImmutabilityUtil').changeObj;
 
+var domains = require('../../../domains.js');
+
 require('../../../../styles/ComponentViewer.sass');
 
 /**
@@ -49,12 +51,6 @@ var ComponentSpecForm = React.createClass({
     onCollapseAll: React.PropTypes.func
   },
 
-  getDefaultProps: function() {
-    return {
-      domains: require('../../../domains.js')
-    };
-  },
-
   render: function() {
     var spec = this.props.spec;
     var item = this.props.item;
@@ -75,28 +71,33 @@ var ComponentSpecForm = React.createClass({
 
       return (
         <form ref="editComponentForm" name="editComponent" id="editComponent" className="form-horizontal form-group">
-          <div className="form-group">
-            <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
-            <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENT} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
+          <div className="rootProperties">
+            <div className="form-group">
+              <label className="control-label editorFormLabel"><span>Type</span></label>
+              <div className="editorFormField">
+                <Input type="radio" name="isProfile" label="Profile" value={Constants.TYPE_PROFILE} checked={isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
+                <Input type="radio" name="isProfile" label="Component" value={Constants.TYPE_COMPONENT} checked={!isProfile} onChange={this.handleTypeChange} wrapperClassName="editorFormField" />
+              </div>
+            </div>
+            <ValidatingTextInput type="text" name="Name" label="Name" value={spec.Header.Name}
+              labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+              onChange={this.handleHeaderChange} validate={this.validate}  />
+            <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+            <ValidatingTextInput type="textarea" name="Description" label="Description" value={spec.Header.Description}
+              labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+              onChange={this.handleHeaderChange} validate={this.validate} />
+            <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
+              <option value="">Select a domain...</option>
+              {domains.map(function(domain, index) {
+                return <option key={index} value={domain.data}>{domain.label}</option>
+              })}
+            </Input>
+            <ValidatingTextInput ref="conceptRegInput" type="text" name="CMD_Component.@ConceptLink" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
+              labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+              onChange={this.handleConceptLinkChange} validate={this.validate}
+              buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLinkValue)}
+              />
           </div>
-          <ValidatingTextInput type="text" name="Name" label="Name" value={spec.Header.Name}
-            labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-            onChange={this.handleHeaderChange} validate={this.validate}  />
-          <Input type="text" name="groupName" label="Group" value={item.groupName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-          <ValidatingTextInput type="textarea" name="Description" label="Description" value={spec.Header.Description}
-            labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-            onChange={this.handleHeaderChange} validate={this.validate} />
-          <Input type="select" name="domainName" ref="rootComponentDomain" label="Domain" value={item.domainName} onChange={this.handleItemChange} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
-            <option value="">Select a domain...</option>
-            {this.props.domains.map(function(domain, index) {
-              return <option key={index} value={domain.data}>{domain.label}</option>
-            })}
-          </Input>
-          <ValidatingTextInput ref="conceptRegInput" type="text" name="CMD_Component.@ConceptLink" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
-            labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-            onChange={this.handleConceptLinkChange} validate={this.validate}
-            buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLinkValue)}
-            />
           {this.props.onExpandAll && this.props.onCollapseAll &&
             <div>
               <a onClick={this.props.onExpandAll.bind(null, spec.CMD_Component)}>Expand all</a>&nbsp;

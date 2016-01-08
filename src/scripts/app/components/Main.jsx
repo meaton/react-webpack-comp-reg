@@ -104,7 +104,7 @@ var Main = React.createClass({
     return (
         <div id="app-root">
           <div id="header">
-            <PageHeader>CMDI Component Registry</PageHeader>
+            <PageHeader className="hidden-xs">CMDI Component Registry</PageHeader>
 
             <div className="auth-login">
               <AuthState
@@ -123,7 +123,7 @@ var Main = React.createClass({
             <div className="version"><a title="About" onClick={this.showAbout}><Glyphicon glyph="info-sign" />&nbsp;Version {Config.backEndVersion}</a></div>
             <div className="logo">
               <a href="https://www.clarin.eu">
-                <img src="https://infra.clarin.eu/content/Centre_Registry/CLARIN_style/1.0//CLARIN-Logo_4C14pure3_noextraneouscanvas.png" />
+                <img src="images/clarin.png" />
               </a>
             </div>
             <div className="contact"><a title="Contact" href="mailto:cmdi@clarin.eu"><Glyphicon glyph="envelope" />&nbsp;Contact us</a></div>
@@ -133,7 +133,7 @@ var Main = React.createClass({
   },
 
   showAbout: function() {
-    ReactAlert.showMessage("About CLARIN Component Registry", <About/>);
+    ReactAlert.showMessage("About CMDI Component Registry", <About/>);
   }
 });
 

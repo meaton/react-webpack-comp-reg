@@ -36,7 +36,8 @@
     "react-docgen": "^2.4.x",
     "jsdoc": "^3.3.2",
     "grunt-jsdoc": "^0.6.7",
-    "jsdoc-jsx": "^0.1.0"
+    "jsdoc-jsx": "^0.1.0",
+    "spinkit": "^1.2.x"
   },
   "dependencies": {
     "react": "^0.14.x",

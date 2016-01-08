@@ -13,7 +13,7 @@ var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var ButtonModal = require('../ButtonModal');
 
 /**
-* BtnMenuGroup - displays the Bootstrap button group used to apply actions on selected profile(s) or component(s) in the datatables grid (default route) or on the current item in the editor.
+* EditorMenuGroup
 * @constructor
 */
 var EditorMenuGroup = React.createClass({

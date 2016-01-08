@@ -1,5 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro&subset=latin,latin-ext);
 
+$footer-height: 2em;
+$header-height: 60px;
+
 /* Stiziles */
 html {
   height: 90%;
@@ -13,7 +16,10 @@ body, #app, #app-main, #app-root {
 }
 
 .btn {
-  font-size: 12px;
+  font-size: 13px;
+  &, & span {
+    text-shadow: none !important;
+  }
 }
 
 .wait, .wait * {
@@ -40,7 +46,7 @@ a {
   top: 0;
   margin: 0;
   width: 100%;
-  height: 60px;
+  height: $header-height;
   padding: 0 1em;
   justify-content: flex-start;
 
@@ -58,7 +64,7 @@ a {
 
 .page-header h1 {
   margin: 0;
-  line-height: 60px;
+  line-height: $header-height;
   vertical-align: middle;
 }
 
@@ -66,7 +72,7 @@ a {
   position: absolute;
   top: 0px;
   right: 6px;
-  line-height: 60px;
+  line-height: $header-height;
   vertical-align: middle;
   font-size: 120%;
 }
@@ -74,10 +80,18 @@ a {
 /* main */
 .main {
   height: 92%;
-  margin-top: 60px; /* filled by header */
+  height: calc(100% - #{$footer-height});
+  margin-top: $header-height;
   background: #fff;
   color: #333;
   overflow: hidden;
+  padding-left: 0;
+  padding-right: 0;
+
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .static-modal {
@@ -120,7 +134,7 @@ a {
 
 .footer {
   position: relative;
-  height: 7%;
+  height: $footer-height;
   width: 100%;
 
   border-top: 2px solid #e7e7e7;
@@ -148,7 +162,7 @@ a {
     .footer div.logo a {
       display: block;
       margin: auto;
-      height: 100%;
+      height: $footer-height;
     }
 
     .footer div.logo img {
@@ -160,17 +174,30 @@ a {
     text-align: right;
     right: 1em;
   }
+.aboutBox {
+  table {
+    margin: 1em;
 
-.aboutBox table {
-  margin: 1em;
-}
-.aboutBox table td {
-  vertical-align: top;
-}
-.aboutBox table td:first-child {
-  width: 12em;
-  text-align: right;
-  padding-right: 1em;
+    td {
+      vertical-align: top;
+
+      &:first-child {
+        width: 12em;
+        text-align: right;
+        padding-right: 1em;
+      }
+    }
+  }
+
+  .licence {
+    border: 1px dotted;
+    padding: .5em;
+    font-size: 60%;
+
+    p {
+      margin: .5em;
+    }
+  }
 }
 
 #alert-container {

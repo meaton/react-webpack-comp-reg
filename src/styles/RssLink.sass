@@ -1,16 +1,27 @@
 .rssLink {
-  .btn {
-    padding: 0;
+  a {
+    display: block;
+    position: relative;
+    top: .25em;
+
+    width: 2em;
+    height: 2em;
+
+    border: 1px solid #ccc;
+    border-radius: 3px;
+
+    background-color: #eee;
+    background-image: url(../images/rss.png); /*from <https://roundicons.com/glyph-icons-set>*/
+    background-size: 1.5em;
+    background-repeat: no-repeat;
+    background-position: .25em .25em;
 
     span {
-      display: block;
-      //from https://roundicons.com/glyph-icons-set/
-      background-image: url(../images/rss.png);
-      background-size: 15px;
-      padding: 6px;
-      background-repeat: no-repeat;
-      background-position-x: 6px;
-      background-position-y: 4px;
+      display: none;
+    }
+
+    &:hover {
+      background-color: #ddd;
     }
   }
 }

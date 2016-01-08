@@ -16,6 +16,7 @@ var Tab = require('react-bootstrap/lib/Tab');
 var ComponentSpecView = require('./ComponentSpecView');
 var Comments = require('./Comments');
 var XmlPanel = require('./XmlPanel');
+var Spinner = require('../../util/Spinner');
 
 //helpers
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -66,7 +67,7 @@ var ComponentDetailsPanel = React.createClass({
     var isProfile = ComponentSpec.isProfile(item);
     var classes = classNames("componentInfoPanel", {"loading": loading, "profile": isProfile, "component": !isProfile});
 
-    var loadingSpinner = <div className="loader spinner-loader">Loading...</div>;
+    var loadingSpinner = <Spinner />
 
     if(this.props.collapsed) {
       return (

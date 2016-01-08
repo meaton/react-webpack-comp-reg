@@ -59,7 +59,7 @@ var config = {
       test: /\.json/,
       loader: 'json-loader'
     }, {
-      test: /\.sass/,
+      test: /\.(sass|scss)/,
       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
     }, {
       test: /\.css$/,

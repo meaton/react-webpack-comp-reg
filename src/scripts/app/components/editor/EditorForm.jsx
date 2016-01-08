@@ -76,9 +76,9 @@ var EditorForm = React.createClass({
           <div id="ccrModalContainer"></div>
 
           <h3>
-            {this.props.type === Constants.TYPE_PROFILE
-              ? (this.props.isNew?"New profile":"Edit profile")
-              :(this.props.isNew?"New component":"Edit component")}
+            {ComponentSpec.isProfile(this.props.spec)
+              ? (this.props.isNew||saveDisallowed?"New profile":"Edit profile")
+              :(this.props.isNew||saveDisallowed?"New component":"Edit component")}
           </h3>
 
           <EditorMenuGroup

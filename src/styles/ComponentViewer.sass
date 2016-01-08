@@ -1,17 +1,43 @@
-.ComponentViewer .rootProperties > ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 30px;
-  width: 38%;
+.ComponentViewer {
+
+  .rootProperties {
+    padding: 0;
+    padding-top: .5em;
+
+    & > ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 30px;
+      width: 38%;
+    }
+  }
+
+  .panel {
+    .panel-heading {
+      padding: 0 1em;
+      line-height: 2;
+    }
+    .panel-body {
+      padding: .5em 1em;
+      line-height: 1.2;
+    }
+  }
+
+  .end {
+    display: block;
+    clear: both;
+    height: 1em;
+  }
+
 }
-.rootProperties {
-  padding: 5px 0;
-}
+
 .componentBody, .componentProps {
   padding-left: 25px;
 }
+
 .elemAttrs, .attrAttrs {
   padding: 0;
+  margin: 0;
 
   li {
     list-style: none;
@@ -50,10 +76,4 @@
         width: 60%;
       }
     }
-}
-
-.attrList {
-  .panel {
-    max-width: 40em;
-  }
 }

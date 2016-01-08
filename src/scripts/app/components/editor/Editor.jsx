@@ -79,7 +79,7 @@ var Editor = React.createClass({
     var gridExpanded = this.state.expandedGrid || this.state.editor.componentLinkingMode;
     if(this.isAuthenticated()) {
       return (
-          <div className={classNames("editorContainer", {"expandedGrid": gridExpanded})}>
+          <div className={classNames("editorContainer", "row", {"expandedGrid": gridExpanded})}>
             <EditorForm
                 item={this.state.editor.item}
                 type={this.state.editor.type}
@@ -94,34 +94,47 @@ var Editor = React.createClass({
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
               />
             <div className="browserGroup">
-              <DataGrid
-                multiSelect={false}
-                editMode={true}
-                items={this.state.editor.grid.items}
-                loading={this.state.editor.grid.loading}
-                onRowSelect={this.handleGridRowSelect}
-                disabled={gridDisabled}
-                />
+              {gridExpanded && (
+                <DataGrid
+                  multiSelect={false}
+                  editMode={true}
+                  items={this.state.editor.grid.items}
+                  loading={this.state.editor.grid.loading}
+                  onRowSelect={this.handleGridRowSelect}
+                  disabled={gridDisabled}
+                  />
+              )}
               <div className="gridControls">
                 <PanelExpandCollapseButton
                   title="Expand/collapse components table"
                   expanded={gridExpanded}
                   onClick={this.toggleGridExpansion}
                   disabled={this.state.editor.componentLinkingMode} />
-                <DataGridFilter
-                  value={this.state.editor.grid.filterText}
-                  onChange={this.handleGridFilterTextChange}
-                  />
-                <SpaceSelector
-                  type={Constants.TYPE_COMPONENT}
-                  space={this.state.editor.grid.space}
-                  teams={this.state.team.teams}
-                  selectedTeam={this.state.editor.grid.team}
-                  allowMultiSelect={false}
-                  validUserSession={true}
-                  componentsOnly={true}
-                  onSpaceSelect={this.handleGridSpaceSelect}
-                  onToggleMultipleSelect={null} />
+                {gridExpanded && (
+                  <DataGridFilter
+                    value={this.state.editor.grid.filterText}
+                    onChange={this.handleGridFilterTextChange}
+                    />
+                )}
+                {gridExpanded && (
+                  <SpaceSelector
+                    type={Constants.TYPE_COMPONENT}
+                    space={this.state.editor.grid.space}
+                    teams={this.state.team.teams}
+                    selectedTeam={this.state.editor.grid.team}
+                    allowMultiSelect={false}
+                    validUserSession={true}
+                    componentsOnly={true}
+                    onSpaceSelect={this.handleGridSpaceSelect}
+                    onToggleMultipleSelect={null} />
+                )}
+                {gridDisabled ?
+                  (<p className="gridInstructions">To link in an existing a component, click <em>+Component</em> on the target component above</p>)
+                  :(<p className="gridInstructions">
+                      Click the <em>+</em> button next to the component you want to link in from the table below
+                      (<a onClick={function(){this.getFlux().actions.cancelComponentLink()}.bind(this)}>cancel</a>)
+                    </p>)
+                  }
               </div>
             </div>
           </div>
