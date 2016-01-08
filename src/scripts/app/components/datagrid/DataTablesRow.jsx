@@ -22,7 +22,8 @@ var DataTablesRow = React.createClass({
     onClick: React.PropTypes.func,
     className: React.PropTypes.string,
     disabled: React.PropTypes.bool,
-    optionsMenu: React.PropTypes.object
+    optionsMenu: React.PropTypes.object,
+    domainMap: React.PropTypes.object
   },
   getDefaultProps: function() {
     return { buttonBefore: false, className: "unknown", rowSelectAllowed: true, disabled: false };
@@ -44,6 +45,10 @@ var DataTablesRow = React.createClass({
 
     //TODO: parse registration date
     var registrationDate = data.registrationDate.substr(0,10);
+
+    var domain = this.props.domainMap[data.domainName];
+    var domainName = (domain != null)? domain.label : data.domainName;
+
     return (
       <tr onClick={this.props.buttonBefore ? null : this.rowClick.bind(this, this.props.data)} key={this.props.data.id} className={(this.props.selected) ? "selected " + this.props.className : this.props.className}>
         {this.props.buttonBefore && (
@@ -59,7 +64,7 @@ var DataTablesRow = React.createClass({
 
         <td className="name">{data.name}</td>
         <td className="groupName">{data.groupName}</td>
-        <td className="domainName">{data.domainName}</td>
+        <td className="domainName">{domainName}</td>
         <td className="creatorName">{data.creatorName}</td>
         <td className="description" title={data.description}>{data.description}</td>
         <td className="registrationDate">{registrationDate}</td>

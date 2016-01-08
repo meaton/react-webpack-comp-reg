@@ -1,4 +1,5 @@
 var log = require('loglevel');
+var _ = require('lodash');
 
 //react
 var React = require("react"),
@@ -14,6 +15,8 @@ var DataTablesWrapper = require("./DataTablesWrapper.jsx"),
 //utils
 var classNames = require("classnames");
 var Spinner = require("../../util/Spinner");
+
+var domains = require('../../../domains.js');
 
 require('../../../../styles/DataGrid.sass');
 
@@ -85,6 +88,7 @@ var DataGrid = React.createClass({
           rowSelectAllowed={self.props.rowSelectAllowed}
           disabled={self.props.disabled}
           optionsMenu={optionsMenu}
+          domainMap={_.indexBy(domains, 'data')}
           >
         </DataTablesRow>
      );
