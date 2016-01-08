@@ -33,12 +33,6 @@ var ComponentSpec = React.createClass({
     onComponentToggle: React.PropTypes.func
   },
 
-  getDefaultProps: function() {
-    return {
-      domains: require('../../../domains.js')
-    };
-  },
-
   getInitialState: function() {
     return { childElements: null,
              childComponents: null
