@@ -148,7 +148,7 @@ module.exports = function (grunt) {
       options: {
         groupId: 'eu.clarin.cmdi',
         artifactId: 'component-registry-react-ui',
-        snapshot: true,
+        snapshot: false,
         file: function(options) {
           return 'target/' + options.artifactId + '-' + options.version + '.' + options.packaging;
         }
