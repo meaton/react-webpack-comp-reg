@@ -19,7 +19,13 @@ var Config =
 }
 
 function getUrl() {
-  return Config.REST.url;
+  var trailingSlashPattern = /^(.*)(\/)$/;
+  if(trailingSlashPattern.test(Config.REST.url)) {
+    //remove the trailing slash
+    return Config.REST.url.replace(trailingSlashPattern, "$1");
+  } else {
+    return Config.REST.url;
+  }
 };
 
 module.exports = {
