@@ -79,7 +79,7 @@ var ValueScheme = React.createClass({
             var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
             var items = $.map(enumItems, function(item, index) {
               return (
-                <option key={obj._appId + index} disabled={!enabled}>
+                <option key={obj._appId + index} disabled={!enabled} selected={index == 0}>
                   {(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}
                 </option>
               );
