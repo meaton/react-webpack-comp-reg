@@ -79,20 +79,20 @@ var ValueScheme = React.createClass({
             var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
             var items = $.map(enumItems, function(item, index) {
               return (
-                <option key={obj._appId + index} disabled={!enabled} selected={index == 0}>
+                <option key={obj._appId + index} disabled={!enabled} value={index}>
                   {(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}
                 </option>
               );
             });
             if(enabled) {
               return (
-                <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField">
+                <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField" defaultValue={0}>
                   {items}
                 </Input>
               );
             } else {
               return (
-                <Input ref="typeInput" type="select">
+                <Input ref="typeInput" type="select" defaultValue={0}>
                   {items}
                 </Input>
               );
