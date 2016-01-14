@@ -118,6 +118,7 @@ var Main = React.createClass({
   render: function() {
     return (
         <div id="app-root">
+          <div id="modal-container"/>
           <div id="header">
             <PageHeader className="hidden-xs">CMDI Component Registry</PageHeader>
 
