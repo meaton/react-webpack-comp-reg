@@ -10,8 +10,7 @@ var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
 
 module.exports = {
-
-  defaultContainer: "alert-container",
+  defaultContainer: "modal-container",
 
   showMessage: function(title, message) {
     log.debug("Alert: [", title, "]", message);
@@ -119,17 +118,21 @@ module.exports = {
   renderAlert: function(instance, elementId) {
     log.trace("Render alert at", elementId, instance);
     var div = React.DOM.div;
-    if(instance && elementId)
+    if(instance && elementId) {
+      log.debug("Rendering alert component at", elementId);
       ReactDOM.render(div({ className: 'static-modal' }, instance), document.getElementById(elementId));
-    else
+    } else {
       log.error('Cannot render Alert dialog: ', elementId);
+    }
   },
 
   closeAlert: function(elementId, evt) {
     if(evt) evt.stopPropagation();
-    if(elementId)
+    if(elementId) {
+      log.debug("Unmounting alert component at", elementId);
       ReactDOM.unmountComponentAtNode(document.getElementById(elementId));
-    else
+    } else {
       log.error('Cannot unmount Alert dialog: ', elementId);
+    }
   }
 }

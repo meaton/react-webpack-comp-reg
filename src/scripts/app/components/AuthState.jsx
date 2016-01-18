@@ -32,6 +32,10 @@ var AuthState = React.createClass({
   render: function () {
     var authState = this.props.authState;
 
+    var helpLink = (
+      <a target="_blank" href={Config.webappUrl + "/documentation.jsp"}><Glyphicon glyph="question-sign" />&nbsp;help</a>
+    );
+
     if(authState.authenticated) {
       return (
         <div className="auth-logged-in">
@@ -39,10 +43,10 @@ var AuthState = React.createClass({
           &nbsp;
           <a href={adminUrl + "/userSettings"} target="_blank"><Glyphicon glyph="cog" />&nbsp;settings</a>
           &nbsp;
-          <a href={Config.webappUrl + "/documentation.jsp"}><Glyphicon glyph="question-sign" />&nbsp;help</a>
+          {helpLink}
           &nbsp;
           {authState.isAdmin ? (
-            <a href={adminUrl} target="_blank"><Glyphicon glyph="wrench" />&nbsp;admin</a>
+            <a href={adminUrl + "/"} target="_blank"><Glyphicon glyph="wrench" />&nbsp;admin</a>
           ) : null}
         </div>
       );
@@ -53,7 +57,7 @@ var AuthState = React.createClass({
           <form id="login" className="login-form" ref="submitForm" action={authUrl + "?redirect=" + encodeURIComponent(redirectUrl) } method="POST">
             <a href="#" onClick={function(evt){evt.preventDefault(); $("form#login").submit();}}><Glyphicon glyph="user" />&nbsp;Login</a>
             &nbsp;
-            <a href={Config.webappUrl + "/documentation.jsp"}><Glyphicon glyph="question-sign" />&nbsp;Help</a>
+            {helpLink}
           </form>
         </div>
       );

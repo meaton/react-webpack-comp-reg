@@ -5,7 +5,6 @@ var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
@@ -17,6 +16,7 @@ var Button = require('react-bootstrap/lib/Button');
 //components
 var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
+var ConceptLinkInput = require('./ConceptLinkInput');
 
 //utils
 var classNames = require('classnames');
@@ -36,7 +36,6 @@ var CMDAttributeForm = React.createClass({
 
   mixins: [ImmutableRenderMixin,
             ToggleExpansionMixin,
-            ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
 
@@ -67,10 +66,10 @@ var CMDAttributeForm = React.createClass({
       <div className="form-horizontal form-group">
         <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name} wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate} />
-        <ValidatingTextInput ref="conceptRegInput" name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
+        <ConceptLinkInput name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate}
-          buttonAfter={this.newConceptLinkDialogueButton(this.propagateValue.bind(this, "ConceptLink"))} />
+          updateConceptLink={this.propagateValue.bind(this, "ConceptLink")} />
         <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
       </div>
     ) : null;

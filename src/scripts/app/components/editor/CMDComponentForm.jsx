@@ -1,6 +1,8 @@
 'use strict';
 
 var log = require('loglevel');
+var _ = require('lodash');
+
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
@@ -8,7 +10,6 @@ var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
-var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
@@ -17,6 +18,7 @@ var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValidatingTextInput = require('./ValidatingTextInput');
+var ConceptLinkInput = require('./ConceptLinkInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
 //bootstrap
@@ -39,13 +41,11 @@ require('../../../../styles/CMDComponent.sass');
 * @mixes ImmutableRenderMixin
 * @mixes CMDComponentMixin
 * @mixes SpecFormUpdateMixin
-* @mixes ConceptLinkDialogueMixin
 */
 var CMDComponentForm = React.createClass({
   mixins: [ImmutableRenderMixin,
             CMDComponentMixin,
             ToggleExpansionMixin,
-            ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
 
@@ -94,10 +94,10 @@ var CMDComponentForm = React.createClass({
         <ValidatingTextInput type="text" name="@name" label="Name" value={comp['@name']}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateComponentValue} validate={this.validate}  />
-        <ValidatingTextInput type="text" name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+        <ConceptLinkInput name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput"
           onChange={this.updateComponentValue} validate={this.validate}
-          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+          updateConceptLink={this.updateConceptLink} />
         <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>
     ) : null;
@@ -189,6 +189,7 @@ var CMDComponentForm = React.createClass({
               isLast={index == this.props.spec.CMD_Element.length - 1}
               checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Element)}
               {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+              checkDisplayPriorities={this.checkDisplayPriorities}
               />;
   },
 
@@ -333,6 +334,20 @@ var CMDComponentForm = React.createClass({
   validate: function(val, targetName, feedback) {
     return Validation.validateField('component', targetName, val, feedback)
       && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
+  },
+
+  checkDisplayPriorities: function() {
+    var elements = this.props.spec.CMD_Element;
+    if($.isArray(elements)) {
+      // at least one element with non-zero display priority?
+      return _.some(elements, function(element) {
+        log.debug('checking element', element);
+        return element.hasOwnProperty('@DisplayPriority') && element['@DisplayPriority'] !== '0';
+      });
+    } else {
+      //no elements, so ok
+      return true;
+    }
   }
 });
 

@@ -26,6 +26,8 @@ var Config = require("../../config").Config;
 
 var ReactAlert = require('../util/ReactAlert');
 
+var ReactAlert = require('../util/ReactAlert');
+
 /***
 * Main - Default component and entry point to the application.
 * @constructor
@@ -93,7 +95,7 @@ var Main = React.createClass({
         purposes as they are not guaranteed to persist.
       </p>
       <p>
-        Please send any issues reports, questions or remarks to <a href="twan@clarin.eu">twan@clarin.eu</a>.
+        Please send any issues reports, questions or remarks to <a href="mailto:twan@clarin.eu">twan@clarin.eu</a>.
         Thanks for trying out the new Component Registry!
       </p>
   </div>);
@@ -118,6 +120,7 @@ var Main = React.createClass({
   render: function() {
     return (
         <div id="app-root">
+          <div id="modal-container"/>
           <div id="header">
             <PageHeader className="hidden-xs">CMDI Component Registry</PageHeader>
 

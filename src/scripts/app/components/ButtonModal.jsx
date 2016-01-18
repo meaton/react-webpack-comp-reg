@@ -32,8 +32,8 @@ var ButtonModal = React.createClass({
       return (
         <div>
           <Button bsStyle="primary" onClick={function(evt) {
-            action(evt);
             opts.closeAlert(evt);
+            action(evt);
           }}>OK</Button>
           <Button onClick={opts.closeAlert}>Cancel</Button>
         </div>

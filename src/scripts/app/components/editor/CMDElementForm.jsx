@@ -6,7 +6,6 @@ var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
@@ -19,6 +18,7 @@ var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
+var ConceptLinkInput = require('./ConceptLinkInput');
 
 //utils
 var classNames = require('classnames');
@@ -37,14 +37,14 @@ require('../../../../styles/CMDElement.sass');
 var CMDElementForm = React.createClass({
   mixins: [ImmutableRenderMixin,
             ToggleExpansionMixin,
-            ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
     key: React.PropTypes.string,
-    onElementChange: React.PropTypes.func.isRequired
+    onElementChange: React.PropTypes.func.isRequired,
+    checkDisplayPriorities: React.PropTypes.func.isRequired
     /* more props defined in ToggleExpansionMixin and ActionButtonsMixin */
   },
 
@@ -92,12 +92,17 @@ var CMDElementForm = React.createClass({
                 <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
                   onChange={this.updateElementValue} validate={this.validate} />
-                <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
+                <ConceptLinkInput  name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
                   onChange={this.updateElementValue} validate={this.validate}
-                  buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+                  updateConceptLink={this.updateConceptLink} />
                 <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-                <Input type="number" name="@DisplayPriority" label="DisplayPriority" min={0} max={10} step={1} value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <ValidatingTextInput type="number" name="@DisplayPriority" label="DisplayPriority"
+                  value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0}
+                  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+                  onChange={this.updateElementValue} validate={this.validate}
+                  min={0} max={10} step={1}
+                  />
                 <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
                 <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
@@ -163,8 +168,17 @@ var CMDElementForm = React.createClass({
   /*=== Validation of field values ====*/
 
   validate: function(val, targetName, feedback) {
-    return Validation.validateField('element', targetName, val, feedback)
-      && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
+    if(targetName == '@DisplayPriority') {
+      if(!this.props.checkDisplayPriorities()) {
+        feedback('At least one element must have non-zero display priority');
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return Validation.validateField('element', targetName, val, feedback)
+        && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
+    }
   }
 });
 

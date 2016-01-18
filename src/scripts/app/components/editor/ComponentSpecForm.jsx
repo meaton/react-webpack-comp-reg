@@ -6,7 +6,6 @@ var Constants = require("../../constants");
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -14,6 +13,7 @@ var Input = require('react-bootstrap/lib/Input');
 //components
 var CMDComponentForm = require('./CMDComponentForm');
 var ValidatingTextInput = require('./ValidatingTextInput');
+var ConceptLinkInput = require('./ConceptLinkInput');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -32,7 +32,7 @@ require('../../../../styles/ComponentViewer.sass');
 * @mixes ImmutableRenderMixin
 */
 var ComponentSpecForm = React.createClass({
-  mixins: [ImmutableRenderMixin, ConceptLinkDialogueMixin],
+  mixins: [ImmutableRenderMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -92,10 +92,10 @@ var ComponentSpecForm = React.createClass({
                 return <option key={index} value={domain.data}>{domain.label}</option>
               })}
             </Input>
-            <ValidatingTextInput ref="conceptRegInput" type="text" name="CMD_Component.@ConceptLink" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
+            <ConceptLinkInput name="CMD_Component.@ConceptLink" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
               labelClassName="editorFormLabel" wrapperClassName="editorFormField"
               onChange={this.handleConceptLinkChange} validate={this.validate}
-              buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLinkValue)}
+              updateConceptLink={this.updateConceptLinkValue}
               />
           </div>
           {this.props.onExpandAll && this.props.onCollapseAll &&
