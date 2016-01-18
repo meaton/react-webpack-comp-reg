@@ -19,7 +19,7 @@ var ValidatingTextInput = React.createClass({
   propTypes: {
     validate: React.PropTypes.func.isRequired,
     name: React.PropTypes.string.isRequired,
-    value: React.PropTypes.string.isRequired
+    //value (any type)
   },
 
   contextTypes: {
