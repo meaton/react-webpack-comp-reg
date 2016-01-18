@@ -9,6 +9,9 @@ var ConceptRegistryModal = require('./ConceptRegistryModal');
 //bootstrap
 var ValidatingTextInput = require('./ValidatingTextInput');
 
+var isocatPattern = /^http(s?):\/\/www\.isocat\.org/;
+
+
 /**
 * ConceptLinkInput - Text input with button to trigger CCR search
 *
@@ -24,15 +27,21 @@ var ConceptLinkInput = React.createClass({
   },
 
   render: function() {
+    // if link is an old ISOcat link, user should be warned
+    // /<https://github.com/clarin-eric/react-webpack-comp-reg/issues/15>
+    var isocatLink = isocatPattern.test(this.props.value);
+
     var {
-      onChange, updateConceptLink, //wrap
+      updateConceptLink, bsStyle, //wrap
       buttonAfter, type, //swallow
       ...otherProps //rest for passing on
       } = this.props;
+
     return (
       <ValidatingTextInput
         type="text"
-        onChange={onChange /*todo: warn if isocat*/}
+        bsStyle={isocatLink ? "warning" : bsStyle}
+        addonAfter={isocatLink ? "ISOcat links are deprecated!" : null}
         buttonAfter={this.newConceptLinkDialogueButton(updateConceptLink)}
         {...otherProps}
         />
