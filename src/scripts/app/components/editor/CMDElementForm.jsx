@@ -6,7 +6,6 @@ var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
@@ -19,6 +18,7 @@ var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
+var ConceptLinkInput = require('./ConceptLinkInput');
 
 //utils
 var classNames = require('classnames');
@@ -37,7 +37,6 @@ require('../../../../styles/CMDElement.sass');
 var CMDElementForm = React.createClass({
   mixins: [ImmutableRenderMixin,
             ToggleExpansionMixin,
-            ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
 
@@ -93,10 +92,10 @@ var CMDElementForm = React.createClass({
                 <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
                   onChange={this.updateElementValue} validate={this.validate} />
-                <ValidatingTextInput ref="conceptRegInput" name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
+                <ConceptLinkInput  name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
                   onChange={this.updateElementValue} validate={this.validate}
-                  buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+                  updateConceptLink={this.updateConceptLink} />
                 <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
                 <ValidatingTextInput type="number" name="@DisplayPriority" label="DisplayPriority"
                   value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0}

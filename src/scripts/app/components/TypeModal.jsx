@@ -8,7 +8,6 @@ var sortColumn = require('reactabular').sortColumn;
 
 //mixins
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
-var ConceptLinkDialogueMixin = require('../mixins/ConceptLinkDialogueMixin')
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
@@ -17,6 +16,10 @@ var Button = require('react-bootstrap/lib/Button');
 var Tabs = require('react-bootstrap/lib/Tabs');
 var Tab = require('react-bootstrap/lib/Tab');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
+//components
+var ModalTrigger = require('./ModalTrigger');
+var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
 //service
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
@@ -33,7 +36,7 @@ require('../../../styles/EditorDialog.sass');
 * @mixes require('react-addons-linked-state-mixin')
 */
 var TypeModal = React.createClass({
-  mixins: [LinkedStateMixin, ConceptLinkDialogueMixin],
+  mixins: [LinkedStateMixin],
   propTypes: {
     container: React.PropTypes.object.isRequired,
     type: React.PropTypes.string,
@@ -203,9 +206,24 @@ var TypeModal = React.createClass({
           var closeHandler = function(evt) {
             modalRef.toggleModal();
           }
-          var modal = self.newConceptLinkDialogueButton(self.addConceptLink.bind(self, rowIndex), closeHandler, "add link", function(modal) {
-            modalRef = modal;
-          });
+          var modal = (
+            <ModalTrigger
+              ref={function(modal) {
+                 modalRef = modal;
+               }}
+              modalTarget="ccrModalContainer"
+              label="add link"
+              modal={
+                <ConceptRegistryModal
+                  onClose={closeHandler}
+                  onSelect={self.addConceptLink.bind(self, rowIndex)}
+                  container={this} />
+              } />
+          );
+
+          // self.newConceptLinkDialogueButton(self.addConceptLink.bind(self, rowIndex), closeHandler, "add link", function(modal) {
+          //   modalRef = modal;
+          // });
 
           return {
             value: (value) ?
