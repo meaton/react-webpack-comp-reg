@@ -95,7 +95,7 @@ var Main = React.createClass({
         purposes as they are not guaranteed to persist.
       </p>
       <p>
-        Please send any issues reports, questions or remarks to <a href="twan@clarin.eu">twan@clarin.eu</a>.
+        Please send any issues reports, questions or remarks to <a href="mailto:twan@clarin.eu">twan@clarin.eu</a>.
         Thanks for trying out the new Component Registry!
       </p>
   </div>);
