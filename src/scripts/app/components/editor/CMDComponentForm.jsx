@@ -10,7 +10,6 @@ var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
-var ConceptLinkDialogueMixin = require('../../mixins/ConceptLinkDialogueMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 
@@ -19,6 +18,7 @@ var CMDElementForm = require('./CMDElementForm');
 var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValidatingTextInput = require('./ValidatingTextInput');
+var ConceptLinkInput = require('./ConceptLinkInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
 //bootstrap
@@ -41,13 +41,11 @@ require('../../../../styles/CMDComponent.sass');
 * @mixes ImmutableRenderMixin
 * @mixes CMDComponentMixin
 * @mixes SpecFormUpdateMixin
-* @mixes ConceptLinkDialogueMixin
 */
 var CMDComponentForm = React.createClass({
   mixins: [ImmutableRenderMixin,
             CMDComponentMixin,
             ToggleExpansionMixin,
-            ConceptLinkDialogueMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
 
@@ -96,10 +94,10 @@ var CMDComponentForm = React.createClass({
         <ValidatingTextInput type="text" name="@name" label="Name" value={comp['@name']}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateComponentValue} validate={this.validate}  />
-        <ValidatingTextInput type="text" name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
+        <ConceptLinkInput name="@ConceptLink" label="ConceptLink" value={(comp['@ConceptLink']) ? comp['@ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput"
           onChange={this.updateComponentValue} validate={this.validate}
-          buttonAfter={this.newConceptLinkDialogueButton(this.updateConceptLink)} />
+          updateConceptLink={this.updateConceptLink} />
         <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>
     ) : null;
