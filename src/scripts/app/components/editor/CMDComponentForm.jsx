@@ -308,7 +308,7 @@ var CMDComponentForm = React.createClass({
   addNewComponent: function(evt) {
     var spec = this.props.spec;
     var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Component);
-    var newComp = { "@name": "", "@ConceptLink": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
+    var newComp = { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
     log.debug("Adding new component to", spec._appId, newComp);
     if(spec.CMD_Component == null) {
       this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
@@ -320,7 +320,7 @@ var CMDComponentForm = React.createClass({
   addNewElement: function(evt) {
     var spec = this.props.spec;
     var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Element);
-    var newElem = { "@name": "", "@ConceptLink": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "@Multilingual": "false", "_appId": appId };
+    var newElem = { "@name": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
     log.debug("Adding new element to", spec._appId, newElem);
     if(spec.CMD_Element == null) {
       this.props.onComponentChange({$merge: {CMD_Element: [newElem]}});
