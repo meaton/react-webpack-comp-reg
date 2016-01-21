@@ -92,19 +92,21 @@ var CMDElementForm = React.createClass({
                 <ValidatingTextInput type="text" name="@name" label="Name" value={elem['@name']}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
                   onChange={this.updateElementValue} validate={this.validate} />
-                <ConceptLinkInput  name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
+                <ConceptLinkInput name="@ConceptLink" type="text" label="ConceptLink" value={(elem['@ConceptLink']) ? elem['@ConceptLink'] : ""}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-                  onChange={this.updateElementValue} validate={this.validate}
+                  onChange={this.updateElementValueWithDefault.bind(this, "")} validate={this.validate}
                   updateConceptLink={this.updateConceptLink} />
-                <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValue} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <Input type="text" name="@Documentation" label="Documentation" value={elem['@Documentation']} onChange={this.updateElementValueWithDefault.bind(this, "")} labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
                 <ValidatingTextInput type="number" name="@DisplayPriority" label="DisplayPriority"
-                  value={(elem.hasOwnProperty('@DisplayPriority')) ? elem['@DisplayPriority'] : 0}
+                  value={(elem['@DisplayPriority'] != null) ? elem['@DisplayPriority'] : 0}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-                  onChange={this.updateElementValue} validate={this.validate}
+                  onChange={this.updateElementValueWithDefault.bind(this, "0")} validate={this.validate}
                   min={0} max={10} step={1}
                   />
                 <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
-                <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue} wrapperClassName="editorFormField" />
+                {(elem['@ValueScheme'] == "string" || elem['@Multilingual'] == "true") && //hide multilingual for non-string elements (or if it happens to have been set to true)
+                  <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
+                }
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
               </div>
             </div>
@@ -150,19 +152,37 @@ var CMDElementForm = React.createClass({
   },
 
   updateElementValue: function(e) {
-    this.propagateValue(e.target.name, e.target.value);
+    this.updateElementValueWithDefault(null, e);
   },
 
-  updateElementSelectValue: function(e) {
+  updateElementValueWithDefault: function(defaultValue, e) {
+    if(defaultValue !== null && e.target.value === defaultValue) {
+      // value equals default, pass null
+      this.propagateValue(e.target.name, null);
+    } else {
+      this.propagateValue(e.target.name, e.target.value);
+    }
+  },
+
+  updateElementSelectValue: function(defaultValue, e) {
     var value = e.target.checked ? "true":"false";
-    this.propagateValue(e.target.name, value);
+    if(defaultValue !== null && value === defaultValue) {
+      this.propagateValue(e.target.name, null);
+    } else {
+      this.propagateValue(e.target.name, value);
+    }
   },
 
   handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onElementChange({$merge: {
+    var newProps = {
       '@ValueScheme': type,
       ValueScheme: valScheme
-    }});
+    };
+    if(type !== "string") {
+      // only 'string' type allows for multilingual elements
+      newProps['@Multilingual'] = null;
+    }
+    this.props.onElementChange({$merge: newProps});
   },
 
   /*=== Validation of field values ====*/

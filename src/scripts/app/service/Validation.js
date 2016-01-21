@@ -106,8 +106,7 @@ var testMandatoryFields = function(header, componentDesc, cb) {
     if(header.Description != undefined && header.Description.length <= 0) errReturned = cb(err.ReqComponentDesc);
   }
   if(componentDesc != null) {
-    if(componentDesc.hasOwnProperty('@name') && (componentDesc['@name'].length <= 0 || !regExpName.test(componentDesc['name']))) errReturned = cb(err.ReqName);
-    if(componentDesc.hasOwnProperty('@DisplayPriority') && componentDesc['@DisplayPriority'].length <= 0) errReturned = cb(err.ReqDisplayPriority);
+    if(componentDesc['@name'] != null && (componentDesc['@name'].length <= 0 || !regExpName.test(componentDesc['name']))) errReturned = cb(err.ReqName);
     if(!testValueScheme(componentDesc)) errReturned = cb(err.ReqValueScheme);
   }
   return !errReturned;
