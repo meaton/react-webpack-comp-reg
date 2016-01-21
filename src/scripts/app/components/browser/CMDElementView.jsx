@@ -96,9 +96,11 @@ var CMDElementView = React.createClass({
               <span className="attrValue">{minC} - {maxC}</span>
               </li>
 
-              <li className="attrElem"><span className="attrLabel">Multilingual:</span>
-              <span className="attrValue">{multilingual ? "yes" : "no"}</span>
-              </li>
+              {(elem['@ValueScheme'] == "string" || elem['@Multilingual'] == "true") && (
+                <li className="attrElem"><span className="attrLabel">Multilingual:</span>
+                <span className="attrValue">{multilingual ? "yes" : "no"}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
