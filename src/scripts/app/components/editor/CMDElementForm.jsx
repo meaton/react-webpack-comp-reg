@@ -172,10 +172,15 @@ var CMDElementForm = React.createClass({
   },
 
   handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onElementChange({$merge: {
+    var newProps = {
       '@ValueScheme': type,
       ValueScheme: valScheme
-    }});
+    };
+    if(type !== "string") {
+      // only 'string' type allows for multilingual elements
+      newProps['@Multilingual'] = null;
+    }
+    this.props.onElementChange({$merge: newProps});
   },
 
   /*=== Validation of field values ====*/
