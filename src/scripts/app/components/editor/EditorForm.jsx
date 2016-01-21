@@ -33,8 +33,8 @@ var EditorForm = React.createClass({
   mixins: [FluxMixin, History, ComponentUsageMixin],
 
   propTypes: {
-    item: React.PropTypes.object,
-    spec: React.PropTypes.object.isRequired,
+    item: React.PropTypes.object, /* can be null while loading */
+    spec: React.PropTypes.object, /* can be null while loading */
     type: React.PropTypes.string.isRequired,
     loading: React.PropTypes.bool.isRequired,
     processing: React.PropTypes.bool.isRequired,
@@ -57,7 +57,7 @@ var EditorForm = React.createClass({
   },
 
   render: function () {
-    if(this.props.loading || this.props.item == null) {
+    if(this.props.loading || this.props.item == null | this.props.spec == null) {
       return (<div>Loading component...</div>);
     } else {
       //if type changed for an existing component, it can only be saved as new
@@ -209,7 +209,7 @@ var EditorForm = React.createClass({
             break;
           }
         }
-        log.debug("Removing validation item", i, item);
+        log.trace("Removing validation item", i, item);
         this.validationItems.splice(i, 1);
       }
     }
