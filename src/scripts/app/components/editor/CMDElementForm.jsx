@@ -104,7 +104,9 @@ var CMDElementForm = React.createClass({
                   min={0} max={10} step={1}
                   />
                 <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
-                <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
+                {(elem['@ValueScheme'] == "string" || elem['@Multilingual'] == "true") && //hide multilingual for non-string elements (or if it happens to have been set to true)
+                  <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
+                }
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
               </div>
             </div>
@@ -172,10 +174,15 @@ var CMDElementForm = React.createClass({
   },
 
   handleUpdateValueScheme: function(type, valScheme) {
-    this.props.onElementChange({$merge: {
+    var newProps = {
       '@ValueScheme': type,
       ValueScheme: valScheme
-    }});
+    };
+    if(type !== "string") {
+      // only 'string' type allows for multilingual elements
+      newProps['@Multilingual'] = null;
+    }
+    this.props.onElementChange({$merge: newProps});
   },
 
   /*=== Validation of field values ====*/
