@@ -84,18 +84,13 @@ var Main = React.createClass({
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
 
-    ReactAlert.showMessage("Component Registry beta instance",
-    <div>
-      <p>
-        This instance of the Component Registry is for testing purposes only. Do
-        not use any of the components or profiles in this registry for production
-        purposes as they are not guaranteed to persist.
-      </p>
-      <p>
-        Please send any issues reports, questions or remarks to <a href="twan@clarin.eu">twan@clarin.eu</a>.
-        Thanks for trying out the new Component Registry!
-      </p>
-  </div>);
+    // show message if version is alpha or beta
+    if(Config.frontEndVersion != null
+        && (Config.frontEndVersion.indexOf('alpha') >= 0
+              || Config.frontEndVersion.indexOf('beta') >= 0)) {
+      log.debug("Beta alert!");
+      this.showTestingAlert();
+    }
   },
 
   onWindowFocus: function() {
@@ -119,8 +114,6 @@ var Main = React.createClass({
       if(majorVersionMatch) {
         var majorVersion = parseInt(majorVersionMatch[1]);
         if(majorVersion) {
-          log.debug("Major version", majorVersion);
-
           //check supported version depending on browser
           if(browser.name === 'chrome' && majorVersion < 48
               || browser.name == 'firefox' && majorVersion < 43
@@ -131,13 +124,28 @@ var Main = React.createClass({
                   + "Please use a newer version of Chrome, Firefox or Safari to make sure the application works as expected.");
                 return;
           } else {
-            log.warn("Browser version ok:", browser.name, browser.version);
+            log.debug("Browser version ok:", browser.name, browser.version);
             return;
           }
         }
       }
     }
     log.warn("Could not perform browser version check");
+  },
+
+  showTestingAlert: function() {
+    ReactAlert.showMessage("Component Registry testing instance",
+      <div>
+        <p>
+          This instance of the Component Registry is for testing purposes only. Do
+          not use any of the components or profiles in this registry for production
+          purposes as they are not guaranteed to persist.
+        </p>
+        <p>
+          Please send any issues reports, questions or remarks to <a href="mailto:cmdi@clarin.eu">cmdi@clarin.eu</a>.
+          Thanks for trying out the new Component Registry!
+        </p>
+    </div>);
   },
 
   handleDismissMessage: function(id) {
