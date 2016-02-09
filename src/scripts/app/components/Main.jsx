@@ -119,9 +119,11 @@ var Main = React.createClass({
               || browser.name == 'firefox' && majorVersion < 43
               || browser.name == 'safari' && majorVersion < 537) {
                 log.warn("Unsupported browser version:", browser.name, browser.version);
-                ReactAlert.showMessage("Browser compatibility",
-                    "The Component Registry has not been tested with the current browser version. "
-                  + "Please use a newer version of Chrome, Firefox or Safari to make sure the application works as expected.");
+                ReactAlert.showMessage("Browser compatibility warning",
+                    <p>
+                      <strong>Important notice:</strong> The Component Registry has not been tested with the current browser version.
+                      Please use a newer version of Chrome, Firefox or Safari to make sure the application works as expected!
+                    </p>);
                 return;
           } else {
             log.debug("Browser version ok:", browser.name, browser.version);
