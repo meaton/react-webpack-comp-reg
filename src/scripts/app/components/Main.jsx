@@ -24,8 +24,6 @@ var ReactAlert = require('../util/ReactAlert');
 
 var Config = require("../../config").Config;
 
-var ReactAlert = require('../util/ReactAlert');
-
 /***
 * Main - Default component and entry point to the application.
 * @constructor
@@ -81,6 +79,7 @@ var Main = React.createClass({
   },
 
   componentDidMount: function() {
+    this.checkBrowserVersion();
     this.checkAuthState();
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
@@ -109,6 +108,36 @@ var Main = React.createClass({
 
   checkAuthState: function() {
     this.getFlux().actions.checkAuthState();
+  },
+
+  checkBrowserVersion: function() {
+    var browser = require('detect-browser');
+    if(browser.name && browser.version) {
+      //parse major version for comparison
+      var majorVersionPattern = /^(\d+).*/; //first digit group
+      var majorVersionMatch = majorVersionPattern.exec(browser.version);
+      if(majorVersionMatch) {
+        var majorVersion = parseInt(majorVersionMatch[1]);
+        if(majorVersion) {
+          log.debug("Major version", majorVersion);
+
+          //check supported version depending on browser
+          if(browser.name === 'chrome' && majorVersion < 48
+              || browser.name == 'firefox' && majorVersion < 43
+              || browser.name == 'safari' && majorVersion < 537) {
+                log.warn("Unsupported browser version:", browser.name, browser.version);
+                ReactAlert.showMessage("Browser compatibility",
+                    "The Component Registry has not been tested with the current browser version. "
+                  + "Please use a newer version of Chrome, Firefox or Safari to make sure the application works as expected.");
+                return;
+          } else {
+            log.warn("Browser version ok:", browser.name, browser.version);
+            return;
+          }
+        }
+      }
+    }
+    log.warn("Could not perform browser version check");
   },
 
   handleDismissMessage: function(id) {
