@@ -81,6 +81,7 @@ var Main = React.createClass({
   componentDidMount: function() {
     this.checkBrowserVersion();
     this.checkAuthState();
+
     // check auth state every 30s
     this.authInterval = setInterval(this.checkAuthState, 30*1000);
 

@@ -67,7 +67,6 @@ var ComponentInfo = React.createClass({
 
     return (
       <div id="componentInfoModal" className={this.props.className}>
-        <div>Warning: this is not the production instance of the Component Registry, so <strong>do not publish these links or any metadata based on it!</strong></div>
         <div>
           <a href={bookmarkLink}>Bookmark link:</a>
           <div>
