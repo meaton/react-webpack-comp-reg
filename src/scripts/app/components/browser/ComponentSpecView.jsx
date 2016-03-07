@@ -50,6 +50,21 @@ var ComponentSpec = React.createClass({
       var rootClasses = classNames({ ComponentViewer: true });
       var rootComponent = item.CMD_Component;
 
+      // Determine root spec (should be inline, but may be linked)
+      var isLinked = rootComponent.hasOwnProperty("@ComponentId");
+      var rootSpec = null;
+      if(isLinked) {
+        var compId = rootComponent['@ComponentId'];
+        //linked root component, use full spec for linked components if available (should have been preloaded)
+        var linkedSpecAvailable = this.props.linkedComponents != undefined
+                      && this.props.linkedComponents.hasOwnProperty(compId);
+        if(linkedSpecAvailable) {
+          rootSpec = this.props.linkedComponents[compId].CMD_Component;
+        }
+      } else {
+        rootSpec = rootComponent;
+      }
+
       // Display properties
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
 
@@ -62,13 +77,18 @@ var ComponentSpec = React.createClass({
                 {conceptLink}
               </ul>
             </div>
-            <CMDComponentView
-              spec={item.CMD_Component}
-              hideProperties={true}
-              onToggle={this.props.onComponentToggle}
-              expansionState={this.props.expansionState}
-              linkedComponents={this.props.linkedComponents}
-              />
+            {rootSpec == null ? (
+              <span>Loading...</span>
+            ):(
+              <CMDComponentView
+                spec={rootSpec}
+                hideProperties={!isLinked}
+                isLinked={isLinked}
+                onToggle={this.props.onComponentToggle}
+                expansionState={this.props.expansionState}
+                linkedComponents={this.props.linkedComponents}
+                />
+            )}
             <div className="end">&nbsp;</div>
           </div>
         );
