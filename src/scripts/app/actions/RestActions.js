@@ -54,7 +54,7 @@ var RestActions = {
     ComponentRegistryClient.loadSpec(type, itemId, "json", function(spec){
         // Success. Now also load linked child components at root level, we need
         // their names for display purposes.
-        loadLinkedComponents(spec.CMD_Component, function(linkedComponents) {
+        loadLinkedComponents(spec, function(linkedComponents) {
           // Loading of linked components done...
           SpecAugmenter.augmentWithIds(spec);
           log.trace("Loaded and augmented spec: ", spec);
