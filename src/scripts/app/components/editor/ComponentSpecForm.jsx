@@ -14,6 +14,7 @@ var Input = require('react-bootstrap/lib/Input');
 var CMDComponentForm = require('./CMDComponentForm');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
+var CMDComponentView = require('../browser/CMDComponentView');
 
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -65,6 +66,21 @@ var ComponentSpecForm = React.createClass({
       var rootClasses = classNames({ ComponentViewer: true });
       var rootComponent = spec.CMD_Component;
 
+      // Determine root spec (should be inline, but may be linked)
+      var isLinked = rootComponent.hasOwnProperty("@ComponentId");
+      var rootSpec = null;
+      if(isLinked) {
+        var compId = rootComponent['@ComponentId'];
+        //linked root component, use full spec for linked components if available (should have been preloaded)
+        var linkedSpecAvailable = this.props.linkedComponents != undefined
+                      && this.props.linkedComponents.hasOwnProperty(compId);
+        if(linkedSpecAvailable) {
+          rootSpec = this.props.linkedComponents[compId].CMD_Component;
+        }
+      } else {
+        rootSpec = rootComponent;
+      }
+
       // Display properties
       var conceptLink = (rootComponent && rootComponent['@ConceptLink'] != null) ? <li><span>ConceptLink:</span> <a href={rootComponent['@ConceptLink']}>{rootComponent['@ConceptLink']}</a></li> : null;
       var isProfile = ComponentSpec.isProfile(spec);
@@ -105,19 +121,29 @@ var ComponentSpecForm = React.createClass({
             </div>
           }
 
-          {/* Form for root component (only children, properties hidden) */}
-          <CMDComponentForm
-            spec={spec.CMD_Component}
-            hideProperties={true}
-            onToggle={this.props.onComponentToggle}
-            expansionState={this.props.expansionState}
-            linkedComponents={this.props.linkedComponents}
-            onStartComponentLink={this.props.onStartComponentLink}
-            onCancelComponentLink={this.props.onCancelComponentLink}
-            onComponentChange={this.handleComponentChange}
-            selectedComponentId={this.props.selectedComponentId}
-            componentLinkingMode={this.props.componentLinkingMode}
+          {isLinked?(
+            <CMDComponentView
+              spec={rootSpec}
+              hideCardinality={true}
+              isLinked={true}
+              onToggle={this.props.onComponentToggle}
+              expansionState={this.props.expansionState}
+              linkedComponents={this.props.linkedComponents}
             />
+          ):/* Form for root component (only children, properties hidden) */ (
+            <CMDComponentForm
+              spec={rootSpec}
+              hideProperties={true}
+              onToggle={this.props.onComponentToggle}
+              expansionState={this.props.expansionState}
+              linkedComponents={this.props.linkedComponents}
+              onStartComponentLink={this.props.onStartComponentLink}
+              onCancelComponentLink={this.props.onCancelComponentLink}
+              onComponentChange={this.handleComponentChange}
+              selectedComponentId={this.props.selectedComponentId}
+              componentLinkingMode={this.props.componentLinkingMode}
+              />
+          )}
           </form>
         );
     }
