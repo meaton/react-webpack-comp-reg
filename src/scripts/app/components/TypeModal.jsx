@@ -173,7 +173,10 @@ var TypeModal = React.createClass({
     var cells = require('reactabular').cells;
     var editors = require('reactabular').editors;
     var editable = cells.edit.bind(this, 'editedCell', function(value, celldata, rowIndex, property) {
-        log.trace('row data update: ', value, celldata, rowIndex, property);
+        log.debug('row data update: ', value, celldata, rowIndex, property);
+        if(value == null) {
+          value = "";
+        }
         var newData = celldata[rowIndex];
         newData[property] = value;
         var newValue = update(self.state.enumeration, { item: { $splice: [[rowIndex, 1, newData]] } });
@@ -189,15 +192,18 @@ var TypeModal = React.createClass({
       {
         property: '$',
         header: 'Value',
-        cell: [
+        cell:
           editable({editor: editors.input()})
-        ]
       }, {
         property: '@AppInfo',
         header: 'Description',
-        cell: [
-          editable({editor: editors.input()})
-        ]
+        cell:
+          function(v, data, index, prop) {
+            //make sure that a value is always passed (field for this column is optional)
+            var value = (v == null) ? "" : v;
+            var createEditor = editable({editor: editors.input()});
+            return createEditor(value, data, index, prop);
+          }
       }, {
         property: '@ConceptLink',
         header: 'Concept link',
@@ -220,10 +226,6 @@ var TypeModal = React.createClass({
                   container={this} />
               } />
           );
-
-          // self.newConceptLinkDialogueButton(self.addConceptLink.bind(self, rowIndex), closeHandler, "add link", function(modal) {
-          //   modalRef = modal;
-          // });
 
           return {
             value: (value) ?
