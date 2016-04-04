@@ -48,7 +48,7 @@ var ComponentSpec = React.createClass({
       );
     else {
       var rootClasses = classNames({ ComponentViewer: true });
-      var rootComponent = item.CMD_Component;
+      var rootComponent = item.Component;
 
       // Determine root spec (should be inline, but may be linked)
       var isLinked = rootComponent.hasOwnProperty("@ComponentId");
@@ -59,7 +59,7 @@ var ComponentSpec = React.createClass({
         var linkedSpecAvailable = this.props.linkedComponents != undefined
                       && this.props.linkedComponents.hasOwnProperty(compId);
         if(linkedSpecAvailable) {
-          rootSpec = this.props.linkedComponents[compId].CMD_Component;
+          rootSpec = this.props.linkedComponents[compId].Component;
         }
       } else {
         rootSpec = rootComponent;

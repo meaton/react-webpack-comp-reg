@@ -64,7 +64,7 @@ var ComponentSpecForm = React.createClass({
       );
     } else {
       var rootClasses = classNames({ ComponentViewer: true });
-      var rootComponent = spec.CMD_Component;
+      var rootComponent = spec.Component;
 
       // Determine root spec (should be inline, but may be linked)
       var isLinked = rootComponent.hasOwnProperty("@ComponentId");
@@ -75,7 +75,7 @@ var ComponentSpecForm = React.createClass({
         var linkedSpecAvailable = this.props.linkedComponents != undefined
                       && this.props.linkedComponents.hasOwnProperty(compId);
         if(linkedSpecAvailable) {
-          rootSpec = this.props.linkedComponents[compId].CMD_Component;
+          rootSpec = this.props.linkedComponents[compId].Component;
         }
       } else {
         rootSpec = rootComponent;
@@ -108,7 +108,7 @@ var ComponentSpecForm = React.createClass({
                 return <option key={index} value={domain.data}>{domain.label}</option>
               })}
             </Input>
-            <ConceptLinkInput name="CMD_Component.@ConceptLink" label="ConceptLink" value={(spec.CMD_Component['@ConceptLink']) ? spec.CMD_Component['@ConceptLink'] : ""}
+            <ConceptLinkInput name="Component.@ConceptLink" label="ConceptLink" value={(spec.Component['@ConceptLink']) ? spec.Component['@ConceptLink'] : ""}
               labelClassName="editorFormLabel" wrapperClassName="editorFormField"
               onChange={this.handleConceptLinkChange} validate={this.validate}
               updateConceptLink={this.updateConceptLinkValue}
@@ -116,8 +116,8 @@ var ComponentSpecForm = React.createClass({
           </div>
           {this.props.onExpandAll && this.props.onCollapseAll &&
             <div>
-              <a onClick={this.props.onExpandAll.bind(null, spec.CMD_Component)}>Expand all</a>&nbsp;
-              <a onClick={this.props.onCollapseAll.bind(null, spec.CMD_Component)}>Collapse all</a>
+              <a onClick={this.props.onExpandAll.bind(null, spec.Component)}>Expand all</a>&nbsp;
+              <a onClick={this.props.onCollapseAll.bind(null, spec.Component)}>Collapse all</a>
             </div>
           }
 
@@ -172,7 +172,7 @@ var ComponentSpecForm = React.createClass({
 
   handleComponentChange: function(change) {
     //an update of the root component has been pushed up
-    var update = {CMD_Component: change};
+    var update = {Component: change};
     this.props.onComponentChange(update);
   },
 

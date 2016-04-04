@@ -72,7 +72,7 @@ var ComponentSpecStore = Fluxxor.createStore({
     // reset view state
     this.activeView = Constants.INFO_VIEW_SPEC;
     // reset expansion state
-    this.expansionState = changeObj(spec.CMD_Component._appId, true);
+    this.expansionState = changeObj(spec.Component._appId, true);
     // reset linked components state
     if(linkedComponents == undefined) {
       this.linkedComponents = {};

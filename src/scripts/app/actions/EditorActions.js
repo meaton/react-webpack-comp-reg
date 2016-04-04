@@ -39,7 +39,7 @@ var EditorActions = {
     var newItem;
     if(change.Name) {
       // also update name in item description and root component attribute
-      newSpec = update(newSpec, {CMD_Component: {'@name': {$set: change.Name}}});
+      newSpec = update(newSpec, {Component: {'@name': {$set: change.Name}}});
       newItem = update(item, {$merge: {name: change.Name}});
     } else if(change.Description) {
       // also update name in item description
@@ -77,10 +77,10 @@ var EditorActions = {
     // create a new specification using immutability utils...
     var newSpec = updateInComponent(spec, componentAppId, {$apply: function(comp){
       //check whether component to link is already present
-      if($.isArray(comp.CMD_Component)) {
+      if($.isArray(comp.Component)) {
         log.debug("Checking children in", comp);
-        for(var i=0;i<comp.CMD_Component.length;i++) {
-          var child = comp.CMD_Component[i];
+        for(var i=0;i<comp.Component.length;i++) {
+          var child = comp.Component[i];
           log.debug("Child:", child);
           if(child['@ComponentId'] === itemId) {
             log.warn("Child with id",itemId,"already exists in component!");
@@ -93,18 +93,18 @@ var EditorActions = {
       // return a modified component that has a new component declaration...
       //
       // first we need a new unique appId
-      var appId = generateAppIdForNew(comp._appId, comp.CMD_Component);
+      var appId = generateAppIdForNew(comp._appId, comp.Component);
       var newComponent = {'@ComponentId': itemId, '_appId': appId};
 
       log.debug("New child component in", comp, ":", newComponent);
 
-      // either add to existing CMD_Component or create a new child component array
-      if($.isArray(comp.CMD_Component)) {
+      // either add to existing Component or create a new child component array
+      if($.isArray(comp.Component)) {
         // add to existing
-        return update(comp, {CMD_Component: {$push: [newComponent]}});
+        return update(comp, {Component: {$push: [newComponent]}});
       } else {
         // first child, create new array
-        return update(comp, {CMD_Component: {$set: [newComponent]}});
+        return update(comp, {Component: {$set: [newComponent]}});
       }
     }});
     if(error == null) {
@@ -129,12 +129,12 @@ var EditorActions = {
           Name: "",
           Description: ""
       },
-      CMD_Component: {
+      Component: {
           "@name": "",
           "@CardinalityMin": "1",
           "@CardinalityMax": "1",
-          CMD_Element: [],
-          CMD_Component: []
+          Element: [],
+          Component: []
       }
     };
 

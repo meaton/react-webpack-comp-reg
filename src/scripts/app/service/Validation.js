@@ -35,7 +35,7 @@ var validators = {
   header: {
     'Name': [requiredString, noSpaces],
     'Description': [requiredString],
-    'CMD_Component.@ConceptLink': [conceptLinkUri]
+    'Component.@ConceptLink': [conceptLinkUri]
   },
   component: {
     '@name': [requiredString, noSpaces],
@@ -170,7 +170,7 @@ var Validation = {
     };
 
     var header = (data.Header != undefined) ? data.Header : null;
-    var componentDesc = (data.Header != undefined) ? data.CMD_Component : data;
+    var componentDesc = (data.Header != undefined) ? data.Component : data;
 
     if(testMandatoryFields(header, componentDesc, addError))
       log.debug('Test Passed: Mandatory fields');
@@ -190,7 +190,7 @@ var Validation = {
     testAttributeList(componentDesc.AttributeList, addError);
 
     // elements
-    var elems = componentDesc.CMD_Element;
+    var elems = componentDesc.Element;
     if(elems != undefined || elems != null) {
       for(var i=0; i < elems.length; i++) {
         if(elems[i].AttributeList != undefined) testAttributeList(elems[i].AttributeList, addError);
@@ -199,7 +199,7 @@ var Validation = {
     }
 
     // components
-    var comps = componentDesc.CMD_Component;
+    var comps = componentDesc.Component;
     if(comps != undefined && comps != null) {
       for(var i=0; i < comps.length; i++) {
         if(!comps[i].hasOwnProperty('@ComponentId')) {

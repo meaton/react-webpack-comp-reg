@@ -130,13 +130,13 @@ var CMDComponentForm = React.createClass({
       onMove: this.handleMoveComponent.bind(this, this.props.onComponentChange, index),
       onRemove: this.handleRemoveComponent.bind(this, this.props.onComponentChange, index),
       isFirst: index == 0,
-      isLast: index == this.props.spec.CMD_Component.length - 1
+      isLast: index == this.props.spec.Component.length - 1
     };
 
     if(isLinked) {
       if(linkedSpecAvailable) {
         // linked components do not get a full form, but cardinality can be edited
-        var link = this.props.spec.CMD_Component[index];
+        var link = this.props.spec.Component[index];
         var minC = link['@CardinalityMin'];
         if(minC == null) minC = "1";
         var maxC = link['@CardinalityMax'];
@@ -172,7 +172,7 @@ var CMDComponentForm = React.createClass({
         onStartComponentLink={this.props.onStartComponentLink}
         onCancelComponentLink={this.props.onCancelComponentLink}
         componentLinkingMode={this.props.componentLinkingMode}
-        checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Component)}
+        checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.Component)}
         />);
     }
   },
@@ -186,8 +186,8 @@ var CMDComponentForm = React.createClass({
               onRemove={this.handleRemoveElement.bind(this, this.props.onComponentChange, index)}
               index={index}
               isFirst={index == 0}
-              isLast={index == this.props.spec.CMD_Element.length - 1}
-              checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.CMD_Element)}
+              isLast={index == this.props.spec.Element.length - 1}
+              checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.Element)}
               {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
               checkDisplayPriorities={this.checkDisplayPriorities}
               />;
@@ -282,11 +282,11 @@ var CMDComponentForm = React.createClass({
 
   handleComponentChange: function(index, change) {
     //an update of the child component at [index] has been requested, push up
-    this.props.onComponentChange({CMD_Component: changeObj(index, change)});
+    this.props.onComponentChange({Component: changeObj(index, change)});
   },
 
   handleElementChange: function(index, change) {
-    var update = {CMD_Element: changeObj(index, change)};
+    var update = {Element: changeObj(index, change)};
     log.trace("Update element", update);
     this.props.onComponentChange(update);
   },
@@ -307,25 +307,25 @@ var CMDComponentForm = React.createClass({
 
   addNewComponent: function(evt) {
     var spec = this.props.spec;
-    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Component);
+    var appId = this.generateAppIdForNew(spec._appId, spec.Component);
     var newComp = { "@name": "", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
     log.debug("Adding new component to", spec._appId, newComp);
-    if(spec.CMD_Component == null) {
-      this.props.onComponentChange({$merge: {CMD_Component: [newComp]}});
+    if(spec.Component == null) {
+      this.props.onComponentChange({$merge: {Component: [newComp]}});
     } else {
-      this.props.onComponentChange({CMD_Component: {$push: [newComp]}});
+      this.props.onComponentChange({Component: {$push: [newComp]}});
     }
   },
 
   addNewElement: function(evt) {
     var spec = this.props.spec;
-    var appId = this.generateAppIdForNew(spec._appId, spec.CMD_Element);
+    var appId = this.generateAppIdForNew(spec._appId, spec.Element);
     var newElem = { "@name": "", "@ValueScheme": "string", "@CardinalityMin": "1", "@CardinalityMax": "1", "_appId": appId };
     log.debug("Adding new element to", spec._appId, newElem);
-    if(spec.CMD_Element == null) {
-      this.props.onComponentChange({$merge: {CMD_Element: [newElem]}});
+    if(spec.Element == null) {
+      this.props.onComponentChange({$merge: {Element: [newElem]}});
     } else {
-      this.props.onComponentChange({CMD_Element: {$push: [newElem]}});
+      this.props.onComponentChange({Element: {$push: [newElem]}});
     }
   },
 
@@ -337,7 +337,7 @@ var CMDComponentForm = React.createClass({
   },
 
   checkDisplayPriorities: function() {
-    var elements = this.props.spec.CMD_Element;
+    var elements = this.props.spec.Element;
     if($.isArray(elements)) {
       // at least one element with non-zero display priority?
       return _.some(elements, function(element) {

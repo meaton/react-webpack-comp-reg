@@ -213,7 +213,7 @@ module.exports = RestActions;
  */
 function loadLinkedComponents(component, callback, currentset) {
     var components = {};
-    var childComponents = component.CMD_Component;
+    var childComponents = component.Component;
     if(currentset == undefined) {
       currentset = {};
     }
@@ -230,7 +230,7 @@ function loadLinkedComponents(component, callback, currentset) {
 
 /**
  * recursively gets the IDs of all
- * @param  {Array} childComponents child objects of type CMD_Component
+ * @param  {Array} childComponents child objects of type Component
  * @param  {Object} currentset     set of already loaded linked components (these will not be loaded again)
  * @return {Array}                 IDs of linked (non-inline) components
  */
@@ -246,9 +246,9 @@ function getComponentIds(childComponents, currentset) {
     var childId = child['@ComponentId'];
     if(childId != undefined && !currentset.hasOwnProperty(childId)) {
       linkedComponentIds.push(childId);
-    } else if(child.CMD_Component != undefined) {
+    } else if(child.Component != undefined) {
       //add linked component IDs in inline children (recursively)
-      Array.prototype.push.apply(linkedComponentIds, getComponentIds(child.CMD_Component, currentset));
+      Array.prototype.push.apply(linkedComponentIds, getComponentIds(child.Component, currentset));
     }
   });
   return linkedComponentIds;

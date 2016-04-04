@@ -154,7 +154,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
 
   var cmd_schema_xml;
   try {
-    cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
+    cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('ComponentSpec'), value: data });
     log.debug('cmd schema: ', cmd_schema_xml);
   } catch(e) {
     log.error("Failed to marshal spec", data, e);
@@ -205,7 +205,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
 },
 
 /**
- * Turns all CMD_Component and CMD_Element properties into arrays
+ * Turns all Component and Element properties into arrays
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
@@ -214,24 +214,24 @@ normaliseSpec: function(data) {
     return data;
   }
 
-  //var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
+  //var rootComponent = (data.Header != undefined) ? data.Component : data;
   if (data.Header != undefined) {
     //root component
-    data.CMD_Component = this.normaliseSpec(data.CMD_Component);
+    data.Component = this.normaliseSpec(data.Component);
   } else {
-    if(data.hasOwnProperty("@ComponentId") && (data.CMD_Element || data.CMD_Component || data.AttributeList)) {
+    if(data.hasOwnProperty("@ComponentId") && (data.Element || data.Component || data.AttributeList)) {
       log.debug("Encountered component children despite component id (", data["@ComponentId"], ")");
       //linked component - strip children
-      delete data.CMD_Element;
-      delete data.CMD_Component;
+      delete data.Element;
+      delete data.Component;
       delete data.AttributeList
     } else {
       log.trace("normalising", data);
-      var childElems = data.CMD_Element;
-      var childComps = data.CMD_Component;
+      var childElems = data.Element;
+      var childComps = data.Component;
 
       if(childElems != undefined && childElems != null) {
-        //if CMD_Element child(ren) exist, make sure it is an array
+        //if Element child(ren) exist, make sure it is an array
         var elemsArray;
         if($.isArray(childElems)) {
           elemsArray = childElems;
@@ -244,13 +244,13 @@ normaliseSpec: function(data) {
           this.normaliseAttributeList(elemsArray[i].AttributeList);
           this.normaliseValueScheme(elemsArray[i].ValueScheme);
         }
-        data.CMD_Element = elemsArray;
+        data.Element = elemsArray;
       }
 
       // normalise attributes of this component
       this.normaliseAttributeList(data.AttributeList);
 
-      //if CMD_Component child(ren) exist, make sure it is an array
+      //if Component child(ren) exist, make sure it is an array
       if(childComps != undefined && childComps != null) {
         if(!$.isArray(childComps)) {
           childComps = [childComps];
@@ -258,7 +258,7 @@ normaliseSpec: function(data) {
 
         // normalise children
         var self = this;
-        data.CMD_Component = childComps.map(function(comp, index) {
+        data.Component = childComps.map(function(comp, index) {
           return self.normaliseSpec(comp);
         });
       }

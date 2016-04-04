@@ -158,7 +158,7 @@ var Editor = React.createClass({
     var targetComponentId = this.state.editor.selectedComponentId;
     if(targetComponentId == null) {
       //no selection? add to root component
-      targetComponentId = this.state.details.spec.CMD_Component._appId;
+      targetComponentId = this.state.details.spec.Component._appId;
     }
     // row selected means item should be added to selected component
     this.getFlux().actions.insertComponentById(this.state.details.spec, targetComponentId, itemId,

@@ -26,7 +26,7 @@ var CMDComponentView = React.createClass({
 
   /* other props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   propTypes: {
-    link: React.PropTypes.object /* if linked, this is the CMD_Component element defined in the parent */
+    link: React.PropTypes.object /* if linked, this is the Component element defined in the parent */
   },
   /**
    * Components should be closed by default iff they are linked
@@ -44,7 +44,7 @@ var CMDComponentView = React.createClass({
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);
     } else {
-      var link = isLinked ? this.props.spec.CMD_Component[index] : null;
+      var link = isLinked ? this.props.spec.Component[index] : null;
       // forward child expansion state
       return (<CMDComponentView
         key={spec._appId}
@@ -55,7 +55,7 @@ var CMDComponentView = React.createClass({
         onToggle={this.props.onToggle}
         isLinked={isLinked}
         isFirst={index == 0}
-        isLast={index == this.props.spec.CMD_Component.length - 1}
+        isLast={index == this.props.spec.Component.length - 1}
         link={link}
         />);
     }

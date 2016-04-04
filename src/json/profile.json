@@ -1,45 +1,63 @@
 {
-  "@isProfile": "true",
-  "Header": {
-    "ID": "clarin.eu:cr1:p_dummy1",
-    "Name": "dummyProfile",
-    "Description": "Test Description."
-  },
-  "CMD_Component": {
-    "@name": "dummyProfile",
-    "@ConceptLink": "http://www.isocat.org/datcat/DC-XXXX",
-    "@CardinalityMin": "1",
-    "@CardinalityMax": "1",
-    "CMD_Element": {
-      "@name": "type",
-      "@ConceptLink": "http://www.isocat.org/datcat/DC-XXXX",
-      "@ValueScheme": "string",
-      "@CardinalityMin": "1",
-      "@CardinalityMax": "unbounded",
-      "@DisplayPriority": "1",
-      "@Multilingual": "false"
+    "@isProfile": "true",
+    "@CMDVersion": "1.2",
+    "@CMDOriginalVersion": "1.1",
+    "Header": {
+        "ID": "clarin.eu:cr1:p_1361876010587",
+        "Name": "AnnotatedCorpusProfile-DLU",
+        "Description": "A CMDI profile for annotated text corpus resources.",
+        "Status": "production"
     },
-    "CMD_Component": [
-      {
-        "@ComponentId": "clarin.eu:cr1:c_dummy1",
-        "@CardinalityMin": "0",
-        "@CardinalityMax": "1"
-      },
-      {
-        "@ComponentId": "clarin.eu:cr1:c_dummy2",
-        "@CardinalityMin": "0",
-        "@CardinalityMax": "1"
-      },
-      {
-        "@ComponentId": "clarin.eu:cr1:c_dummy3",
-        "@CardinalityMin": "0",
-        "@CardinalityMax": "1"
-      },
-      {
-        "@ComponentId": "clarin.eu:cr1:c_dummy4",
-        "@CardinalityMin": "0",
-        "@CardinalityMax": "1"
-      }
-    ]
-  }
+    "Component": {
+        "@name": "AnnotatedCorpusProfile-DLU",
+        "@CardinalityMin": "1",
+        "@CardinalityMax": "1",
+        "Component": [
+            {
+                "@ComponentId": "clarin.eu:cr1:c_1361876010584",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@name": "Access",
+                "@ComponentId": "clarin.eu:cr1:c_1357720977472",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@name": "Project",
+                "@ComponentId": "clarin.eu:cr1:c_1357720977474",
+                "@CardinalityMin": "0",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@name": "Publications",
+                "@ComponentId": "clarin.eu:cr1:c_1357720977486",
+                "@CardinalityMin": "0",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@name": "SubjectLanguages",
+                "@ComponentId": "clarin.eu:cr1:c_1357720977487",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@ComponentId": "clarin.eu:cr1:c_1361876010582",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@ComponentId": "clarin.eu:cr1:c_1361876010595",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "1"
+            },
+            {
+                "@name": "TechnicalInfo",
+                "@ComponentId": "clarin.eu:cr1:c_1357720977482",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "unbounded"
+            }
+        ]
+    }
 }
