@@ -20,6 +20,7 @@ var ComponentSpec = require('../service/ComponentSpec');
 
 var PROFILES_PATH = "profiles";
 var COMPONENTS_PATH = "components";
+var REGISTRY_ROOT = "/registry/1.2";
 
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
@@ -31,7 +32,7 @@ var corsRequestParams = (Config.cors) ?
 var ComponentRegistryClient = {
 
   getRegistryUrl: function(type, id) {
-    var typepath = '/registry/' + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
+    var typepath = REGISTRY_ROOT + "/" + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
     var requestUrl = restUrl + typepath;
     if(id == null) {
       return requestUrl;
@@ -120,7 +121,7 @@ var ComponentRegistryClient = {
 },
 
 loadItem: function(id, handleSuccess, handleFailure) {
-  var requestUrl = restUrl + "/registry/items/" + id;
+  var requestUrl = restUrl + "/items/" + id;
   $.ajax($.extend({
     url: requestUrl,
     dataType: "json",
@@ -170,7 +171,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
   var typeSpace = ComponentSpec.isProfile(spec) ? PROFILES_PATH : COMPONENTS_PATH;
-  var url = restUrl + '/registry/' + typeSpace;
+  var url = restUrl + REGISTRY_ROOT + "/" + typeSpace;
   if(update) url += '/' + profileId + '/' + actionType;
 
   log.debug("POSTing to ", url);
@@ -319,7 +320,7 @@ deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
 },
 
 transferComponent: function(itemId, teamId, handleSuccess, handleFailure) {
-  var url = restUrl + '/registry/items/' + itemId + '/transferownership?groupId=' + teamId;
+  var url = restUrl + '/items/' + itemId + '/transferownership?groupId=' + teamId;
   $.ajax($.extend({
     type: 'POST',
     data: {groupId: teamId},
@@ -340,7 +341,7 @@ loadComments: function(componentId, type, success, failure) {
   var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
 
   $.ajax($.extend({
-    url: restUrl + '/registry/' + reg_type + '/' + componentId + '/comments',
+    url: restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/comments',
     dataType: "json",
     success: function(data) {
       if(success && data != null) {
@@ -362,7 +363,7 @@ loadComments: function(componentId, type, success, failure) {
 saveComment: function(componentId, type, comment, success, failure) {
   var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
   var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
-  var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/';
+  var url = restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/comments/';
 
   var fd = new FormData();
 
@@ -399,7 +400,7 @@ saveComment: function(componentId, type, comment, success, failure) {
 
 deleteComment: function(componentId, type, commentId, success, failure) {
   var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
-  var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/' + commentId;
+  var url = restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/comments/' + commentId;
 
   $.ajax($.extend({
     type: 'POST',
@@ -417,7 +418,7 @@ deleteComment: function(componentId, type, commentId, success, failure) {
 loadAllowedTypes: function(cb) {
   $.ajax($.extend({
     type: 'GET',
-    url: restUrl + '/registry/AllowedTypes',
+    url: restUrl + '/AllowedTypes',
     processData: false,
     contentType: false,
     dataType:'json',
@@ -434,7 +435,7 @@ loadAllowedTypes: function(cb) {
 loadTeams: function(success, failure) {
   $.ajax($.extend({
     type: 'GET',
-    url: restUrl + '/registry/groups/usermembership',
+    url: restUrl + '/groups/usermembership',
     processData: false,
     contentType: false,
     dataType:'json',
@@ -452,7 +453,7 @@ loadTeams: function(success, failure) {
 },
 
 usageCheck: function(componentId, cb) {
-  var url = restUrl +'/registry/components/usage/' + componentId;
+  var url = restUrl + REGISTRY_ROOT + '/components/usage/' + componentId;
 
   $.ajax($.extend({
     type: 'GET',
