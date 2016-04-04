@@ -2,110 +2,16 @@ var Component_Module_Factory = function () {
   var Component = {
     name: 'Component',
     typeInfos: [{
-        localName: 'AttributeListType',
-        propertyInfos: [{
-            name: 'Attribute',
-            collection: true,
-            elementName: {
-              localPart: 'Attribute'
-            },
-            typeInfo: '.AttributeListType.Attribute'
-          }]
-      }, {
-        localName: 'AttributeListType.Attribute',
-        propertyInfos: [{
-            name: 'Name',
-            elementName: {
-              localPart: 'Name'
-            }
-          }, {
-            name: 'ConceptLink',
-            elementName: {
-              localPart: 'ConceptLink'
-            }
-          }, {
-            name: 'Type',
-            elementName: {
-              localPart: 'Type'
-            }
-          }, {
-            name: 'ValueScheme',
-            elementName: {
-              localPart: 'ValueScheme'
-            },
-            typeInfo: '.ValueSchemeType'
-          }]
-      }, {
-        localName: 'CMDComponentType',
-        propertyInfos: [{
-            name: 'AttributeList',
-            elementName: {
-              localPart: 'AttributeList'
-            },
-            typeInfo: '.AttributeListType'
-          }, {
-            type: 'element',
-            name: 'CMD_Element',
-            collection: true,
-            elementName: 'CMD_Element',
-            typeInfo: '.CMDElementType'
-          }, {
-            type: 'element',
-            name: 'CMD_Component',
-            collection: true,
-            elementName: 'CMD_Component',
-            typeInfo: '.CMDComponentType'
-          }, {
-            name: '@name',
-            attributeName: {
-              localPart: 'name'
-            },
-            type: 'attribute'
-          }, {
-            name: '@ComponentId',
-            attributeName: {
-              localPart: 'ComponentId'
-            },
-            type: 'attribute'
-          }, {
-            name: '@ConceptLink',
-            attributeName: {
-              localPart: 'ConceptLink'
-            },
-            type: 'attribute'
-          }, {
-            name: '@filename',
-            attributeName: {
-              localPart: 'filename'
-            },
-            type: 'attribute'
-          }, {
-            name: '@CardinalityMin',
-            typeInfo: 'String',
-            attributeName: {
-              localPart: 'CardinalityMin'
-            },
-            type: 'attribute'
-          }, {
-            name: '@CardinalityMax',
-            typeInfo: 'String',
-            attributeName: {
-              localPart: 'CardinalityMax'
-            },
-            type: 'attribute'
-          }, {
-            name: '@base',
-            attributeName: {
-              localPart: 'base',
-              namespaceURI: 'http:\/\/www.w3.org\/XML\/1998\/namespace'
-            },
-            type: 'attribute'
-          }]
-      }, {
         localName: 'EnumerationType',
+        typeName: 'enumeration_type',
         propertyInfos: [{
-            type: 'element',
+            name: 'appinfo',
+            elementName: {
+              localPart: 'appinfo'
+            }
+          }, {
             name: 'item',
+            minOccurs: 0,
             collection: true,
             elementName: {
               localPart: 'item'
@@ -114,84 +20,280 @@ var Component_Module_Factory = function () {
           }]
       }, {
         localName: 'ItemType',
+        typeName: 'item_type',
         propertyInfos: [{
-            name: '$',
-            type: 'value',
-            typeInfo: 'String'
+            name: 'otherAttributes',
+            type: 'anyAttribute'
           }, {
-            name: '@ConceptLink',
+            name: 'value',
+            type: 'value'
+          }, {
+            name: 'conceptLink',
             attributeName: {
               localPart: 'ConceptLink'
             },
             type: 'attribute'
           }, {
-            name: '@AppInfo',
+            name: 'appInfo',
             attributeName: {
               localPart: 'AppInfo'
             },
             type: 'attribute'
           }]
       }, {
-        localName: 'CMDElementType',
+        localName: 'ValueSchemeType',
+        typeName: 'ValueScheme_type',
         propertyInfos: [{
-            name: 'AttributeList',
+            name: 'pattern',
+            required: true,
             elementName: {
-              localPart: 'AttributeList'
-            },
-            typeInfo: '.AttributeListType'
+              localPart: 'pattern'
+            }
           }, {
-            name: 'ValueScheme',
+            name: 'vocabulary',
+            required: true,
+            elementName: {
+              localPart: 'Vocabulary'
+            },
+            typeInfo: '.VocabularyType'
+          }]
+      }, {
+        localName: 'AttributeListType.Attribute',
+        typeName: null,
+        propertyInfos: [{
+            name: 'otherAttributes',
+            type: 'anyAttribute'
+          }, {
+            name: 'documentation',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
+              localPart: 'Documentation'
+            },
+            typeInfo: '.DocumentationType'
+          }, {
+            name: 'attributeValueScheme',
             elementName: {
               localPart: 'ValueScheme'
             },
             typeInfo: '.ValueSchemeType'
           }, {
-            name: '@name',
+            name: 'autoValue',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
+              localPart: 'AutoValue'
+            }
+          }, {
+            name: 'name',
+            required: true,
+            typeInfo: 'Name',
             attributeName: {
               localPart: 'name'
             },
             type: 'attribute'
           }, {
-            name: '@ConceptLink',
+            name: 'conceptLink',
             attributeName: {
               localPart: 'ConceptLink'
             },
             type: 'attribute'
           }, {
-            name: '@ValueScheme',
+            name: 'valueScheme',
+            typeInfo: 'Token',
             attributeName: {
               localPart: 'ValueScheme'
             },
             type: 'attribute'
           }, {
-            name: '@CardinalityMin',
-            typeInfo: 'String',
+            name: 'required',
+            typeInfo: 'Boolean',
+            attributeName: {
+              localPart: 'Required'
+            },
+            type: 'attribute'
+          }]
+      }, {
+        localName: 'AttributeListType',
+        typeName: 'AttributeList_type',
+        propertyInfos: [{
+            name: 'attribute',
+            required: true,
+            collection: true,
+            elementName: {
+              localPart: 'Attribute'
+            },
+            typeInfo: '.AttributeListType.Attribute'
+          }]
+      }, {
+        localName: 'ComponentType',
+        typeName: 'Component_type',
+        propertyInfos: [{
+            name: 'otherAttributes',
+            type: 'anyAttribute'
+          }, {
+            name: 'documentation',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
+              localPart: 'Documentation'
+            },
+            typeInfo: '.DocumentationType'
+          }, {
+            name: 'attributeList',
+            elementName: {
+              localPart: 'AttributeList'
+            },
+            typeInfo: '.AttributeListType'
+          }, {
+            name: 'element',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
+              localPart: 'Element'
+            },
+            typeInfo: '.ElementType'
+          }, {
+            name: 'component',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
+              localPart: 'Component'
+            },
+            typeInfo: '.ComponentType'
+          }, {
+            name: 'name',
+            typeInfo: 'Name',
+            attributeName: {
+              localPart: 'name'
+            },
+            type: 'attribute'
+          }, {
+            name: 'componentId',
+            attributeName: {
+              localPart: 'ComponentId'
+            },
+            type: 'attribute'
+          }, {
+            name: 'conceptLink',
+            attributeName: {
+              localPart: 'ConceptLink'
+            },
+            type: 'attribute'
+          }, {
+            name: 'cardinalityMin',
+            typeInfo: {
+              type: 'list'
+            },
             attributeName: {
               localPart: 'CardinalityMin'
             },
             type: 'attribute'
           }, {
-            name: '@CardinalityMax',
-            typeInfo: 'String',
+            name: 'cardinalityMax',
+            typeInfo: {
+              type: 'list'
+            },
             attributeName: {
               localPart: 'CardinalityMax'
             },
             type: 'attribute'
           }, {
-            name: '@Documentation',
+            name: 'base',
             attributeName: {
+              localPart: 'base',
+              namespaceURI: 'http:\/\/www.w3.org\/XML\/1998\/namespace'
+            },
+            type: 'attribute'
+          }]
+      }, {
+        localName: 'DocumentationType',
+        typeName: 'Documentation_type',
+        propertyInfos: [{
+            name: 'value',
+            type: 'value'
+          }, {
+            name: 'lang',
+            attributeName: {
+              localPart: 'lang',
+              namespaceURI: 'http:\/\/www.w3.org\/XML\/1998\/namespace'
+            },
+            type: 'attribute'
+          }]
+      }, {
+        localName: 'ElementType',
+        typeName: 'Element_type',
+        propertyInfos: [{
+            name: 'otherAttributes',
+            type: 'anyAttribute'
+          }, {
+            name: 'documentation',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
               localPart: 'Documentation'
             },
-            type: 'attribute'
+            typeInfo: '.DocumentationType'
           }, {
-            name: '@DisplayPriority',
-            typeInfo: 'Integer',
+            name: 'attributeList',
+            elementName: {
+              localPart: 'AttributeList'
+            },
+            typeInfo: '.AttributeListType'
+          }, {
+            name: 'valueScheme',
+            elementName: {
+              localPart: 'ValueScheme'
+            },
+            typeInfo: '.ValueSchemeType'
+          }, {
+            name: 'autoValue',
+            minOccurs: 0,
+            collection: true,
+            elementName: {
+              localPart: 'AutoValue'
+            }
+          }, {
+            name: 'name',
+            required: true,
+            typeInfo: 'Name',
             attributeName: {
-              localPart: 'DisplayPriority'
+              localPart: 'name'
             },
             type: 'attribute'
           }, {
-            name: '@Multilingual',
+            name: 'conceptLink',
+            attributeName: {
+              localPart: 'ConceptLink'
+            },
+            type: 'attribute'
+          }, {
+            name: 'valueSchemeAttribute',
+            typeInfo: 'Token',
+            attributeName: {
+              localPart: 'ValueScheme'
+            },
+            type: 'attribute'
+          }, {
+            name: 'cardinalityMin',
+            typeInfo: {
+              type: 'list'
+            },
+            attributeName: {
+              localPart: 'CardinalityMin'
+            },
+            type: 'attribute'
+          }, {
+            name: 'cardinalityMax',
+            typeInfo: {
+              type: 'list'
+            },
+            attributeName: {
+              localPart: 'CardinalityMax'
+            },
+            type: 'attribute'
+          }, {
+            name: 'multilingual',
             typeInfo: 'Boolean',
             attributeName: {
               localPart: 'Multilingual'
@@ -199,67 +301,122 @@ var Component_Module_Factory = function () {
             type: 'attribute'
           }]
       }, {
-        localName: 'CMDComponentSpec',
+        localName: 'VocabularyType',
+        typeName: 'Vocabulary_type',
         propertyInfos: [{
-            name: 'Header',
-            elementName: {
-              localPart: 'Header'
-            },
-            typeInfo: '.CMDComponentSpec.Header'
-          }, {
-            name: 'CMD_Component',
-            elementName: 'CMD_Component',
-            typeInfo: '.CMDComponentType'
-          }, {
-            name: '@isProfile',
-            typeInfo: 'Boolean',
-            attributeName: {
-              localPart: 'isProfile'
-            },
-            type: 'attribute'
-          }]
-      }, {
-        localName: 'ValueSchemeType',
-        propertyInfos: [{
-            name: 'pattern',
-            elementName: {
-              localPart: 'pattern'
-            }
-          }, {
             name: 'enumeration',
             elementName: {
               localPart: 'enumeration'
             },
             typeInfo: '.EnumerationType'
+          }, {
+            name: 'uri',
+            attributeName: {
+              localPart: 'URI'
+            },
+            type: 'attribute'
+          }, {
+            name: 'valueProperty',
+            attributeName: {
+              localPart: 'ValueProperty'
+            },
+            type: 'attribute'
+          }, {
+            name: 'valueLanguage',
+            typeInfo: 'Language',
+            attributeName: {
+              localPart: 'ValueLanguage'
+            },
+            type: 'attribute'
           }]
       }, {
-        localName: 'CMDComponentSpec.Header',
+        localName: 'ComponentSpec',
+        typeName: null,
         propertyInfos: [{
-            name: 'ID',
+            name: 'header',
+            required: true,
+            elementName: {
+              localPart: 'Header'
+            },
+            typeInfo: '.ComponentSpec.Header'
+          }, {
+            name: 'component',
+            required: true,
+            elementName: {
+              localPart: 'Component'
+            },
+            typeInfo: '.ComponentType'
+          }, {
+            name: 'isProfile',
+            required: true,
+            typeInfo: 'Boolean',
+            attributeName: {
+              localPart: 'isProfile'
+            },
+            type: 'attribute'
+          }, {
+            name: 'cmdVersion',
+            required: true,
+            typeInfo: 'AnySimpleType',
+            attributeName: {
+              localPart: 'CMDVersion'
+            },
+            type: 'attribute'
+          }, {
+            name: 'cmdOriginalVersion',
+            attributeName: {
+              localPart: 'CMDOriginalVersion'
+            },
+            type: 'attribute'
+          }]
+      }, {
+        localName: 'ComponentSpec.Header',
+        typeName: null,
+        propertyInfos: [{
+            name: 'id',
+            required: true,
             elementName: {
               localPart: 'ID'
             }
           }, {
-            name: 'Name',
+            name: 'name',
+            required: true,
             elementName: {
               localPart: 'Name'
             }
           }, {
-            name: 'Description',
+            name: 'description',
             elementName: {
               localPart: 'Description'
+            }
+          }, {
+            name: 'status',
+            required: true,
+            elementName: {
+              localPart: 'Status'
+            }
+          }, {
+            name: 'statusComment',
+            elementName: {
+              localPart: 'StatusComment'
+            }
+          }, {
+            name: 'successor',
+            elementName: {
+              localPart: 'Successor'
             }
           }]
       }, {
         type: 'enumInfo',
         localName: 'AllowedAttributetypesType',
+        baseTypeInfo: 'Token',
         values: ['boolean', 'decimal', 'float', 'int', 'string', 'anyURI', 'date', 'gDay', 'gMonth', 'gYear', 'time', 'dateTime']
       }],
     elementInfos: [{
         elementName: {
-          localPart: 'CMD_ComponentSpec'
+          localPart: 'ComponentSpec'
         },
-        typeInfo: '.CMDComponentSpec'
+        typeInfo: '.ComponentSpec'
       }]
   };
   return {
