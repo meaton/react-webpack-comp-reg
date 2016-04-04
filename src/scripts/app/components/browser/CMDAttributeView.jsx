@@ -43,7 +43,7 @@ var CMDAttributeView = React.createClass({
       <div className="panel panel-success">
         <div className="panel-heading">
           <span>Attribute: </span>
-          <span className="elementName">{attr.Name}</span>
+          <span className="elementName">{attr['@name']}</span>
         </div>
         <div className="panel-body">
           <div className="valueScheme"><span className="attrLabel">Value scheme:</span>{attr_val}</div>

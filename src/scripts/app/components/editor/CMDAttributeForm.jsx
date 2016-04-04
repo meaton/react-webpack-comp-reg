@@ -57,16 +57,16 @@ var CMDAttributeForm = React.createClass({
   render: function () {
     var attr = this.props.spec;
     var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
-    var attrName = (attr.Name == "") ? "[New Attribute]" : attr.Name;
+    var attrName = (attr['@name'] == "") ? "[New Attribute]" : attr['@name'];
 
     var open = this.isOpen();
     log.trace("Attribute", this.props.spec._appId, " open state:", open);
 
     var editableProps = open?(
       <div className="form-horizontal form-group">
-        <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name} wrapperClassName="editorFormField"
+        <ValidatingTextInput type="text" label="Name" name="Name" value={attr['@name']} wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate} />
-        <ConceptLinkInput name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
+        <ConceptLinkInput name="ConceptLink" type="text" label="ConceptLink" value={(attr['@ConceptLink']) ? attr['@ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate}
           updateConceptLink={this.propagateValue.bind(this, "ConceptLink")} />
