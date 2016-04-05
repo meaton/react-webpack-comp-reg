@@ -86,8 +86,7 @@ var testAttributeList = function(attrList, cb) {
 };
 
 var testValueScheme = function(item) {
-  if(item.Type != null && item['Type'].length <= 0) return false;
-  else if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
+  if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
   else if(item.ValueScheme != null) {
     var fieldValue = item['ValueScheme'];
     if((fieldValue.enumeration != null && fieldValue.enumeration.item != null) || (fieldValue.pattern != null && fieldValue.pattern.length > 0))

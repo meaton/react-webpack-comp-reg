@@ -104,7 +104,7 @@ var CMDAttributeForm = React.createClass({
 
   handleUpdateValueScheme: function(type, valScheme) {
     this.props.onAttributeChange({$merge: {
-       Type: type,
+       '@ValueScheme': type,
        ValueScheme: valScheme
      }});
   },

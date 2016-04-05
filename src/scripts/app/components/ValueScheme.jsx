@@ -39,15 +39,14 @@ var ValueScheme = React.createClass({
   render: function() {
       var obj = this.props.obj;
       var enabled = this.props.enabled;
-      var valueSchemeAttr = obj['@ValueScheme']; // element, e.g. 'string'
-      var typeElem = obj.Type; //attribute, e.g. 'string'
-      var valueSchemeElem = obj['ValueScheme']; // element or attribute, contains 'pattern' or 'enumeration'
 
-      var type = (typeElem != undefined) ? typeElem : valueSchemeAttr;
+      var valueScheme = obj['@ValueScheme']; // "simple" type, e.g. 'string'
+
+      var valueSchemeElem = obj['ValueScheme']; // contains 'pattern' or 'enumeration'
       var enumeration = (valueSchemeElem != undefined) ? valueSchemeElem.enumeration : null;
       var pattern = (valueSchemeElem != undefined) ? valueSchemeElem.pattern : null;
 
-      log.trace("TypeModal params", {type: type, enumeration: enumeration, pattern: pattern});
+      log.trace("TypeModal params", {valueScheme: valueScheme, enumeration: enumeration, pattern: pattern});
 
       var typeTrigger = (
         <ModalTrigger
@@ -59,7 +58,7 @@ var ValueScheme = React.createClass({
               onClose={this.closeDialogue}
               onChange={this.props.onChange}
               container={this}
-              type={type}
+              type={valueScheme}
               enumeration={enumeration}
               pattern={pattern}
               />
@@ -67,7 +66,6 @@ var ValueScheme = React.createClass({
       );
 
       var obj=this.props.obj;
-      var valueScheme = valueSchemeAttr;
 
       if(typeof valueScheme != "string") {
         valueScheme = valueSchemeElem;
@@ -98,9 +96,7 @@ var ValueScheme = React.createClass({
               );
             }
           }
-
-        } else if(obj.Type != undefined) // attr
-            valueScheme = typeElem;
+        }
       }
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
         <Input ref="typeInput" type="text" label="Type"
