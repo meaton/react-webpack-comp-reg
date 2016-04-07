@@ -88,9 +88,12 @@ var SpecFormUpdateMixin = {
       }
     }
 
+    //TODO: Change when TypeModal passed Vocabulary instead of enumeration
     if(val.enumeration != undefined) {
       valScheme = {
-        enumeration: val.enumeration
+        Vocabulary: {
+          enumeration: val.enumeration
+        }
       }
     }
 

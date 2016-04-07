@@ -36,6 +36,8 @@ require('../../../styles/EditorDialog.sass');
 * @mixes require('react-addons-linked-state-mixin')
 */
 var TypeModal = React.createClass({
+  //TODO: add support for open vocabularies (without enum but with @URI and @ValueProperty)
+  //        (NB: also support @URI and @ValueProperty for closed vocabularies)
   mixins: [LinkedStateMixin],
   propTypes: {
     container: React.PropTypes.object.isRequired,
@@ -75,6 +77,7 @@ var TypeModal = React.createClass({
     this.close(evt);
   },
   setControlVocab: function(evt) {
+    //TODO: Pass entire Vocabulary object
     if(this.state.enumeration != undefined && $.isArray(this.state.enumeration.item)){
       this.props.onChange({enumeration: this.state.enumeration});
     }

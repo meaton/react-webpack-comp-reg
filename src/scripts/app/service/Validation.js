@@ -89,7 +89,9 @@ var testValueScheme = function(item) {
   if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
   else if(item.ValueScheme != null) {
     var fieldValue = item['ValueScheme'];
-    if((fieldValue.enumeration != null && fieldValue.enumeration.item != null) || (fieldValue.pattern != null && fieldValue.pattern.length > 0))
+    var vocabulary = fieldValue.Vocabulary;
+    var pattern = fieldValue.pattern;
+    if((vocabulary != null && vocabulary.enumeration != null && vocabulary.enumeration.item != null) || (pattern != null && pattern.length > 0))
       return true;
     else
       return false;

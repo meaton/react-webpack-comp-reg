@@ -295,10 +295,11 @@ normaliseAttributeList: function(attrList) {
 normaliseValueScheme: function(valueScheme) {
   if(valueScheme != null) {
     log.trace("Normalise valueScheme", valueScheme);
-    if(valueScheme.enumeration != null) {
-      var item = valueScheme.enumeration.item;
+    var vocab = valueScheme.Vocabulary;
+    if(vocab != null && vocab.enumeration != null) {
+      var item = vocab.enumeration.item;
       if(item != undefined && !$.isArray(item)) {
-        valueScheme.enumeration.item = [item];
+        vocab.enumeration.item = [item];
       }
     }
   }
