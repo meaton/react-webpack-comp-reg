@@ -32,3 +32,4 @@ node_modules/
 dist
 target
 /src/scripts/main.js
+results.txt
