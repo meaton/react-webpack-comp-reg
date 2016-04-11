@@ -25,8 +25,8 @@ var Component_Module_Factory = function () {
             name: 'otherAttributes',
             type: 'anyAttribute'
           }, {
-            name: 'value',
-            type: 'value'
+            name: '$',
+            type: 'value',
           }, {
             name: '@ConceptLink',
             attributeName: {
@@ -206,7 +206,7 @@ var Component_Module_Factory = function () {
         localName: 'DocumentationType',
         typeName: 'Documentation_type',
         propertyInfos: [{
-            name: 'value',
+            name: '$',
             type: 'value'
           }, {
             name: '@lang',
