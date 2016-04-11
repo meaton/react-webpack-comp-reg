@@ -12,12 +12,12 @@ var data = {
     "@isProfile": "true",
     "@CMDVersion": "1.2",
     "@CMDOriginalVersion": "1.1",
-    // "Header": {
-    //     "ID": "clarin.eu:cr1:p_1361876010587",
-    //     "Name": "AnnotatedCorpusProfile-DLU",
-    //     "Description": "A CMDI profile for annotated text corpus resources.",
-    //     "Status": "production"
-    // },
+    "Header": {
+        "ID": "clarin.eu:cr1:p_1361876010587",
+        "Name": "AnnotatedCorpusProfile-DLU",
+        "Description": "A CMDI profile for annotated text corpus resources.",
+        "Status": "production"
+    },
     // "Component": {
     //     "@name": "AnnotatedCorpusProfile-DLU",
     //     "@CardinalityMin": "1",
@@ -75,7 +75,15 @@ var expectedOut =`
   <ComponentSpec
     isProfile="true"
     CMDVersion="1.2"
-    CMDOriginalVersion="1.1"/>
+    CMDOriginalVersion="1.1"
+    >
+    <Header>
+      <ID>clarin.eu:cr1:p_1361876010587</ID>
+      <Name>AnnotatedCorpusProfile-DLU</Name>
+      <Description>A CMDI profile for annotated text corpus resources.</Description>
+      <Status>production</Status>
+    </Header>
+  </ComponentSpec>
 `;
 
 describe('Component', function () {
