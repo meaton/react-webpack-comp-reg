@@ -250,6 +250,13 @@ var Component_Module_Factory = function () {
               localPart: 'AutoValue'
             }
           }, {
+            name: '@DisplayPriority',
+            attributeName: {
+              localPart: 'DisplayPriority',
+              namespaceURI: 'http:\/\/www.clarin.eu\/cmdi\/cues\/1'
+            },
+            type: 'attribute'
+          }, {
             name: '@name',
             required: true,
             typeInfo: 'Name',

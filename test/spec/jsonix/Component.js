@@ -68,7 +68,7 @@ var data2 = {
                 "@name": "resourceType",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1",
-                "@DisplayPriority": "1",
+                //"@DisplayPriority": "1",
                 "ValueScheme": {"Vocabulary": {"enumeration": {"item": [{
                     "@ConceptLink": "",
                     "@AppInfo": "",
@@ -286,7 +286,7 @@ var expectedOut2 = `
       <Status>production</Status>
     </Header>
     <Component name="BamdesLexicalResource" CardinalityMin="1" CardinalityMax="1">
-      <Element xmlns:cue="http://www.clarin.eu/cmdi/cues/1" name="resourceType" CardinalityMin="1" CardinalityMax="1" cue:DisplayPriority="1">
+      <Element name="resourceType" CardinalityMin="1" CardinalityMax="1">
         <ValueScheme>
           <Vocabulary>
             <enumeration>
@@ -366,6 +366,10 @@ var expectedOut2 = `
     </Component>
   </ComponentSpec>
 `;
+
+//TODO: add test with cue:DisplayPriority
+// "@DisplayPriority": "1"
+//  <Element xmlns:cue="http://www.clarin.eu/cmdi/cues/1"  cue:DisplayPriority="1" name="resourceType" CardinalityMin="1" CardinalityMax="1">
 
 describe('Component', function () {
   var context = new Jsonix.Context([CMD]);
