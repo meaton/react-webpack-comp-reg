@@ -84,9 +84,9 @@ var expectedOut =`
       <Status>production</Status>
     </Header>
     <Component
-      name=AnnotatedCorpusProfile-DLU"
+      name="AnnotatedCorpusProfile-DLU"
       CardinalityMin="1"
-      CardinalityMax=1"></Component>
+      CardinalityMax="1" />
   </ComponentSpec>
 `;
 

@@ -85,7 +85,7 @@ var Component_Module_Factory = function () {
               localPart: 'AutoValue'
             }
           }, {
-            name: '@Name',
+            name: '@name',
             required: true,
             typeInfo: 'Name',
             attributeName: {
@@ -162,7 +162,7 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.ComponentType'
           }, {
-            name: '@Name',
+            name: '@name',
             typeInfo: 'Name',
             attributeName: {
               localPart: 'name'
@@ -182,18 +182,14 @@ var Component_Module_Factory = function () {
             type: 'attribute'
           }, {
             name: '@CardinalityMin',
-            typeInfo: {
-              type: 'list'
-            },
+            typeInfo: 'String',
             attributeName: {
               localPart: 'CardinalityMin'
             },
             type: 'attribute'
           }, {
             name: '@CardinalityMax',
-            typeInfo: {
-              type: 'list'
-            },
+            typeInfo: 'String',
             attributeName: {
               localPart: 'CardinalityMax'
             },
@@ -254,7 +250,7 @@ var Component_Module_Factory = function () {
               localPart: 'AutoValue'
             }
           }, {
-            name: '@Name',
+            name: '@name',
             required: true,
             typeInfo: 'Name',
             attributeName: {
@@ -276,18 +272,14 @@ var Component_Module_Factory = function () {
             type: 'attribute'
           }, {
             name: '@CardinalityMin',
-            typeInfo: {
-              type: 'list'
-            },
+            typeInfo: 'String',
             attributeName: {
               localPart: 'CardinalityMin'
             },
             type: 'attribute'
           }, {
             name: '@CardinalityMax',
-            typeInfo: {
-              type: 'list'
-            },
+            typeInfo: 'String',
             attributeName: {
               localPart: 'CardinalityMax'
             },
