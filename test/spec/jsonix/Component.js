@@ -8,7 +8,7 @@ var expect  = require('chai').expect;
 var chaiXml = require('chai-xml');
 chai.use(chaiXml);
 
-var data = {
+var data1 = {
     "@isProfile": "true",
     "@CMDVersion": "1.2",
     "@CMDOriginalVersion": "1.1",
@@ -22,56 +22,16 @@ var data = {
         "@name": "AnnotatedCorpusProfile-DLU",
         "@CardinalityMin": "1",
         "@CardinalityMax": "1",
-    //     "Component": [
-    //         {
-    //             "@ComponentId": "clarin.eu:cr1:c_1361876010584",
-    //             "@CardinalityMin": "1",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@name": "Access",
-    //             "@ComponentId": "clarin.eu:cr1:c_1357720977472",
-    //             "@CardinalityMin": "1",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@name": "Project",
-    //             "@ComponentId": "clarin.eu:cr1:c_1357720977474",
-    //             "@CardinalityMin": "0",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@name": "Publications",
-    //             "@ComponentId": "clarin.eu:cr1:c_1357720977486",
-    //             "@CardinalityMin": "0",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@name": "SubjectLanguages",
-    //             "@ComponentId": "clarin.eu:cr1:c_1357720977487",
-    //             "@CardinalityMin": "1",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@ComponentId": "clarin.eu:cr1:c_1361876010582",
-    //             "@CardinalityMin": "1",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@ComponentId": "clarin.eu:cr1:c_1361876010595",
-    //             "@CardinalityMin": "1",
-    //             "@CardinalityMax": "1"
-    //         },
-    //         {
-    //             "@name": "TechnicalInfo",
-    //             "@ComponentId": "clarin.eu:cr1:c_1357720977482",
-    //             "@CardinalityMin": "1",
-    //             "@CardinalityMax": "unbounded"
-    //         }
-    //     ]
+        "Component": [
+            {
+                "@ComponentId": "clarin.eu:cr1:c_1361876010584",
+                "@CardinalityMin": "1",
+                "@CardinalityMax": "1"
+            }
+        ]
     }
 };
-var expectedOut =`
+var expectedOut1 =`
   <ComponentSpec
     isProfile="true"
     CMDVersion="1.2"
@@ -83,22 +43,21 @@ var expectedOut =`
       <Description>A CMDI profile for annotated text corpus resources.</Description>
       <Status>production</Status>
     </Header>
-    <Component
-      name="AnnotatedCorpusProfile-DLU"
-      CardinalityMin="1"
-      CardinalityMax="1" />
+    <Component name="AnnotatedCorpusProfile-DLU" CardinalityMin="1" CardinalityMax="1">
+        <Component ComponentId="clarin.eu:cr1:c_1361876010584" CardinalityMin="1" CardinalityMax="1" />
+    </Component>
   </ComponentSpec>
 `;
 
 describe('Component', function () {
-  describe('marshall', function() {
-    var context = new Jsonix.Context([CMD]);
-    var marshaller = context.createMarshaller();
+  var context = new Jsonix.Context([CMD]);
+  var marshaller = context.createMarshaller();
 
-    var xmlOut = marshaller.marshalString({ name: new Jsonix.XML.QName('ComponentSpec'), value: data });
+  describe('marshall1', function() {
+    var xmlOut = marshaller.marshalString({ name: new Jsonix.XML.QName('ComponentSpec'), value: data1 });
     it('should marshall', function() {
       //assert.equal(expectedOut, xmlOut);
-      expect(expectedOut).xml.to.deep.equal(xmlOut);
+      expect(expectedOut1).xml.to.deep.equal(xmlOut);
     });
   });
 });
