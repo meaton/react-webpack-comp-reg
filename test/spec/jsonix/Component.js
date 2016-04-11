@@ -18,10 +18,10 @@ var data = {
         "Description": "A CMDI profile for annotated text corpus resources.",
         "Status": "production"
     },
-    // "Component": {
-    //     "@name": "AnnotatedCorpusProfile-DLU",
-    //     "@CardinalityMin": "1",
-    //     "@CardinalityMax": "1",
+    "Component": {
+        "@name": "AnnotatedCorpusProfile-DLU",
+        "@CardinalityMin": "1",
+        "@CardinalityMax": "1",
     //     "Component": [
     //         {
     //             "@ComponentId": "clarin.eu:cr1:c_1361876010584",
@@ -69,7 +69,7 @@ var data = {
     //             "@CardinalityMax": "unbounded"
     //         }
     //     ]
-    // }
+    }
 };
 var expectedOut =`
   <ComponentSpec
@@ -83,6 +83,10 @@ var expectedOut =`
       <Description>A CMDI profile for annotated text corpus resources.</Description>
       <Status>production</Status>
     </Header>
+    <Component
+      name=AnnotatedCorpusProfile-DLU"
+      CardinalityMin="1"
+      CardinalityMax=1"></Component>
   </ComponentSpec>
 `;
 
