@@ -28,13 +28,13 @@ var Component_Module_Factory = function () {
             name: 'value',
             type: 'value'
           }, {
-            name: 'conceptLink',
+            name: '@ConceptLink',
             attributeName: {
               localPart: 'ConceptLink'
             },
             type: 'attribute'
           }, {
-            name: 'appInfo',
+            name: '@AppInfo',
             attributeName: {
               localPart: 'AppInfo'
             },
@@ -50,7 +50,7 @@ var Component_Module_Factory = function () {
               localPart: 'pattern'
             }
           }, {
-            name: 'vocabulary',
+            name: 'Vocabulary',
             required: true,
             elementName: {
               localPart: 'Vocabulary'
@@ -64,7 +64,7 @@ var Component_Module_Factory = function () {
             name: 'otherAttributes',
             type: 'anyAttribute'
           }, {
-            name: 'documentation',
+            name: 'Documentation',
             minOccurs: 0,
             collection: true,
             elementName: {
@@ -72,20 +72,20 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.DocumentationType'
           }, {
-            name: 'attributeValueScheme',
+            name: 'ValueScheme',
             elementName: {
               localPart: 'ValueScheme'
             },
             typeInfo: '.ValueSchemeType'
           }, {
-            name: 'autoValue',
+            name: 'AutoValue',
             minOccurs: 0,
             collection: true,
             elementName: {
               localPart: 'AutoValue'
             }
           }, {
-            name: 'name',
+            name: '@Name',
             required: true,
             typeInfo: 'Name',
             attributeName: {
@@ -93,20 +93,20 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'conceptLink',
+            name: '@ConceptLink',
             attributeName: {
               localPart: 'ConceptLink'
             },
             type: 'attribute'
           }, {
-            name: 'valueScheme',
+            name: '@ValueScheme',
             typeInfo: 'Token',
             attributeName: {
               localPart: 'ValueScheme'
             },
             type: 'attribute'
           }, {
-            name: 'required',
+            name: '@Required',
             typeInfo: 'Boolean',
             attributeName: {
               localPart: 'Required'
@@ -117,7 +117,7 @@ var Component_Module_Factory = function () {
         localName: 'AttributeListType',
         typeName: 'AttributeList_type',
         propertyInfos: [{
-            name: 'attribute',
+            name: 'Attribute',
             required: true,
             collection: true,
             elementName: {
@@ -132,7 +132,7 @@ var Component_Module_Factory = function () {
             name: 'otherAttributes',
             type: 'anyAttribute'
           }, {
-            name: 'documentation',
+            name: 'Documentation',
             minOccurs: 0,
             collection: true,
             elementName: {
@@ -140,13 +140,13 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.DocumentationType'
           }, {
-            name: 'attributeList',
+            name: 'AttributeList',
             elementName: {
               localPart: 'AttributeList'
             },
             typeInfo: '.AttributeListType'
           }, {
-            name: 'element',
+            name: 'Element',
             minOccurs: 0,
             collection: true,
             elementName: {
@@ -154,7 +154,7 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.ElementType'
           }, {
-            name: 'component',
+            name: 'Component',
             minOccurs: 0,
             collection: true,
             elementName: {
@@ -162,26 +162,26 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.ComponentType'
           }, {
-            name: 'name',
+            name: '@Name',
             typeInfo: 'Name',
             attributeName: {
               localPart: 'name'
             },
             type: 'attribute'
           }, {
-            name: 'componentId',
+            name: '@ComponentId',
             attributeName: {
               localPart: 'ComponentId'
             },
             type: 'attribute'
           }, {
-            name: 'conceptLink',
+            name: '@ConceptLink',
             attributeName: {
               localPart: 'ConceptLink'
             },
             type: 'attribute'
           }, {
-            name: 'cardinalityMin',
+            name: '@CardinalityMin',
             typeInfo: {
               type: 'list'
             },
@@ -190,7 +190,7 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'cardinalityMax',
+            name: '@CardinalityMax',
             typeInfo: {
               type: 'list'
             },
@@ -199,7 +199,7 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'base',
+            name: '@base',
             attributeName: {
               localPart: 'base',
               namespaceURI: 'http:\/\/www.w3.org\/XML\/1998\/namespace'
@@ -213,7 +213,7 @@ var Component_Module_Factory = function () {
             name: 'value',
             type: 'value'
           }, {
-            name: 'lang',
+            name: '@lang',
             attributeName: {
               localPart: 'lang',
               namespaceURI: 'http:\/\/www.w3.org\/XML\/1998\/namespace'
@@ -227,7 +227,7 @@ var Component_Module_Factory = function () {
             name: 'otherAttributes',
             type: 'anyAttribute'
           }, {
-            name: 'documentation',
+            name: 'Documentation',
             minOccurs: 0,
             collection: true,
             elementName: {
@@ -235,26 +235,26 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.DocumentationType'
           }, {
-            name: 'attributeList',
+            name: 'AttributeList',
             elementName: {
               localPart: 'AttributeList'
             },
             typeInfo: '.AttributeListType'
           }, {
-            name: 'valueScheme',
+            name: 'ValueScheme',
             elementName: {
               localPart: 'ValueScheme'
             },
             typeInfo: '.ValueSchemeType'
           }, {
-            name: 'autoValue',
+            name: 'AutoValue',
             minOccurs: 0,
             collection: true,
             elementName: {
               localPart: 'AutoValue'
             }
           }, {
-            name: 'name',
+            name: '@Name',
             required: true,
             typeInfo: 'Name',
             attributeName: {
@@ -262,20 +262,20 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'conceptLink',
+            name: '@ConceptLink',
             attributeName: {
               localPart: 'ConceptLink'
             },
             type: 'attribute'
           }, {
-            name: 'valueSchemeAttribute',
+            name: '@ValueScheme',
             typeInfo: 'Token',
             attributeName: {
               localPart: 'ValueScheme'
             },
             type: 'attribute'
           }, {
-            name: 'cardinalityMin',
+            name: '@CardinalityMin',
             typeInfo: {
               type: 'list'
             },
@@ -284,7 +284,7 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'cardinalityMax',
+            name: '@CardinalityMax',
             typeInfo: {
               type: 'list'
             },
@@ -293,7 +293,7 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'multilingual',
+            name: '@Multilingual',
             typeInfo: 'Boolean',
             attributeName: {
               localPart: 'Multilingual'
@@ -310,19 +310,19 @@ var Component_Module_Factory = function () {
             },
             typeInfo: '.EnumerationType'
           }, {
-            name: 'uri',
+            name: '@URI',
             attributeName: {
               localPart: 'URI'
             },
             type: 'attribute'
           }, {
-            name: 'valueProperty',
+            name: '@ValueProperty',
             attributeName: {
               localPart: 'ValueProperty'
             },
             type: 'attribute'
           }, {
-            name: 'valueLanguage',
+            name: '@ValueLanguage',
             typeInfo: 'Language',
             attributeName: {
               localPart: 'ValueLanguage'
@@ -331,23 +331,22 @@ var Component_Module_Factory = function () {
           }]
       }, {
         localName: 'ComponentSpec',
-        typeName: null,
         propertyInfos: [{
-            name: 'header',
+            name: 'Header',
             required: true,
             elementName: {
               localPart: 'Header'
             },
             typeInfo: '.ComponentSpec.Header'
           }, {
-            name: 'component',
+            name: 'Component',
             required: true,
             elementName: {
               localPart: 'Component'
             },
             typeInfo: '.ComponentType'
           }, {
-            name: 'isProfile',
+            name: '@isProfile',
             required: true,
             typeInfo: 'Boolean',
             attributeName: {
@@ -355,7 +354,7 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'cmdVersion',
+            name: '@CMDVersion',
             required: true,
             typeInfo: 'AnySimpleType',
             attributeName: {
@@ -363,7 +362,7 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: 'cmdOriginalVersion',
+            name: '@CMDOriginalVersion',
             attributeName: {
               localPart: 'CMDOriginalVersion'
             },
@@ -373,35 +372,35 @@ var Component_Module_Factory = function () {
         localName: 'ComponentSpec.Header',
         typeName: null,
         propertyInfos: [{
-            name: 'id',
+            name: 'ID',
             required: true,
             elementName: {
               localPart: 'ID'
             }
           }, {
-            name: 'name',
+            name: 'Name',
             required: true,
             elementName: {
               localPart: 'Name'
             }
           }, {
-            name: 'description',
+            name: 'Description',
             elementName: {
               localPart: 'Description'
             }
           }, {
-            name: 'status',
+            name: 'Status',
             required: true,
             elementName: {
               localPart: 'Status'
             }
           }, {
-            name: 'statusComment',
+            name: 'StatusComment',
             elementName: {
               localPart: 'StatusComment'
             }
           }, {
-            name: 'successor',
+            name: 'Successor',
             elementName: {
               localPart: 'Successor'
             }
