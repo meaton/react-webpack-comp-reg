@@ -2,6 +2,7 @@
 var log = require('loglevel');
 
 var React = require('react');
+var update = require('react-addons-update');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -25,14 +26,39 @@ var ConceptLinkInput = React.createClass({
       return (
       <div>
       {
-        value.map(function(doc) {
-          return <Input type="text" value={doc['$']} {...other} /> //TODO: onchange
-        })
+        value.map(function(doc,index) {
+          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.onChange.bind(this, index)} />
+        }.bind(this))
       }
       </div>);
     } else {
-      return <Input type="text" value="" {...other} /> //TODO: onchange
+      return <Input type="text" value="" {...other} onChange={this.onChange.bind(this, 0)} />
     }
+  },
+
+  onChange: function(index, e) {
+    var newValue;
+    if(e.target.value === "") {
+      newValue = null;
+    } else {
+      newValue = {$: e.target.value}; //TODO: documentation language
+    }
+
+    var currentDocs = this.props.value;
+    if(currentDocs == null) {
+      currentDocs = [];
+    }
+
+    log.debug("New value for", currentDocs, "at", index, "=", newValue);
+
+    var newDocs;
+    if(index >= currentDocs.length) {
+      newDocs = update(currentDocs, {$push: [newValue]});
+    } else {
+      newDocs= update(currentDocs, {0: {$set: newValue}});
+    }
+
+    this.props.onChange(newDocs);
   }
 });
 
