@@ -32,11 +32,8 @@ var data1 = {
     }
 };
 var expectedOut1 =`
-  <ComponentSpec
-    isProfile="true"
-    CMDVersion="1.2"
-    CMDOriginalVersion="1.1"
-    >
+  <ComponentSpec isProfile="true" CMDVersion="1.2" CMDOriginalVersion="1.1"
+    xmlns:cue="http://www.clarin.eu/cmdi/cues/1">
     <Header>
       <ID>clarin.eu:cr1:p_1361876010587</ID>
       <Name>AnnotatedCorpusProfile-DLU</Name>
@@ -68,7 +65,7 @@ var data2 = {
                 "@name": "resourceType",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1",
-                //"@DisplayPriority": "1",
+                "@DisplayPriority": "1",
                 "ValueScheme": {"Vocabulary": {"enumeration": {"item": [{
                     "@ConceptLink": "",
                     "@AppInfo": "",
@@ -278,7 +275,8 @@ var data2 = {
 };
 
 var expectedOut2 = `
-  <ComponentSpec isProfile="true" CMDVersion="1.2" CMDOriginalVersion="1.1">
+  <ComponentSpec isProfile="true" CMDVersion="1.2" CMDOriginalVersion="1.1"
+    xmlns:cue="http://www.clarin.eu/cmdi/cues/1">
     <Header>
       <ID>clarin.eu:cr1:p_1288172614014</ID>
       <Name>BamdesLexicalResource</Name>
@@ -286,7 +284,7 @@ var expectedOut2 = `
       <Status>production</Status>
     </Header>
     <Component name="BamdesLexicalResource" CardinalityMin="1" CardinalityMax="1">
-      <Element name="resourceType" CardinalityMin="1" CardinalityMax="1">
+      <Element  cue:DisplayPriority="1" name="resourceType" CardinalityMin="1" CardinalityMax="1">
         <ValueScheme>
           <Vocabulary>
             <enumeration>
@@ -367,12 +365,12 @@ var expectedOut2 = `
   </ComponentSpec>
 `;
 
-//TODO: add test with cue:DisplayPriority
-// "@DisplayPriority": "1"
-//  <Element xmlns:cue="http://www.clarin.eu/cmdi/cues/1"  cue:DisplayPriority="1" name="resourceType" CardinalityMin="1" CardinalityMax="1">
-
 describe('Component', function () {
-  var context = new Jsonix.Context([CMD]);
+  var context = new Jsonix.Context([CMD], {
+    namespacePrefixes: {
+      "http://www.clarin.eu/cmdi/cues/1": "cue"
+    }
+  });
   var marshaller = context.createMarshaller();
 
   describe('marshall1', function() {
