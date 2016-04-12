@@ -22,18 +22,17 @@ var ConceptLinkInput = React.createClass({
   render: function() {
     //TODO: Add language selector
     var {value, onChange, ...other} = this.props;
-    if($.isArray(value) && value.length > 0) {
-      return (
+    var docs = ($.isArray(value) && value.length > 0) ? value : [null];
+
+    return (
       <div>
       {
-        value.map(function(doc,index) {
+        docs.map(function(doc,index) {
           return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.onChange.bind(this, index)} />
         }.bind(this))
       }
-      </div>);
-    } else {
-      return <Input type="text" value="" {...other} onChange={this.onChange.bind(this, 0)} />
-    }
+      </div>
+    );
   },
 
   onChange: function(index, e) {

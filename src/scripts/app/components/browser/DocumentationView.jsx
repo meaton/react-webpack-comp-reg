@@ -21,10 +21,14 @@ var ConceptLinkInput = React.createClass({
       return (<span>
         {
           this.props.value.map(function(doc, index) {
-            return (
-              //TODO: Add language indicator
-              <span key={index} className="attrValue">{doc['$']}</span>
-            );
+            if(doc == null) {
+              return <span key={index} />;
+            } else {
+              return (
+                //TODO: Add language indicator
+                <span key={index} className="attrValue">{doc['$']}</span>
+              );
+            }
           })
         }
       </span>)
