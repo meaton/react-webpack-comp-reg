@@ -65,12 +65,12 @@ var CMDAttributeForm = React.createClass({
 
     var editableProps = open?(
       <div className="form-horizontal form-group">
-        <ValidatingTextInput type="text" label="Name" name="Name" value={attr['@name']} wrapperClassName="editorFormField"
+        <ValidatingTextInput type="text" label="Name" name="@name" value={attr['@name']} wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate} />
-        <ConceptLinkInput name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['@ConceptLink'] : ""}
+        <ConceptLinkInput name="@ConceptLink" type="text" label="ConceptLink" value={(attr['@ConceptLink']) ? attr['@ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate}
-          updateConceptLink={this.propagateValue.bind(this, "ConceptLink")} />
+          updateConceptLink={this.propagateValue.bind(this, "@ConceptLink")} />
         <DocumentationInput name="Documentation" label="Documentation" value={attr['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
       </div>
@@ -115,7 +115,7 @@ var CMDAttributeForm = React.createClass({
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('attribute', targetName, val, feedback)
-      && (targetName != 'Name' || this.props.checkUniqueName(targetName, val, feedback));
+      && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
   }
 });
 

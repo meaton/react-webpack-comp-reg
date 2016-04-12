@@ -18,7 +18,7 @@ var SpecFormUpdateMixin = {
 
   /* Methods that handle changes (in this component and its children) */
   updateConceptLink: function(val) {
-    this.propagateValue("ConceptLink", val);
+    this.propagateValue("@ConceptLink", val);
   },
 
   updateDocumentation: function(documentation) {
