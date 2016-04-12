@@ -5,7 +5,8 @@ var log = require('loglevel');
 //JSONIX
 var Jsonix = require('jsonix').Jsonix;
 var CMD = require('../../../mappings/Component').Component;
-var context = new Jsonix.Context([CMD]);
+var jsonixOptions = require('../../../mappings/jsonixOptions');
+var context = new Jsonix.Context([CMD], jsonixOptions);
 var marshaller = context.createMarshaller();
 
 var Constants = require("../constants");

@@ -2,6 +2,7 @@
 var assert = require('chai').assert;
 var Jsonix = require('jsonix').Jsonix;
 var CMD = require('../../../src/mappings/Component').Component;
+var jsonixOptions = require('../../../src/mappings/jsonixOptions');
 
 var chai    = require('chai');
 var expect  = require('chai').expect;
@@ -366,11 +367,7 @@ var expectedOut2 = `
 `;
 
 describe('Component', function () {
-  var context = new Jsonix.Context([CMD], {
-    namespacePrefixes: {
-      "http://www.clarin.eu/cmdi/cues/1": "cue"
-    }
-  });
+  var context = new Jsonix.Context([CMD], jsonixOptions);
   var marshaller = context.createMarshaller();
 
   describe('marshall1', function() {
