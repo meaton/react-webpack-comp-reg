@@ -80,9 +80,9 @@ var CMDElementView = React.createClass({
                 </li>
               )}
 
-              {elem.hasOwnProperty("@Documentation") && (
+              {elem.hasOwnProperty("Documentation") && (
                 <li className="attrElem"><span className="attrLabel">Documentation:</span>
-                <span className="attrValue">{elem['@Documentation']}</span>
+                <span className="attrValue">{elem['Documentation']}</span>
                 </li>
               )}
 
