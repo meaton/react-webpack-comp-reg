@@ -7,6 +7,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //components
 var CMDAttributeView = require('./CMDAttributeView');
+var DocumentationView = require('./DocumentationView');
 var ValueScheme = require('../ValueScheme');
 
 require('../../../../styles/CMDElement.sass');
@@ -83,11 +84,7 @@ var CMDElementView = React.createClass({
               {elem.hasOwnProperty("Documentation") && (
                 <li className="attrElem"><span className="attrLabel">Documentation:</span>
                 {
-                  elem["Documentation"] != null && elem["Documentation"].map(function(doc, index) {
-                    return (
-                      <span key={index} className="attrValue">{doc['$']}</span>
-                    );
-                  })
+                  <DocumentationView value={elem["Documentation"]} />
                 }
                 </li>
               )}

@@ -12,6 +12,7 @@ var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
+var DocumentationView = require('./DocumentationView');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -96,13 +97,26 @@ var CMDComponentView = React.createClass({
 
     var cardinality = (<span>{minC + " - " + maxC}</span>);
     var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}</span>);
+    var documentation = comp['Documentation'];
 
     return (
       <div className="panel panel-info">
         {this.props.isLinked?
           (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
           :(<div className="panel-heading">{titleText}</div>)}
-        {open && !this.props.hideCardinality && <div className="panel-body componentProps">Number of occurrences: {cardinality}</div>}
+        {open && !this.props.hideCardinality &&
+          <div className="panel-body componentProps">
+            <div>
+              {(documentation != null && documentation !== "") && (
+                <span>
+                  Documentation: { <DocumentationView value={documentation} /> }
+                </span>
+              )}
+            </div>
+            <div>
+              Number of occurrences: {cardinality}
+            </div>
+          </div>}
         {open && this.props.formElements}
       </div>
     );

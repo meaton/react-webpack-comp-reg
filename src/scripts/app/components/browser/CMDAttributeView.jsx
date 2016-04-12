@@ -7,6 +7,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //components
 var ValueScheme = require('../ValueScheme');
+var DocumentationView = require('./DocumentationView');
 
 //require('../../styles/CMDAttribute.sass');
 
@@ -39,6 +40,7 @@ var CMDAttributeView = React.createClass({
     var attr = this.props.spec;
     var attr_val = <ValueScheme obj={attr} enabled={false} />
     var conceptLink = attr.ConceptLink;
+    var documentation = attr.Documentation;
     return (
       <div className="panel panel-success">
         <div className="panel-heading">
@@ -52,6 +54,13 @@ var CMDAttributeView = React.createClass({
               <li className="attrElem">
                 <span className="attrLabel">ConceptLink:</span>
                 <span className="attrValue"><a href={conceptLink} target="_blank">{conceptLink}</a></span>
+              </li>
+            )}
+            {(documentation != null && documentation !== "") && (
+              <li className="attrElem"><span className="attrLabel">Documentation:</span>
+              {
+                <DocumentationView value={documentation} />
+              }
               </li>
             )}
           </ul>
