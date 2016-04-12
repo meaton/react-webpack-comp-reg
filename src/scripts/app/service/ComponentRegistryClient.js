@@ -319,7 +319,7 @@ normaliseDocumentation: function(documentation) {
     return documentation;
   } else {
     log.debug("Turned into array", [documentation]);
-    return [documentation];
+    return [{'$': documentation}];
   }
 },
 

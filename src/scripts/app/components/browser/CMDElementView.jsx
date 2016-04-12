@@ -82,7 +82,13 @@ var CMDElementView = React.createClass({
 
               {elem.hasOwnProperty("Documentation") && (
                 <li className="attrElem"><span className="attrLabel">Documentation:</span>
-                <span className="attrValue">{elem['Documentation']}</span>
+                {
+                  elem["Documentation"] != null && elem["Documentation"].map(function(doc, index) {
+                    return (
+                      <span key={index} className="attrValue">{doc['$']}</span>
+                    );
+                  })
+                }
                 </li>
               )}
 
