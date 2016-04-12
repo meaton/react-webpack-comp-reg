@@ -20,6 +20,7 @@ var CardinalityInput = require('./CardinalityInput');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
 var CMDComponentView = require('../browser/CMDComponentView');
+var DocumentationInput = require('./DocumentationInput');
 
 //bootstrap
 var Dropdown = require('react-bootstrap/lib/Dropdown');
@@ -98,6 +99,7 @@ var CMDComponentForm = React.createClass({
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput"
           onChange={this.updateComponentValue} validate={this.validate}
           updateConceptLink={this.updateConceptLink} />
+        <DocumentationInput name="Documentation" label="Documentation" value={comp['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>
     ) : null;
