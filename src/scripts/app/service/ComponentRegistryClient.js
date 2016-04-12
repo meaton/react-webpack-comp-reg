@@ -231,6 +231,9 @@ normaliseSpec: function(data) {
       var childElems = data.Element;
       var childComps = data.Component;
 
+      //normalise 'Documentation' element (must be an array)
+      data.Documentation = this.normaliseDocumentation(data.Documentation);
+
       if(childElems != undefined && childElems != null) {
         //if Element child(ren) exist, make sure it is an array
         var elemsArray;
@@ -244,6 +247,8 @@ normaliseSpec: function(data) {
         for(i=0; i<elemsArray.length; i++) {
           this.normaliseAttributeList(elemsArray[i].AttributeList);
           this.normaliseValueScheme(elemsArray[i].ValueScheme);
+          //normalise 'Documentation' element (must be an array)
+          elemsArray[i].Documentation = this.normaliseDocumentation(elemsArray[i].Documentation);
         }
         data.Element = elemsArray;
       }
@@ -286,6 +291,8 @@ normaliseAttributeList: function(attrList) {
       // normalise all value schemes in the attributes
       for(j=0; j<attrArray.length; j++) {
         this.normaliseValueScheme(attrArray[j].ValueScheme);
+        //normalise 'Documentation' element (must be an array)
+        attrArray[j].Documentation = this.normaliseDocumentation(attrArray[j].Documentation);
       }
 
       attrList.Attribute = attrArray;
@@ -303,6 +310,16 @@ normaliseValueScheme: function(valueScheme) {
         vocab.enumeration.item = [item];
       }
     }
+  }
+},
+
+normaliseDocumentation: function(documentation) {
+  log.debug("Documentation: ", documentation);
+  if(documentation == null || $.isArray(documentation)) {
+    return documentation;
+  } else {
+    log.debug("Turned into array", [documentation]);
+    return [documentation];
   }
 },
 
