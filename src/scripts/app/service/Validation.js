@@ -1,13 +1,13 @@
 var log = require('loglevel');
 
 var err = {
-  IllegalAttributeName: 'Illegal name value for attribute.',
-  IllegalConceptLink: 'Illegal value for ConceptLink.',
-  IllegalValueScheme: 'Illegal or missing value for type.',
-  ReqName:  'Component or element is missing a name.',
-  ReqComponentDesc: 'Component description is required.',
-  ReqDisplayPriority: 'Display priority value is required for elements.',
-  ReqValueScheme: 'Valid type value is required.'
+  IllegalAttributeName: 'Illegal name value for attribute',
+  IllegalConceptLink: 'Illegal value for ConceptLink',
+  IllegalValueScheme: 'Illegal or missing value for type',
+  ReqName:  'Component or element is missing a name',
+  ReqComponentDesc: 'Component description is required',
+  ReqDisplayPriority: 'Display priority value is required for elements',
+  ReqValueScheme: 'Valid type value is required'
 };
 
 var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
@@ -46,8 +46,8 @@ var validators = {
     '@ConceptLink': [conceptLinkUri]
   },
   attribute: {
-    'Name': [requiredString, noSpaces],
-    'ConceptLink': [conceptLinkUri]
+    '@name': [requiredString, noSpaces],
+    '@ConceptLink': [conceptLinkUri]
   }
 };
 
@@ -60,9 +60,9 @@ var testConceptLink = function(fieldValue) {
 
 var testAttribute = function(attr, cb) {
   var errReturned = false;
-  if(!testAttributeName(attr)) errReturned = !cb(err.IllegalAttributeName);
+  if(!testAttributeName(attr)) errReturned = !cb(err.IllegalAttributeName + ": " + attr['@name']);
   if(!testValueScheme(attr)) errReturned = !cb(err.IllegalValueScheme);
-  if(!testConceptLink(attr['ConceptLink'])) errReturned = !cb(err.IllegalConceptLink);
+  if(!testConceptLink(attr['@ConceptLink'])) errReturned = !cb(err.IllegalConceptLink);
 
   if(!errReturned) log.debug('Tests Passed: Attribute (' + attr.attrId + ')');
   return !errReturned;
@@ -71,8 +71,8 @@ var testAttribute = function(attr, cb) {
 var testAttributeName = function(fieldValue) {
   var regExpName = /^[A-Za-z0-9_\-]+$/;
   if(fieldValue != undefined || fieldValue != null)
-    if(!fieldValue.hasOwnProperty('Name')) return false;
-    else if(fieldValue['Name'].length <= 0 || !regExpName.test(fieldValue['Name'])) return false;
+    if(!fieldValue.hasOwnProperty('@name')) return false;
+    else if(fieldValue['@name'].length <= 0 || !regExpName.test(fieldValue['@name'])) return false;
   return true;
 };
 
@@ -205,7 +205,7 @@ var Validation = {
       for(var i=0; i < comps.length; i++) {
         if(!comps[i].hasOwnProperty('@ComponentId')) {
           testMandatoryFields(null, comps[i], addError); //inline-component
-          if(!testConceptLink(comps[i]['ConceptLink'])) addError(err.IllegalConceptLink);
+          if(!testConceptLink(comps[i]['@ConceptLink'])) addError(err.IllegalConceptLink);
           if(comps[i].AttributeList != undefined) testAttributeList(comps[i].AttributeList, addError)
         }
       }
