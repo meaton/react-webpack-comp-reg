@@ -48,7 +48,7 @@ var ConceptLinkInput = React.createClass({
       currentDocs = [];
     }
 
-    log.debug("New value for", currentDocs, "at", index, "=", newValue);
+    log.trace("New value for", currentDocs, "at", index, "=", newValue);
 
     var newDocs;
     if(index >= currentDocs.length) {

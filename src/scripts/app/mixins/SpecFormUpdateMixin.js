@@ -22,7 +22,7 @@ var SpecFormUpdateMixin = {
   },
 
   updateDocumentation: function(documentation) {
-    log.debug("Update documentation", documentation);
+    log.trace("Update documentation", documentation);
     this.propagateValue("Documentation", documentation);
   },
 
