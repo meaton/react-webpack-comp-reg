@@ -107,7 +107,7 @@ var CMDComponentView = React.createClass({
         {open && !this.props.hideCardinality &&
           <div className="panel-body componentProps">
             <div>
-              {(documentation != null && documentation !== "") && (
+              {(documentation != null && documentation.length > 0) && (
                 <span>
                   Documentation: { <DocumentationView value={documentation} /> }
                 </span>

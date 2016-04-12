@@ -81,7 +81,7 @@ var CMDElementView = React.createClass({
                 </li>
               )}
 
-              {elem.hasOwnProperty("Documentation") && (
+              {elem["Documentation"] != null && elem["Documentation"].length > 0 && (
                 <li className="attrElem"><span className="attrLabel">Documentation:</span>
                 {
                   <DocumentationView value={elem["Documentation"]} />
