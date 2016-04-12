@@ -19,8 +19,8 @@ var CMDAttributeForm = require('./CMDAttributeForm');
 var CardinalityInput = require('./CardinalityInput');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
-var CMDComponentView = require('../browser/CMDComponentView');
 var DocumentationInput = require('./DocumentationInput');
+var CMDComponentView = require('../browser/CMDComponentView');
 
 //bootstrap
 var Dropdown = require('react-bootstrap/lib/Dropdown');
