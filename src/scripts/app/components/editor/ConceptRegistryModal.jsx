@@ -165,13 +165,6 @@ var ConceptRegistryModal = React.createClass({
         property: 'definition',
         header: 'Definition',
         cell: cellWithTooltip
-        // function(value, data, rowIndex, property) {
-        //   log.debug("Definition: ", value);
-        //   return {
-        //     props: defaultProps(rowIndex),
-        //     value: <span title={value}>{value}</span>
-        //   }
-        // }
       },
       {
         property: 'identifier',
@@ -189,7 +182,7 @@ var ConceptRegistryModal = React.createClass({
         cell: function(value, data, rowIndex) {
           return {
             value: (value) ? (<span><a title={value} href={value} target="_blank">{
-              value.replace("http://hdl.handle.net/", "")
+              value.replace(new RegExp("^https?:\/\/hdl.handle.net\/([0-9]+\/)?"), "") //TODO: REGEX?
             }</a></span>) : "",
             props: defaultProps(rowIndex)
           }
