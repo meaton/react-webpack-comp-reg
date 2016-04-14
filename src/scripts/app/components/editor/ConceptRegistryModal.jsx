@@ -152,18 +152,26 @@ var ConceptRegistryModal = React.createClass({
 
   getColumnsDefinition: function() {
     var defaultClick = this.handleCellClick;
+    var cellWithTooltip = this.handleCellWithTooltip;
     var defaultProps = this.defaultCellProps;
 
     return [
       {
         property: 'name',
         header: 'Name',
-        cell: defaultClick
+        cell: cellWithTooltip
       },
       {
         property: 'definition',
         header: 'Definition',
-        cell: defaultClick
+        cell: cellWithTooltip
+        // function(value, data, rowIndex, property) {
+        //   log.debug("Definition: ", value);
+        //   return {
+        //     props: defaultProps(rowIndex),
+        //     value: <span title={value}>{value}</span>
+        //   }
+        // }
       },
       {
         property: 'identifier',
@@ -180,7 +188,9 @@ var ConceptRegistryModal = React.createClass({
         header: 'PersistentId',
         cell: function(value, data, rowIndex) {
           return {
-            value: (value) ? (<span><a href={value} target="_blank">{value}</a></span>) : "",
+            value: (value) ? (<span><a title={value} href={value} target="_blank">{
+              value.replace("http://hdl.handle.net/", "")
+            }</a></span>) : "",
             props: defaultProps(rowIndex)
           }
         }
@@ -208,6 +218,11 @@ var ConceptRegistryModal = React.createClass({
       },
       className: classNames({ odd: !isEven, even: isEven })
     };
+  },
+
+  handleCellWithTooltip: function(value, data, rowIndex) {
+    var tooltipValue = (<span title={value}>{value}</span>);
+    return this.handleCellClick(tooltipValue, data, rowIndex);
   },
 
   handleCellClick: function(value, data, rowIndex) {
