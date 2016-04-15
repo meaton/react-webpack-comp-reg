@@ -27,7 +27,15 @@ var CMDComponentView = React.createClass({
 
   /* other props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   propTypes: {
-    link: React.PropTypes.object /* if linked, this is the Component element defined in the parent */
+    link: React.PropTypes.object /* if linked, this is the Component element defined in the parent */,
+    componentLinks: React.PropTypes.bool,
+    compId: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      componentLinks: true
+    };
   },
   /**
    * Components should be closed by default iff they are linked
@@ -58,6 +66,7 @@ var CMDComponentView = React.createClass({
         isFirst={index == 0}
         isLast={index == this.props.spec.Component.length - 1}
         link={link}
+        compId={compId}
         />);
     }
   },
@@ -96,14 +105,19 @@ var CMDComponentView = React.createClass({
     if(maxC == null) maxC = 1;
 
     var cardinality = (<span>{minC + " - " + maxC}</span>);
-    var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}</span>);
+    //TODO: make title link to component in browser https://github.com/clarin-eric/component-registry-front-end/issues/27
+    var titleText = (
+      <span  title={this.props.isLinked && this.props.compId ? this.props.compId : compName}>
+        Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
+      </span>);
+    var title = this.props.isLinked?
+      this.createActionButtons({title: titleText}) // add expansion controls
+      :titleText;
     var documentation = comp['Documentation'];
 
     return (
       <div className="panel panel-info">
-        {this.props.isLinked?
-          (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
-          :(<div className="panel-heading">{titleText}</div>)}
+        <div className="panel-heading">{title}</div>
         {open && !this.props.hideCardinality &&
           <div className="panel-body componentProps">
             <div>

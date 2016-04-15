@@ -132,7 +132,8 @@ var CMDComponentForm = React.createClass({
       onMove: this.handleMoveComponent.bind(this, this.props.onComponentChange, index),
       onRemove: this.handleRemoveComponent.bind(this, this.props.onComponentChange, index),
       isFirst: index == 0,
-      isLast: index == this.props.spec.Component.length - 1
+      isLast: index == this.props.spec.Component.length - 1,
+      compId: compId
     };
 
     if(isLinked) {
