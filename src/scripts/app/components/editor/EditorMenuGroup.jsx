@@ -22,6 +22,7 @@ var EditorMenuGroup = React.createClass({
     onSave: React.PropTypes.func,
     onSaveNew: React.PropTypes.func,
     onPublish: React.PropTypes.func,
+    onCancel: React.PropTypes.func,
     disabled: React.PropTypes.bool
   },
 
@@ -40,7 +41,7 @@ var EditorMenuGroup = React.createClass({
           btnLabel="Publish"
           title="Publish"
           desc="If your profile/component is ready to be used by other people press ok, otherwise press cancel and save it in your workspace or continue editing." />
-        <LinkButton to="/browser" disabled={this.props.disabled}>Cancel</LinkButton>
+        <Button onClick={this.props.onCancel} disabled={this.props.disabled}>Cancel</Button>
       </ButtonGroup>
     );
   }

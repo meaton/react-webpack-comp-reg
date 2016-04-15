@@ -86,6 +86,7 @@ var EditorForm = React.createClass({
             onSave={this.handleSave}
             onSaveNew={this.handleSaveNew}
             onPublish={this.handlePublish}
+            onCancel={this.handleCancel}
             disabled={this.props.processing}
           />
 
@@ -158,6 +159,16 @@ var EditorForm = React.createClass({
     if(this.validateChildren()) {
       this.getFlux().actions.publishComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
     }
+  },
+
+  handleCancel: function() {
+    ReactAlert.showConfirmationDialogue(
+      "Cancel editing",
+      "Do you want to cancel editing this "
+        + (this.props.type === Constants.TYPE_PROFILE ? "profile":"component")
+        + "? Any changes will be discarded.",
+      this.getFlux().actions.loadComponentSpec.bind(this, this.props.type, this.props.item.id, this.afterSuccess));
+    ;
   },
 
   afterSuccess: function() {
