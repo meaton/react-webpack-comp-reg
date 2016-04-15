@@ -97,13 +97,13 @@ var TypeModal = React.createClass({
 
       //check for duplicates
       if(_.uniq(itemValues).length != itemValues.length) {
-        var duplicates = _.keys(_.pick(_.countBy(itemValues), function(value){
-          return value > 1;
-        }));
-        log.debug("Value counts", duplicates);
-        // use countby? https://github.com/lodash/lodash/blob/3.10.1/doc/README.md#_countbycollection-iteratee_identity-thisarg
-        // var duplicates = _.difference(itemValues, uniqueItems);
-        // log.debug("Duplicate items:", duplicates);
+        // construct an array of duplicate values
+        var duplicates = _.chain(itemValues)
+          .countBy() // get counts for all item values
+          .pick(function(value) { return value > 1; }) // filter out non-duplicates
+          .keys() // only keep keys
+          .value(); // unchain
+        log.warn("Duplicate in array:", duplicates);
         alert("Invalid vocabulary: all items in a vocabulary should have a unique value. Please remove these duplicate values and try again:\n\n" + duplicates);
         return;
       }
