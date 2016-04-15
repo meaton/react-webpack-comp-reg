@@ -1,5 +1,6 @@
 'use strict';
 var log = require('loglevel');
+var _ = require('lodash');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -27,6 +28,7 @@ var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 //utils
 var update = require('react-addons-update');
 var classNames = require('classnames');
+var ReactAlert = require('../util/ReactAlert');
 
 require('../../../styles/EditorDialog.sass');
 
@@ -78,8 +80,31 @@ var TypeModal = React.createClass({
   },
   setControlVocab: function(evt) {
     //TODO: Pass entire Vocabulary object
-    if(this.state.enumeration != undefined && $.isArray(this.state.enumeration.item)){
-      this.props.onChange({enumeration: this.state.enumeration});
+    var enumeration = this.state.enumeration;
+    if(enumeration != undefined && $.isArray(enumeration.item)){
+      var itemValues = _.map(enumeration.item, function(item) {
+        return item['$'];
+      });
+
+      var hasEmpty = itemValues.some(function(val){
+        return val == "";
+      });
+      if(hasEmpty) {
+        log.warn("Empty item(s)");
+        alert("Invalid vocabulary: a vocabulary cannot items with an empty value. Please remove these items and try again.");
+        return;
+      }
+
+      //check for duplicates
+      if(_.uniq(itemValues).length != itemValues.length) {
+        // use countby? https://github.com/lodash/lodash/blob/3.10.1/doc/README.md#_countbycollection-iteratee_identity-thisarg
+        // var duplicates = _.difference(itemValues, uniqueItems);
+        // log.debug("Duplicate items:", duplicates);
+        alert("Invalid vocabulary: all items in a vocabulary should have a unique value. Please remove duplicate values and try again");//.\n\n" + duplicates);
+        return;
+      }
+      //check for duplicate items
+      this.props.onChange({enumeration: enumeration});
     }
     this.close(evt);
   },
