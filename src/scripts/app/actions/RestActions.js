@@ -48,7 +48,7 @@ var RestActions = {
     );
   },
 
-  loadComponentSpec: function(type, itemId) {
+  loadComponentSpec: function(type, itemId, successCb) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     // load the (JSON) spec for this item
     ComponentRegistryClient.loadSpec(type, itemId, "json", function(spec){
@@ -59,6 +59,9 @@ var RestActions = {
           SpecAugmenter.augmentWithIds(spec);
           log.trace("Loaded and augmented spec: ", spec);
           this.dispatch(Constants.LOAD_COMPONENT_SPEC_SUCCES, {spec: spec, linkedComponents: linkedComponents});
+          if(successCb) {
+            successCb(spec);
+          }
         }.bind(this));
       }.bind(this),
       function(message) {
