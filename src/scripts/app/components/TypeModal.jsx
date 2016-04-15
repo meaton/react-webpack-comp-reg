@@ -1,6 +1,5 @@
 'use strict';
 var log = require('loglevel');
-var _ = require('lodash');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -24,6 +23,7 @@ var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
 //service
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
+var Validation = require('../service/Validation');
 
 //utils
 var update = require('react-addons-update');
@@ -73,48 +73,33 @@ var TypeModal = React.createClass({
     this.props.onChange({type: simpleVal});
     this.close(evt);
   },
+
   setPattern: function(evt) {
     var patternVal = this.refs.patternInput.getValue();
     this.props.onChange({pattern: patternVal});
     this.close(evt);
   },
+
   setControlVocab: function(evt) {
     //TODO: Pass entire Vocabulary object
     var enumeration = this.state.enumeration;
-    if(enumeration != undefined && $.isArray(enumeration.item)){
-      var itemValues = _.map(enumeration.item, function(item) {
-        return item['$'];
-      });
-
-      var hasEmpty = itemValues.some(function(val){
-        return val == "";
-      });
-      if(hasEmpty) {
-        log.warn("Empty item(s)");
-        alert("Invalid vocabulary: a vocabulary cannot items with an empty value. Please remove these items and try again.");
-        return;
-      }
-
-      //check for duplicates
-      if(_.uniq(itemValues).length != itemValues.length) {
-        // construct an array of duplicate values
-        var duplicates = _.chain(itemValues)
-          .countBy() // get counts for all item values
-          .pick(function(value) { return value > 1; }) // filter out non-duplicates
-          .keys() // only keep keys
-          .value(); // unchain
-        log.warn("Duplicate in array:", duplicates);
-        alert("Invalid vocabulary: all items in a vocabulary should have a unique value. Please remove these duplicate values and try again:\n\n" + duplicates);
-        return;
-      }
-      //check for duplicate items
-      this.props.onChange({enumeration: enumeration});
+    if(enumeration != undefined
+        && $.isArray(enumeration.item)
+        && Validation.checkVocabularyItems(enumeration.item, this.showFeedback)) {
+          //check for duplicate items
+          this.props.onChange({enumeration: enumeration});
+          this.close(evt);
     }
-    this.close(evt);
   },
+
+  showFeedback: function(message) {
+    alert("Invalid vocabulary: " + message);
+  },
+
   close: function(evt) {
     this.props.onClose(evt);
   },
+
   componentWillMount: function() {
     log.debug("Setting state to props", this.props);
     this.setState({

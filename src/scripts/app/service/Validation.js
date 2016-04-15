@@ -1,4 +1,5 @@
 var log = require('loglevel');
+var _ = require('lodash');
 
 var err = {
   IllegalAttributeName: 'Illegal name value for attribute',
@@ -159,6 +160,36 @@ var Validation = {
       }
     }
     return true;
+  },
+
+  checkVocabularyItems: function(items, feedback) {
+    var itemValuesChain = _.chain(items).map(function(item) {
+      return item['$'];
+    });
+
+    //empty check (lazy)
+    var hasEmpty = itemValuesChain.some(function(val){
+      return val == "";
+    });
+
+    //check for duplicates (lazy)
+    var duplicates = itemValuesChain
+      .countBy() // get counts for all item values
+      .pick(function(value) { return value > 1; }) // filter out non-duplicates
+      .keys(); // only keep keys
+
+    if(hasEmpty.value()) {
+      log.warn("Empty item(s)");
+      feedback("A vocabulary cannot items with an empty value. Please remove these items and try again.");
+      return false;
+    } else if(!duplicates.isEmpty().value()) {
+        // construct an array of duplicate values
+        log.warn("Duplicate in array:", duplicates.value());
+        feedback("All items in a vocabulary should have a unique value. Please remove these duplicate values and try again:\n\n" + duplicates.value());
+        return false;
+    } else {
+      return true;
+    }
   },
 
   validate: function(data) {
