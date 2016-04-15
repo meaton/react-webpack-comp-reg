@@ -437,7 +437,7 @@ deleteComment: function(componentId, type, commentId, success, failure) {
 loadAllowedTypes: function(cb) {
   $.ajax($.extend({
     type: 'GET',
-    url: restUrl + '/AllowedTypes',
+    url: restUrl + '/allowedTypes',
     processData: false,
     contentType: false,
     dataType:'json',
