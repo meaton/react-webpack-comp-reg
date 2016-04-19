@@ -48,7 +48,7 @@ var ComponentInfo = React.createClass({
     }
   },
 
-  createTabContent: function(key, bookmarkLink, xsdLink) {
+  createTabContent: function(bookmarkLink, xsdLink, key) {
     //not setting onChange to the inputs will generate a warning unless readOnly
     //is set, which does not yield the desired behaviour, therefore a noop function is passed
     var noop = function() {};
@@ -101,14 +101,18 @@ var ComponentInfo = React.createClass({
 
     return (
       <div id="componentInfoModal" className={this.props.className}>
-        <Tabs activeKey="cmdi12">
-          <Tab eventKey="cmdi11" title="CMDI 1.1">
-            {this.createTabContent('cmdi11', bookmarkLink, xsdLink)}
-          </Tab>
-          <Tab eventKey="cmdi12" title="CMDI 1.2">
-            {this.createTabContent('cmdi12', bookmarkLink, xsdLink)}
-          </Tab>
-        </Tabs>
+        {xsdLink == null ? this.createTabContent(bookmarkLink) : (
+          // if there are xsd links, show tabs because the links will be different for CMDI 1.1 and 1.2
+            <Tabs activeKey="cmdi12">
+              <Tab eventKey="cmdi11" title="CMDI 1.1">
+                {this.createTabContent(bookmarkLink, xsdLink, 'cmdi11')}
+              </Tab>
+              <Tab eventKey="cmdi12" title="CMDI 1.2">
+                {this.createTabContent(bookmarkLink, xsdLink, 'cmdi12')}
+              </Tab>
+            </Tabs>
+          )
+        }
       </div>
     );
   }
