@@ -169,9 +169,9 @@ var Component_Module_Factory = function () {
             },
             type: 'attribute'
           }, {
-            name: '@ComponentId',
+            name: '@ComponentRef',
             attributeName: {
-              localPart: 'ComponentId'
+              localPart: 'ComponentRef'
             },
             type: 'attribute'
           }, {

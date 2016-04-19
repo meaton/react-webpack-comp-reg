@@ -14,47 +14,47 @@
         "@CardinalityMax": "1",
         "Component": [
             {
-                "@ComponentId": "clarin.eu:cr1:c_1361876010584",
+                "@ComponentRef": "clarin.eu:cr1:c_1361876010584",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1"
             },
             {
                 "@name": "Access",
-                "@ComponentId": "clarin.eu:cr1:c_1357720977472",
+                "@ComponentRef": "clarin.eu:cr1:c_1357720977472",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1"
             },
             {
                 "@name": "Project",
-                "@ComponentId": "clarin.eu:cr1:c_1357720977474",
+                "@ComponentRef": "clarin.eu:cr1:c_1357720977474",
                 "@CardinalityMin": "0",
                 "@CardinalityMax": "1"
             },
             {
                 "@name": "Publications",
-                "@ComponentId": "clarin.eu:cr1:c_1357720977486",
+                "@ComponentRef": "clarin.eu:cr1:c_1357720977486",
                 "@CardinalityMin": "0",
                 "@CardinalityMax": "1"
             },
             {
                 "@name": "SubjectLanguages",
-                "@ComponentId": "clarin.eu:cr1:c_1357720977487",
+                "@ComponentRef": "clarin.eu:cr1:c_1357720977487",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1"
             },
             {
-                "@ComponentId": "clarin.eu:cr1:c_1361876010582",
+                "@ComponentRef": "clarin.eu:cr1:c_1361876010582",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1"
             },
             {
-                "@ComponentId": "clarin.eu:cr1:c_1361876010595",
+                "@ComponentRef": "clarin.eu:cr1:c_1361876010595",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1"
             },
             {
                 "@name": "TechnicalInfo",
-                "@ComponentId": "clarin.eu:cr1:c_1357720977482",
+                "@ComponentRef": "clarin.eu:cr1:c_1357720977482",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "unbounded"
             }

@@ -25,7 +25,7 @@ var data1 = {
         "@CardinalityMax": "1",
         "Component": [
             {
-                "@ComponentId": "clarin.eu:cr1:c_1361876010584",
+                "@ComponentRef": "clarin.eu:cr1:c_1361876010584",
                 "@CardinalityMin": "1",
                 "@CardinalityMax": "1"
             }
@@ -42,7 +42,7 @@ var expectedOut1 =`
       <Status>production</Status>
     </Header>
     <Component name="AnnotatedCorpusProfile-DLU" CardinalityMin="1" CardinalityMax="1">
-        <Component ComponentId="clarin.eu:cr1:c_1361876010584" CardinalityMin="1" CardinalityMax="1" />
+        <Component ComponentRef="clarin.eu:cr1:c_1361876010584" CardinalityMin="1" CardinalityMax="1" />
     </Component>
   </ComponentSpec>
 `;
@@ -268,7 +268,7 @@ var data2 = {
             }
         ],
         "Component": [{
-            "@ComponentId": "clarin.eu:cr1:c_1288172614011",
+            "@ComponentRef": "clarin.eu:cr1:c_1288172614011",
             "@CardinalityMin": "1",
             "@CardinalityMax": "1",
         }],
@@ -361,7 +361,7 @@ var expectedOut2 = `
           </Vocabulary>
         </ValueScheme>
       </Element>
-      <Component ComponentId="clarin.eu:cr1:c_1288172614011" CardinalityMin="1" CardinalityMax="1"/>
+      <Component ComponentRef="clarin.eu:cr1:c_1288172614011" CardinalityMin="1" CardinalityMax="1"/>
     </Component>
   </ComponentSpec>
 `;

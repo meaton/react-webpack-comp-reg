@@ -64,9 +64,9 @@ module.exports = {
     if(spec.Header != undefined && spec.Header.ID != undefined) {
       // include ID from header
       baseId = spec.Header.ID + "#" + baseId;
-    } else if(spec.hasOwnProperty('@ComponentId')) {
+    } else if(spec.hasOwnProperty('@ComponentRef')) {
       // include ID from attribute
-      baseId = spec['@ComponentId'] + "#" + baseId;
+      baseId = spec['@ComponentRef'] + "#" + baseId;
     } else {
       baseId = "new_" + baseId;
     }

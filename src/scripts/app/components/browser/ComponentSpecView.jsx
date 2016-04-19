@@ -51,10 +51,10 @@ var ComponentSpec = React.createClass({
       var rootComponent = item.Component;
 
       // Determine root spec (should be inline, but may be linked)
-      var isLinked = rootComponent.hasOwnProperty("@ComponentId");
+      var isLinked = rootComponent.hasOwnProperty("@ComponentRef");
       var rootSpec = null;
       if(isLinked) {
-        var compId = rootComponent['@ComponentId'];
+        var compId = rootComponent['@ComponentRef'];
         //linked root component, use full spec for linked components if available (should have been preloaded)
         var linkedSpecAvailable = this.props.linkedComponents != undefined
                       && this.props.linkedComponents.hasOwnProperty(compId);

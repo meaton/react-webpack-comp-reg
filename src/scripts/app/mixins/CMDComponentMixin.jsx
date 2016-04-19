@@ -106,9 +106,9 @@ var CMDComponentMixin = {
   },
 
   callRenderNestedComponent: function(nestedComp, ncindex) {
-    var isLinked = nestedComp.hasOwnProperty("@ComponentId");
+    var isLinked = nestedComp.hasOwnProperty("@ComponentRef");
     if(isLinked) {
-      var compId = nestedComp['@ComponentId'];
+      var compId = nestedComp['@ComponentRef'];
     }
 
     // use full spec for linked components if available (should have been preloaded)

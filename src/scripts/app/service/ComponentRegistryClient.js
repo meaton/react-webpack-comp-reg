@@ -220,8 +220,8 @@ normaliseSpec: function(data) {
     //root component
     data.Component = this.normaliseSpec(data.Component);
   } else {
-    if(data.hasOwnProperty("@ComponentId") && (data.Element || data.Component || data.AttributeList)) {
-      log.debug("Encountered component children despite component id (", data["@ComponentId"], ")");
+    if(data.hasOwnProperty("@ComponentRef") && (data.Element || data.Component || data.AttributeList)) {
+      log.debug("Encountered component children despite component id (", data["@ComponentRef"], ")");
       //linked component - strip children
       delete data.Element;
       delete data.Component;
