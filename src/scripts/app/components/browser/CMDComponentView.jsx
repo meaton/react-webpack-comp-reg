@@ -84,8 +84,8 @@ var CMDComponentView = React.createClass({
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
 
     var compId;
-    if(comp.hasOwnProperty("@ComponentId"))
-      compId = comp["@ComponentId"];
+    if(comp.hasOwnProperty("@ComponentRef"))
+      compId = comp["@ComponentRef"];
     else if(comp.Header != undefined)
       compId = comp.Header.ID;
     else

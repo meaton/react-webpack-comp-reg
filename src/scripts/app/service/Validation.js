@@ -234,7 +234,7 @@ var Validation = {
     var comps = componentDesc.Component;
     if(comps != undefined && comps != null) {
       for(var i=0; i < comps.length; i++) {
-        if(!comps[i].hasOwnProperty('@ComponentId')) {
+        if(!comps[i].hasOwnProperty('@ComponentRef')) {
           testMandatoryFields(null, comps[i], addError); //inline-component
           if(!testConceptLink(comps[i]['@ConceptLink'])) addError(err.IllegalConceptLink);
           if(comps[i].AttributeList != undefined) testAttributeList(comps[i].AttributeList, addError)

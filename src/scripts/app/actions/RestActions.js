@@ -204,7 +204,7 @@ module.exports = RestActions;
 // HELPER FUNCTIONS
 
 /**
- * Loads all linked components (with @ComponentId) that are a direct child
+ * Loads all linked components (with @ComponentRef) that are a direct child
  * of the provided component (JSON spec). When done, the callback is called with
  * the result - this is guaranteed to happen.
  * @param  {object}   component component specification to load linked components for
@@ -243,7 +243,7 @@ function getComponentIds(childComponents, currentset) {
   }
 
   childComponents.forEach(function(child) {
-    var childId = child['@ComponentId'];
+    var childId = child['@ComponentRef'];
     if(childId != undefined && !currentset.hasOwnProperty(childId)) {
       linkedComponentIds.push(childId);
     } else if(child.Component != undefined) {

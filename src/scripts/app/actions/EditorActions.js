@@ -82,7 +82,7 @@ var EditorActions = {
         for(var i=0;i<comp.Component.length;i++) {
           var child = comp.Component[i];
           log.debug("Child:", child);
-          if(child['@ComponentId'] === itemId) {
+          if(child['@ComponentRef'] === itemId) {
             log.warn("Child with id",itemId,"already exists in component!");
             error = "The component is already linked from this parent. A component can only be linked once per parent component.";
             return comp; //return unchanged
@@ -94,7 +94,7 @@ var EditorActions = {
       //
       // first we need a new unique appId
       var appId = generateAppIdForNew(comp._appId, comp.Component);
-      var newComponent = {'@ComponentId': itemId, '_appId': appId};
+      var newComponent = {'@ComponentRef': itemId, '_appId': appId};
 
       log.debug("New child component in", comp, ":", newComponent);
 
