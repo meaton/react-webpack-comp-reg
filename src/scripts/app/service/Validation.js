@@ -23,7 +23,6 @@ var noSpaces = {
 }
 
 var ncName = {
-  //test: ncname.test,
   test: function(v) {return ncname.test(v)},
   message: "Not a valid name"
 }
