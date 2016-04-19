@@ -40,15 +40,15 @@ var ComponentSpec = React.createClass({
   },
 
   render: function() {
-    var item = this.props.spec;
+    var spec = this.props.spec;
 
-    if(item == null)
+    if(spec == null)
       return (
         <div className="ComponentViewer loading" />
       );
     else {
       var rootClasses = classNames({ ComponentViewer: true });
-      var rootComponent = item.Component;
+      var rootComponent = spec.Component;
 
       // Determine root spec (should be inline, but may be linked)
       var isLinked = rootComponent.hasOwnProperty("@ComponentRef");
@@ -72,9 +72,12 @@ var ComponentSpec = React.createClass({
           <div className={rootClasses}>
             <div className="rootProperties">
               <ul>
-                <li><span>Name:</span> <b>{item.Header.Name}</b></li>
-                <li><span>Description:</span> {item.Header.Description}</li>
+                <li><span>Name:</span> <b>{spec.Header.Name}</b></li>
+                <li><span>Description:</span> {spec.Header.Description}</li>
                 {conceptLink}
+                {spec.Header && spec.Header.DerivedFrom &&
+                  <li><span>Derived from: {spec.Header.DerivedFrom}</span></li>
+                }
               </ul>
             </div>
             {rootSpec == null ? (
