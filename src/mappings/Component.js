@@ -403,6 +403,11 @@ var Component_Module_Factory = function () {
             elementName: {
               localPart: 'Successor'
             }
+          }, {
+            name: 'DerivedFrom',
+            elementName: {
+              localPart: 'DerivedFrom'
+            }
           }]
       }, {
         type: 'enumInfo',
