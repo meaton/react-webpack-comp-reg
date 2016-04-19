@@ -92,6 +92,7 @@ var Editor = React.createClass({
                 isNew={this.isNew()}
                 componentLinkingMode={this.state.editor.componentLinkingMode}
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+                derivedFromId={this.state.editor.item == null ? null : this.state.editor.item.id}
               />
             <div className="browserGroup">
               {gridExpanded && (

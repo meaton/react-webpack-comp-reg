@@ -20,6 +20,7 @@ var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 var History = require("react-router").History;
 
 //utils
+var update = require('react-addons-update');
 var classNames = require('classnames');
 var ReactAlert = require('../../util/ReactAlert');
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -41,6 +42,7 @@ var EditorForm = React.createClass({
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
     selectedComponentId: React.PropTypes.string,
+    derivedFromId: React.PropTypes.string,
     isNew: React.PropTypes.bool.isRequired
   },
 
@@ -151,7 +153,14 @@ var EditorForm = React.createClass({
 
   handleSaveNew: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.saveNewComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
+      var spec = this.props.spec;
+      if(this.props.derivedFromId != null) {
+        log.debug("Setting derived from header:", this.props.derivedFromId);
+        spec = update(spec, {Header: {$merge: {
+          DerivedFrom: this.props.derivedFromId
+        }}});
+      }
+      this.getFlux().actions.saveNewComponentSpec(spec, this.props.item, this.afterSuccess);
     }
   },
 
