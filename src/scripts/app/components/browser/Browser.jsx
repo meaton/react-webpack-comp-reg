@@ -225,14 +225,14 @@ var Browser = React.createClass({
     this.getFlux().actions.toggleSortState(column);
   },
 
-  handleDownloadXml: function(item, evt) {
+  handleDownloadXml: function(item, version, evt) {
     evt.stopPropagation();
-    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xml";
+    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id, version) + "/xml";
   },
 
-  handleDownloadXsd: function(item, evt) {
+  handleDownloadXsd: function(item, version, evt) {
     evt.stopPropagation();
-    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id) + "/xsd";
+    window.location = ComponentRegistryClient.getRegistryUrl(this.state.items.type, item.id, version) + "/xsd";
   },
 
   showComponentInfo: function(item) {
