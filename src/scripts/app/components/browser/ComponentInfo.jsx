@@ -30,7 +30,7 @@ var ComponentInfo = React.createClass({
   },
 
   getInitialState: function() {
-    return {clipboard: null};
+    return {clipboard: null, currentTab: "cmdi12"};
   },
 
   componentDidMount: function() {
@@ -79,6 +79,10 @@ var ComponentInfo = React.createClass({
     );
   },
 
+  onTabSelect: function(key) {
+    this.setState({currentTab: key});
+  },
+
   render: function(item, contentId) {
     var item = this.props.item;
     var space = this.props.space;
@@ -103,7 +107,8 @@ var ComponentInfo = React.createClass({
       <div id="componentInfoModal" className={this.props.className}>
         {xsdLink == null ? this.createTabContent(bookmarkLink) : (
           // if there are xsd links, show tabs because the links will be different for CMDI 1.1 and 1.2
-            <Tabs activeKey="cmdi12">
+            <Tabs activeKey={this.state.currentTab}
+              onSelect={this.onTabSelect}>
               <Tab eventKey="cmdi11" title="CMDI 1.1">
                 {this.createTabContent(bookmarkLink, xsdLink, 'cmdi11')}
               </Tab>
