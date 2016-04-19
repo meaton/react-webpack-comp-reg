@@ -31,7 +31,7 @@ var SpecFormUpdateMixin = {
     var attrList = spec.AttributeList;
 
     var appId = this.generateAppIdForNew(spec._appId, (attrList == null) ? null : attrList.Attribute)
-    var newAttrObj = { Name: "", Type: "string", _appId: appId };
+    var newAttrObj = { Name: "", "@ValueScheme": "string", _appId: appId };
 
     var update;
     if(attrList == null) {
