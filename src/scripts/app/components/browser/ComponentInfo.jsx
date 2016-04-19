@@ -99,8 +99,8 @@ var ComponentInfo = React.createClass({
 
     var xsdLink = type === Constants.TYPE_PROFILE ?
     {
-      cmdi11: ComponentRegistryClient.getRegistryUrlCmdi11(type, item.id) + "/xsd",
-      cmdi12: ComponentRegistryClient.getRegistryUrl(type, item.id) + "/xsd"
+      cmdi11: ComponentRegistryClient.getRegistryUrl(type, item.id, Constants.CMD_VERSION_1_1) + "/xsd",
+      cmdi12: ComponentRegistryClient.getRegistryUrl(type, item.id, Constants.CMD_VERSION_1_2) + "/xsd"
     } : null;
 
     return (

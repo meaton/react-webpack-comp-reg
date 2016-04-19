@@ -21,7 +21,7 @@ var ComponentSpec = require('../service/ComponentSpec');
 
 var PROFILES_PATH = "profiles";
 var COMPONENTS_PATH = "components";
-var REGISTRY_ROOT = "/registry/1.2";
+var REGISTRY_ROOT = "/registry/1.x";
 var REGISTRY_ROOT_CMDI_1_1 = "/registry/1.1";
 
 var corsRequestParams = (Config.cors) ?
@@ -33,8 +33,15 @@ var corsRequestParams = (Config.cors) ?
 
 var ComponentRegistryClient = {
 
-  getRegistryUrl: function(type, id, root) {
-    if(root == null) {
+  getRegistryUrl: function(type, id, version) {
+    var root;
+
+    if(version == null || version === Constants.CMD_VERSION_1_2) {
+      root = REGISTRY_ROOT; //is canonical
+    } else if(version === Constants.CMD_VERSION_1_1) {
+      root = REGISTRY_ROOT_CMDI_1_1;
+    } else {
+      log.warn("Unknown CMDI version", version, " - assuming canonical");
       root = REGISTRY_ROOT;
     }
     var typepath = root + "/" + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
@@ -44,10 +51,6 @@ var ComponentRegistryClient = {
     } else {
       return requestUrl + "/" + id;
     }
-  },
-
-  getRegistryUrlCmdi11: function(type, id) {
-    return this.getRegistryUrl(type, id, REGISTRY_ROOT_CMDI_1_1);
   },
 
   getRegistrySpacePath: function(space) {
