@@ -41,6 +41,7 @@ var CMDAttributeView = React.createClass({
     var attr_val = <ValueScheme obj={attr} enabled={false} />
     var conceptLink = attr.ConceptLink;
     var documentation = attr.Documentation;
+    var required = attr['@Required'] === 'true';
     return (
       <div className="panel panel-success">
         <div className="panel-heading">
@@ -63,6 +64,10 @@ var CMDAttributeView = React.createClass({
               }
               </li>
             )}
+            <li className="attrElem">
+              <span className="attrLabel">Required:</span>
+              <span className="attrValue">{required ? "Yes":"No"}</span>
+            </li>
           </ul>
         </div>
       </div>
