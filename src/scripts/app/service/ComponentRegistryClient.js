@@ -22,6 +22,7 @@ var ComponentSpec = require('../service/ComponentSpec');
 var PROFILES_PATH = "profiles";
 var COMPONENTS_PATH = "components";
 var REGISTRY_ROOT = "/registry/1.2";
+var REGISTRY_ROOT_CMDI_1_1 = "/registry/1.1";
 
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
@@ -32,14 +33,21 @@ var corsRequestParams = (Config.cors) ?
 
 var ComponentRegistryClient = {
 
-  getRegistryUrl: function(type, id) {
-    var typepath = REGISTRY_ROOT + "/" + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
+  getRegistryUrl: function(type, id, root) {
+    if(root == null) {
+      root = REGISTRY_ROOT;
+    }
+    var typepath = root + "/" + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
     var requestUrl = restUrl + typepath;
     if(id == null) {
       return requestUrl;
     } else {
       return requestUrl + "/" + id;
     }
+  },
+
+  getRegistryUrlCmdi11: function(type, id) {
+    return this.getRegistryUrl(type, id, REGISTRY_ROOT_CMDI_1_1);
   },
 
   getRegistrySpacePath: function(space) {

@@ -5,13 +5,16 @@ var ReactDOM = require("react-dom");
 var Constants = require("../../constants");
 var Config = require('../../../config');
 
-var Clipboard = require('clipboard');
+//bootstrap
+var Tabs = require('react-bootstrap/lib/Tabs');
+var Tab = require('react-bootstrap/lib/Tab');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //utils
 var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
+var Clipboard = require('clipboard');
 
 require('../../../../styles/Browser.sass');
 
@@ -45,6 +48,37 @@ var ComponentInfo = React.createClass({
     }
   },
 
+  createTabContent: function(key, bookmarkLink, xsdLink) {
+    //not setting onChange to the inputs will generate a warning unless readOnly
+    //is set, which does not yield the desired behaviour, therefore a noop function is passed
+    var noop = function() {};
+
+    return (
+      <div id={"componentInfoModal" + key}>
+        <div>
+          <a href={bookmarkLink}>Bookmark link:</a>
+          <div>
+            <input id="bookmarkLink" type="text" value={bookmarkLink} onChange={noop} />
+            <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
+              <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
+            </button>
+          </div>
+        </div>
+        {xsdLink != null && xsdLink[key] != null && (
+          <div>
+            <a href={xsdLink[key]}>Link to xsd:</a>
+            <div>
+              <input id={"xsdLink" + key} type="text" value={xsdLink[key]} onChange={noop} />
+              <button type="button" className="btn btn-default" data-clipboard-target={"#xsdLink" + key} title="Copy to clipboard">
+                <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  },
+
   render: function(item, contentId) {
     var item = this.props.item;
     var space = this.props.space;
@@ -59,34 +93,22 @@ var ComponentInfo = React.createClass({
     }
     var bookmarkLink = Config.webappUrl + this.props.history.createHref("/", query);
 
-    var xsdLink = type === Constants.TYPE_PROFILE ? ComponentRegistryClient.getRegistryUrl(type, item.id) + "/xsd" : null;
-
-    //not setting onChange to the inputs will generate a warning unless readOnly
-    //is set, which does not yield the desired behaviour, therefore a noop function is passed
-    var noop = function() {};
+    var xsdLink = type === Constants.TYPE_PROFILE ?
+    {
+      cmdi11: ComponentRegistryClient.getRegistryUrlCmdi11(type, item.id) + "/xsd",
+      cmdi12: ComponentRegistryClient.getRegistryUrl(type, item.id) + "/xsd"
+    } : null;
 
     return (
       <div id="componentInfoModal" className={this.props.className}>
-        <div>
-          <a href={bookmarkLink}>Bookmark link:</a>
-          <div>
-            <input id="bookmarkLink" type="text" value={bookmarkLink} onChange={noop} />
-            <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
-              <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
-            </button>
-          </div>
-        </div>
-        {xsdLink != null && (
-          <div>
-            <a href={xsdLink}>Link to xsd:</a>
-            <div>
-              <input id="xsdLink" type="text" value={xsdLink} onChange={noop} />
-              <button type="button" className="btn btn-default" data-clipboard-target="#xsdLink" title="Copy to clipboard">
-                <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
-              </button>
-            </div>
-          </div>
-        )}
+        <Tabs activeKey="cmdi12">
+          <Tab eventKey="cmdi11" title="CMDI 1.1">
+            {this.createTabContent('cmdi11', bookmarkLink, xsdLink)}
+          </Tab>
+          <Tab eventKey="cmdi12" title="CMDI 1.2">
+            {this.createTabContent('cmdi12', bookmarkLink, xsdLink)}
+          </Tab>
+        </Tabs>
       </div>
     );
   }
