@@ -1,5 +1,6 @@
 var log = require('loglevel');
 var _ = require('lodash');
+var ncname = require('ncname');
 
 var err = {
   IllegalAttributeName: 'Illegal name value for attribute',
@@ -11,8 +12,6 @@ var err = {
   ReqValueScheme: 'Valid type value is required'
 };
 
-var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
-
 var requiredString = {
   test: function(v) {return v != null && v.length > 0},
   message: "Field cannot be empty"
@@ -23,6 +22,12 @@ var noSpaces = {
   message: "Field cannot contain spaces"
 }
 
+var ncName = {
+  //test: ncname.test,
+  test: function(v) {return ncname.test(v)},
+  message: "Not a valid name"
+}
+
 var regex = function(expr, msg) {
   return {
     test: function(v) {return v == null || v.length == 0 || expr.test(v)},
@@ -30,24 +35,25 @@ var regex = function(expr, msg) {
   };
 }
 
+var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
 var conceptLinkUri = regex(conceptLinkPattern, "Must be a valid URI")
 
 var validators = {
   header: {
-    'Name': [requiredString, noSpaces],
+    'Name': [requiredString, noSpaces, ncName],
     'Description': [requiredString],
     'Component.@ConceptLink': [conceptLinkUri]
   },
   component: {
-    '@name': [requiredString, noSpaces],
+    '@name': [requiredString, noSpaces, ncName],
     '@ConceptLink': [conceptLinkUri]
   },
   element: {
-    '@name': [requiredString, noSpaces],
+    '@name': [requiredString, noSpaces, ncName],
     '@ConceptLink': [conceptLinkUri]
   },
   attribute: {
-    '@name': [requiredString, noSpaces],
+    '@name': [requiredString, noSpaces, ncName],
     '@ConceptLink': [conceptLinkUri]
   }
 };
