@@ -131,7 +131,8 @@ var Editor = React.createClass({
                     onToggleMultipleSelect={null}
                     privateAllowed={this.state.items.space === Constants.SPACE_PRIVATE /* allow to select from private iff current space is private */}
                     allowedTeamIds={
-                      this.state.items.space === Constants.SPACE_TEAM ? [this.state.items.team] : [] /* allow to select from current team only */
+                      this.state.items.space === Constants.SPACE_TEAM ? [this.state.items.team] /* allow to select from current team only */
+                        : [] /* not in team space - do not allow selection from any team */
                     }
                      />
                 )}
