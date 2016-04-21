@@ -43,14 +43,18 @@ var SpaceSelector = React.createClass({
     validUserSession: React.PropTypes.bool,
     onSpaceSelect: React.PropTypes.func,
     teams: React.PropTypes.array,
-    selectedTeam: React.PropTypes.string
+    selectedTeam: React.PropTypes.string,
+    privateAllowed: React.PropTypes.bool,
+    allowedTeamIds: React.PropTypes.array
   },
 
   getDefaultProps: function() {
     return {
       componentsOnly: false,
       teams: [],
-      selectedTeam: null
+      selectedTeam: null,
+      privateAllowed: true,
+      allowedTeamIds: null
     };
   },
 
@@ -81,25 +85,31 @@ var SpaceSelector = React.createClass({
   },
 
   getSpaces: function() {
+    log.trace("Allowed private?", this.props.privateAllowed)
+    log.trace("Allowed teams", this.props.allowedTeamIds)
+
     var spaces = {}
     spaces[PUBLIC] = {
       label: Constants.SPACE_NAMES[PUBLIC],
-      loginRequired: false
+      loginRequired: false,
+      enabled: true
     };
     spaces[PRIVATE] = {
       label: Constants.SPACE_NAMES[PRIVATE],
-      loginRequired: true
+      loginRequired: true,
+      enabled: this.props.privateAllowed !== false
     };
 
     // add group spaces
     if(this.props.teams != null) {
       var teams = this.props.teams;
       for(var i=0;i<(teams.length);i++) {
-        log.trace("Group", teams[i]);
+        log.trace("Team", teams[i]);
         var teamId = TEAM_PREFIX + teams[i].id;
         spaces[teamId] = {
           label: teams[i].name,
-          loginRequired: true
+          loginRequired: true,
+          enabled: this.props.allowedTeamIds === null || ($.inArray(teams[i].id, this.props.allowedTeamIds) >= 0)
         }
       }
     }
@@ -143,13 +153,17 @@ var SpaceSelector = React.createClass({
           {/* Public, private, teams */}
           <DropdownButton id="spaceDropDown" title={spaceLabel}>
               {(this.props.validUserSession || currentSpace != PUBLIC)?(
-                  Object.keys(spaces).map(function(spaceKey) {return (
-                    <MenuItem
-                      key={spaceKey}
-                      className={classNames({ selected: (spaceKey === currentSpace) })}
-                      onSelect={this.selectSpace.bind(this, spaceKey)}>
-                        {spaces[spaceKey].label}
-                    </MenuItem>
+                  Object.keys(spaces).map(function(spaceKey) {
+                    var space = spaces[spaceKey];
+                    return (
+                      <MenuItem
+                        key={spaceKey}
+                        className={classNames({ selected: (spaceKey === currentSpace) })}
+                        onSelect={this.selectSpace.bind(this, spaceKey)}
+                        disabled={!space.enabled}
+                        >
+                          {space.label}
+                      </MenuItem>
                   )}.bind(this)
                 )
               ):(

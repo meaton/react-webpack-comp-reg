@@ -39,6 +39,7 @@ var Editor = React.createClass({
     var flux = this.getFlux();
     return {
       auth: flux.store("AuthenticationStore").getState(),
+      items: flux.store("ItemsStore").getState(),
       details: flux.store("ComponentDetailsStore").getState(),
       editor: flux.store("EditorStore").getState(),
       team: flux.store("TeamStore").getState()
@@ -127,7 +128,12 @@ var Editor = React.createClass({
                     validUserSession={true}
                     componentsOnly={true}
                     onSpaceSelect={this.handleGridSpaceSelect}
-                    onToggleMultipleSelect={null} />
+                    onToggleMultipleSelect={null}
+                    privateAllowed={this.state.items.space === Constants.SPACE_PRIVATE /* allow to select from private iff current space is private */}
+                    allowedTeamIds={
+                      this.state.items.space === Constants.SPACE_TEAM ? [this.state.items.team] : [] /* allow to select from current team only */
+                    }
+                     />
                 )}
                 {gridDisabled ?
                   (<p className="gridInstructions">To link in an existing a component, click <em>+Component</em> on the target component above</p>)
