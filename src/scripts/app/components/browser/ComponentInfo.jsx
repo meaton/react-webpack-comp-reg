@@ -6,6 +6,7 @@ var Constants = require("../../constants");
 var Config = require('../../../config');
 
 //bootstrap
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Tabs = require('react-bootstrap/lib/Tabs');
 var Tab = require('react-bootstrap/lib/Tab');
 
@@ -105,7 +106,7 @@ var ComponentInfo = React.createClass({
 
     return (
       <div id="componentInfoModal" className={this.props.className}>
-        {xsdLink == null ? this.createTabContent(bookmarkLink) : (
+        {xsdLink == null ? this.createTabContent(bookmarkLink) :
           // if there are xsd links, show tabs because the links will be different for CMDI 1.1 and 1.2
             <Tabs activeKey={this.state.currentTab}
               onSelect={this.onTabSelect}>
@@ -115,8 +116,36 @@ var ComponentInfo = React.createClass({
               <Tab eventKey="cmdi12" title="CMDI 1.2">
                 {this.createTabContent(bookmarkLink, xsdLink, 'cmdi12')}
               </Tab>
+              <Tab eventKey="help" title={(<Glyphicon glyph='question-sign' />)}>
+                <div>
+                  <p><strong>Choosing between CMDI 1.1 and 1.2</strong></p>
+                  <p>
+                    All profiles are available in two versions:
+                    CMDI 1.1 and CMDI 1.2. The latter was introduced in 2016 and
+                    provides new features and has a separate XML namespace for
+                    each profile. While all components of the core CLARIN
+                    infrastructure support both versions, some tools may only
+                    support one.
+                    CMDI 1.1 instances can be converted to CMDI 1.2
+                    instances without loss of information. Instances in both
+                    versions of CMDI can exist independently.
+                  </p>
+                  <p>
+                    If you know what tool(s) your metadata will be processed with,
+                    choose CMDI 1.2 if you know it is supported. Most likely this
+                    applies if your metadata will only be processed by the core
+                    infrastructure (e.g. VLO). <strong>If you are not sure which
+                    version to choose, it's best to use CMDI 1.1.</strong>
+                  </p>
+                  <p>
+                    For more information, go to <a
+                    href="http://www.clarin.eu/cmdi12" target="_blank">
+                      www.clarin.eu/cmdi12
+                    </a>.
+                  </p>
+                </div>
+              </Tab>
             </Tabs>
-          )
         }
       </div>
     );
