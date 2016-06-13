@@ -41,7 +41,9 @@ var ConceptRegistryModal = React.createClass({
       columns: [],
       inputSearch: "",
       currentLinkSelection: null,
-      helpShown: false
+      helpShown: false,
+      queryError: null,
+      queryDone: false
     }
   },
 
@@ -96,6 +98,12 @@ var ConceptRegistryModal = React.createClass({
               <Button onClick={this.inputSearchUpdate} disabled={this.state.inputSearch.length <= 1}>Search</Button>
             }
             />
+          {this.state.queryDone && this.state.data != null && <div>
+            {this.state.data.length} results:
+          </div>}
+          {this.state.queryError != null && <div class='error'>
+            {this.state.queryError}
+          </div>}
           <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
           <a onClick={this.toggleHelp}><Glyphicon glyph='question-sign' /></a>
           {this.state.helpShown &&
@@ -134,8 +142,9 @@ var ConceptRegistryModal = React.createClass({
     ComponentRegistryClient.queryCCR(this.state.inputSearch, function(data) {
       if(data != null) {
         log.debug("CCR response", data);
-        self.setState({ data: data });
+        self.setState({ data: data, queryDone: true, queryError: null });
       } else {
+        self.setState({data: null, queryError: "Failed to query concept registry"})
         log.error("Failed to query CCR");
       }
     });
