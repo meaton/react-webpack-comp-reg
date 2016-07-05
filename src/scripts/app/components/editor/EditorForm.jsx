@@ -171,13 +171,18 @@ var EditorForm = React.createClass({
   },
 
   handleCancel: function() {
+    //determine cancel action
+    if(this.props.isNew) { //just go back to browser
+      var doCancel = this.afterSuccess;
+    } else { //go back to browser but reload component first to reset any changes from editor
+      var doCancel = this.getFlux().actions.loadComponentSpec.bind(this, this.props.type, this.props.item.id, this.afterSuccess);
+    }
     ReactAlert.showConfirmationDialogue(
       "Cancel editing",
       "Do you want to cancel editing this "
         + (this.props.type === Constants.TYPE_PROFILE ? "profile":"component")
         + "? Any changes will be discarded.",
-      this.getFlux().actions.loadComponentSpec.bind(this, this.props.type, this.props.item.id, this.afterSuccess));
-    ;
+      doCancel);
   },
 
   afterSuccess: function() {
