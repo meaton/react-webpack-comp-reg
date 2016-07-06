@@ -39,6 +39,7 @@ var Editor = React.createClass({
     var flux = this.getFlux();
     return {
       auth: flux.store("AuthenticationStore").getState(),
+      items: flux.store("ItemsStore").getState(),
       details: flux.store("ComponentDetailsStore").getState(),
       editor: flux.store("EditorStore").getState(),
       team: flux.store("TeamStore").getState()
@@ -92,6 +93,7 @@ var Editor = React.createClass({
                 isNew={this.isNew()}
                 componentLinkingMode={this.state.editor.componentLinkingMode}
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
+                derivedFromId={this.state.editor.item == null ? null : this.state.editor.item.id}
               />
             <div className="browserGroup">
               {gridExpanded && (
@@ -126,7 +128,13 @@ var Editor = React.createClass({
                     validUserSession={true}
                     componentsOnly={true}
                     onSpaceSelect={this.handleGridSpaceSelect}
-                    onToggleMultipleSelect={null} />
+                    onToggleMultipleSelect={null}
+                    privateAllowed={this.state.items.space === Constants.SPACE_PRIVATE /* allow to select from private iff current space is private */}
+                    allowedTeamIds={
+                      this.state.items.space === Constants.SPACE_TEAM ? [this.state.items.team] /* allow to select from current team only */
+                        : [] /* not in team space - do not allow selection from any team */
+                    }
+                     />
                 )}
                 {gridDisabled ?
                   (<p className="gridInstructions">To link in an existing a component, click <em>+Component</em> on the target component above</p>)
@@ -158,7 +166,7 @@ var Editor = React.createClass({
     var targetComponentId = this.state.editor.selectedComponentId;
     if(targetComponentId == null) {
       //no selection? add to root component
-      targetComponentId = this.state.details.spec.CMD_Component._appId;
+      targetComponentId = this.state.details.spec.Component._appId;
     }
     // row selected means item should be added to selected component
     this.getFlux().actions.insertComponentById(this.state.details.spec, targetComponentId, itemId,

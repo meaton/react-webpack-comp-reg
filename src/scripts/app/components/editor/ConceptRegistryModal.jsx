@@ -41,6 +41,9 @@ var ConceptRegistryModal = React.createClass({
       columns: [],
       inputSearch: "",
       currentLinkSelection: null,
+      helpShown: false,
+      queryError: null,
+      queryDone: false
     }
   },
 
@@ -93,8 +96,32 @@ var ConceptRegistryModal = React.createClass({
             addonBefore={<Glyphicon glyph='search' />}
             buttonAfter={
               <Button onClick={this.inputSearchUpdate} disabled={this.state.inputSearch.length <= 1}>Search</Button>
-            }/>
+            }
+            />
+          {this.state.queryDone && this.state.data != null && <div>
+            {this.state.data.length} results:
+          </div>}
+          {this.state.queryError != null && <div class='error'>
+            {this.state.queryError}
+          </div>}
           <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
+          <a onClick={this.toggleHelp}><Glyphicon glyph='question-sign' /></a>
+          {this.state.helpShown &&
+            <div>
+              <p>Hover the mouse over the search results to see full labels. Click the PersistentId to go to the concept's entry in the concept registry</p>
+              <p>You can use wildcards, parentheses and the special keywords 'AND', 'OR' and 'NOT' in your query as well as the '-' prefix to exclude terms. <br />
+              Some examples of valid queries:</p>
+              <ul>
+                <li>convers*</li>
+                <li>person AND name</li>
+                <li>subject OR topic</li>
+                <li>language AND (code OR name)</li>
+                <li>language NOT (code OR name)</li>
+                <li>language -code</li>
+              </ul>
+              <p>Click the 'Clear setting' button to unset the current concept for the current component, element or attribute.</p>
+            </div>
+        }
         </Modal.Body>
 
         <Modal.Footer>
@@ -115,11 +142,16 @@ var ConceptRegistryModal = React.createClass({
     ComponentRegistryClient.queryCCR(this.state.inputSearch, function(data) {
       if(data != null) {
         log.debug("CCR response", data);
-        self.setState({ data: data });
+        self.setState({ data: data, queryDone: true, queryError: null });
       } else {
+        self.setState({data: null, queryError: "Failed to query concept registry"})
         log.error("Failed to query CCR");
       }
     });
+  },
+
+  toggleHelp: function(evt) {
+    this.setState({helpShown: !this.state.helpShown});
   },
 
   handleEnter: function(evt) {
@@ -152,18 +184,19 @@ var ConceptRegistryModal = React.createClass({
 
   getColumnsDefinition: function() {
     var defaultClick = this.handleCellClick;
+    var cellWithTooltip = this.handleCellWithTooltip;
     var defaultProps = this.defaultCellProps;
 
     return [
       {
         property: 'name',
         header: 'Name',
-        cell: defaultClick
+        cell: cellWithTooltip
       },
       {
         property: 'definition',
         header: 'Definition',
-        cell: defaultClick
+        cell: cellWithTooltip
       },
       {
         property: 'identifier',
@@ -180,7 +213,9 @@ var ConceptRegistryModal = React.createClass({
         header: 'PersistentId',
         cell: function(value, data, rowIndex) {
           return {
-            value: (value) ? (<span><a href={value} target="_blank">{value}</a></span>) : "",
+            value: (value) ? (<span><a title={value} href={value} target="_blank">{
+              value.replace(new RegExp("^https?:\/\/hdl.handle.net\/([0-9]+\/)?"), "") //TODO: REGEX?
+            }</a></span>) : "",
             props: defaultProps(rowIndex)
           }
         }
@@ -208,6 +243,11 @@ var ConceptRegistryModal = React.createClass({
       },
       className: classNames({ odd: !isEven, even: isEven })
     };
+  },
+
+  handleCellWithTooltip: function(value, data, rowIndex) {
+    var tooltipValue = (<span title={value}>{value}</span>);
+    return this.handleCellClick(tooltipValue, data, rowIndex);
   },
 
   handleCellClick: function(value, data, rowIndex) {

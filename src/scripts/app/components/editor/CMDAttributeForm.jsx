@@ -17,6 +17,7 @@ var Button = require('react-bootstrap/lib/Button');
 var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
+var DocumentationInput = require('./DocumentationInput');
 
 //utils
 var classNames = require('classnames');
@@ -57,20 +58,23 @@ var CMDAttributeForm = React.createClass({
   render: function () {
     var attr = this.props.spec;
     var attrClasses = classNames('CMDAttribute', { 'edit-mode': true, 'open': true });
-    var attrName = (attr.Name == "") ? "[New Attribute]" : attr.Name;
+    var attrName = (attr['@name'] == "") ? "[New Attribute]" : attr['@name'];
+    var required = attr.hasOwnProperty('@Required') && attr['@Required'] == "true";
 
     var open = this.isOpen();
     log.trace("Attribute", this.props.spec._appId, " open state:", open);
 
     var editableProps = open?(
       <div className="form-horizontal form-group">
-        <ValidatingTextInput type="text" label="Name" name="Name" value={attr.Name} wrapperClassName="editorFormField"
+        <ValidatingTextInput type="text" label="Name" name="@name" value={attr['@name']} wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate} />
-        <ConceptLinkInput name="ConceptLink" type="text" label="ConceptLink" value={(attr['ConceptLink']) ? attr['ConceptLink'] : ""}
+        <ConceptLinkInput name="@ConceptLink" type="text" label="ConceptLink" value={(attr['@ConceptLink']) ? attr['@ConceptLink'] : ""}
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate}
-          updateConceptLink={this.propagateValue.bind(this, "ConceptLink")} />
+          updateConceptLink={this.propagateValue.bind(this, "@ConceptLink")} />
+        <DocumentationInput name="Documentation" label="Documentation" value={attr['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
         <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
+        <Input type="checkbox" name="@Required" label="Required" checked={required} onChange={this.updateAttributeSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
       </div>
     ) : null;
 
@@ -102,9 +106,18 @@ var CMDAttributeForm = React.createClass({
     this.propagateValue(e.target.name, e.target.value);
   },
 
+  updateAttributeSelectValue: function(defaultValue, e) {
+    var value = e.target.checked ? "true":"false";
+    if(defaultValue !== null && value === defaultValue) {
+      this.propagateValue(e.target.name, null);
+    } else {
+      this.propagateValue(e.target.name, value);
+    }
+  },
+
   handleUpdateValueScheme: function(type, valScheme) {
     this.props.onAttributeChange({$merge: {
-       Type: type,
+       '@ValueScheme': type,
        ValueScheme: valScheme
      }});
   },
@@ -113,7 +126,7 @@ var CMDAttributeForm = React.createClass({
 
   validate: function(val, targetName, feedback) {
     return Validation.validateField('attribute', targetName, val, feedback)
-      && (targetName != 'Name' || this.props.checkUniqueName(targetName, val, feedback));
+      && (targetName != '@name' || this.props.checkUniqueName(targetName, val, feedback));
   }
 });
 

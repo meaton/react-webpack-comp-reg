@@ -5,7 +5,8 @@ var log = require('loglevel');
 //JSONIX
 var Jsonix = require('jsonix').Jsonix;
 var CMD = require('../../../mappings/Component').Component;
-var context = new Jsonix.Context([CMD]);
+var jsonixOptions = require('../../../mappings/jsonixOptions');
+var context = new Jsonix.Context([CMD], jsonixOptions);
 var marshaller = context.createMarshaller();
 
 var Constants = require("../constants");
@@ -20,6 +21,8 @@ var ComponentSpec = require('../service/ComponentSpec');
 
 var PROFILES_PATH = "profiles";
 var COMPONENTS_PATH = "components";
+var REGISTRY_ROOT = "/registry/1.x";
+var REGISTRY_ROOT_CMDI_1_1 = "/registry/1.1";
 
 var corsRequestParams = (Config.cors) ?
   { username: Config.REST.auth.username,
@@ -30,8 +33,18 @@ var corsRequestParams = (Config.cors) ?
 
 var ComponentRegistryClient = {
 
-  getRegistryUrl: function(type, id) {
-    var typepath = '/registry/' + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
+  getRegistryUrl: function(type, id, version) {
+    var root;
+
+    if(version == null || version === Constants.CMD_VERSION_1_2) {
+      root = REGISTRY_ROOT; //is canonical
+    } else if(version === Constants.CMD_VERSION_1_1) {
+      root = REGISTRY_ROOT_CMDI_1_1;
+    } else {
+      log.warn("Unknown CMDI version", version, " - assuming canonical");
+      root = REGISTRY_ROOT;
+    }
+    var typepath = root + "/" + ((type === Constants.TYPE_PROFILE)?PROFILES_PATH:COMPONENTS_PATH);
     var requestUrl = restUrl + typepath;
     if(id == null) {
       return requestUrl;
@@ -120,7 +133,7 @@ var ComponentRegistryClient = {
 },
 
 loadItem: function(id, handleSuccess, handleFailure) {
-  var requestUrl = restUrl + "/registry/items/" + id;
+  var requestUrl = restUrl + "/items/" + id;
   $.ajax($.extend({
     url: requestUrl,
     dataType: "json",
@@ -153,7 +166,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
 
   var cmd_schema_xml;
   try {
-    cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('CMD_ComponentSpec'), value: data });
+    cmd_schema_xml = marshaller.marshalString({ name: new Jsonix.XML.QName('ComponentSpec'), value: data });
     log.debug('cmd schema: ', cmd_schema_xml);
   } catch(e) {
     log.error("Failed to marshal spec", data, e);
@@ -170,7 +183,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
   fd.append('data', new Blob([ cmd_schema_xml ], { type: "application/xml" }));
 
   var typeSpace = ComponentSpec.isProfile(spec) ? PROFILES_PATH : COMPONENTS_PATH;
-  var url = restUrl + '/registry/' + typeSpace;
+  var url = restUrl + REGISTRY_ROOT + "/" + typeSpace;
   if(update) url += '/' + profileId + '/' + actionType;
 
   log.debug("POSTing to ", url);
@@ -204,7 +217,7 @@ saveComponent: function(spec, item, profileId, update, publish, handleSuccess, h
 },
 
 /**
- * Turns all CMD_Component and CMD_Element properties into arrays
+ * Turns all Component and Element properties into arrays
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
@@ -213,24 +226,27 @@ normaliseSpec: function(data) {
     return data;
   }
 
-  //var rootComponent = (data.Header != undefined) ? data.CMD_Component : data;
+  //var rootComponent = (data.Header != undefined) ? data.Component : data;
   if (data.Header != undefined) {
     //root component
-    data.CMD_Component = this.normaliseSpec(data.CMD_Component);
+    data.Component = this.normaliseSpec(data.Component);
   } else {
-    if(data.hasOwnProperty("@ComponentId") && (data.CMD_Element || data.CMD_Component || data.AttributeList)) {
-      log.debug("Encountered component children despite component id (", data["@ComponentId"], ")");
+    if(data.hasOwnProperty("@ComponentRef") && (data.Element || data.Component || data.AttributeList)) {
+      log.debug("Encountered component children despite component id (", data["@ComponentRef"], ")");
       //linked component - strip children
-      delete data.CMD_Element;
-      delete data.CMD_Component;
+      delete data.Element;
+      delete data.Component;
       delete data.AttributeList
     } else {
       log.trace("normalising", data);
-      var childElems = data.CMD_Element;
-      var childComps = data.CMD_Component;
+      var childElems = data.Element;
+      var childComps = data.Component;
+
+      //normalise 'Documentation' element (must be an array)
+      data.Documentation = this.normaliseDocumentation(data.Documentation);
 
       if(childElems != undefined && childElems != null) {
-        //if CMD_Element child(ren) exist, make sure it is an array
+        //if Element child(ren) exist, make sure it is an array
         var elemsArray;
         if($.isArray(childElems)) {
           elemsArray = childElems;
@@ -242,14 +258,16 @@ normaliseSpec: function(data) {
         for(i=0; i<elemsArray.length; i++) {
           this.normaliseAttributeList(elemsArray[i].AttributeList);
           this.normaliseValueScheme(elemsArray[i].ValueScheme);
+          //normalise 'Documentation' element (must be an array)
+          elemsArray[i].Documentation = this.normaliseDocumentation(elemsArray[i].Documentation);
         }
-        data.CMD_Element = elemsArray;
+        data.Element = elemsArray;
       }
 
       // normalise attributes of this component
       this.normaliseAttributeList(data.AttributeList);
 
-      //if CMD_Component child(ren) exist, make sure it is an array
+      //if Component child(ren) exist, make sure it is an array
       if(childComps != undefined && childComps != null) {
         if(!$.isArray(childComps)) {
           childComps = [childComps];
@@ -257,7 +275,7 @@ normaliseSpec: function(data) {
 
         // normalise children
         var self = this;
-        data.CMD_Component = childComps.map(function(comp, index) {
+        data.Component = childComps.map(function(comp, index) {
           return self.normaliseSpec(comp);
         });
       }
@@ -284,6 +302,8 @@ normaliseAttributeList: function(attrList) {
       // normalise all value schemes in the attributes
       for(j=0; j<attrArray.length; j++) {
         this.normaliseValueScheme(attrArray[j].ValueScheme);
+        //normalise 'Documentation' element (must be an array)
+        attrArray[j].Documentation = this.normaliseDocumentation(attrArray[j].Documentation);
       }
 
       attrList.Attribute = attrArray;
@@ -294,12 +314,23 @@ normaliseAttributeList: function(attrList) {
 normaliseValueScheme: function(valueScheme) {
   if(valueScheme != null) {
     log.trace("Normalise valueScheme", valueScheme);
-    if(valueScheme.enumeration != null) {
-      var item = valueScheme.enumeration.item;
+    var vocab = valueScheme.Vocabulary;
+    if(vocab != null && vocab.enumeration != null) {
+      var item = vocab.enumeration.item;
       if(item != undefined && !$.isArray(item)) {
-        valueScheme.enumeration.item = [item];
+        vocab.enumeration.item = [item];
       }
     }
+  }
+},
+
+normaliseDocumentation: function(documentation) {
+  log.debug("Documentation: ", documentation);
+  if(documentation == null || $.isArray(documentation)) {
+    return documentation;
+  } else {
+    log.debug("Turned into array", [documentation]);
+    return [{'$': documentation}];
   }
 },
 
@@ -319,7 +350,7 @@ deleteComponent: function(type, itemId, handleSuccess, handleFailure) {
 },
 
 transferComponent: function(itemId, teamId, handleSuccess, handleFailure) {
-  var url = restUrl + '/registry/items/' + itemId + '/transferownership?groupId=' + teamId;
+  var url = restUrl + '/items/' + itemId + '/transferownership?groupId=' + teamId;
   $.ajax($.extend({
     type: 'POST',
     data: {groupId: teamId},
@@ -340,7 +371,7 @@ loadComments: function(componentId, type, success, failure) {
   var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
 
   $.ajax($.extend({
-    url: restUrl + '/registry/' + reg_type + '/' + componentId + '/comments',
+    url: restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/comments',
     dataType: "json",
     success: function(data) {
       if(success && data != null) {
@@ -362,7 +393,7 @@ loadComments: function(componentId, type, success, failure) {
 saveComment: function(componentId, type, comment, success, failure) {
   var comments_xml = "<comment><comments>" + comment + "</comments><commentDate/>";
   var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
-  var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/';
+  var url = restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/comments/';
 
   var fd = new FormData();
 
@@ -399,7 +430,7 @@ saveComment: function(componentId, type, comment, success, failure) {
 
 deleteComment: function(componentId, type, commentId, success, failure) {
   var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
-  var url = restUrl + '/registry/' + reg_type + '/' + componentId + '/comments/' + commentId;
+  var url = restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/comments/' + commentId;
 
   $.ajax($.extend({
     type: 'POST',
@@ -417,7 +448,7 @@ deleteComment: function(componentId, type, commentId, success, failure) {
 loadAllowedTypes: function(cb) {
   $.ajax($.extend({
     type: 'GET',
-    url: restUrl + '/registry/AllowedTypes',
+    url: restUrl + '/allowedTypes',
     processData: false,
     contentType: false,
     dataType:'json',
@@ -434,7 +465,7 @@ loadAllowedTypes: function(cb) {
 loadTeams: function(success, failure) {
   $.ajax($.extend({
     type: 'GET',
-    url: restUrl + '/registry/groups/usermembership',
+    url: restUrl + '/groups/usermembership',
     processData: false,
     contentType: false,
     dataType:'json',
@@ -452,7 +483,7 @@ loadTeams: function(success, failure) {
 },
 
 usageCheck: function(componentId, cb) {
-  var url = restUrl +'/registry/components/usage/' + componentId;
+  var url = restUrl + REGISTRY_ROOT + '/components/usage/' + componentId;
 
   $.ajax($.extend({
     type: 'GET',

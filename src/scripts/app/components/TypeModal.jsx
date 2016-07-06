@@ -23,10 +23,12 @@ var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
 //service
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
+var Validation = require('../service/Validation');
 
 //utils
 var update = require('react-addons-update');
 var classNames = require('classnames');
+var ReactAlert = require('../util/ReactAlert');
 
 require('../../../styles/EditorDialog.sass');
 
@@ -36,6 +38,8 @@ require('../../../styles/EditorDialog.sass');
 * @mixes require('react-addons-linked-state-mixin')
 */
 var TypeModal = React.createClass({
+  //TODO: add support for open vocabularies (without enum but with @URI and @ValueProperty)
+  //        (NB: also support @URI and @ValueProperty for closed vocabularies)
   mixins: [LinkedStateMixin],
   propTypes: {
     container: React.PropTypes.object.isRequired,
@@ -69,20 +73,33 @@ var TypeModal = React.createClass({
     this.props.onChange({type: simpleVal});
     this.close(evt);
   },
+
   setPattern: function(evt) {
     var patternVal = this.refs.patternInput.getValue();
     this.props.onChange({pattern: patternVal});
     this.close(evt);
   },
+
   setControlVocab: function(evt) {
-    if(this.state.enumeration != undefined && $.isArray(this.state.enumeration.item)){
-      this.props.onChange({enumeration: this.state.enumeration});
+    //TODO: Pass entire Vocabulary object
+    var enumeration = this.state.enumeration;
+    if(enumeration != undefined
+        && $.isArray(enumeration.item)
+        && Validation.checkVocabularyItems(enumeration.item, this.showFeedback)) {
+          //check for duplicate items
+          this.props.onChange({enumeration: enumeration});
+          this.close(evt);
     }
-    this.close(evt);
   },
+
+  showFeedback: function(message) {
+    alert("Invalid vocabulary: " + message);
+  },
+
   close: function(evt) {
     this.props.onClose(evt);
   },
+
   componentWillMount: function() {
     log.debug("Setting state to props", this.props);
     this.setState({

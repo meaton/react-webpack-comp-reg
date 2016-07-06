@@ -83,25 +83,25 @@ var ActionButtonsMixin = {
 
   handleMoveComponent: function(changeHandler, index, direction) {
     log.debug("Move component",index,direction, "in", this.props.spec);
-    changeHandler({CMD_Component: $move(direction, index, this.props.spec.CMD_Component)});
+    changeHandler({Component: $move(direction, index, this.props.spec.Component)});
   },
 
   handleRemoveComponent: function(changeHandler, index) {
     log.debug("Remove component",index, "from", this.props.spec);
     ReactAlert.showConfirmationDialogue("Remove component?", "Are you sure that you want to remove this component?", function() {
-        changeHandler({CMD_Component: $remove(index)});
+        changeHandler({Component: $remove(index)});
     });
   },
 
   handleMoveElement: function(changeHandler, index, direction) {
     log.debug("Move element",index,direction, "in", this.props.spec);
-    changeHandler({CMD_Element: $move(direction, index, this.props.spec.CMD_Element)});
+    changeHandler({Element: $move(direction, index, this.props.spec.Element)});
   },
 
   handleRemoveElement: function(changeHandler, index) {
     log.debug("Remove element",index, "from", this.props.spec);
     ReactAlert.showConfirmationDialogue("Remove element?", "Are you sure that you want to remove this element?", function() {
-      changeHandler({CMD_Element: $remove(index)});
+      changeHandler({Element: $remove(index)});
     });
   },
 

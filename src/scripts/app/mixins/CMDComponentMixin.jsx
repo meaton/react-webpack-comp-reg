@@ -14,7 +14,7 @@ var classNames = require('classnames');
 */
 var CMDComponentMixin = {
   propTypes: {
-    /* specification object (CMD_Component) */
+    /* specification object (Component) */
     spec: React.PropTypes.object.isRequired,
     /* determines whether 'envelope' with properties should be hidden */
     hideProperties: React.PropTypes.bool,
@@ -38,8 +38,8 @@ var CMDComponentMixin = {
     var comp = this.props.spec;
 
     var header = comp.Header;
-    if(header != undefined && comp.CMD_Component != undefined)
-      comp = comp.CMD_Component;
+    if(header != undefined && comp.Component != undefined)
+      comp = comp.Component;
 
     if($.isArray(comp) && comp.length == 1)
       comp = comp[0];
@@ -73,7 +73,7 @@ var CMDComponentMixin = {
   /* Rendering of components */
 
   renderNestedComponents: function(comp) {
-      var compComps = comp.CMD_Component;
+      var compComps = comp.Component;
 
       if(!$.isArray(compComps) && compComps != undefined)
         compComps = [compComps];
@@ -106,9 +106,9 @@ var CMDComponentMixin = {
   },
 
   callRenderNestedComponent: function(nestedComp, ncindex) {
-    var isLinked = nestedComp.hasOwnProperty("@ComponentId");
+    var isLinked = nestedComp.hasOwnProperty("@ComponentRef");
     if(isLinked) {
-      var compId = nestedComp['@ComponentId'];
+      var compId = nestedComp['@ComponentRef'];
     }
 
     // use full spec for linked components if available (should have been preloaded)
@@ -116,7 +116,7 @@ var CMDComponentMixin = {
                   && this.props.linkedComponents != undefined
                   && this.props.linkedComponents.hasOwnProperty(compId);
 
-    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].CMD_Component : nestedComp;
+    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].Component : nestedComp;
 
     // component ID (for display purposes only)
     if(!isLinked) {
@@ -129,7 +129,7 @@ var CMDComponentMixin = {
   /* Rendering of elements */
 
   renderElements: function(comp) {
-    var compElems = comp.CMD_Element;
+    var compElems = comp.Element;
 
     if(!$.isArray(compElems) && compElems != undefined)
       compElems = [compElems];

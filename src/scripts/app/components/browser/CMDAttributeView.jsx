@@ -7,6 +7,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //components
 var ValueScheme = require('../ValueScheme');
+var DocumentationView = require('./DocumentationView');
 
 //require('../../styles/CMDAttribute.sass');
 
@@ -39,11 +40,13 @@ var CMDAttributeView = React.createClass({
     var attr = this.props.spec;
     var attr_val = <ValueScheme obj={attr} enabled={false} />
     var conceptLink = attr.ConceptLink;
+    var documentation = attr.Documentation;
+    var required = attr['@Required'] === 'true';
     return (
       <div className="panel panel-success">
         <div className="panel-heading">
           <span>Attribute: </span>
-          <span className="elementName">{attr.Name}</span>
+          <span className="elementName">{attr['@name']}</span>
         </div>
         <div className="panel-body">
           <div className="valueScheme"><span className="attrLabel">Value scheme:</span>{attr_val}</div>
@@ -54,6 +57,17 @@ var CMDAttributeView = React.createClass({
                 <span className="attrValue"><a href={conceptLink} target="_blank">{conceptLink}</a></span>
               </li>
             )}
+            {(documentation != null && documentation.length > 0) && (
+              <li className="attrElem"><span className="attrLabel">Documentation:</span>
+              {
+                <DocumentationView value={documentation} />
+              }
+              </li>
+            )}
+            <li className="attrElem">
+              <span className="attrLabel">Required:</span>
+              <span className="attrValue">{required ? "Yes":"No"}</span>
+            </li>
           </ul>
         </div>
       </div>

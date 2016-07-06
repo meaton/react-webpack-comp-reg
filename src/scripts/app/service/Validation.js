@@ -1,16 +1,16 @@
 var log = require('loglevel');
+var _ = require('lodash');
+var ncname = require('ncname');
 
 var err = {
-  IllegalAttributeName: 'Illegal name value for attribute.',
-  IllegalConceptLink: 'Illegal value for ConceptLink.',
-  IllegalValueScheme: 'Illegal or missing value for type.',
-  ReqName:  'Component or element is missing a name.',
-  ReqComponentDesc: 'Component description is required.',
-  ReqDisplayPriority: 'Display priority value is required for elements.',
-  ReqValueScheme: 'Valid type value is required.'
+  IllegalAttributeName: 'Illegal name value for attribute',
+  IllegalConceptLink: 'Illegal value for ConceptLink',
+  IllegalValueScheme: 'Illegal or missing value for type',
+  ReqName:  'Component or element is missing a name',
+  ReqComponentDesc: 'Component description is required',
+  ReqDisplayPriority: 'Display priority value is required for elements',
+  ReqValueScheme: 'Valid type value is required'
 };
-
-var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
 
 var requiredString = {
   test: function(v) {return v != null && v.length > 0},
@@ -22,6 +22,11 @@ var noSpaces = {
   message: "Field cannot contain spaces"
 }
 
+var ncName = {
+  test: function(v) {return ncname.test(v)},
+  message: "Not a valid name"
+}
+
 var regex = function(expr, msg) {
   return {
     test: function(v) {return v == null || v.length == 0 || expr.test(v)},
@@ -29,25 +34,26 @@ var regex = function(expr, msg) {
   };
 }
 
+var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
 var conceptLinkUri = regex(conceptLinkPattern, "Must be a valid URI")
 
 var validators = {
   header: {
-    'Name': [requiredString, noSpaces],
+    'Name': [requiredString, noSpaces, ncName],
     'Description': [requiredString],
-    'CMD_Component.@ConceptLink': [conceptLinkUri]
+    'Component.@ConceptLink': [conceptLinkUri]
   },
   component: {
-    '@name': [requiredString, noSpaces],
+    '@name': [requiredString, noSpaces, ncName],
     '@ConceptLink': [conceptLinkUri]
   },
   element: {
-    '@name': [requiredString, noSpaces],
+    '@name': [requiredString, noSpaces, ncName],
     '@ConceptLink': [conceptLinkUri]
   },
   attribute: {
-    'Name': [requiredString, noSpaces],
-    'ConceptLink': [conceptLinkUri]
+    '@name': [requiredString, noSpaces, ncName],
+    '@ConceptLink': [conceptLinkUri]
   }
 };
 
@@ -60,9 +66,9 @@ var testConceptLink = function(fieldValue) {
 
 var testAttribute = function(attr, cb) {
   var errReturned = false;
-  if(!testAttributeName(attr)) errReturned = !cb(err.IllegalAttributeName);
+  if(!testAttributeName(attr)) errReturned = !cb(err.IllegalAttributeName + ": " + attr['@name']);
   if(!testValueScheme(attr)) errReturned = !cb(err.IllegalValueScheme);
-  if(!testConceptLink(attr['ConceptLink'])) errReturned = !cb(err.IllegalConceptLink);
+  if(!testConceptLink(attr['@ConceptLink'])) errReturned = !cb(err.IllegalConceptLink);
 
   if(!errReturned) log.debug('Tests Passed: Attribute (' + attr.attrId + ')');
   return !errReturned;
@@ -71,8 +77,8 @@ var testAttribute = function(attr, cb) {
 var testAttributeName = function(fieldValue) {
   var regExpName = /^[A-Za-z0-9_\-]+$/;
   if(fieldValue != undefined || fieldValue != null)
-    if(!fieldValue.hasOwnProperty('Name')) return false;
-    else if(fieldValue['Name'].length <= 0 || !regExpName.test(fieldValue['Name'])) return false;
+    if(!fieldValue.hasOwnProperty('@name')) return false;
+    else if(fieldValue['@name'].length <= 0 || !regExpName.test(fieldValue['@name'])) return false;
   return true;
 };
 
@@ -86,11 +92,12 @@ var testAttributeList = function(attrList, cb) {
 };
 
 var testValueScheme = function(item) {
-  if(item.Type != null && item['Type'].length <= 0) return false;
-  else if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
+  if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
   else if(item.ValueScheme != null) {
     var fieldValue = item['ValueScheme'];
-    if((fieldValue.enumeration != null && fieldValue.enumeration.item != null) || (fieldValue.pattern != null && fieldValue.pattern.length > 0))
+    var vocabulary = fieldValue.Vocabulary;
+    var pattern = fieldValue.pattern;
+    if((vocabulary != null && vocabulary.enumeration != null && vocabulary.enumeration.item != null) || (pattern != null && pattern.length > 0))
       return true;
     else
       return false;
@@ -160,6 +167,36 @@ var Validation = {
     return true;
   },
 
+  checkVocabularyItems: function(items, feedback) {
+    var itemValuesChain = _.chain(items).map(function(item) {
+      return item['$'];
+    });
+
+    //empty check (lazy)
+    var hasEmpty = itemValuesChain.some(function(val){
+      return val == "";
+    });
+
+    //check for duplicates (lazy)
+    var duplicates = itemValuesChain
+      .countBy() // get counts for all item values
+      .pick(function(value) { return value > 1; }) // filter out non-duplicates
+      .keys(); // only keep keys
+
+    if(hasEmpty.value()) {
+      log.warn("Empty item(s)");
+      feedback("A vocabulary cannot items with an empty value. Please remove these items and try again.");
+      return false;
+    } else if(!duplicates.isEmpty().value()) {
+        // construct an array of duplicate values
+        log.warn("Duplicate in array:", duplicates.value());
+        feedback("All items in a vocabulary should have a unique value. Please remove these duplicate values and try again:\n\n" + duplicates.value());
+        return false;
+    } else {
+      return true;
+    }
+  },
+
   validate: function(data) {
     log.debug('validate data');
 
@@ -170,7 +207,7 @@ var Validation = {
     };
 
     var header = (data.Header != undefined) ? data.Header : null;
-    var componentDesc = (data.Header != undefined) ? data.CMD_Component : data;
+    var componentDesc = (data.Header != undefined) ? data.Component : data;
 
     if(testMandatoryFields(header, componentDesc, addError))
       log.debug('Test Passed: Mandatory fields');
@@ -190,7 +227,7 @@ var Validation = {
     testAttributeList(componentDesc.AttributeList, addError);
 
     // elements
-    var elems = componentDesc.CMD_Element;
+    var elems = componentDesc.Element;
     if(elems != undefined || elems != null) {
       for(var i=0; i < elems.length; i++) {
         if(elems[i].AttributeList != undefined) testAttributeList(elems[i].AttributeList, addError);
@@ -199,12 +236,12 @@ var Validation = {
     }
 
     // components
-    var comps = componentDesc.CMD_Component;
+    var comps = componentDesc.Component;
     if(comps != undefined && comps != null) {
       for(var i=0; i < comps.length; i++) {
-        if(!comps[i].hasOwnProperty('@ComponentId')) {
+        if(!comps[i].hasOwnProperty('@ComponentRef')) {
           testMandatoryFields(null, comps[i], addError); //inline-component
-          if(!testConceptLink(comps[i]['ConceptLink'])) addError(err.IllegalConceptLink);
+          if(!testConceptLink(comps[i]['@ConceptLink'])) addError(err.IllegalConceptLink);
           if(comps[i].AttributeList != undefined) testAttributeList(comps[i].AttributeList, addError)
         }
       }

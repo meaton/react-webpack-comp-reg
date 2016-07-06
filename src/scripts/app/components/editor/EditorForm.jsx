@@ -20,6 +20,7 @@ var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 var History = require("react-router").History;
 
 //utils
+var update = require('react-addons-update');
 var classNames = require('classnames');
 var ReactAlert = require('../../util/ReactAlert');
 var ComponentSpec = require('../../service/ComponentSpec');
@@ -41,6 +42,7 @@ var EditorForm = React.createClass({
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
     selectedComponentId: React.PropTypes.string,
+    derivedFromId: React.PropTypes.string,
     isNew: React.PropTypes.bool.isRequired
   },
 
@@ -86,6 +88,7 @@ var EditorForm = React.createClass({
             onSave={this.handleSave}
             onSaveNew={this.handleSaveNew}
             onPublish={this.handlePublish}
+            onCancel={this.handleCancel}
             disabled={this.props.processing}
           />
 
@@ -150,7 +153,14 @@ var EditorForm = React.createClass({
 
   handleSaveNew: function() {
     if(this.validateChildren()) {
-      this.getFlux().actions.saveNewComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
+      var spec = this.props.spec;
+      if(this.props.derivedFromId != null) {
+        log.debug("Setting derived from header:", this.props.derivedFromId);
+        spec = update(spec, {Header: {$merge: {
+          DerivedFrom: this.props.derivedFromId
+        }}});
+      }
+      this.getFlux().actions.saveNewComponentSpec(spec, this.props.item, this.afterSuccess);
     }
   },
 
@@ -158,6 +168,21 @@ var EditorForm = React.createClass({
     if(this.validateChildren()) {
       this.getFlux().actions.publishComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
     }
+  },
+
+  handleCancel: function() {
+    //determine cancel action
+    if(this.props.isNew) { //just go back to browser
+      var doCancel = this.afterSuccess;
+    } else { //go back to browser but reload component first to reset any changes from editor
+      var doCancel = this.getFlux().actions.loadComponentSpec.bind(this, this.props.type, this.props.item.id, this.afterSuccess);
+    }
+    ReactAlert.showConfirmationDialogue(
+      "Cancel editing",
+      "Do you want to cancel editing this "
+        + (this.props.type === Constants.TYPE_PROFILE ? "profile":"component")
+        + "? Any changes will be discarded.",
+      doCancel);
   },
 
   afterSuccess: function() {

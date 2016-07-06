@@ -21,12 +21,17 @@ var SpecFormUpdateMixin = {
     this.propagateValue("@ConceptLink", val);
   },
 
+  updateDocumentation: function(documentation) {
+    log.trace("Update documentation", documentation);
+    this.propagateValue("Documentation", documentation);
+  },
+
   addNewAttribute: function(onChange, evt) {
     var spec = this.props.spec;
     var attrList = spec.AttributeList;
 
     var appId = this.generateAppIdForNew(spec._appId, (attrList == null) ? null : attrList.Attribute)
-    var newAttrObj = { Name: "", Type: "string", _appId: appId };
+    var newAttrObj = { Name: "", "@ValueScheme": "string", _appId: appId };
 
     var update;
     if(attrList == null) {
@@ -88,9 +93,12 @@ var SpecFormUpdateMixin = {
       }
     }
 
+    //TODO: Change when TypeModal passed Vocabulary instead of enumeration
     if(val.enumeration != undefined) {
       valScheme = {
-        enumeration: val.enumeration
+        Vocabulary: {
+          enumeration: val.enumeration
+        }
       }
     }
 

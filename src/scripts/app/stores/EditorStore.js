@@ -76,6 +76,10 @@ var EditorStore = Fluxxor.createStore({
     this.selectedComponentId = null;
     this.componentLinkingMode = false;
 
+    // reset grid
+    this.gridSpace = Constants.SPACE_PUBLISHED
+    this.gridTeam = null;
+    this.gridItems = [];
     this.emit("change");
   },
 

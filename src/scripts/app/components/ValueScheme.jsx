@@ -39,15 +39,15 @@ var ValueScheme = React.createClass({
   render: function() {
       var obj = this.props.obj;
       var enabled = this.props.enabled;
-      var valueSchemeAttr = obj['@ValueScheme']; // element, e.g. 'string'
-      var typeElem = obj.Type; //attribute, e.g. 'string'
-      var valueSchemeElem = obj['ValueScheme']; // element or attribute, contains 'pattern' or 'enumeration'
 
-      var type = (typeElem != undefined) ? typeElem : valueSchemeAttr;
-      var enumeration = (valueSchemeElem != undefined) ? valueSchemeElem.enumeration : null;
-      var pattern = (valueSchemeElem != undefined) ? valueSchemeElem.pattern : null;
+      var valueScheme = obj['@ValueScheme']; // "simple" type, e.g. 'string'
 
-      log.trace("TypeModal params", {type: type, enumeration: enumeration, pattern: pattern});
+      var valueSchemeElem = obj['ValueScheme']; // contains 'pattern' or 'enumeration'
+      var vocabulary = (valueSchemeElem != null) ? valueSchemeElem.Vocabulary : null;
+      var pattern = (valueSchemeElem != null) ? valueSchemeElem.pattern : null;
+      var enumeration = (vocabulary != null) ? vocabulary.enumeration : null;
+
+      log.debug("TypeModal params", {obj: obj, valueScheme: valueScheme, vocabulary: vocabulary, pattern: pattern});
 
       var typeTrigger = (
         <ModalTrigger
@@ -59,7 +59,7 @@ var ValueScheme = React.createClass({
               onClose={this.closeDialogue}
               onChange={this.props.onChange}
               container={this}
-              type={type}
+              type={valueScheme}
               enumeration={enumeration}
               pattern={pattern}
               />
@@ -67,40 +67,43 @@ var ValueScheme = React.createClass({
       );
 
       var obj=this.props.obj;
-      var valueScheme = valueSchemeAttr;
 
       if(typeof valueScheme != "string") {
         valueScheme = valueSchemeElem;
 
-        if(valueScheme != undefined) {
-          if(valueScheme.pattern != undefined) // attr or elem
-            valueScheme = valueScheme.pattern;
-          else { // elem
-            var enumItems = (!$.isArray(valueScheme.enumeration.item)) ? [valueScheme.enumeration.item] : valueScheme.enumeration.item;
-            var items = $.map(enumItems, function(item, index) {
-              return (
-                <option key={obj._appId + index} disabled={!enabled} value={index}>
-                  {(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}
-                </option>
-              );
-            });
-            if(enabled) {
-              return (
-                <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField" defaultValue={0}>
-                  {items}
-                </Input>
-              );
+        if(valueScheme == null) {
+          valueScheme = "Undefined";
+        } else {
+          if(pattern != null) {
+            valueScheme = pattern;
+          } else if(vocabulary != null) {
+            if(enumeration == null) {
+              //TODO: Open vocabularies do not have an enumeration              
             } else {
-              return (
-                <Input ref="typeInput" type="select" defaultValue={0}>
-                  {items}
-                </Input>
-              );
+              var enumItems = (!$.isArray(enumeration.item)) ? [enumeration.item] : enumeration.item;
+              var items = $.map(enumItems, function(item, index) {
+                return (
+                  <option key={obj._appId + index} disabled={!enabled} value={index}>
+                    {(typeof item != "string" && item.hasOwnProperty('$')) ? item['$'] : item}
+                  </option>
+                );
+              });
+              if(enabled) {
+                return (
+                  <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField" defaultValue={0}>
+                    {items}
+                  </Input>
+                );
+              } else {
+                return (
+                  <Input ref="typeInput" type="select" defaultValue={0}>
+                    {items}
+                  </Input>
+                );
+              }
             }
           }
-
-        } else if(obj.Type != undefined) // attr
-            valueScheme = typeElem;
+        }
       }
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
         <Input ref="typeInput" type="text" label="Type"

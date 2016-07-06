@@ -13,7 +13,7 @@ function updateCommandInComponent(spec, appId, command) {
     // the spec we're looking for, return command here
     return command;
   } else {
-    var children = spec.CMD_Component;
+    var children = spec.Component;
     if(children != undefined) {
       // search for match in children
       for(var i=0;i<(children.length);i++) {
@@ -22,7 +22,7 @@ function updateCommandInComponent(spec, appId, command) {
         var childCommand = updateCommandInComponent(child, appId, command);
         if(childCommand != null) {
           // this means we have a match - wrap command to make it work on this level
-          return {CMD_Component: changeObj(i, childCommand)};
+          return {Component: changeObj(i, childCommand)};
         }
       }
     }
@@ -59,13 +59,13 @@ var ComponentSpec = {
    */
   updateInComponent: function(spec, appId, innerCommand) {
     log.trace("Updating", appId, "in", spec, "with", innerCommand);
-    var command = updateCommandInComponent(spec.CMD_Component, appId, innerCommand);
+    var command = updateCommandInComponent(spec.Component, appId, innerCommand);
     if(command == null) {
       log.warn("Could not perform command, no component with appId", appId, "found:", innerCommand);
       return spec;
     } else {
       log.debug("Updating", spec, "with derived", command);
-      return update(spec, {CMD_Component: command});
+      return update(spec, {Component: command});
     }
   },
 
@@ -77,12 +77,12 @@ var ComponentSpec = {
   getTreeIds: function(spec) {
     var ids = [];
     // add child components
-    if(spec.CMD_Component != null) {
-      _.each(spec.CMD_Component, addIdsFromChild.bind(this, ids));
+    if(spec.Component != null) {
+      _.each(spec.Component, addIdsFromChild.bind(this, ids));
     }
     // add child elements
-    if(spec.CMD_Element != null) {
-      _.each(spec.CMD_Element, addIdsFromChild.bind(this, ids));
+    if(spec.Element != null) {
+      _.each(spec.Element, addIdsFromChild.bind(this, ids));
     }
     // add child attributes
     if(spec.AttributeList != null && spec.AttributeList.Attribute != null) {

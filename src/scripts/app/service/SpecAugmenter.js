@@ -10,7 +10,7 @@ var log = require('loglevel');
 
 function needsId(element) {
   // these XML elements should be augmented with an ID
-  return element === "CMD_Component" || element === "CMD_Element" || element === "Attribute";
+  return element === "Component" || element === "Element" || element === "Attribute";
 }
 
 function updateChild(childName, childSpec, id) {
@@ -51,7 +51,7 @@ function augmentWithIds(spec, baseId) {
 
 module.exports = {
   /**
-   * Augments all CMD_Component, CMD_Element and Attribute elements in the spec
+   * Augments all Component, Element and Attribute elements in the spec
    * with a unique '_appId' property
    */
   augmentWithIds: function(spec) {
@@ -64,9 +64,9 @@ module.exports = {
     if(spec.Header != undefined && spec.Header.ID != undefined) {
       // include ID from header
       baseId = spec.Header.ID + "#" + baseId;
-    } else if(spec.hasOwnProperty('@ComponentId')) {
+    } else if(spec.hasOwnProperty('@ComponentRef')) {
       // include ID from attribute
-      baseId = spec['@ComponentId'] + "#" + baseId;
+      baseId = spec['@ComponentRef'] + "#" + baseId;
     } else {
       baseId = "new_" + baseId;
     }

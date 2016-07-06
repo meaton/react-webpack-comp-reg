@@ -12,6 +12,7 @@ var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 //components
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
+var DocumentationView = require('./DocumentationView');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -26,7 +27,15 @@ var CMDComponentView = React.createClass({
 
   /* other props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   propTypes: {
-    link: React.PropTypes.object /* if linked, this is the CMD_Component element defined in the parent */
+    link: React.PropTypes.object /* if linked, this is the Component element defined in the parent */,
+    componentLinks: React.PropTypes.bool,
+    compId: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      componentLinks: true
+    };
   },
   /**
    * Components should be closed by default iff they are linked
@@ -44,7 +53,7 @@ var CMDComponentView = React.createClass({
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);
     } else {
-      var link = isLinked ? this.props.spec.CMD_Component[index] : null;
+      var link = isLinked ? this.props.spec.Component[index] : null;
       // forward child expansion state
       return (<CMDComponentView
         key={spec._appId}
@@ -55,8 +64,9 @@ var CMDComponentView = React.createClass({
         onToggle={this.props.onToggle}
         isLinked={isLinked}
         isFirst={index == 0}
-        isLast={index == this.props.spec.CMD_Component.length - 1}
+        isLast={index == this.props.spec.Component.length - 1}
         link={link}
+        compId={compId}
         />);
     }
   },
@@ -74,8 +84,8 @@ var CMDComponentView = React.createClass({
     var compName = (header != undefined) ? header.Name : comp['@name']; // TODO: use @name attr only
 
     var compId;
-    if(comp.hasOwnProperty("@ComponentId"))
-      compId = comp["@ComponentId"];
+    if(comp.hasOwnProperty("@ComponentRef"))
+      compId = comp["@ComponentRef"];
     else if(comp.Header != undefined)
       compId = comp.Header.ID;
     else
@@ -95,14 +105,32 @@ var CMDComponentView = React.createClass({
     if(maxC == null) maxC = 1;
 
     var cardinality = (<span>{minC + " - " + maxC}</span>);
-    var titleText = (<span>Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}</span>);
+    //TODO: make title link to component in browser https://github.com/clarin-eric/component-registry-front-end/issues/27
+    var titleText = (
+      <span  title={this.props.isLinked && this.props.compId ? this.props.compId : compName}>
+        Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
+      </span>);
+    var title = this.props.isLinked?
+      this.createActionButtons({title: titleText}) // add expansion controls
+      :titleText;
+    var documentation = comp['Documentation'];
 
     return (
       <div className="panel panel-info">
-        {this.props.isLinked?
-          (<div className="panel-heading">{this.createActionButtons({title: titleText})}</div>)
-          :(<div className="panel-heading">{titleText}</div>)}
-        {open && !this.props.hideCardinality && <div className="panel-body componentProps">Number of occurrences: {cardinality}</div>}
+        <div className="panel-heading">{title}</div>
+        {open && !this.props.hideCardinality &&
+          <div className="panel-body componentProps">
+            <div>
+              {documentation != null && documentation.length > 0 && (
+                <span>
+                  Documentation: { <DocumentationView value={documentation} /> }
+                </span>
+              )}
+            </div>
+            <div>
+              Number of occurrences: {cardinality}
+            </div>
+          </div>}
         {open && this.props.formElements}
       </div>
     );

@@ -40,26 +40,26 @@ var ComponentSpec = React.createClass({
   },
 
   render: function() {
-    var item = this.props.spec;
+    var spec = this.props.spec;
 
-    if(item == null)
+    if(spec == null)
       return (
         <div className="ComponentViewer loading" />
       );
     else {
       var rootClasses = classNames({ ComponentViewer: true });
-      var rootComponent = item.CMD_Component;
+      var rootComponent = spec.Component;
 
       // Determine root spec (should be inline, but may be linked)
-      var isLinked = rootComponent.hasOwnProperty("@ComponentId");
+      var isLinked = rootComponent.hasOwnProperty("@ComponentRef");
       var rootSpec = null;
       if(isLinked) {
-        var compId = rootComponent['@ComponentId'];
+        var compId = rootComponent['@ComponentRef'];
         //linked root component, use full spec for linked components if available (should have been preloaded)
         var linkedSpecAvailable = this.props.linkedComponents != undefined
                       && this.props.linkedComponents.hasOwnProperty(compId);
         if(linkedSpecAvailable) {
-          rootSpec = this.props.linkedComponents[compId].CMD_Component;
+          rootSpec = this.props.linkedComponents[compId].Component;
         }
       } else {
         rootSpec = rootComponent;
@@ -72,9 +72,12 @@ var ComponentSpec = React.createClass({
           <div className={rootClasses}>
             <div className="rootProperties">
               <ul>
-                <li><span>Name:</span> <b>{item.Header.Name}</b></li>
-                <li><span>Description:</span> {item.Header.Description}</li>
+                <li><span>Name:</span> <b>{spec.Header.Name}</b></li>
+                <li><span>Description:</span> {spec.Header.Description}</li>
                 {conceptLink}
+                {spec.Header && spec.Header.DerivedFrom &&
+                  <li><span>Derived from: {spec.Header.DerivedFrom}</span></li>
+                }
               </ul>
             </div>
             {rootSpec == null ? (
