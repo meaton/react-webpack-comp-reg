@@ -125,9 +125,13 @@ var EditorActions = {
     // create blank spec
     var spec = {
       "@isProfile": type === Constants.TYPE_PROFILE ? "true":"false",
-      Header: {
+      "@CMDVersion": "1.2",
+      "@CMDOriginalVersion": "1.2",
+      Header: { //empty header
+          ID: "{new}",
           Name: "",
-          Description: ""
+          Description: "",
+          Status: "development"
       },
       Component: {
           "@name": "",
