@@ -111,6 +111,11 @@ module.exports = {
   SPACE_PRIVATE: "private",
   SPACE_TEAM: "team",
 
+  /*STATUS*/
+  STATUS_DEVELOPMENT: "development",
+  STATUS_PRODUCTION: "production",
+  STATUS_DEPRECATED: "deprecated",
+
   SPACE_NAMES: {
     public: "Public space",
     private: "Private space",
