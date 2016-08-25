@@ -164,9 +164,9 @@ var EditorForm = React.createClass({
     }
   },
 
-  handlePublish: function() {
+  handlePublish: function(status) {
     if(this.validateChildren()) {
-      this.getFlux().actions.publishComponentSpec(this.props.spec, this.props.item, this.afterSuccess);
+      this.getFlux().actions.publishComponentSpec(this.props.spec, status, this.props.item, this.afterSuccess);
     }
   },
 

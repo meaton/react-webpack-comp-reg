@@ -1,6 +1,7 @@
 var log = require('loglevel');
 
-var SpecAugmenter = require("../service/SpecAugmenter")
+var SpecAugmenter = require("../service/SpecAugmenter");
+var update = require('react-addons-update');
 
 var Constants = require("../constants"),
     /* REST client */
@@ -106,9 +107,27 @@ var RestActions = {
     saveSpec.apply(this, [spec, item, false, false, successCb])
   },
 
-  publishComponentSpec: function(spec, item, successCb) {
+  publishComponentSpec: function(spec, status, item, successCb) {
+    // get updated version of spec with requested target status
+    var statusHeaderValue;
+    if(status == Constants.STATUS_DEVELOPMENT) {
+      statusHeaderValue = "development";
+    } else if(status == Constants.STATUS_PRODUCTION) {
+      statusHeaderValue = "production";
+    } else {
+      log.error("Invalid status upon publication: ", status);
+      return;
+    }
+    var specWithStatus = update(spec, {
+      Header: {
+        Status: {
+          $set: statusHeaderValue
+        }
+      }
+    });
+
     // do update and publish
-    saveSpec.apply(this, [spec, item, true, true, successCb])
+    saveSpec.apply(this, [specWithStatus, item, true, true, successCb])
   },
 
   deleteComponents: function(type, ids, componentInUsageCb) {
