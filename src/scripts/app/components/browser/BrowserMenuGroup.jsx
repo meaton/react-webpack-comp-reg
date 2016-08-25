@@ -10,10 +10,12 @@ var LinkContainer = require('react-router-bootstrap').LinkContainer;
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-var ButtonModal = require('../ButtonModal');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Modal = require('react-bootstrap/lib/Modal');
+
+var ButtonModal = require('../ButtonModal');
+var PublishDropDown = require('../PublishDropDown');
 
 var ReactAlert = require('../../util/ReactAlert');
 
@@ -38,6 +40,7 @@ var BrowserMenuGroup = React.createClass({
     moveToTeamEnabled: React.PropTypes.bool,
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
+    onPublish: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -83,21 +86,28 @@ var BrowserMenuGroup = React.createClass({
 
     return (
         <ButtonGroup className="actionMenu">
+
           <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
             disabled={!this.props.loggedIn}>
             <Button>Create new</Button>
           </LinkContainer>
+
           {editorLink}
-          {/*
-          <LinkContainer to="/import" disabled={!this.props.loggedIn}>
-            <Button>Import</Button>
-          </LinkContainer>
-          */}
+
+          {this.props.moveToTeamEnabled
+            && this.renderMoveToTeam(selectionCount > 0)}
+
+          {!isPublished && (
+              <PublishDropDown
+                id="publishActions"
+                title="Publish"
+                disabled={selectionCount != 1}
+                onPublish={this.props.onPublish} />)}
+
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
-          {this.props.moveToTeamEnabled && this.renderMoveToTeam(selectionCount > 0)}
         </ButtonGroup>
     );
   },
