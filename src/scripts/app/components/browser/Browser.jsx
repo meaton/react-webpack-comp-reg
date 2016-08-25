@@ -124,6 +124,7 @@ var Browser = React.createClass({
                   moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
                   moveToTeam={this.handleMoveToTeam}
                   deleteComp={this.handleDelete}
+                  onPublish={this.handlePublish}
                 />
             </div>
           </div>
@@ -205,6 +206,10 @@ var Browser = React.createClass({
   handleDelete: function(componentInUsageCb) {
     var ids = Object.keys(this.state.selection.selectedItems);
     this.getFlux().actions.deleteComponents(this.state.items.type, ids, componentInUsageCb);
+  },
+
+  handlePublish: function(status) {
+    this.getFlux().actions.publishItems(this.state.items.type, this.state.selection.selectedItems, status);
   },
 
   handleMoveToTeam: function(teamId) {

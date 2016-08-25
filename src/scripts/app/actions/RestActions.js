@@ -107,6 +107,25 @@ var RestActions = {
     saveSpec.apply(this, [spec, item, false, false, successCb])
   },
 
+  publishItems: function(type, items, status, successCb) {
+    log.debug("Publish items of type", type, items, status);
+    var ids = Object.keys(items);
+    if(ids.length > 0) {
+      var id = ids[0];
+      var item = items[id];
+      var spec = ComponentRegistryClient.loadSpec(
+        type, id, "json",
+        function(spec) {
+          log.debug("Publish item with retrieved spec", spec);
+          //publish
+          this.publishComponentSpec(spec, status, item, new function() {
+              //TODO: if items left, publish next - else, call success cb
+          });
+        }.bind(this)
+      );
+    }
+  },
+
   publishComponentSpec: function(spec, status, item, successCb) {
     // get updated version of spec with requested target status
     var statusHeaderValue;
@@ -116,7 +135,7 @@ var RestActions = {
       statusHeaderValue = "production";
     } else {
       log.error("Invalid status upon publication: ", status);
-      return;
+      return false;
     }
     var specWithStatus = update(spec, {
       Header: {
@@ -127,7 +146,9 @@ var RestActions = {
     });
 
     // do update and publish
+    log.debug("Publishing item", item, spec);
     saveSpec.apply(this, [specWithStatus, item, true, true, successCb])
+    return true;
   },
 
   deleteComponents: function(type, ids, componentInUsageCb) {
