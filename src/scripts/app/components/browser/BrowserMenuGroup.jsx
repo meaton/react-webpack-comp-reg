@@ -78,14 +78,14 @@ var BrowserMenuGroup = React.createClass({
                 disabled={selectionCount != 1}
                 onPublish={this.props.onPublish} />)}
 
+          {(selectionCount == 1) ?
+            (<ComponentStatusSelector item={this.props.items[Object.keys(this.props.items)[0]]} />)
+            :(<Button disabled={true}>Status</Button>)}
+
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
-
-          {(selectionCount == 1) ?
-            (<ComponentStatusSelector item={this.props.items[0]} />)
-            :(<Button disabled={true}>Status</Button>)}
         </ButtonGroup>
     );
   },

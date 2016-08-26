@@ -19,6 +19,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 * @constructor
 */
 var ComponentStatusSelector = React.createClass({
+    mixins: [ImmutableRenderMixin],
 
     propTypes: {
       item: React.PropTypes.object,
@@ -32,16 +33,12 @@ var ComponentStatusSelector = React.createClass({
     },
 
     createMenuItem: function(status) {
-      log.debug("Status", status, "item", this.props.item);
-      var prefix = "";
-      if (this.props.item != null
+      var current = (this.props.item != null
           && this.props.item.status != null
-          && this.props.item.status.toLowerCase() == status.toLowerCase()) {
-        prefix = "✓";
-      }
+          && this.props.item.status.toLowerCase() == status.toLowerCase());
       return (
-        <MenuItem key={status} onClick={this.setStatus.bind(this, status)}>
-          {prefix + this.getStatusString(status)}
+        <MenuItem key={status} onClick={this.setStatus.bind(this, status)} active={current}>
+          {this.getStatusString(status)}
         </MenuItem>
       );
     },
