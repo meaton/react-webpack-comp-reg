@@ -47,7 +47,7 @@ var ValueScheme = React.createClass({
       var pattern = (valueSchemeElem != null) ? valueSchemeElem.pattern : null;
       var enumeration = (vocabulary != null) ? vocabulary.enumeration : null;
 
-      log.debug("TypeModal params", {obj: obj, valueScheme: valueScheme, vocabulary: vocabulary, pattern: pattern});
+      //log.trace("TypeModal params", {obj: obj, valueScheme: valueScheme, vocabulary: vocabulary, pattern: pattern});
 
       var typeTrigger = (
         <ModalTrigger
@@ -78,7 +78,7 @@ var ValueScheme = React.createClass({
             valueScheme = pattern;
           } else if(vocabulary != null) {
             if(enumeration == null) {
-              //TODO: Open vocabularies do not have an enumeration              
+              //TODO: Open vocabularies do not have an enumeration
             } else {
               var enumItems = (!$.isArray(enumeration.item)) ? [enumeration.item] : enumeration.item;
               var items = $.map(enumItems, function(item, index) {

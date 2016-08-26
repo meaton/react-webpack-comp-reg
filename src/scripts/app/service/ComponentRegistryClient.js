@@ -325,11 +325,11 @@ normaliseValueScheme: function(valueScheme) {
 },
 
 normaliseDocumentation: function(documentation) {
-  log.debug("Documentation: ", documentation);
+  log.trace("Documentation: ", documentation);
   if(documentation == null || $.isArray(documentation)) {
     return documentation;
   } else {
-    log.debug("Turned into array", [documentation]);
+    log.trace("Turned into array", [documentation]);
     return [{'$': documentation}];
   }
 },
