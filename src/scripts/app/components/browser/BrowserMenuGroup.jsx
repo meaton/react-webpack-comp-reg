@@ -10,14 +10,11 @@ var LinkContainer = require('react-router-bootstrap').LinkContainer;
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
-var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Modal = require('react-bootstrap/lib/Modal');
 
+var MoveToTeamDropdown = require('./MoveToTeamDropdown');
 var ButtonModal = require('../ButtonModal');
 var PublishDropDown = require('../PublishDropDown');
-
-var ReactAlert = require('../../util/ReactAlert');
 
 var Constants = require('../../constants');
 var Config = require('../../../config');
@@ -54,35 +51,6 @@ var BrowserMenuGroup = React.createClass({
   render: function () {
     var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
-    var singleSelection = (selectionCount == 1);
-
-    var editorLink = null;
-    var editBtnLabel = isPublished ? "Edit as new" : "Edit";
-
-    if(selectionCount == 1) {
-      var itemId = Object.keys(this.props.items)[0];
-      var editorRoute = null;
-      if(this.props.type === Constants.TYPE_PROFILE) {
-        editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
-          + this.props.space + "/" + itemId;
-      } else if(this.props.type === Constants.TYPE_COMPONENT) {
-        editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
-          + this.props.space + "/" + itemId;
-      }
-
-      if(editorRoute != null) {
-        editorLink = (
-          <LinkContainer to={editorRoute} disabled={!singleSelection || !this.props.loggedIn}>
-            <Button
-              bsStyle="primary">
-                {editBtnLabel}
-            </Button>
-          </LinkContainer>
-        );
-      }
-    } else {
-      editorLink = <Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>
-    }
 
     return (
         <ButtonGroup className="actionMenu">
@@ -92,10 +60,15 @@ var BrowserMenuGroup = React.createClass({
             <Button>Create new</Button>
           </LinkContainer>
 
-          {editorLink}
+          {this.renderEditorLink(isPublished, selectionCount)}
 
           {this.props.moveToTeamEnabled
-            && this.renderMoveToTeam(selectionCount > 0)}
+            && <MoveToTeamDropdown
+            space={this.props.space}
+            teams={this.props.teams}
+            selectedTeam={this.props.selectedTeam}
+            disabled={selectionCount == 0}
+            moveToTeam={this.props.moveToTeam} />}
 
           {!isPublished && (
               <PublishDropDown
@@ -110,6 +83,34 @@ var BrowserMenuGroup = React.createClass({
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
         </ButtonGroup>
     );
+  },
+
+  renderEditorLink: function(isPublished, selectionCount) {
+    var editBtnLabel = isPublished ? "Edit as new" : "Edit";
+    if(selectionCount == 1) {
+      var itemId = Object.keys(this.props.items)[0];
+      var editorRoute = null;
+      if(this.props.type === Constants.TYPE_PROFILE) {
+        editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
+          + this.props.space + "/" + itemId;
+      } else if(this.props.type === Constants.TYPE_COMPONENT) {
+        editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
+          + this.props.space + "/" + itemId;
+      }
+
+      if(editorRoute != null) {
+        return (
+          <LinkContainer to={editorRoute} disabled={!this.props.loggedIn}>
+            <Button
+              bsStyle="primary">
+                {editBtnLabel}
+            </Button>
+          </LinkContainer>
+        );
+      }
+    } else {
+      return (<Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>);
+    }
   },
 
   renderDeleteModal: function() {
@@ -137,39 +138,6 @@ var BrowserMenuGroup = React.createClass({
         {warnPublic}
       </div>
     );
-  },
-
-  renderMoveToTeam: function(hasSelection) {
-    if($.isArray(this.props.teams) && this.props.teams.length > 0) {
-      return (
-        <DropdownButton id="moveToTeam" title="Move to team" disabled={!hasSelection}>
-            {this.props.teams.map(function(team) {
-                return (team.id === this.props.selectedTeam) ? null : (
-                  <MenuItem
-                    key={team.id}
-                    onSelect={this.confirmMoveToTeam.bind(this, team.id)}
-                    >
-                      {team.name}
-                  </MenuItem>
-                )
-              }.bind(this)
-            )}
-        </DropdownButton>
-      );
-    } else {
-      return null;
-    }
-  },
-
-  confirmMoveToTeam: function(teamId) {
-    if(this.props.space != Constants.SPACE_PRIVATE) {
-      this.props.moveToTeam(teamId);
-    } else {
-      // moving out of private space cannot be undone, show warning
-      var title = "Move component(s) or profile(s) into team space";
-      var message = "Items, once moved to a team space, can not be moved back to your workspace. Do you want to move this item?";
-      ReactAlert.showConfirmationDialogue(title, message, this.props.moveToTeam.bind(null, teamId));
-    }
   },
 
   /**
