@@ -238,10 +238,16 @@ var RestActions = {
     });
   },
 
-  checkStatusUpdateRights: function(id, onAllowed, onDisallowed) {
-    log.info("Checking wether user is allowed to change status of item", id);
-    //TODO: check, call onAllowed if ok
-    onDisallowed();
+  checkStatusUpdateRights: function(item, authState, onAllowed, onDisallowed) {
+    log.info("Checking wether user is allowed to change status of item", item);
+    if(authState.userId === item.userId) {
+      //current user is owner
+      onAllowed();
+    } else {
+      //TODO: check if item is in any groups -> /rest/items/clarin.eu:cr1:p_1366279029222/groups
+      //TODO: check if user is member of any of those groups -> /rest/groups/usermembership
+      onDisallowed();
+    }
   }
 };
 

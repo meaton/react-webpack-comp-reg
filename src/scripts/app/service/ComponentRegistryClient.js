@@ -532,7 +532,8 @@ getAuthState: function(handleSuccess, handleFailure) {
        authenticated: isAuth,
        uid: isAuth ? result.username : null,
        displayName: isAuth ? result.displayName : null,
-       isAdmin: isAuth? result.isAdmin === "true" : false
+       isAdmin: isAuth? result.isAdmin === "true" : false,
+       userId: isAuth ? result.userId : null
      });
    },
    error: function(xhr, status, err) {

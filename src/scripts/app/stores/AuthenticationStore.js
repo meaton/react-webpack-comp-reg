@@ -32,7 +32,8 @@ var AuthenticationStore = Fluxxor.createStore({
         authenticated: true,
         uid: newValues.uid,
         displayName: newValues.displayName,
-        isAdmin: newValues.isAdmin
+        isAdmin: newValues.isAdmin,
+        userId: newValues.userId
       };
     } else {
       // uid not set -> user not authenticated

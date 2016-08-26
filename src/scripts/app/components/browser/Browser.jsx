@@ -236,10 +236,17 @@ var Browser = React.createClass({
   handleStatusChange: function(status) {
     var ids = Object.keys(this.state.selection.selectedItems);
     if(ids.length == 1) {
-      var id = ids[0];
-      this.getFlux().actions.checkStatusUpdateRights(id,
-        this.handleAllowedStatusChange.bind(this, status),
-        this.handleDisallowedStatusChange.bind(this, status));
+      var item = this.state.selection.selectedItems[ids[0]];
+
+      if(this.state.items.space === Constants.SPACE_PRIVATE || this.state.items.space === Constants.SPACE_TEAM) { /* skip check for private or team space */
+        //TODO: || this.state.auth.authState.isAdmin /* skip check for admin */
+        this.handleAllowedStatusChange(status);
+      } else {
+        //For status change in public space, we need to check whether the permissions are ok
+        this.getFlux().actions.checkStatusUpdateRights(item, this.state.auth.authState,
+          this.handleAllowedStatusChange.bind(this, status),
+          this.handleDisallowedStatusChange.bind(this, status));
+      }
     }
   },
 
