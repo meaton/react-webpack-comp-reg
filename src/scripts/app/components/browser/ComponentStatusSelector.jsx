@@ -23,12 +23,18 @@ var ComponentStatusSelector = React.createClass({
 
     propTypes: {
       item: React.PropTypes.object,
-      disabled: React.PropTypes.bool
+      disabled: React.PropTypes.bool,
+      developmentAllowed: React.PropTypes.bool,
+      productionAllowed: React.PropTypes.bool,
+      deprecatedAllowed: React.PropTypes.bool
     },
 
     getDefaultProps: function() {
       return {
-        disabled: false
+        disabled: false,
+        developmentAllowed: false,
+        productionAllowed: false,
+        deprecatedAllowed: false
       };
     },
 
@@ -37,7 +43,7 @@ var ComponentStatusSelector = React.createClass({
           && this.props.item.status != null
           && this.props.item.status.toLowerCase() == status.toLowerCase());
       return (
-        <MenuItem key={status} onClick={this.setStatus.bind(this, status)} active={current}>
+        <MenuItem key={status} onClick={this.setStatus.bind(this, status)} active={current} disabled={!this.isAllowedStatus(status)}>
           {this.getStatusString(status)}
         </MenuItem>
       );
@@ -55,8 +61,25 @@ var ComponentStatusSelector = React.createClass({
       }
     },
 
+    isAllowedStatus: function(status) {
+      var currentStatus = (this.props.item == null || this.props.item.status == null) ? null : this.props.item.status.toLowerCase();
+      log.debug("is allowed? current: ", currentStatus);
+      return (
+        currentStatus == status.toLowerCase() //keep status, always allowed
+          || status == Constants.STATUS_DEVELOPMENT && this.props.developmentAllowed
+          || status == Constants.STATUS_PRODUCTION && this.props.productionAllowed
+          || status == Constants.STATUS_DEPRECATED && this.props.deprecatedAllowed
+      );
+    },
+
     setStatus: function(status) {
       log.debug('set status', status);
+      var currentStatus = (this.props.item == null || this.props.item.status == null) ? null : this.props.item.status.toLowerCase();
+      if(currentStatus === status.toLowerCase()) {
+        // do nothing
+      } else {
+
+      }
     },
 
     render: function() {
