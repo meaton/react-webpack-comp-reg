@@ -27,7 +27,7 @@ var PublishDropDown = React.createClass({
       "Move to public space and put in production?",
       <p>
         If your profile/component is ready to be used by other people and no further changes are required, press <strong>'Yes'</strong>.
-      Otherwise press <strong>'No'</strong> and save it in your workspace or continue editing.
+        If you would like to keep the item in your private space,  press <strong>'No'</strong>.
       </p>,
       this.props.onPublish.bind(null, Constants.STATUS_PRODUCTION)
     );
@@ -38,7 +38,8 @@ var PublishDropDown = React.createClass({
       "Move to public space as public draft?",
       <p>
         If your profile/component is ready to be used by other people, but still should be open for editing (by you), press <strong>'Yes'</strong>.
-      Otherwise press <strong>'No'</strong> and save it in your workspace or continue editing.
+        Doing so will cause it to appear in the list of public development items, which are hidden by default but can be seen by any user on request.
+        If you would like to keep the item in your private space, press <strong>'No'</strong>.
       </p>,
       this.props.onPublish.bind(null, Constants.STATUS_DEVELOPMENT)
     );
