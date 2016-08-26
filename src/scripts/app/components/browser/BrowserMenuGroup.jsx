@@ -38,7 +38,8 @@ var BrowserMenuGroup = React.createClass({
     moveToTeamEnabled: React.PropTypes.bool,
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
-    onPublish: React.PropTypes.func
+    onPublish: React.PropTypes.func,
+    onStatusChange: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -122,6 +123,7 @@ var BrowserMenuGroup = React.createClass({
       var status = item.status.toLowerCase();
       return (<ComponentStatusSelector
         item={item}
+        onStatusChange={this.props.onStatusChange}
         developmentAllowed={false /* never possible to change to development*/ }
         productionAllowed={isPublished && status == Constants.STATUS_DEVELOPMENT.toLowerCase() /* only can go from development to published in public space */}
         deprecatedAllowed={status != Constants.STATUS_DEPRECATED.toLowerCase() /* can always deprecate (or request deprecation) */}

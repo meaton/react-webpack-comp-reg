@@ -26,7 +26,8 @@ var ComponentStatusSelector = React.createClass({
       disabled: React.PropTypes.bool,
       developmentAllowed: React.PropTypes.bool,
       productionAllowed: React.PropTypes.bool,
-      deprecatedAllowed: React.PropTypes.bool
+      deprecatedAllowed: React.PropTypes.bool,
+      onStatusChange: React.PropTypes.func
     },
 
     getDefaultProps: function() {
@@ -73,12 +74,11 @@ var ComponentStatusSelector = React.createClass({
     },
 
     setStatus: function(status) {
-      log.debug('set status', status);
       var currentStatus = (this.props.item == null || this.props.item.status == null) ? null : this.props.item.status.toLowerCase();
       if(currentStatus === status.toLowerCase()) {
         // do nothing
       } else {
-
+        this.props.onStatusChange(status);
       }
     },
 

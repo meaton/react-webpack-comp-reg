@@ -125,6 +125,7 @@ var Browser = React.createClass({
                   moveToTeam={this.handleMoveToTeam}
                   deleteComp={this.handleDelete}
                   onPublish={this.handlePublish}
+                  onStatusChange={this.handleStatusChange}
                 />
             </div>
           </div>
@@ -230,6 +231,30 @@ var Browser = React.createClass({
     var ids = Object.keys(this.state.selection.selectedItems);
     log.debug("Move to team", ids, teamId);
     this.getFlux().actions.moveComponentsToTeam(ids, teamId);
+  },
+
+  handleStatusChange: function(status) {
+    var ids = Object.keys(this.state.selection.selectedItems);
+    if(ids.length == 1) {
+      var id = ids[0];
+      this.getFlux().actions.checkStatusUpdateRights(id,
+        this.handleAllowedStatusChange.bind(this, status),
+        this.handleDisallowedStatusChange.bind(this, status));
+    }
+  },
+
+  handleAllowedStatusChange: function(status) {
+    var ids = Object.keys(this.state.selection.selectedItems);
+    if(ids.length == 1) {
+      var id = ids[0];
+      //TODO: do update
+      ReactAlert.showMessage('Change item status', 'Updating now...');
+    }
+  },
+
+  handleDisallowedStatusChange: function(status) {
+    //TODO: show message depending on current space and target status
+    ReactAlert.showMessage('Change item status', 'Not allowed');
   },
 
   handleFilterTextChange: function(evt) {

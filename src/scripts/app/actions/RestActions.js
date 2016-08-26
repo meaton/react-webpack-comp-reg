@@ -236,6 +236,12 @@ var RestActions = {
       //TODO: dispatch so that store knows auth state is not up to date?
       log.error(message);
     });
+  },
+
+  checkStatusUpdateRights: function(id, onAllowed, onDisallowed) {
+    log.info("Checking wether user is allowed to change status of item", id);
+    //TODO: check, call onAllowed if ok
+    onDisallowed();
   }
 };
 
