@@ -108,7 +108,7 @@ var RestActions = {
   },
 
   publishItems: function(type, items, status, successCb) {
-    log.debug("Publish items of type", type, items, status);
+    log.debug("Publish items of type", type, items, status, successCb);
     var ids = Object.keys(items);
     if(ids.length > 0) {
       var id = ids[0];
@@ -118,9 +118,18 @@ var RestActions = {
         function(spec) {
           log.debug("Publish item with retrieved spec", spec);
           //publish
-          this.publishComponentSpec(spec, status, item, new function() {
-              //TODO: if items left, publish next - else, call success cb
-          });
+          // get updated version of spec with requested target status
+          var specWithStatus = updateSpecStatus(spec, status);
+          if(specWithStatus) {
+            log.debug("Publishing item", item, spec);
+            // do update and publish
+            saveSpec.apply(this, [specWithStatus, item, true, true, function() {
+                //TODO: if items left, publish next - else, call success cb
+                if(successCb) {
+                  successCb();
+                }
+            }]);
+          }
         }.bind(this)
       );
     }
@@ -128,27 +137,15 @@ var RestActions = {
 
   publishComponentSpec: function(spec, status, item, successCb) {
     // get updated version of spec with requested target status
-    var statusHeaderValue;
-    if(status == Constants.STATUS_DEVELOPMENT) {
-      statusHeaderValue = "development";
-    } else if(status == Constants.STATUS_PRODUCTION) {
-      statusHeaderValue = "production";
+    var specWithStatus = updateSpecStatus(spec, status);
+    if(specWithStatus) {
+      // do update and publish
+      log.debug("Publishing item", item, spec);
+      saveSpec.apply(this, [specWithStatus, item, true, true, successCb])
+      return true;
     } else {
-      log.error("Invalid status upon publication: ", status);
       return false;
     }
-    var specWithStatus = update(spec, {
-      Header: {
-        Status: {
-          $set: statusHeaderValue
-        }
-      }
-    });
-
-    // do update and publish
-    log.debug("Publishing item", item, spec);
-    saveSpec.apply(this, [specWithStatus, item, true, true, successCb])
-    return true;
   },
 
   deleteComponents: function(type, ids, componentInUsageCb) {
@@ -533,4 +530,24 @@ function moveComponentsToTeam(ids, teamId, success, failure, remainder) {
         });
       });
   }
+}
+
+function updateSpecStatus(spec, status) {
+  // get updated version of spec with requested target status
+  var statusHeaderValue;
+  if(status == Constants.STATUS_DEVELOPMENT) {
+    statusHeaderValue = "development";
+  } else if(status == Constants.STATUS_PRODUCTION) {
+    statusHeaderValue = "production";
+  } else {
+    log.error("Invalid status upon publication: ", status);
+    return null;
+  }
+  return update(spec, {
+    Header: {
+      Status: {
+        $set: statusHeaderValue
+      }
+    }
+  });
 }

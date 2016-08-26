@@ -209,7 +209,21 @@ var Browser = React.createClass({
   },
 
   handlePublish: function(status) {
-    this.getFlux().actions.publishItems(this.state.items.type, this.state.selection.selectedItems, status);
+    var selection = this.state.selection.selectedItems;
+    var onSuccess = function() {
+      ReactAlert.showMessage('Item(s) published',
+      <div><p>The following items have been published with {status} status:</p>
+      <ul>
+        {
+          Object.keys(selection).map(function(id){
+            return (<li key={id}>{selection[id].name}</li>);
+          })
+        }
+      </ul>
+      </div>
+      );
+    };
+    this.getFlux().actions.publishItems(this.state.items.type, selection, status, onSuccess);
   },
 
   handleMoveToTeam: function(teamId) {
