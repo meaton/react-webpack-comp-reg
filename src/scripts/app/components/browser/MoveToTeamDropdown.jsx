@@ -7,7 +7,6 @@ var Constants = require("../../constants");
 //bootstrap
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
-var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //utils
 var ReactAlert = require('../../util/ReactAlert');

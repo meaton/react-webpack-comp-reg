@@ -13,6 +13,7 @@ var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var Modal = require('react-bootstrap/lib/Modal');
 
 var MoveToTeamDropdown = require('./MoveToTeamDropdown');
+var ComponentStatusSelector = require('./ComponentStatusSelector');
 var ButtonModal = require('../ButtonModal');
 var PublishDropDown = require('../PublishDropDown');
 
@@ -81,6 +82,10 @@ var BrowserMenuGroup = React.createClass({
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
+
+          {(selectionCount == 1) ?
+            (<ComponentStatusSelector item={this.props.items[0]} />)
+            :(<Button disabled={true}>Status</Button>)}
         </ButtonGroup>
     );
   },
