@@ -244,9 +244,13 @@ var RestActions = {
       //current user is owner
       onAllowed();
     } else {
-      //TODO: check if item is in any groups -> /rest/items/clarin.eu:cr1:p_1366279029222/groups
-      //TODO: check if user is member of any of those groups -> /rest/groups/usermembership
-      onDisallowed();
+      //check if item is in any groups
+      ComponentRegistryClient.loadItemGroups(item.id, function(groups) {
+        log.debug("Item is in groups", groups);
+        //TODO: check if user is member of any of those groups -> /rest/groups/usermembership
+        //ComponentRegistryClient.loadTeams()
+        onDisallowed();
+      }, onDisallowed);
     }
   }
 };

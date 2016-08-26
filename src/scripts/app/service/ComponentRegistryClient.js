@@ -482,6 +482,26 @@ loadTeams: function(success, failure) {
   }, corsRequestParams));
 },
 
+loadItemGroups: function(componentId, success, failure) {
+  $.ajax($.extend({
+    type: 'GET',
+    url: restUrl + '/items/' + componentId + '/groups',
+    processData: false,
+    contentType: false,
+    dataType:'json',
+    success: function(data) {
+      if(data == null) {
+        success([]);
+      } else {
+        success(data.group);
+      }
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
 usageCheck: function(componentId, cb) {
   var url = restUrl + REGISTRY_ROOT + '/components/usage/' + componentId;
 

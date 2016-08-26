@@ -259,9 +259,12 @@ var Browser = React.createClass({
     }
   },
 
-  handleDisallowedStatusChange: function(status) {
-    //TODO: show message depending on current space and target status
-    ReactAlert.showMessage('Change item status', 'Not allowed');
+  handleDisallowedStatusChange: function(status, errorMessage) {
+    var message = "Not allowed"; //TODO: show message depending on current space and target status
+    if(errorMessage) {
+      message += "Additional information: " + errorMessage;
+    }
+    ReactAlert.showMessage('Change item status', message);
   },
 
   handleFilterTextChange: function(evt) {
