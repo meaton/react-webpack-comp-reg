@@ -38,7 +38,12 @@ var ItemsStore = Fluxxor.createStore({
       Constants.MOVE_TO_TEAM_FAILURE, this.handleDeleteOrMoveFailure,
       Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange,
       Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved,
-      Constants.TOGGLE_SORT_STATE, this.toggleSortState
+      Constants.TOGGLE_SORT_STATE, this.toggleSortState,
+      Constants.SET_STATUS_PERMISSION_CHECK, this.handleStatusPermissionCheck,
+      Constants.SET_STATUS_PERMISSION_CHECK_DONE, this.handleStatusPermissionCheckDone,
+      Constants.SET_STATUS, this.handleSetStatus,
+      Constants.SET_STATUS_SUCCESS, this.handleSetStatusDone,
+      Constants.SET_STATUS_FAILTURE, this.handleSetStatusDone
     );
   },
 
@@ -139,8 +144,27 @@ var ItemsStore = Fluxxor.createStore({
       this.filteredItems = ItemsFilter.updateItems(this.items, this.filterText, this.filteredItems, this.filterText, this.sortState);
     }
     this.emit("change");
-  }
+  },
 
+  handleStatusPermissionCheck: function() {
+    this.loading = true;
+    this.emit("change");
+  },
+
+  handleStatusPermissionCheckDone: function() {
+    this.loading = false;
+    this.emit("change");
+  },
+
+  handleSetStatus: function() {
+    this.loading = true;
+    this.emit("change");
+  },
+
+  handleSetStatusDone: function() {
+    this.loading = false;
+    this.emit("change");
+  }
 });
 
 module.exports = ItemsStore;

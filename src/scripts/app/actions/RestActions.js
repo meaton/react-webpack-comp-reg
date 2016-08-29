@@ -242,9 +242,21 @@ var RestActions = {
 
   checkStatusUpdateRights: function(item, authState, onAllowed, onDisallowed) {
     log.info("Checking wether user is allowed to change status of item", item);
+    this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK, item);
+
+    handleAllowed = function() {
+      this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK_DONE, item);
+      onAllowed();
+    }.bind(this);
+
+    handleDisallowed = function() {
+      this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK_DONE, item);
+      onDisallowed();
+    }.bind(this);
+
     if(authState.userId === item.userId) {
       //current user is owner
-      onAllowed();
+      handleAllowed();
     } else {
       log.info("User (", authState.userId, ") is not owner (", item.userId, "), checking whether teams overlap");
       //check if item is in any teams
@@ -260,31 +272,32 @@ var RestActions = {
             userTeams = ensureArray(userTeams);
             if(userTeams != null && _.intersection(_.map(itemTeams,'id'), _.map(userTeams,'id')).length > 0) {
               log.info("Team ids overlap, user can update status");
-              onAllowed();
+              handleAllowed();
             } else {
               log.info("No overlap between item teams and user teams");
-              onDisallowed();
+              handleDisallowed();
             }
-          }, onDisallowed);
+          }, handleDisallowed);
         } else {
           //no groups or no overlap with user groups
-          onDisallowed();
+          handleDisallowed();
         }
-      }, onDisallowed);
+      }, handleDisallowed);
     }
   },
 
   updateComponentStatus: function(item, type, targetStatus, cb) {
-    ComponentRegistryClient.setStatus(item.id, type, targetStatus, function(){
+    this.dispatch(Constants.SET_STATUS, item);
+    ComponentRegistryClient.setStatus(item.id, type, targetStatus, function() {
       log.debug("Status of", type, item.id, "updated to", targetStatus);
-      //TODO: dispatch success
+      this.dispatch(Constants.SET_STATUS_SUCCESS, item);
       if(cb != null) {
         cb();
       }
-    }, function(errorMessage) {
+    }.bind(this), function(errorMessage) {
       log.error("Failed updating status of", type, item.id, "to", targetStatus, ":", errorMessage);
-      //TODO: dispatch failure
-    });
+      this.dispatch(Constants.SET_STATUS_FAILTURE, item);
+    }.bind(this));
   }
 };
 
