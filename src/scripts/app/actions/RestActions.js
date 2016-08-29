@@ -1,5 +1,7 @@
 var log = require('loglevel');
 
+var _ = require('lodash');
+
 var SpecAugmenter = require("../service/SpecAugmenter");
 var update = require('react-addons-update');
 
@@ -244,12 +246,30 @@ var RestActions = {
       //current user is owner
       onAllowed();
     } else {
-      //check if item is in any groups
-      ComponentRegistryClient.loadItemGroups(item.id, function(groups) {
-        log.debug("Item is in groups", groups);
-        //TODO: check if user is member of any of those groups -> /rest/groups/usermembership
-        //ComponentRegistryClient.loadTeams()
-        onDisallowed();
+      log.info("User (", authState.userId, ") is not owner (", item.userId, "), checking whether teams overlap");
+      //check if item is in any teams
+      ComponentRegistryClient.loadItemGroups(item.id, function(itemTeams) {
+        //make array if singleton
+        itemTeams = ensureArray(itemTeams);
+        if(itemTeams.length > 0) {
+          log.debug("Item is in teams", itemTeams);
+          //TODO: check if user is member of any of those teams -> /rest/groups/usermembership
+          ComponentRegistryClient.loadTeams(function(userTeams){
+            log.debug("User is in teams", userTeams);
+            //make array if singleton
+            userTeams = ensureArray(userTeams);
+            if(userTeams != null && _.intersection(_.map(itemTeams,'id'), _.map(userTeams,'id')).length > 0) {
+              log.info("Team ids overlap, user can update status");
+              onAllowed();
+            } else {
+              log.info("No overlap between item teams and user teams");
+              onDisallowed();
+            }
+          }, onDisallowed);
+        } else {
+          //no groups or no overlap with user groups
+          onDisallowed();
+        }
       }, onDisallowed);
     }
   }
@@ -258,6 +278,14 @@ var RestActions = {
 module.exports = RestActions;
 
 // HELPER FUNCTIONS
+
+function ensureArray(item) {
+  if(item == null || _.isArray(item)) {
+    return item;
+  } else {
+    return [item];
+  }
+}
 
 /**
  * Loads all linked components (with @ComponentRef) that are a direct child
