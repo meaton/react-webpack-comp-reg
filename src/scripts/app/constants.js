@@ -123,6 +123,10 @@ module.exports = {
   STATUS_PRODUCTION: "production",
   STATUS_DEPRECATED: "deprecated",
 
+  STATUS_ICON_DEVELOPMENT: "wrench",
+  STATUS_ICON_PRODUCTION: "ok-circle",
+  STATUS_ICON_DEPRECATED: "ban-circle",
+
   SPACE_NAMES: {
     public: "Public space",
     private: "Private space",
