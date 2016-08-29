@@ -38,17 +38,28 @@ var StatusFilterDropdown = React.createClass({
   },
 
   render: function() {
+    var statusFilter = this.props.statusFilter;
     return (
       <Dropdown id="statusFilter" onSelect={this.handleStatusFilter}>
-        <Dropdown.Toggle bsStyle={this.props.statusFilter == null ? "default" : "warning"}><Glyphicon glyph="filter" /></Dropdown.Toggle>
+        <Dropdown.Toggle bsStyle={statusFilter == null ? "default" : "warning"}><Glyphicon glyph="filter" /></Dropdown.Toggle>
         <Dropdown.Menu>
-          <MenuItem eventKey={null} active={this.props.statusFilter == null}>Default</MenuItem>
+          <MenuItem eventKey={null} active={statusFilter == null}>Default</MenuItem>
           <MenuItem divider />
-          <MenuItem eventKey={Constants.STATUS_DEVELOPMENT} active={this.props.statusFilter != null && _.contains(this.props.statusFilter, Constants.STATUS_DEVELOPMENT)}><Glyphicon glyph={Constants.STATUS_ICON_DEVELOPMENT}/> Development</MenuItem>
-          <MenuItem eventKey="production"><Glyphicon glyph={Constants.STATUS_ICON_PRODUCTION}/> Production</MenuItem>
-          <MenuItem eventKey="deprecated"><Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED}/> Deprecated</MenuItem>
+          {this.createStatusItem(Constants.STATUS_DEVELOPMENT, "Development", Constants.STATUS_ICON_DEVELOPMENT)}
+          {this.createStatusItem(Constants.STATUS_PRODUCTION, "Production", Constants.STATUS_ICON_PRODUCTION)}
+          {this.createStatusItem(Constants.STATUS_DEPRECATED, "Deprecated", Constants.STATUS_ICON_DEPRECATED)}
         </Dropdown.Menu>
       </Dropdown>
+    );
+  },
+
+  createStatusItem: function(status, name, icon) {
+    return (
+      <MenuItem
+        eventKey={status}
+        active={this.props.statusFilter != null && _.contains(this.props.statusFilter, status)}>
+        <Glyphicon glyph={status}/> {name}
+      </MenuItem>
     );
   }
 });
