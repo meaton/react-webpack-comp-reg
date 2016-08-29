@@ -44,6 +44,14 @@ module.exports = {
 
   toggleSortState: function(column) {
     this.dispatch(Constants.TOGGLE_SORT_STATE, column);
+  },
+
+  resetStatusFilter: function() {
+    this.dispatch(Constants.RESET_STATUS_FILTER);
+  },
+
+  toggleStatusFilter: function(status) {
+    this.dispatch(Constants.TOGGLE_STATUS_FILTER, status);
   }
 
 };

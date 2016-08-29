@@ -23,7 +23,8 @@ var ItemsStore = Fluxxor.createStore({
       this.space = Constants.SPACE_PUBLISHED, //private, group, published
       this.team = null;
       this.filterText = null,
-      this.sortState = null;
+      this.sortState = null,
+      this.statusFilter = null;
 
     this.bindActions(
       Constants.LOAD_ITEMS, this.handleLoadItems,
@@ -43,7 +44,9 @@ var ItemsStore = Fluxxor.createStore({
       Constants.SET_STATUS_PERMISSION_CHECK_DONE, this.handleStatusPermissionCheckDone,
       Constants.SET_STATUS, this.handleSetStatus,
       Constants.SET_STATUS_SUCCESS, this.handleSetStatusDone,
-      Constants.SET_STATUS_FAILTURE, this.handleSetStatusDone
+      Constants.SET_STATUS_FAILTURE, this.handleSetStatusDone,
+      Constants.TOGGLE_STATUS_FILTER, this.handleToggleStatusFilter,
+      Constants.RESET_STATUS_FILTER, this.handleResetStatusFilter
     );
   },
 
@@ -58,7 +61,8 @@ var ItemsStore = Fluxxor.createStore({
       filterText: this.filterText,
       sortState: this.sortState,
       filteredSize: this.filteredItems.length,
-      unfilteredSize: this.items.length
+      unfilteredSize: this.items.length,
+      statusFilter: this.statusFilter
     };
   },
 
@@ -163,6 +167,16 @@ var ItemsStore = Fluxxor.createStore({
 
   handleSetStatusDone: function() {
     this.loading = false;
+    this.emit("change");
+  },
+
+  handleToggleStatusFilter: function(status) {
+    this.statusFilter = [status];
+    this.emit("change");
+  },
+
+  handleResetStatusFilter: function() {
+    this.statusFilter = null;
     this.emit("change");
   }
 });

@@ -113,7 +113,11 @@ var Browser = React.createClass({
                 teams={this.state.team.teams}
                 selectedTeam={this.state.items.team}
                 validUserSession={this.state.auth.authState.uid != null}
-                onSpaceSelect={this.handleSpaceSelect} />
+                onSpaceSelect={this.handleSpaceSelect}
+                statusFilter={this.state.items.statusFilter}
+                onStatusFilterToggle={this.handleStatusFilterToggle}
+                onStatusFilterReset={this.handleStatusFilterReset}
+                />
               <BrowserMenuGroup
                   type={this.state.items.type}
                   space={this.state.items.space}
@@ -301,6 +305,14 @@ var Browser = React.createClass({
         }
       </div>
     );
+  },
+
+  handleStatusFilterToggle: function(status) {
+    this.getFlux().actions.toggleStatusFilter(status);
+  },
+
+  handleStatusFilterReset: function(status) {
+    this.getFlux().actions.resetStatusFilter();
   },
 
   handleFilterTextChange: function(evt) {
