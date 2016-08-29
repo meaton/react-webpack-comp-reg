@@ -12,9 +12,9 @@ var Constants = require("../constants"),
     ComponentSpec = require("../service/ComponentSpec");
 
 var RestActions = {
-  loadItems: function(type, space, team) {
+  loadItems: function(type, space, team, statusFilter) {
     this.dispatch(Constants.LOAD_ITEMS);
-    ComponentRegistryClient.loadComponents(type, space, team, function(items){
+    ComponentRegistryClient.loadComponents(type, space, team, statusFilter, function(items){
         // Success
         this.dispatch(Constants.LOAD_ITEMS_SUCCESS, items);
       }.bind(this),
@@ -25,9 +25,9 @@ var RestActions = {
     );
   },
 
-  loadEditorGridItems: function(space, team) {
+  loadEditorGridItems: function(space, team, statusFilter) {
     this.dispatch(Constants.LOAD_EDITOR_ITEMS);
-    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENT, space, team, function(items){
+    ComponentRegistryClient.loadComponents(Constants.TYPE_COMPONENT, space, team, statusFilter, function(items){
         // Success
         this.dispatch(Constants.LOAD_EDITOR_ITEMS_SUCCESS, items);
       }.bind(this),

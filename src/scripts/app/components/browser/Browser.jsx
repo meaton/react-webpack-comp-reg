@@ -70,6 +70,12 @@ var Browser = React.createClass({
     }
   },
 
+  componentDidUpdate: function(prevProps, prevState) {
+    if(this.state.items.statusFilter != prevState.items.statusFilter) {
+      this.loadItems();
+    }
+  },
+
   render: function() {
     var item = this.state.selection.currentItem;
     var classes = classNames({
@@ -167,7 +173,7 @@ var Browser = React.createClass({
   },
 
   loadItems: function() {
-    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.team);
+    this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.team, this.state.items.statusFilter);
   },
 
   loadTeams: function() {

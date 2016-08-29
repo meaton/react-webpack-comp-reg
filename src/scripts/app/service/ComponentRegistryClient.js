@@ -65,21 +65,25 @@ var ComponentRegistryClient = {
     }
   },
 
-  loadComponents: function(type, space, group, handleSuccess, handleFailure) {
+  loadComponents: function(type, space, group, statusFilter, handleSuccess, handleFailure) {
     var requestUrl = this.getRegistryUrl(type);
 
     var registrySpace = (space != null) ? this.getRegistrySpacePath(space): "";
     var teamId = (space == Constants.SPACE_TEAM) ? group : null;
+
+    var reqData = { unique: new Date().getTime(), registrySpace: registrySpace, groupId: teamId, status: statusFilter };
+    log.trace("Request: ", requestUrl, reqData);
 
     $.ajax($.extend({
      url: requestUrl,
      accepts: {
        json: 'application/json'
      },
-     data: { unique: new Date().getTime(), registrySpace: registrySpace, groupId: teamId },
+     data: reqData,
+     traditional: true, //to use param name 'status' rather than 'status[]'
      dataType: 'json',
      success: function(data) {
-       log.trace("Successfully loaded " + requestUrl);
+       log.trace("Successfully loaded ", requestUrl, "with", reqData);
        var _data = data;
        if(_data != null && _data != 'null') {
           if(_data.hasOwnProperty("componentDescription") && type == Constants.TYPE_COMPONENT)
