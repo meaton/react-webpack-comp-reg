@@ -296,7 +296,7 @@ var RestActions = {
       }
     }.bind(this), function(errorMessage) {
       log.error("Failed updating status of", type, item.id, "to", targetStatus, ":", errorMessage);
-      this.dispatch(Constants.SET_STATUS_FAILTURE, item);
+      this.dispatch(Constants.SET_STATUS_FAILTURE, errorMessage);
     }.bind(this));
   }
 };
