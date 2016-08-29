@@ -5,18 +5,17 @@ var React = require('react');
 
 var Constants = require("../../constants");
 
-var _ = require('lodash');
-
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
-var Dropdown = require('react-bootstrap/lib/Dropdown');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+
+var StatusFilterDropdown = require('./StatusFilterDropdown');
 
 //utils
 //var auth = require('./Authentication').auth;
@@ -138,15 +137,6 @@ var SpaceSelector = React.createClass({
     }
   },
 
-  handleStatusFilter: function(event, status) {
-    log.debug("Filter select", status);
-    if(status == null) {
-      this.props.onStatusFilterReset();
-    } else {
-      this.props.onStatusFilterToggle(status);
-    }
-  },
-
   render: function() {
     var spaces = this.getSpaces();
     var currentSpace = this.getCurrentSpace();
@@ -203,16 +193,11 @@ var SpaceSelector = React.createClass({
             </DropdownButton>
           )}
 
-          <Dropdown id="statusFilter" onSelect={this.handleStatusFilter}>
-            <Dropdown.Toggle bsStyle={this.props.statusFilter == null ? "default" : "warning"}><Glyphicon glyph="filter" /></Dropdown.Toggle>
-            <Dropdown.Menu>
-              <MenuItem eventKey={null} active={this.props.statusFilter == null}>Default</MenuItem>
-              <MenuItem divider />
-              <MenuItem eventKey={Constants.STATUS_DEVELOPMENT} active={this.props.statusFilter != null && _.contains(this.props.statusFilter, Constants.STATUS_DEVELOPMENT)}><Glyphicon glyph={Constants.STATUS_ICON_DEVELOPMENT}/> Development</MenuItem>
-              <MenuItem eventKey="production"><Glyphicon glyph={Constants.STATUS_ICON_PRODUCTION}/> Production</MenuItem>
-              <MenuItem eventKey="deprecated"><Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED}/> Deprecated</MenuItem>
-            </Dropdown.Menu>
-          </Dropdown>
+          <StatusFilterDropdown
+            statusFilter={this.props.statusFilter}
+            onStatusFilterReset={this.props.onStatusFilterReset}
+            onStatusFilterToggle={this.props.onStatusFilterToggle}
+            />
 
         </ButtonGroup>
       </div>
