@@ -253,9 +253,12 @@ var Browser = React.createClass({
   handleAllowedStatusChange: function(status) {
     var ids = Object.keys(this.state.selection.selectedItems);
     if(ids.length == 1) {
-      var id = ids[0];
-      //TODO: do update
-      ReactAlert.showMessage('Change item status', 'Updating now...');
+      var item = this.state.selection.selectedItems[ids[0]];
+      var type = this.state.items.type;
+      this.getFlux().actions.updateComponentStatus(item, type, status, function() {
+        //Success. TODO: alert?
+        //ReactAlert.showMessage('Change item status', 'Updating now...');
+      });
     }
   },
 

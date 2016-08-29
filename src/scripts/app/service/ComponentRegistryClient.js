@@ -520,6 +520,33 @@ usageCheck: function(componentId, cb) {
   }, corsRequestParams));
 },
 
+setStatus: function(componentId, type, targetStatus, success, failure) {
+  var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
+  var url = restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/status';
+
+  var fd = new FormData();
+  if(targetStatus === Constants.STATUS_DEVELOPMENT) fd.append('status', "development");
+  else if(targetStatus === Constants.STATUS_PRODUCTION) fd.append('status',  "production");
+  else if(targetStatus === Constants.STATUS_DEPRECATED) fd.append('status', "deprecated");
+  else failure("Unknown status value " + targetStatus);
+
+  $.ajax($.extend({
+    type: 'POST',
+    url: url,
+    data: fd,
+    processData: false,
+    contentType: false,
+    dataType: "text", //will return the new status as text
+    success: function(data) {
+      log.trace('status updated: ', data);
+      success(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
 queryCCR: function(searchQuery, cb) {
   var url = ccrUrl + '?type=container&keywords=' + searchQuery;
 

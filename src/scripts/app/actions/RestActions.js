@@ -272,6 +272,19 @@ var RestActions = {
         }
       }, onDisallowed);
     }
+  },
+
+  updateComponentStatus: function(item, type, targetStatus, cb) {
+    ComponentRegistryClient.setStatus(item.id, type, targetStatus, function(){
+      log.debug("Status of", type, item.id, "updated to", targetStatus);
+      //TODO: dispatch success
+      if(cb != null) {
+        cb();
+      }
+    }, function(errorMessage) {
+      log.error("Failed updating status of", type, item.id, "to", targetStatus, ":", errorMessage);
+      //TODO: dispatch failure
+    });
   }
 };
 

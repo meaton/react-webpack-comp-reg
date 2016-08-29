@@ -64,7 +64,6 @@ var ComponentStatusSelector = React.createClass({
 
     isAllowedStatus: function(status) {
       var currentStatus = (this.props.item == null || this.props.item.status == null) ? null : this.props.item.status.toLowerCase();
-      log.debug("is allowed? current: ", currentStatus);
       return (
         currentStatus == status.toLowerCase() //keep status, always allowed
           || status == Constants.STATUS_DEVELOPMENT && this.props.developmentAllowed
