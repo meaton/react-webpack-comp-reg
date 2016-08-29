@@ -251,23 +251,32 @@ var Browser = React.createClass({
   },
 
   handleAllowedStatusChange: function(status) {
-    //TODO: ask for confirmation
     var ids = Object.keys(this.state.selection.selectedItems);
     if(ids.length == 1) {
       var item = this.state.selection.selectedItems[ids[0]];
       var type = this.state.items.type;
-      this.getFlux().actions.updateComponentStatus(item, type, status, function() {
-        this.loadItems();
-        var statusName = getStatusName(status);
-        ReactAlert.showMessage("Item status changed to " + statusName,
-          <div>
-            <p>The status of '{item.name}' has been changed to <strong>{statusName}</strong>.</p>
-            <p>As a result, it may not be visible anymore depending on which status filters have been applied.
-            Use the status filter selectors to hide or show components or profiles with a specific status.</p>
-          </div>
-        );
-      }.bind(this));
+      var statusName = getStatusName(status);
+
+      ReactAlert.showConfirmationDialogue("Change item status to " + statusName + "?",
+        <p>Are you sure that you want to change the status of '{item.name}' to <strong>{statusName}</strong>?
+        The status of a component or profile influences its visibility to other users.
+        Once the status has been changed, you cannot change it back. Press <em>Yes</em> to apply the status change, or <em>No</em> to abort.</p>,
+        this.performStatusChange.bind(this, status, item, type));
     }
+  },
+
+  performStatusChange: function(status, item, type) {
+    this.getFlux().actions.updateComponentStatus(item, type, status, function() {
+      this.loadItems();
+      var statusName = getStatusName(status);
+      ReactAlert.showMessage("Item status changed to " + statusName,
+        <div>
+          <p>The status of '{item.name}' has been changed to <strong>{statusName}</strong>.</p>
+          <p>As a result, it may not be visible anymore depending on which status filters have been applied.
+          Use the status filter selectors to hide or show components or profiles with a specific status.</p>
+        </div>
+      );
+    }.bind(this));
   },
 
   handleDisallowedStatusChange: function(status, errorMessage) {
