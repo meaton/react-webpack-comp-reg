@@ -67,7 +67,7 @@ var ComponentStatusSelector = React.createClass({
     isAllowedStatus: function(status) {
       var currentStatus = (this.props.item == null || this.props.item.status == null) ? null : this.props.item.status.toLowerCase();
       return (
-        currentStatus == status.toLowerCase() //keep status, always allowed
+        status.toLowerCase() === currentStatus  //keep status, always allowed
           || status == Constants.STATUS_DEVELOPMENT && this.props.developmentAllowed
           || status == Constants.STATUS_PRODUCTION && this.props.productionAllowed
           || status == Constants.STATUS_DEPRECATED && this.props.deprecatedAllowed
@@ -76,8 +76,8 @@ var ComponentStatusSelector = React.createClass({
 
     setStatus: function(status) {
       var currentStatus = (this.props.item == null || this.props.item.status == null) ? null : this.props.item.status.toLowerCase();
-      if(currentStatus === status.toLowerCase()) {
-        // do nothing
+      if(status.toLowerCase() === currentStatus || !this.isAllowedStatus(status)) {
+        // do nothing if disallowed or current status selected
       } else {
         this.props.onStatusChange(status);
       }
