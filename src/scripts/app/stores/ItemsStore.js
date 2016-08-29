@@ -8,6 +8,8 @@ var ImmutabilityUtil = require('../util/ImmutabilityUtil');
 var ComponentSpec = require('../service/ComponentSpec');
 var ItemsFilter = require('../service/ItemsFilter');
 
+var _ = require('lodash');
+
 var remove = ImmutabilityUtil.remove,
     update = ImmutabilityUtil.update;
 
@@ -171,7 +173,23 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   handleToggleStatusFilter: function(status) {
-    this.statusFilter = [status];
+    var oldFilter = this.statusFilter;
+    if(oldFilter == null) {
+      //coming from default state
+      this.statusFilter = [status];
+    } else {
+      //update needed
+      var index = _.indexOf(oldFilter, status);
+
+      if(index >= 0) { //already contains
+        var cmd = {$splice: [[index, 1]]} //remove
+      } else { //not found
+        var cmd = {$push: [status]}; //add
+      }
+
+      var newFilter = update(oldFilter, cmd);
+      this.statusFilter = (newFilter.length) > 0 ? newFilter : null;
+    }
     this.emit("change");
   },
 
