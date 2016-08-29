@@ -251,20 +251,47 @@ var Browser = React.createClass({
   },
 
   handleAllowedStatusChange: function(status) {
+    //TODO: ask for confirmation
     var ids = Object.keys(this.state.selection.selectedItems);
     if(ids.length == 1) {
       var item = this.state.selection.selectedItems[ids[0]];
       var type = this.state.items.type;
-      this.getFlux().actions.updateComponentStatus(item, type, status, this.loadItems);
+      this.getFlux().actions.updateComponentStatus(item, type, status, function() {
+        this.loadItems();
+        var statusName = getStatusName(status);
+        ReactAlert.showMessage("Item status changed to " + statusName,
+          <div>
+            <p>The status of '{item.name}' has been changed to <strong>{statusName}</strong>.</p>
+            <p>As a result, it may not be visible anymore depending on which status filters have been applied.
+            Use the status filter selectors to hide or show components or profiles with a specific status.</p>
+          </div>
+        );
+      }.bind(this));
     }
   },
 
   handleDisallowedStatusChange: function(status, errorMessage) {
-    var message = "Not allowed"; //TODO: show message depending on current space and target status
-    if(errorMessage) {
-      message += "Additional information: " + errorMessage;
+    var item;
+    var ids = Object.keys(this.state.selection.selectedItems);
+    if(ids.length == 1) {
+      item = this.state.selection.selectedItems[ids[0]];
+    } else {
+      item = {name: "UNKNOWN", id: "-1"};
     }
-    ReactAlert.showMessage('Change item status', message);
+
+    var type = this.state.items.type;
+    var statusName = getStatusName(status);
+    ReactAlert.showMessage('Cannot change item status to ' + statusName,
+      <div>
+        <p>The status of '{item.name}' <strong>cannot</strong> be changed to {statusName} because you are not its owner or belong to the team that owns it.</p>
+        <p>You can request a status change of '{item.name}' by sending a <a href={
+            "mailto:cmdi@clarin.eu?subject=" + "[Component Registry] Request: change status of " + type + " '" + item.name + "' (" + item.id + ") to " + statusName
+          }>message to cmdi@clarin.eu</a>.</p>
+        {errorMessage &&
+          <p>Additional information: {errorMessage}</p>
+        }
+      </div>
+    );
   },
 
   handleFilterTextChange: function(evt) {
@@ -339,3 +366,14 @@ var Browser = React.createClass({
 });
 
 module.exports = Browser;
+
+function getStatusName(status) {
+  if(status === Constants.STATUS_DEPRECATED)
+    return "deprecated";
+  else if(status === Constants.STATUS_PRODUCTION)
+    return "production";
+  else if(status === Constants.STATUS_DEVELOPMENT)
+    return "development";
+  else
+    return status + "(??)";
+}
