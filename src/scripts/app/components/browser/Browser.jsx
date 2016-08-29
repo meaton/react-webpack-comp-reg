@@ -255,10 +255,7 @@ var Browser = React.createClass({
     if(ids.length == 1) {
       var item = this.state.selection.selectedItems[ids[0]];
       var type = this.state.items.type;
-      this.getFlux().actions.updateComponentStatus(item, type, status, function() {
-        //Success. TODO: alert?
-        //ReactAlert.showMessage('Change item status', 'Updating now...');
-      });
+      this.getFlux().actions.updateComponentStatus(item, type, status, this.loadItems);
     }
   },
 
