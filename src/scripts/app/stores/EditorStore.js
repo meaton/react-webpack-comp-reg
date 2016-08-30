@@ -24,6 +24,7 @@ var EditorStore = Fluxxor.createStore({
     this.filteredGridItems = [];
     this.gridLoading = false;
     this.gridFilterText = null;
+    this.gridStatusFilter = null;
 
     // component spec itself is stored in the component details store for the editor
 
@@ -43,7 +44,9 @@ var EditorStore = Fluxxor.createStore({
       Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace,
       Constants.GRID_FILTER_TEXT_CHANGE, this.handleFilterTextChange,
       Constants.START_COMPONENT_LINK, this.handleStartComponentLink,
-      Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink
+      Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink,
+      Constants.RESET_EDITOR_STATUS_FILTER, this.handleResetStatusFilter,
+      Constants.TOGGLE_EDITOR_STATUS_FILTER, this.handleToggleStatusFilter
     );
   },
 
@@ -64,7 +67,8 @@ var EditorStore = Fluxxor.createStore({
         team: this.gridTeam,
         items: this.filteredGridItems,
         loading: this.gridLoading,
-        filterText: this.gridFilterText
+        filterText: this.gridFilterText,
+        statusFilter: this.gridStatusFilter
       }
     };
   },
@@ -152,6 +156,17 @@ var EditorStore = Fluxxor.createStore({
   handleFilterTextChange: function(text) {
     this.filteredGridItems = ItemsFilter.updateItems(this.gridItems, text, this.filteredGridItems, this.gridFilterText);
     this.gridFilterText = ItemsFilter.updateFilterText(text);
+    this.emit("change");
+  },
+
+  handleToggleStatusFilter: function(status) {
+    var newFilter = _.xor([status], this.gridStatusFilter); // perform toggle (symmetric difference)
+    this.gridStatusFilter = (newFilter.length) > 0 ? newFilter : null; // empty array reduced to null
+    this.emit("change");
+  },
+
+  handleResetStatusFilter: function() {
+    this.gridStatusFilter = null;
     this.emit("change");
   }
 

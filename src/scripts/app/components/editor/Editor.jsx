@@ -67,6 +67,14 @@ var Editor = React.createClass({
     this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team);
   },
 
+  componentDidUpdate: function(prevProps, prevState) {
+    if(this.state.editor.grid.statusFilter != prevState.editor.grid.statusFilter
+        || this.state.editor.grid.space != prevState.editor.grid.space
+    ) {
+      this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team, this.state.editor.grid.statusFilter);
+    }
+  },
+
   render: function () {
     return (
       <section id="editor">
@@ -124,6 +132,9 @@ var Editor = React.createClass({
                     space={this.state.editor.grid.space}
                     teams={this.state.team.teams}
                     selectedTeam={this.state.editor.grid.team}
+                    statusFilter={this.state.editor.grid.statusFilter}
+                    onStatusFilterToggle={this.handleStatusFilterToggle}
+                    onStatusFilterReset={this.handleStatusFilterReset}
                     allowMultiSelect={false}
                     validUserSession={true}
                     componentsOnly={true}
@@ -155,7 +166,6 @@ var Editor = React.createClass({
 
   handleGridSpaceSelect: function(type, space, group) {
     this.getFlux().actions.switchEditorGridSpace(space, group);
-    this.getFlux().actions.loadEditorGridItems(space, group);
   },
 
   handleGridFilterTextChange: function(evt) {
@@ -178,6 +188,14 @@ var Editor = React.createClass({
         ReactAlert.showMessage("Cannot link component", error);
       }
     );
+  },
+
+  handleStatusFilterToggle: function(status) {
+    this.getFlux().actions.toggleGridStatusFilter(status);
+  },
+
+  handleStatusFilterReset: function(status) {
+    this.getFlux().actions.resetGridStatusFilter();
   },
 
   toggleGridExpansion: function() {
