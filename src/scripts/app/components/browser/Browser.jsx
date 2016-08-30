@@ -71,7 +71,11 @@ var Browser = React.createClass({
   },
 
   componentDidUpdate: function(prevProps, prevState) {
-    if(this.state.items.statusFilter != prevState.items.statusFilter) {
+    if(this.state.items.statusFilter != prevState.items.statusFilter
+      || this.state.items.space != prevState.items.space
+      || this.state.items.type != prevState.items.type
+      || this.state.items.team != prevState.items.team
+    ) {
       this.loadItems();
     }
   },
@@ -192,9 +196,11 @@ var Browser = React.createClass({
     this.getFlux().actions.loadComments(this.state.items.type, itemId);
   },
 
-  handleSpaceSelect: function(type, registry, group) {
-    this.getFlux().actions.switchSpace(type, registry, group);
-    this.getFlux().actions.loadItems(type, registry, group);
+  handleSpaceSelect: function(type, space, team) {
+    if(space != this.state.items.space || team != this.state.items.team) {
+      this.getFlux().actions.resetStatusFilter();
+    }
+    this.getFlux().actions.switchSpace(type, space, team);
   },
 
   handleRowSelect: function(item, multiSelect) {
