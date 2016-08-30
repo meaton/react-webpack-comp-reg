@@ -78,22 +78,6 @@ $row-height: 2.5em;
     }
   }
 
-  tr.status-DEPRECATED {
-    color: #f00;
-    td.name {
-      text-decoration: line-through;
-    }
-  }
-
-  tr.status-DEVELOPMENT {
-    td.name {
-      font-style: italic;
-    }
-  }
-  .space-public tr.status-DEVELOPMENT {
-    color: #ccc;
-  }
-
   tr.odd.deleting, tr.even.deleting {
     color: #ddd;
     background: #eee !important;
@@ -280,4 +264,21 @@ div.component-info {
     margin-right: 1em;
     min-width: 9em;
   }
+}
+
+.grid tr.status-DEPRECATED {
+  color: #f00;
+  td.name {
+    text-decoration: line-through;
+  }
+}
+
+.grid tr.status-DEVELOPMENT {
+  td.name {
+    font-style: italic;
+  }
+}
+
+.space-public .grid tr.status-DEVELOPMENT {
+  color: #ccc;
 }

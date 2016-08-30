@@ -103,7 +103,7 @@ var Editor = React.createClass({
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
                 derivedFromId={this.state.editor.item == null ? null : this.state.editor.item.id}
               />
-            <div className="browserGroup">
+            <div className={"browserGroup space-" + this.state.editor.grid.space}>
               {gridExpanded && (
                 <DataGrid
                   multiSelect={false}
