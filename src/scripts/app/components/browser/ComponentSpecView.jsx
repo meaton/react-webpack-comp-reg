@@ -1,12 +1,17 @@
 'use strict';
 
 var React = require('react');
+var Constants = require('../../constants');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //components
 var CMDComponentView = require('./CMDComponentView');
+
+//boostrap
+var Alert = require('react-bootstrap/lib/Alert');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //utils
 var update = require('react-addons-update');
@@ -30,7 +35,16 @@ var ComponentSpec = React.createClass({
     spec: React.PropTypes.object.isRequired,
     expansionState: React.PropTypes.object,
     linkedComponents: React.PropTypes.object,
-    onComponentToggle: React.PropTypes.func
+    onComponentToggle: React.PropTypes.func,
+    warnForDevelopment: React.PropTypes.bool,
+    warnForDeprecated: React.PropTypes.bool
+  },
+
+  getDefaultProps: function() {
+    return {
+      warnForDevelopment: true,
+      warnForDeprecated: true,
+    };
   },
 
   getInitialState: function() {
@@ -70,6 +84,7 @@ var ComponentSpec = React.createClass({
 
       return (
           <div className={rootClasses}>
+            {this.renderStatusWarning(spec)}
             <div className="rootProperties">
               <ul>
                 <li><span>Name:</span> <b>{spec.Header.Name}</b></li>
@@ -96,6 +111,30 @@ var ComponentSpec = React.createClass({
           </div>
         );
     }
+  },
+
+  renderStatusWarning: function(spec) {
+    var status = spec.Header.Status;
+    var type = (spec['@isProfile'] == "true") ? "profile":"component";
+    if(status != null) {
+      status = status.toLowerCase()
+      if(this.props.warnForDevelopment && status === Constants.STATUS_DEVELOPMENT.toLowerCase()) {
+        return (
+          <Alert bsStyle="warning">
+            <Glyphicon glyph={Constants.STATUS_ICON_DEVELOPMENT} /><span> </span>
+            This {spec['@isProfile'] == "true" ? "profile":"component"} has the <strong>development status</strong>. This means that it should be considered a draft that may be subject to change. It is advised to <em>not use this {type}</em> until it has been given the production status.
+          </Alert>
+        );
+      } else if(this.props.warnForDeprecated && status === Constants.STATUS_DEPRECATED.toLowerCase()) {
+        return (
+          <Alert bsStyle="danger">
+            <Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED} /><span> </span>
+            This {type} has been given the <strong>deprecated status</strong> and its usage is <em>not recommended</em>. Please check whether a <strong>successor {type}</strong> has been assigned, and if so consider using that instead.
+          </Alert>
+        );
+      }
+    }
+    return null;
   }
 });
 

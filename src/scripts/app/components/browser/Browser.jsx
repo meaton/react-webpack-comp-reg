@@ -160,6 +160,7 @@ var Browser = React.createClass({
                 ref="details"
                 item={item}
                 type={this.state.items.type}
+                space={this.state.items.space}
                 loadSpec={this.loadSpec}
                 loadSpecXml={this.loadXml}
                 loadComments={this.loadComments}

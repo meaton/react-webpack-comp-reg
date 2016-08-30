@@ -46,6 +46,7 @@ var ComponentDetailsPanel = React.createClass({
   propTypes: {
     item: React.PropTypes.object,
     type: React.PropTypes.string,
+    space: React.PropTypes.string,
     collapsed: React.PropTypes.bool
   },
 
@@ -84,6 +85,8 @@ var ComponentDetailsPanel = React.createClass({
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
                 expansionState={this.state.details.expansionState}
                 linkedComponents={this.state.details.linkedComponents}
+                warnForDevelopment={this.props.space === Constants.SPACE_PUBLISHED}
+                warnForDeprecated={true}
                 />}
           </Tab>
           <Tab id="xmlTab" eventKey={Constants.INFO_VIEW_XML} title="xml" disabled={loading}>
