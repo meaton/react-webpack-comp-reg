@@ -64,12 +64,13 @@ var Editor = React.createClass({
 
     //initialisation for data grid
     this.getFlux().actions.loadTeams();
-    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team);
+    this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team, this.state.editor.grid.statusFilter);
   },
 
   componentDidUpdate: function(prevProps, prevState) {
     if(this.state.editor.grid.statusFilter != prevState.editor.grid.statusFilter
         || this.state.editor.grid.space != prevState.editor.grid.space
+        || this.state.editor.grid.team != prevState.editor.grid.team
     ) {
       this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team, this.state.editor.grid.statusFilter);
     }
@@ -164,8 +165,11 @@ var Editor = React.createClass({
     }
   },
 
-  handleGridSpaceSelect: function(type, space, group) {
-    this.getFlux().actions.switchEditorGridSpace(space, group);
+  handleGridSpaceSelect: function(type, space, team) {
+    if(space != this.state.editor.grid.space || team != this.state.editor.grid.team) {
+      this.getFlux().actions.resetGridStatusFilter();
+    }
+    this.getFlux().actions.switchEditorGridSpace(space, team);
   },
 
   handleGridFilterTextChange: function(evt) {
