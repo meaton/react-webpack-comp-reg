@@ -8,6 +8,9 @@ var Button = require('react-bootstrap/lib/Button');
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
+//utils
+var classnames = require('classnames');
+
 /**
 * DataTablesRow - manages the table-row selection state and display of the table-rows in the DataTablesGrid.
 * @constructor
@@ -50,7 +53,12 @@ var DataTablesRow = React.createClass({
     var domainName = (domain != null)? domain.label : data.domainName;
 
     return (
-      <tr onClick={this.props.buttonBefore ? null : this.rowClick.bind(this, this.props.data)} key={this.props.data.id} className={(this.props.selected) ? "selected " + this.props.className : this.props.className}>
+      <tr
+        onClick={this.props.buttonBefore ? null : this.rowClick.bind(this, this.props.data)}
+        key={this.props.data.id}
+        className={classnames(this.props.className + " status-" + data.status, {
+          "selected": this.props.selected
+        })}>
         {this.props.buttonBefore && (
           <td className="add">
             <Button

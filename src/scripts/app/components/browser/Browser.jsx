@@ -78,7 +78,7 @@ var Browser = React.createClass({
 
   render: function() {
     var item = this.state.selection.currentItem;
-    var classes = classNames({
+    var classes = classNames("space-" + this.state.items.space, {
       "detailsCollapsed": this.state.detailsCollapsed,
       "detailsMaximised": this.state.detailsMaximised
     });

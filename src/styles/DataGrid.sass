@@ -78,6 +78,22 @@ $row-height: 2.5em;
     }
   }
 
+  tr.status-DEPRECATED {
+    color: #f00;
+    td.name {
+      text-decoration: line-through;
+    }
+  }
+
+  tr.status-DEVELOPMENT {
+    td.name {
+      font-style: italic;
+    }
+  }
+  .space-public tr.status-DEVELOPMENT {
+    color: #ccc;
+  }
+
   tr.odd.deleting, tr.even.deleting {
     color: #ddd;
     background: #eee !important;
