@@ -194,6 +194,7 @@ var SpaceSelector = React.createClass({
           )}
 
           <StatusFilterDropdown
+            space={this.props.space}
             statusFilter={this.props.statusFilter}
             onStatusFilterReset={this.props.onStatusFilterReset}
             onStatusFilterToggle={this.props.onStatusFilterToggle}

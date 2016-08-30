@@ -23,6 +23,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var StatusFilterDropdown = React.createClass({
   mixins: [ImmutableRenderMixin],
   propTypes: {
+    space: React.PropTypes.string,
     statusFilter: React.PropTypes.array,
     onStatusFilterReset:  React.PropTypes.func,
     onStatusFilterToggle:  React.PropTypes.func
@@ -54,13 +55,26 @@ var StatusFilterDropdown = React.createClass({
   },
 
   createStatusItem: function(status, name, icon) {
+    if(this.props.statusFilter == null && this.isInDefault(status)) {
+      var nameString = <em>{name}</em>
+    } else {
+      var nameString = name;
+    }
     return (
       <MenuItem
         eventKey={status}
         active={this.props.statusFilter != null && _.contains(this.props.statusFilter, status)}>
-        <Glyphicon glyph={icon}/> {name}
+        <Glyphicon glyph={icon}/> {nameString}
       </MenuItem>
     );
+  },
+
+  isInDefault: function(status) {
+    if(this.props.space == Constants.SPACE_PUBLISHED) {
+      return status === Constants.STATUS_PRODUCTION;
+    } else {
+      return status === Constants.STATUS_DEVELOPMENT;
+    }
   }
 });
 
