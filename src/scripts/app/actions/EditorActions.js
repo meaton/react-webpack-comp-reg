@@ -182,6 +182,14 @@ var EditorActions = {
   collapseAll: function(spec) {
     var ids = ComponentSpec.getTreeIds(spec);
     this.dispatch(Constants.SET_ITEM_EXPANSION, {itemIds: ids, expansionState: false});
+  },
+
+  resetGridStatusFilter: function() {
+    this.dispatch(Constants.RESET_EDITOR_STATUS_FILTER);
+  },
+
+  toggleGridStatusFilter: function(status) {
+    this.dispatch(Constants.TOGGLE_EDITOR_STATUS_FILTER, status);
   }
 
 };
