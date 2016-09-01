@@ -49,7 +49,7 @@ var CMDComponentView = React.createClass({
 
   /* main render() function in CMDComponentMixin */
 
-  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
+  renderNestedComponent: function(spec, header, compId, isLinked, linkedSpecAvailable, index) {
     if(isLinked && !linkedSpecAvailable) {
       return (<div key={compId}>Component {compId} loading...</div>);
     } else {
@@ -58,6 +58,7 @@ var CMDComponentView = React.createClass({
       return (<CMDComponentView
         key={spec._appId}
         spec={spec}
+        header={header}
         parent={this.props.spec}
         expansionState={this.props.expansionState}
         linkedComponents={this.props.linkedComponents}

@@ -119,13 +119,14 @@ var CMDComponentForm = React.createClass({
     );
   },
 
-  renderNestedComponent: function(spec, compId, isLinked, linkedSpecAvailable, index) {
+  renderNestedComponent: function(spec, header, compId, isLinked, linkedSpecAvailable, index) {
     // component to render depends on whether it is linked (view) or inline (form)
 
     // common properties (for both view and form)
     var componentProperties = {
       key: spec._appId,
       spec: spec,
+      header: header,
       parent: this.props.spec,
       linkedComponents: this.props.linkedComponents,
       isLinked: isLinked,

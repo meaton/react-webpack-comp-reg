@@ -36,17 +36,20 @@ var CMDComponentMixin = {
 
     var props = this.props;
     var comp = this.props.spec;
+    var status = (this.props.header != undefined)? this.props.header.Status : "unknown";
 
     var header = comp.Header;
-    if(header != undefined && comp.Component != undefined)
+    if(header != undefined && comp.Component != undefined) {
       comp = comp.Component;
+    }
 
     if($.isArray(comp) && comp.length == 1)
       comp = comp[0];
 
     // classNames
     var viewClasses = classNames('componentBody', {'panel-group': open});
-    var componentClasses = classNames('CMDComponent', { 'open': open, 'selected': (this.isSelected && this.isSelected()), 'linked': this.props.isLinked });
+    var componentClasses = classNames('CMDComponent ' + 'status-' + status,
+      { 'open': open, 'selected': (this.isSelected && this.isSelected()), 'linked': this.props.isLinked });
 
     var children = (open || this.props.renderChildrenWhenCollapsed)?(
       <div className={viewClasses}>
@@ -116,14 +119,15 @@ var CMDComponentMixin = {
                   && this.props.linkedComponents != undefined
                   && this.props.linkedComponents.hasOwnProperty(compId);
 
-    var spec = linkedSpecAvailable ? this.props.linkedComponents[compId].Component : nestedComp;
+    var compSpec = linkedSpecAvailable ? this.props.linkedComponents[compId].Component : nestedComp;
+    var header = linkedSpecAvailable ? this.props.linkedComponents[compId].Header : null;
 
     // component ID (for display purposes only)
     if(!isLinked) {
        var compId = spec._appId;
     }
 
-    return this.renderNestedComponent(spec, compId, isLinked, linkedSpecAvailable, ncindex);
+    return this.renderNestedComponent(compSpec, header, compId, isLinked, linkedSpecAvailable, ncindex);
   },
 
   /* Rendering of elements */
