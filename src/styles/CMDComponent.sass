@@ -20,6 +20,28 @@
   a.componentLink {
     color: #000099;
   }
+
+  &.status-development {
+    & > .panel {
+      border-color: #0c0;
+      border-style: solid;
+
+      .panel-heading .title {
+        font-style: italic;
+      }
+    }
+  }
+
+  &.status-deprecated {
+    & > .panel {
+      border-color: #f00;
+      border-style: solid;
+
+      .panel-heading .title {
+        text-decoration: line-through;
+      }
+    }
+  }
 }
 
 .componentName, .componentLink {
