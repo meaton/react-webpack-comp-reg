@@ -189,7 +189,7 @@ var EditorActions = {
   },
 
   toggleGridStatusFilter: function(status) {
-    this.dispatch(Constants.TOGGLE_EDITOR_STATUS_FILTER, status);
+    this.dispatch(Constants.SET_EDITOR_STATUS_FILTER, status);
   }
 
 };

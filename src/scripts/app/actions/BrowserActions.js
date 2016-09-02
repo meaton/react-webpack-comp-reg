@@ -51,7 +51,7 @@ module.exports = {
   },
 
   setStatusFilter: function(status) {
-    this.dispatch(Constants.TOGGLE_STATUS_FILTER, status);
+    this.dispatch(Constants.SET_STATUS_FILTER, status);
   }
 
 };

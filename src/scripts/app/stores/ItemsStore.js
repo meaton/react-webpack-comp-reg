@@ -47,7 +47,7 @@ var ItemsStore = Fluxxor.createStore({
       Constants.SET_STATUS, this.handleSetStatus,
       Constants.SET_STATUS_SUCCESS, this.handleSetStatusDone,
       Constants.SET_STATUS_FAILTURE, this.handleSetStatusDone,
-      Constants.TOGGLE_STATUS_FILTER, this.handleSetStatusFilter,
+      Constants.SET_STATUS_FILTER, this.handleSetStatusFilter,
       Constants.RESET_STATUS_FILTER, this.handleResetStatusFilter
     );
   },

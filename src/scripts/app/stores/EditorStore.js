@@ -46,7 +46,7 @@ var EditorStore = Fluxxor.createStore({
       Constants.START_COMPONENT_LINK, this.handleStartComponentLink,
       Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink,
       Constants.RESET_EDITOR_STATUS_FILTER, this.handleResetStatusFilter,
-      Constants.TOGGLE_EDITOR_STATUS_FILTER, this.handleSetStatusFilter
+      Constants.SET_EDITOR_STATUS_FILTER, this.handleSetStatusFilter
     );
   },
 
