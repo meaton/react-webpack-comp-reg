@@ -124,7 +124,7 @@ var CMDComponentMixin = {
 
     // component ID (for display purposes only)
     if(!isLinked) {
-       var compId = spec._appId;
+       var compId = compSpec._appId;
     }
 
     return this.renderNestedComponent(compSpec, header, compId, isLinked, linkedSpecAvailable, ncindex);
