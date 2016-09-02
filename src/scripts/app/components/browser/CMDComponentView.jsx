@@ -2,6 +2,7 @@
 
 var log = require('loglevel');
 var React = require('react');
+var Constants = require('../../constants');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -13,6 +14,9 @@ var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var CMDElementView = require('./CMDElementView');
 var CMDAttributeView = require('./CMDAttributeView');
 var DocumentationView = require('./DocumentationView');
+
+//bootstrap
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -106,10 +110,17 @@ var CMDComponentView = React.createClass({
     if(maxC == null) maxC = 1;
 
     var cardinality = (<span>{minC + " - " + maxC}</span>);
+    var status = this.props.header && this.props.header.Status;
     //TODO: make title link to component in browser https://github.com/clarin-eric/component-registry-front-end/issues/27
     var titleText = (
       <span  title={this.props.isLinked && this.props.compId ? this.props.compId : compName}>
-        Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
+        {status && status.toLowerCase() === Constants.STATUS_DEVELOPMENT.toLowerCase() &&
+          <span title="Status: development"> <Glyphicon glyph={Constants.STATUS_ICON_DEVELOPMENT} /> </span>
+        }
+        {status && status.toLowerCase() === Constants.STATUS_DEPRECATED.toLowerCase() &&
+          <span title="Status: deprecated"> <Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED} /> </span>
+        }
+          Component: <span className="componentName">{compName}</span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
       </span>);
     var title = this.props.isLinked?
       this.createActionButtons({title: titleText}) // add expansion controls
