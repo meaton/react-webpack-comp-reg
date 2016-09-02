@@ -321,7 +321,7 @@ var Browser = React.createClass({
   },
 
   handleStatusFilterToggle: function(status) {
-    this.getFlux().actions.toggleStatusFilter(status);
+    this.getFlux().actions.setStatusFilter(status);
   },
 
   handleStatusFilterReset: function(status) {

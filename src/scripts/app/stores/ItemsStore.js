@@ -47,7 +47,7 @@ var ItemsStore = Fluxxor.createStore({
       Constants.SET_STATUS, this.handleSetStatus,
       Constants.SET_STATUS_SUCCESS, this.handleSetStatusDone,
       Constants.SET_STATUS_FAILTURE, this.handleSetStatusDone,
-      Constants.TOGGLE_STATUS_FILTER, this.handleToggleStatusFilter,
+      Constants.TOGGLE_STATUS_FILTER, this.handleSetStatusFilter,
       Constants.RESET_STATUS_FILTER, this.handleResetStatusFilter
     );
   },
@@ -172,9 +172,12 @@ var ItemsStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleToggleStatusFilter: function(status) {
-    var newFilter = _.xor([status], this.statusFilter); // perform toggle (symmetric difference)
-    this.statusFilter = (newFilter.length) > 0 ? newFilter : null; // empty array reduced to null
+  handleSetStatusFilter: function(statusFilter) {
+    if(statusFilter != null && !_.isArray(statusFilter)) {
+        this.statusFilter = [statusFilter];
+    } else {
+      this.statusFilter = statusFilter;
+    }
     this.emit("change");
   },
 

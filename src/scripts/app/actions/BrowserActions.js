@@ -50,7 +50,7 @@ module.exports = {
     this.dispatch(Constants.RESET_STATUS_FILTER);
   },
 
-  toggleStatusFilter: function(status) {
+  setStatusFilter: function(status) {
     this.dispatch(Constants.TOGGLE_STATUS_FILTER, status);
   }
 

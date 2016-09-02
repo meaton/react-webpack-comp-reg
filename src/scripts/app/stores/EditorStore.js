@@ -46,7 +46,7 @@ var EditorStore = Fluxxor.createStore({
       Constants.START_COMPONENT_LINK, this.handleStartComponentLink,
       Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink,
       Constants.RESET_EDITOR_STATUS_FILTER, this.handleResetStatusFilter,
-      Constants.TOGGLE_EDITOR_STATUS_FILTER, this.handleToggleStatusFilter
+      Constants.TOGGLE_EDITOR_STATUS_FILTER, this.handleSetStatusFilter
     );
   },
 
@@ -159,9 +159,12 @@ var EditorStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleToggleStatusFilter: function(status) {
-    var newFilter = _.xor([status], this.gridStatusFilter); // perform toggle (symmetric difference)
-    this.gridStatusFilter = (newFilter.length) > 0 ? newFilter : null; // empty array reduced to null
+  handleSetStatusFilter: function(statusFilter) {
+    if(statusFilter != null && !_.isArray(statusFilter)) {
+      this.gridStatusFilter = [statusFilter];
+    } else {
+      this.gridStatusFilter = statusFilter;
+    }
     this.emit("change");
   },
 
