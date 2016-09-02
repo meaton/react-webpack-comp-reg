@@ -127,6 +127,7 @@ module.exports = {
   SPACE_TEAM: "team",
 
   /*STATUS*/
+  STATUS_WILDCARD: "*",
   STATUS_DEVELOPMENT: "development",
   STATUS_PRODUCTION: "production",
   STATUS_DEPRECATED: "deprecated",

@@ -31,7 +31,7 @@ var StatusFilterDropdown = React.createClass({
 
   handleStatusFilter: function(event, status) {
     log.debug("Filter select", status);
-    if(status == null) {
+    if(status == null || this.isInDefault(status)) {
       this.props.onStatusFilterReset();
     } else {
       this.props.onStatusFilterToggle(status);
@@ -44,27 +44,26 @@ var StatusFilterDropdown = React.createClass({
       <Dropdown id="statusFilter" onSelect={this.handleStatusFilter}>
         <Dropdown.Toggle bsStyle={statusFilter == null ? "default" : "warning"}><Glyphicon glyph="filter" /></Dropdown.Toggle>
         <Dropdown.Menu>
-          <MenuItem eventKey={null} active={statusFilter == null}>Default</MenuItem>
+          <MenuItem eventKey={null}>Default</MenuItem>
           <MenuItem divider />
           {this.createStatusItem(Constants.STATUS_DEVELOPMENT, "Development", Constants.STATUS_ICON_DEVELOPMENT)}
           {this.createStatusItem(Constants.STATUS_PRODUCTION, "Production", Constants.STATUS_ICON_PRODUCTION)}
           {this.createStatusItem(Constants.STATUS_DEPRECATED, "Deprecated", Constants.STATUS_ICON_DEPRECATED)}
+          <MenuItem divider />
+          {this.createStatusItem(Constants.STATUS_WILDCARD, "Show all")}
         </Dropdown.Menu>
       </Dropdown>
     );
   },
 
   createStatusItem: function(status, name, icon) {
-    if(this.props.statusFilter == null && this.isInDefault(status)) {
-      var nameString = <em>{name}</em>
-    } else {
-      var nameString = name;
-    }
     return (
       <MenuItem
         eventKey={status}
-        active={this.props.statusFilter != null && _.contains(this.props.statusFilter, status)}>
-        <Glyphicon glyph={icon}/> {nameString}
+        active={this.props.statusFilter != null && _.contains(this.props.statusFilter, status)
+          || this.props.statusFilter == null && this.isInDefault(status)
+        }>
+        {icon && <Glyphicon glyph={icon}/>} {name}
       </MenuItem>
     );
   },
