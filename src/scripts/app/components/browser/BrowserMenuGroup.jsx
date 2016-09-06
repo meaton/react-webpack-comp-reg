@@ -53,8 +53,10 @@ var BrowserMenuGroup = React.createClass({
   render: function () {
     var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
+    var singleItem = selectionCount == 1 && this.props.items[Object.keys(this.props.items)[0]];
 
     return (
+      <div>
         <ButtonGroup className="actionMenu">
 
           <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
@@ -79,13 +81,18 @@ var BrowserMenuGroup = React.createClass({
                 disabled={selectionCount != 1}
                 onPublish={this.props.onPublish} />)}
 
-          {this.renderStatusDropdown(isPublished, selectionCount)}
-
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
             btnLabel="Delete"
             title="Delete items"
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
+
         </ButtonGroup>
+
+        <ButtonGroup className="actionMenu">
+          {this.renderStatusDropdown(isPublished, selectionCount)}
+          {singleItem && this.renderSuccessorButton(singleItem)}
+        </ButtonGroup>
+      </div>
     );
   },
 
@@ -130,6 +137,16 @@ var BrowserMenuGroup = React.createClass({
          />);
      } else {
        return (<Button disabled={true}>Status</Button>);
+    }
+  },
+
+  renderSuccessorButton: function(item) {
+    if(item.status.toLowerCase() == Constants.STATUS_DEPRECATED.toLowerCase()) {
+      return (
+        <Button disabled={item.successor != null && item.successor != ""}>Set successor</Button>
+      );
+    } else {
+      return null;
     }
   },
 
