@@ -322,8 +322,37 @@ var Browser = React.createClass({
   },
 
   handleSetSuccessor: function() {
-    //TODO: action to retrieve all public production items of the same type via REST
+    var ids = Object.keys(this.state.selection.selectedItems);
+    if(ids.length == 1) {
+      var item = this.state.selection.selectedItems[ids[0]];
+    }
+    //retrieve all public production items of the same type via REST
+    ComponentRegistryClient.loadComponents(this.state.items.type, Constants.SPACE_PUBLISHED, null, [Constants.STATUS_PRODUCTION], this.showSuccessorCandidates.bind(this, item), new function(msg){
+      //failed to load successor candidates
+      log.error("Loading components failed in handleSetSuccessor: " + msg);
+      ReactAlert.showMessage('Failure', 'Could not load successor candidates: ' + msg);
+    });
+  },
+
+  showSuccessorCandidates: function(subjectItem, items) {
     //TODO: on retrieval, show dialogue with selector
+    var items = items.map(function(item){
+      return (
+        <option value={item.id}>{item.name} {item.groupName && item.groupName != '' && '('+item.groupName+')'}</option>
+      );
+    });
+    ReactAlert.showMessage('Select successor',
+      <div>
+        <p>Please select the item that you would like to appoint as the successor to <em>{subjectItem.name}</em>:</p>
+        <form>
+          <select>
+            {items}
+          </select>
+        </form>
+        <p>Keep in mind that you can set a component's successor <strong>only once</strong> and can not change this afterwards.</p>
+        {/*TODO: selected item details */}
+      </div>
+    );
     //TODO: on dialogue submit, call action to set the successor via REST
   },
 
