@@ -128,16 +128,15 @@ var BrowserMenuGroup = React.createClass({
     if(selectionCount == 1) {
       var item = this.props.items[Object.keys(this.props.items)[0]];
       var status = item.status.toLowerCase();
-      return (<ComponentStatusSelector
-        item={item}
-        onStatusChange={this.props.onStatusChange}
-        developmentAllowed={false /* never possible to change to development*/ }
-        productionAllowed={isPublished && status == Constants.STATUS_DEVELOPMENT.toLowerCase() /* only can go from development to published in public space */}
-        deprecatedAllowed={status != Constants.STATUS_DEPRECATED.toLowerCase() /* can always deprecate (or request deprecation) */}
-         />);
-     } else {
-       return (<Button disabled={true}>Status</Button>);
     }
+    return (<ComponentStatusSelector
+      item={item}
+      disabled={item == null}
+      onStatusChange={this.props.onStatusChange}
+      developmentAllowed={false /* never possible to change to development*/ }
+      productionAllowed={isPublished && status == Constants.STATUS_DEVELOPMENT.toLowerCase() /* only can go from development to published in public space */}
+      deprecatedAllowed={status != Constants.STATUS_DEPRECATED.toLowerCase() /* can always deprecate (or request deprecation) */}
+       />);
   },
 
   renderSuccessorButton: function(item) {

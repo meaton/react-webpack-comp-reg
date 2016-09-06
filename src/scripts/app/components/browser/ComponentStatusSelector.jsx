@@ -86,9 +86,10 @@ var ComponentStatusSelector = React.createClass({
     render: function() {
       return (
         <DropdownButton id="componentStatus" title="Status" disabled={this.props.disabled}>
-          {this.createMenuItem(Constants.STATUS_DEVELOPMENT, Constants.STATUS_ICON_DEVELOPMENT)}
-          {this.createMenuItem(Constants.STATUS_PRODUCTION, Constants.STATUS_ICON_PRODUCTION)}
-          {this.createMenuItem(Constants.STATUS_DEPRECATED, Constants.STATUS_ICON_DEPRECATED)}
+          {!this.props.disabled && [
+          this.createMenuItem(Constants.STATUS_DEVELOPMENT, Constants.STATUS_ICON_DEVELOPMENT),
+          this.createMenuItem(Constants.STATUS_PRODUCTION, Constants.STATUS_ICON_PRODUCTION),
+          this.createMenuItem(Constants.STATUS_DEPRECATED, Constants.STATUS_ICON_DEPRECATED)]}
         </DropdownButton>
       );
       }
