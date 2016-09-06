@@ -39,7 +39,8 @@ var BrowserMenuGroup = React.createClass({
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
     onPublish: React.PropTypes.func,
-    onStatusChange: React.PropTypes.func
+    onStatusChange: React.PropTypes.func,
+    onSetSuccessor: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -142,7 +143,7 @@ var BrowserMenuGroup = React.createClass({
   renderSuccessorButton: function(item) {
     if(item.status.toLowerCase() == Constants.STATUS_DEPRECATED.toLowerCase()) {
       return (
-        <Button disabled={item.successor != null && item.successor != ""}>Set successor</Button>
+        <Button onClick={this.props.onSetSuccessor} disabled={item.successor != null && item.successor != ""}>Set successor</Button>
       );
     } else {
       return null;

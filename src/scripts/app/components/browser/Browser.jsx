@@ -140,6 +140,7 @@ var Browser = React.createClass({
                   deleteComp={this.handleDelete}
                   onPublish={this.handlePublish}
                   onStatusChange={this.handleStatusChange}
+                  onSetSuccessor={this.handleSetSuccessor}
                 />
             </div>
           </div>
@@ -318,6 +319,12 @@ var Browser = React.createClass({
         }
       </div>
     );
+  },
+
+  handleSetSuccessor: function() {
+    //TODO: action to retrieve all public production items of the same type via REST
+    //TODO: on retrieval, show dialogue with selector
+    //TODO: on dialogue submit, call action to set the successor via REST
   },
 
   handleStatusFilterToggle: function(status) {
