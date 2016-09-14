@@ -9,7 +9,8 @@ var React = require('react');
 var SuccessorSelector = React.createClass({
   propTypes: {
     subjectItem: React.PropTypes.object,
-    candidateItems: React.PropTypes.array
+    candidateItems: React.PropTypes.array,
+    onSelect: React.PropTypes.func
   },
 
   getInitialState: function() {
@@ -27,9 +28,11 @@ var SuccessorSelector = React.createClass({
       var itemId = evt.target.value;
       if(itemId == null) {
         this.setState({item: null});
+        this.props.onSelect(null);
       } else {
         var item = _.find(this.props.candidateItems, {'id': itemId});
         this.setState({item: item});
+        this.props.onSelect(item);
       }
     };
 

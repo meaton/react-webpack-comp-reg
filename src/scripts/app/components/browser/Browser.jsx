@@ -55,7 +55,8 @@ var Browser = React.createClass({
   getInitialState: function() {
     return {
       detailsCollapsed: false,
-      detailsMaximised: false
+      detailsMaximised: false,
+      selectedSuccessor: null
     };
   },
 
@@ -336,10 +337,34 @@ var Browser = React.createClass({
   },
 
   showSuccessorCandidates: function(subjectItem, loadedItems) {
-    ReactAlert.showMessage('Select successor',
-      <SuccessorSelector subjectItem={subjectItem} candidateItems={loadedItems} />
+    this.setState({selectedSuccessor: null});
+
+    var onSelect = function(item){
+      this.setState({selectedSuccessor: item})
+    }.bind(this);
+
+    var onOk = function() {
+      var successor = this.state.selectedSuccessor;
+      if(successor == null) {
+        log.warn("No successor was selected");
+      } else {
+        log.debug("Ready to set", successor.id, "=", successor.name, "as successor to", subjectItem.id, "=", subjectItem.name);
+        //TODO: call action to set the successor via REST
+      }
+
+      this.setState({selectedSuccessor: null});
+    }.bind(this);
+
+    var onCancel = null;
+
+    ReactAlert.showConfirmationDialogue('Select successor',
+      <SuccessorSelector
+        subjectItem={subjectItem}
+        candidateItems={loadedItems}
+        selectedCandidate={this.state.selectedSuccessor}
+        onSelect={onSelect} />,
+      onOk, onCancel, 'Ok', 'Cancel'
     );
-    //TODO: on dialogue submit, call action to set the successor via REST
   },
 
   handleStatusFilterToggle: function(status) {

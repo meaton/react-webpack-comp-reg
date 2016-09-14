@@ -28,7 +28,7 @@ module.exports = {
     this.showModalAlert(title, renderBodyContent, renderFooterContent);
   },
 
-  showConfirmationDialogue: function(title, message, onYes, onNo) {
+  showConfirmationDialogue: function(title, message, onYes, onNo, yesText, noText) {
     var renderBodyContent = (
       <div className="modal-desc">
         <div>{message}</div>
@@ -40,11 +40,11 @@ module.exports = {
         <Button onClick={function(evt) {
             opts.closeAlert(evt);
             if(onYes) onYes();
-          }}>Yes</Button>
+          }}>{yesText || Yes}</Button>
         <Button onClick={function(evt) {
             opts.closeAlert(evt);
             if(onNo) onNo();
-          }}>No</Button>
+          }}>{noText || No}</Button>
       </div>
     )};
 
