@@ -55,8 +55,7 @@ var Browser = React.createClass({
   getInitialState: function() {
     return {
       detailsCollapsed: false,
-      detailsMaximised: false,
-      selectedSuccessor: null
+      detailsMaximised: false
     };
   },
 
@@ -337,22 +336,19 @@ var Browser = React.createClass({
   },
 
   showSuccessorCandidates: function(subjectItem, loadedItems) {
-    this.setState({selectedSuccessor: null});
+    var selectedSuccessor = null;
 
     var onSelect = function(item){
-      this.setState({selectedSuccessor: item})
-    }.bind(this);
+      selectedSuccessor = item;
+    };
 
     var onOk = function() {
-      var successor = this.state.selectedSuccessor;
-      if(successor == null) {
+      if(selectedSuccessor == null) {
         log.warn("No successor was selected");
       } else {
-        log.debug("Ready to set", successor.id, "=", successor.name, "as successor to", subjectItem.id, "=", subjectItem.name);
+        log.debug("Ready to set", selectedSuccessor.id, "=", selectedSuccessor.name, "as successor to", subjectItem.id, "=", subjectItem.name);
         //TODO: call action to set the successor via REST
       }
-
-      this.setState({selectedSuccessor: null});
     }.bind(this);
 
     var onCancel = null;
@@ -361,7 +357,7 @@ var Browser = React.createClass({
       <SuccessorSelector
         subjectItem={subjectItem}
         candidateItems={loadedItems}
-        selectedCandidate={this.state.selectedSuccessor}
+        selectedCandidate={selectedSuccessor}
         onSelect={onSelect} />,
       onOk, onCancel, 'Ok', 'Cancel'
     );
