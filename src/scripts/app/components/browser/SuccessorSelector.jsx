@@ -1,5 +1,6 @@
 'use strict';
 var log = require('loglevel');
+var _ = require('lodash');
 var React = require('react');
 
 /**
@@ -11,22 +12,48 @@ var SuccessorSelector = React.createClass({
     candidateItems: React.PropTypes.array
   },
 
+  getInitialState: function() {
+    return {item: null}
+  },
+
   render: function () {
     var options = this.props.candidateItems.map(function(item){
       return (
-        <option value={item.id}>{item.name} {item.groupName && item.groupName != '' && '('+item.groupName+')'}</option>
+        <option key={item.id} value={item.id} onSelect={onItemSelect} >{item.name} {item.groupName && item.groupName != '' && '('+item.groupName+')'}</option>
       );
-      //TODO: on dialogue submit, call action to set the successor via REST
     });
+
+    var onItemSelect = function(evt) {
+      var itemId = evt.target.value;
+      if(itemId == null) {
+        this.setState({item: null});
+      } else {
+        var item = _.find(this.props.candidateItems, {'id': itemId});
+        this.setState({item: item});
+      }
+    };
+
     return(
       <div>
         <p>Please select the item that you would like to appoint as the successor to <em>{this.props.subjectItem.name}</em>:</p>
         <form>
-          <select>
+          <select ref="selector" onChange={onItemSelect.bind(this)}>
+            {this.state.item == null && <option key="select">Select a successor</option>}
             {options}
           </select>
         </form>
-        <p>Keep in mind that you can set a component's successor <strong>only once</strong> and can not change this afterwards.</p>
+        {this.state.item &&
+          <div className="selected-successor-candidate">
+            <div className="title">{this.state.item.name}</div>
+            <div className="description">{this.state.item.description}</div>
+            <ul>
+              <li>Creator: {this.state.item.creatorName}</li>
+              <li>Registration date: {this.state.item.registrationDate.substr(0,10)}</li>
+              <li>Group: {this.state.item.groupName || "-"}</li>
+            </ul>
+          </div>
+        }
+        <p>Keep in mind that you can set a component's successor <strong>only once</strong> and can not change this afterwards. Only published items of the same type with <em>production</em> status are eligible for selection as a successor.</p>
         {/*TODO: selected item details */}
       </div>
     );

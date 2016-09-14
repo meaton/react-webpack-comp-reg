@@ -339,6 +339,7 @@ var Browser = React.createClass({
     ReactAlert.showMessage('Select successor',
       <SuccessorSelector subjectItem={subjectItem} candidateItems={loadedItems} />
     );
+    //TODO: on dialogue submit, call action to set the successor via REST
   },
 
   handleStatusFilterToggle: function(status) {
