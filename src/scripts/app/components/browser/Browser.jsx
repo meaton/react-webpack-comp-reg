@@ -22,6 +22,7 @@ var ComponentDetailsPanel = require('./ComponentDetailsPanel');
 var BrowserMenuGroup = require('./BrowserMenuGroup');
 var ComponentInfo = require('./ComponentInfo');
 var RssLink = require('./RssLink');
+var SuccessorSelector = require('./SuccessorSelector');
 var PanelExpandCollapseButton = require('../PanelExpandCollapseButton');
 
 var ReactAlert = require('../../util/ReactAlert');
@@ -327,33 +328,17 @@ var Browser = React.createClass({
       var item = this.state.selection.selectedItems[ids[0]];
     }
     //retrieve all public production items of the same type via REST
-    ComponentRegistryClient.loadComponents(this.state.items.type, Constants.SPACE_PUBLISHED, null, [Constants.STATUS_PRODUCTION], this.showSuccessorCandidates.bind(this, item), new function(msg){
+    ComponentRegistryClient.loadComponents(this.state.items.type, Constants.SPACE_PUBLISHED, null, [Constants.STATUS_PRODUCTION], this.showSuccessorCandidates.bind(this, item), function(msg){
       //failed to load successor candidates
       log.error("Loading components failed in handleSetSuccessor: " + msg);
       ReactAlert.showMessage('Failure', 'Could not load successor candidates: ' + msg);
     });
   },
 
-  showSuccessorCandidates: function(subjectItem, items) {
-    //TODO: on retrieval, show dialogue with selector
-    var items = items.map(function(item){
-      return (
-        <option value={item.id}>{item.name} {item.groupName && item.groupName != '' && '('+item.groupName+')'}</option>
-      );
-    });
+  showSuccessorCandidates: function(subjectItem, loadedItems) {
     ReactAlert.showMessage('Select successor',
-      <div>
-        <p>Please select the item that you would like to appoint as the successor to <em>{subjectItem.name}</em>:</p>
-        <form>
-          <select>
-            {items}
-          </select>
-        </form>
-        <p>Keep in mind that you can set a component's successor <strong>only once</strong> and can not change this afterwards.</p>
-        {/*TODO: selected item details */}
-      </div>
+      <SuccessorSelector subjectItem={subjectItem} candidateItems={loadedItems} />
     );
-    //TODO: on dialogue submit, call action to set the successor via REST
   },
 
   handleStatusFilterToggle: function(status) {

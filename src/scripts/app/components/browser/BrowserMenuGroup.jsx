@@ -21,6 +21,7 @@ var Constants = require('../../constants');
 var Config = require('../../../config');
 
 //mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 
 /**
@@ -28,7 +29,7 @@ var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
 * @constructor
 */
 var BrowserMenuGroup = React.createClass({
-  mixins: [ComponentUsageMixin],
+  mixins: [ImmutableRenderMixin, ComponentUsageMixin],
   propTypes: {
     type: React.PropTypes.string.isRequired,
     space: React.PropTypes.string.isRequired,
