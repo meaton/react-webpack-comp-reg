@@ -40,11 +40,11 @@ module.exports = {
         <Button onClick={function(evt) {
             opts.closeAlert(evt);
             if(onYes) onYes();
-          }}>{yesText || Yes}</Button>
+          }}>{yesText || 'Yes'}</Button>
         <Button onClick={function(evt) {
             opts.closeAlert(evt);
             if(onNo) onNo();
-          }}>{noText || No}</Button>
+          }}>{noText || 'No'}</Button>
       </div>
     )};
 
