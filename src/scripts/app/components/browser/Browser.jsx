@@ -288,13 +288,27 @@ var Browser = React.createClass({
     this.getFlux().actions.updateComponentStatus(item, type, status, function() {
       this.loadItems();
       var statusName = getStatusName(status);
-      ReactAlert.showMessage("Item status changed to " + statusName,
+      var message = (
         <div>
           <p>The status of '{item.name}' has been changed to <strong>{statusName}</strong>.</p>
           <p>As a result, it may not be visible anymore depending on which status filters have been applied.
           Use the status filter selectors to hide or show components or profiles with a specific status.</p>
-        </div>
-      );
+        </div>);
+      var title = "Item status changed to " + statusName
+      if(status === Constants.STATUS_DEPRECATED) {
+        ReactAlert.showConfirmationDialogue(title,
+          <div>
+            {message}
+            <div>
+              <strong>Would you like to appoint a successor for '{item.name}'?</strong> You can also do this at a later stage,
+              but you can do it only once per item. The successor must be a published item with <em>production</em> status.
+            </div>
+          </div>,
+          this.handleSetSuccessor
+        );
+      } else {
+        ReactAlert.showMessage(title, message);
+      }
     }.bind(this));
   },
 
