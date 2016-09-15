@@ -66,7 +66,7 @@ var BrowserMenuGroup = React.createClass({
             <Button>Create new</Button>
           </LinkContainer>
 
-          {this.renderEditorLink(isPublished, selectionCount)}
+          {this.renderEditorLink(singleItem)}
 
           {this.props.moveToTeamEnabled
             && <MoveToTeamDropdown
@@ -98,17 +98,18 @@ var BrowserMenuGroup = React.createClass({
     );
   },
 
-  renderEditorLink: function(isPublished, selectionCount) {
-    var editBtnLabel = isPublished ? "Edit as new" : "Edit";
-    if(selectionCount == 1) {
-      var itemId = Object.keys(this.props.items)[0];
+  renderEditorLink: function(singleItem) {
+    if(singleItem) {
+      var isImmutable = singleItem.status.toLowerCase() !== Constants.STATUS_DEVELOPMENT.toLowerCase();
+      var editBtnLabel = isImmutable ? "Edit as new" : "Edit";
+
       var editorRoute = null;
       if(this.props.type === Constants.TYPE_PROFILE) {
-        editorRoute = "/editor/" + ((isPublished) ? "profile/new/" : "/profile/")
-          + this.props.space + "/" + itemId;
+        editorRoute = "/editor/" + ((isImmutable) ? "profile/new/" : "/profile/")
+          + this.props.space + "/" + singleItem.id;
       } else if(this.props.type === Constants.TYPE_COMPONENT) {
-        editorRoute = "/editor/" + ((isPublished) ? "component/new/" : "/component/")
-          + this.props.space + "/" + itemId;
+        editorRoute = "/editor/" + ((isImmutable) ? "component/new/" : "/component/")
+          + this.props.space + "/" + singleItem.id;
       }
 
       if(editorRoute != null) {
@@ -122,7 +123,7 @@ var BrowserMenuGroup = React.createClass({
         );
       }
     } else {
-      return (<Button bsStyle="primary" disabled={true}>{editBtnLabel}</Button>);
+      return (<Button bsStyle="primary" disabled="true">Edit</Button>);
     }
   },
 
