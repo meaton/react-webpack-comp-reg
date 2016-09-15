@@ -298,6 +298,20 @@ var RestActions = {
       log.error("Failed updating status of", type, item.id, "to", targetStatus, ":", errorMessage);
       this.dispatch(Constants.SET_STATUS_FAILTURE, errorMessage);
     }.bind(this));
+  },
+
+  updateComponentSuccessor: function(item, type, successorId, cb) {
+    this.dispatch(Constants.SET_SUCCESSOR, item);
+    ComponentRegistryClient.setSuccessor(item.id, type, successorId, function() {
+      log.debug("Successor of", type, item.id, "updated to", successorId);
+      this.dispatch(Constants.SET_SUCCESSOR_SUCCESS, item);
+      if(cb != null) {
+        cb();
+      }
+    }.bind(this), function(errorMessage) {
+      log.error("Failed setting successor of", type, item.id, "to", successorId, ":", errorMessage);
+      this.dispatch(Constants.SET_SUCCESSOR_FAILTURE, errorMessage);
+    }.bind(this));
   }
 };
 

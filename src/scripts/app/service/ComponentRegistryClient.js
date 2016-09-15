@@ -551,6 +551,31 @@ setStatus: function(componentId, type, targetStatus, success, failure) {
   }, corsRequestParams));
 },
 
+
+setSuccessor: function(componentId, type, successorId, success, failure) {
+  var reg_type = (type === Constants.TYPE_PROFILE) ? PROFILES_PATH : COMPONENTS_PATH;
+  var url = restUrl + REGISTRY_ROOT + '/' + reg_type + '/' + componentId + '/successor';
+
+  var fd = new FormData();
+  fd.append('successor', successorId);
+
+  $.ajax($.extend({
+    type: 'POST',
+    url: url,
+    data: fd,
+    processData: false,
+    contentType: false,
+    dataType: "text", //will return the new status as text
+    success: function(data) {
+      log.trace('successor updated: ', data);
+      success(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      failure(err);
+    }.bind(this)
+  }, corsRequestParams));
+},
+
 queryCCR: function(searchQuery, cb) {
   var url = ccrUrl + '?type=container&keywords=' + searchQuery;
 

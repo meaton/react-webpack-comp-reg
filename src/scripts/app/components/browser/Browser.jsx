@@ -347,7 +347,7 @@ var Browser = React.createClass({
         log.warn("No successor was selected");
       } else {
         log.debug("Ready to set", selectedSuccessor.id, "=", selectedSuccessor.name, "as successor to", subjectItem.id, "=", subjectItem.name);
-        //TODO: call action to set the successor via REST
+        this.performSetSuccessor(subjectItem, this.state.items.type, selectedSuccessor);
       }
     }.bind(this);
 
@@ -361,6 +361,13 @@ var Browser = React.createClass({
         onSelect={onSelect} />,
       onOk, onCancel, 'Ok', 'Cancel'
     );
+  },
+
+  performSetSuccessor: function(item, type, successor) {
+    this.getFlux().actions.updateComponentSuccessor(item, type, successor.id, function() {
+      this.loadItems();
+      ReactAlert.showMessage("Successor set", <div>The successor of {item.name} was successfully set to {successor.name}</div>);
+    }.bind(this));
   },
 
   handleStatusFilterToggle: function(status) {

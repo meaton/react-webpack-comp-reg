@@ -44,9 +44,12 @@ var ItemsStore = Fluxxor.createStore({
       Constants.TOGGLE_SORT_STATE, this.toggleSortState,
       Constants.SET_STATUS_PERMISSION_CHECK, this.handleStatusPermissionCheck,
       Constants.SET_STATUS_PERMISSION_CHECK_DONE, this.handleStatusPermissionCheckDone,
-      Constants.SET_STATUS, this.handleSetStatus,
-      Constants.SET_STATUS_SUCCESS, this.handleSetStatusDone,
-      Constants.SET_STATUS_FAILTURE, this.handleSetStatusDone,
+      Constants.SET_STATUS, this.handleSetStatusOrSuccessor,
+      Constants.SET_STATUS_SUCCESS, this.handleSetStatusOrSuccessorDone,
+      Constants.SET_STATUS_FAILTURE, this.handleSetStatusOrSuccessorDone,
+      Constants.SET_SUCCESSOR, this.handleSetStatusOrSuccessor,
+      Constants.SET_SUCCESSOR_SUCCESS, this.handleSetStatusOrSuccessorDone,
+      Constants.SET_SUCCESSOR_FAILTURE, this.handleSetStatusOrSuccessorDone,
       Constants.SET_STATUS_FILTER, this.handleSetStatusFilter,
       Constants.RESET_STATUS_FILTER, this.handleResetStatusFilter
     );
@@ -162,12 +165,12 @@ var ItemsStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  handleSetStatus: function() {
+  handleSetStatusOrSuccessor: function() {
     this.loading = true;
     this.emit("change");
   },
 
-  handleSetStatusDone: function() {
+  handleSetStatusOrSuccessorDone: function() {
     this.loading = false;
     this.emit("change");
   },
