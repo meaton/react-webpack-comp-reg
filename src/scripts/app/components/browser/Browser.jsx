@@ -78,6 +78,7 @@ var Browser = React.createClass({
       || this.state.items.team != prevState.items.team
     ) {
       this.loadItems();
+      //this.clearItemSelection();
     }
   },
 
@@ -221,6 +222,10 @@ var Browser = React.createClass({
     if(index == Constants.INFO_VIEW_COMMENTS) {
       this.loadComments(item.id);
     }
+  },
+
+  clearItemSelection: function() {
+    this.getFlux().actions.selectBrowserItem(null, false);
   },
 
   handleDelete: function(componentInUsageCb) {
