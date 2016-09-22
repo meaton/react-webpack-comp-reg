@@ -42,6 +42,11 @@ var stores = {
 };
 
 var flux = new Fluxxor.Flux(stores, actions);
+flux.setDispatchInterceptor(function(action, dispatch) {
+  ReactDOM.unstable_batchedUpdates(function() {
+    dispatch(action);
+  });
+});
 window.flux = flux;
 
 /* Logging */
