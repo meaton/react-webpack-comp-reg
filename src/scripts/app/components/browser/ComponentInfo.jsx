@@ -59,8 +59,8 @@ var ComponentInfo = React.createClass({
         <div>
           <a href={bookmarkLink}>Bookmark link:</a>
           <div>
-            <input id="bookmarkLink" type="text" value={bookmarkLink} onChange={noop} />
-            <button type="button" className="btn btn-default" data-clipboard-target="#bookmarkLink" title="Copy to clipboard">
+            <input id={"bookmarkLink" + key} type="text" value={bookmarkLink} onChange={noop} />
+            <button type="button" className="btn btn-default" data-clipboard-target={"#bookmarkLink" + key} title="Copy to clipboard">
               <span className="glyphicon glyphicon-copy" aria-hidden="true"/>
             </button>
           </div>
