@@ -31,6 +31,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var classNames = require('classnames');
 var Validation = require('../../service/Validation');
 var changeObj = require('../../util/ImmutabilityUtil').changeObj;
+var ReactAlert = require('../../util/ReactAlert');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -157,7 +158,11 @@ var CMDComponentForm = React.createClass({
               var successor = header.Successor;
               log.debug("Replace child component", compId ,"with successor", successor);
               //TODO: let user confirm, then send change request up the chain
-            };
+              ReactAlert.showConfirmationDialogue('Replace with successor',
+                <div>Do you want to replace the linked child component <em>{header.Name}</em> with its successor (component {header.Successor})?
+                  This change will not be permanent until you save the item that is being edited.</div>,
+                this.handleReplaceLinkedComponent); //TODO: implement handler
+            }.bind(this);
         }
 
         return (
