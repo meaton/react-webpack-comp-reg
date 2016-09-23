@@ -152,12 +152,21 @@ var CMDComponentForm = React.createClass({
           </div>
         );
 
+        if(header.Successor && header.Successor != '') {
+          var replaceSuccessor = function() {
+              var successor = header.Successor;
+              log.debug("Replace child component", compId ,"with successor", successor);
+              //TODO: let user confirm, then send change request up the chain
+            };
+        }
+
         return (
           <div key={componentProperties.key + "_linkform"} className="linkedComponentForm">
             <CMDComponentView
               link={link}
               hideCardinality={true}
               formElements={formElements}
+              onReplaceWithSuccessor={replaceSuccessor}
               {... componentProperties}
               {... this.getExpansionProps()} /* from ToggleExpansionMixin*/
             />

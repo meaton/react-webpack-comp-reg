@@ -33,7 +33,8 @@ var CMDComponentView = React.createClass({
   propTypes: {
     link: React.PropTypes.object /* if linked, this is the Component element defined in the parent */,
     componentLinks: React.PropTypes.bool,
-    compId: React.PropTypes.string
+    compId: React.PropTypes.string,
+    onReplaceWithSuccessor: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -143,6 +144,9 @@ var CMDComponentView = React.createClass({
               Number of occurrences: {cardinality}
             </div>
           </div>}
+
+        {this.props.onReplaceWithSuccessor &&
+        <div className="successor-available"><Glyphicon glyph="info-sign" /> A successor is available for this component. <a onClick={this.props.onReplaceWithSuccessor}>Replace with successor?</a></div>}
         {open && this.props.formElements}
       </div>
     );
