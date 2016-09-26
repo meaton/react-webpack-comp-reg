@@ -49,7 +49,8 @@ var ComponentSpecForm = React.createClass({
     onCancelComponentLink: React.PropTypes.func.isRequired,
     selectedComponentId: React.PropTypes.string,
     onExpandAll: React.PropTypes.func,
-    onCollapseAll: React.PropTypes.func
+    onCollapseAll: React.PropTypes.func,
+    loadLinkedComponents: React.PropTypes.func
   },
 
   render: function() {
@@ -142,6 +143,7 @@ var ComponentSpecForm = React.createClass({
               onComponentChange={this.handleComponentChange}
               selectedComponentId={this.props.selectedComponentId}
               componentLinkingMode={this.props.componentLinkingMode}
+              loadLinkedComponents={this.props.loadLinkedComponents}
               />
           )}
           </form>

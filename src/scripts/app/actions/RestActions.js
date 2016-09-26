@@ -86,6 +86,17 @@ var RestActions = {
     }.bind(this), currentset);
   },
 
+  /**
+   * Loads a set of components by id as linked components
+   * Dispatches Constants.LINKED_COMPONENTS_LOADED when done loading
+   * @param {Array} ids of items to be loaded as linked components
+   */
+  loadLinkedComponentSpecsById: function(ids) {
+    loadComponentsById(ids, {}, function(linkedComponents) {
+      this.dispatch(Constants.LINKED_COMPONENTS_LOADED, linkedComponents);
+    }.bind(this));
+  },
+
   loadComponentSpecXml: function(type, itemId) {
     this.dispatch(Constants.LOAD_COMPONENT_SPEC);
     ComponentRegistryClient.loadSpec(type, itemId, "text", function(specXml){
@@ -412,7 +423,7 @@ function loadComponentsById(ids, collected, callback) {
       function(message) {
         // failure
         log.warn("Failed to load child component with id ", id, ": ", message);
-        // proceed (nothing added)
+        // proceed (nothing added this round but continue with rest)
         loadComponentsById(ids, collected, callback);
       }
     );

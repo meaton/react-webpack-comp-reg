@@ -108,6 +108,7 @@ var EditorForm = React.createClass({
             selectedComponentId={this.props.selectedComponentId}
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
+            loadLinkedComponents={this.handleLoadLinkedComponents}
             />
         </div>
       );
@@ -183,6 +184,11 @@ var EditorForm = React.createClass({
         + (this.props.type === Constants.TYPE_PROFILE ? "profile":"component")
         + "? Any changes will be discarded.",
       doCancel);
+  },
+
+  handleLoadLinkedComponents: function(ids) {
+    log.debug("Loading linked child components", ids);
+    this.getFlux().actions.loadLinkedComponentSpecsById(ids);
   },
 
   afterSuccess: function() {

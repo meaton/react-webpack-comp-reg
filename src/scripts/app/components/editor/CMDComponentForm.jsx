@@ -55,6 +55,7 @@ var CMDComponentForm = React.createClass({
     onComponentChange: React.PropTypes.func.isRequired,
     onStartComponentLink: React.PropTypes.func.isRequired,
     onCancelComponentLink: React.PropTypes.func.isRequired,
+    loadLinkedComponents: React.PropTypes.func.isRequired,
     selectedComponentId: React.PropTypes.string
     /* more props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   },
@@ -184,6 +185,7 @@ var CMDComponentForm = React.createClass({
         onStartComponentLink={this.props.onStartComponentLink}
         onCancelComponentLink={this.props.onCancelComponentLink}
         componentLinkingMode={this.props.componentLinkingMode}
+        loadLinkedComponents={this.props.loadLinkedComponents}
         checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.Component)}
         />);
     }
@@ -334,7 +336,7 @@ var CMDComponentForm = React.createClass({
     var newComponent = {'@ComponentRef': successorId, '_appId': appId};
     log.debug("Replace component", index, spec.Component[index], "with", newComponent);
     this.props.onComponentChange({Component: {$splice: [[index, 1, newComponent]]}});
-    //TODO: load new successor component
+    this.props.loadLinkedComponents([successorId]);
   },
 
   /*=== Functions that add new children ===*/
