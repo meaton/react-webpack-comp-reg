@@ -154,15 +154,23 @@ var CMDComponentForm = React.createClass({
         );
 
         if(header.Successor && header.Successor != '') {
+          var handleReplaceLinkedComponent = function() {
+            var appId = this.generateAppIdForNew(spec._appId, spec.Component);
+            var newComponent = {'@ComponentRef': header.Successor, '_appId': appId};
+            log.debug("Replace component", index, this.props.spec.Component[index], "with", newComponent);
+            this.props.onComponentChange({Component: {$splice: [[index, 1, newComponent]]}});
+          }.bind(this);
           var replaceSuccessor = function() {
               var successor = header.Successor;
               log.debug("Replace child component", compId ,"with successor", successor);
               //TODO: let user confirm, then send change request up the chain
               ReactAlert.showConfirmationDialogue('Replace with successor',
                 <div>Do you want to replace the linked child component <em>{header.Name}</em> with its successor (component {header.Successor})?
-                  This change will not be permanent until you save the item that is being edited.</div>,
-                this.handleReplaceLinkedComponent); //TODO: implement handler
+                  This change will become permanent when you save the current item.</div>,
+                handleReplaceLinkedComponent); //TODO: implement handler
             }.bind(this);
+        } else {
+          var replaceSuccessor = null;
         }
 
         return (
