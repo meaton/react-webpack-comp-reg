@@ -154,21 +154,7 @@ var CMDComponentForm = React.createClass({
         );
 
         if(header.Successor && header.Successor != '') {
-          var handleReplaceLinkedComponent = function() {
-            var appId = this.generateAppIdForNew(spec._appId, spec.Component);
-            var newComponent = {'@ComponentRef': header.Successor, '_appId': appId};
-            log.debug("Replace component", index, this.props.spec.Component[index], "with", newComponent);
-            this.props.onComponentChange({Component: {$splice: [[index, 1, newComponent]]}});
-          }.bind(this);
-          var replaceSuccessor = function() {
-              var successor = header.Successor;
-              log.debug("Replace child component", compId ,"with successor", successor);
-              //TODO: let user confirm, then send change request up the chain
-              ReactAlert.showConfirmationDialogue('Replace with successor',
-                <div>Do you want to replace the linked child component <em>{header.Name}</em> with its successor (component {header.Successor})?
-                  This change will become permanent when you save the current item.</div>,
-                handleReplaceLinkedComponent); //TODO: implement handler
-            }.bind(this);
+          var replaceSuccessor = this.replaceSuccessor.bind(this, header, index);
         } else {
           var replaceSuccessor = null;
         }
@@ -327,6 +313,28 @@ var CMDComponentForm = React.createClass({
     var value = e.target.value;
     log.debug("Update property of child component",index,field,"=",value);
     this.handleComponentChange(index, {$merge: changeObj(field, value)});
+  },
+
+  replaceSuccessor: function(header, index) {
+    var successorId = header.Successor;
+    if(successorId == null) {
+      log.error("No successor id found in header", header);
+    }
+    log.debug("Replace child component", index ,"with its successor", successorId);
+    //TODO: let user confirm, then send change request up the chain
+    ReactAlert.showConfirmationDialogue('Replace with successor',
+      <div>Do you want to replace the linked child component <em>{header.Name}</em> with its successor (component {successorId})?
+        This change will become permanent when you save the current item.</div>,
+      this.handleReplaceLinkedComponent.bind(this, index, successorId));
+  },
+
+  handleReplaceLinkedComponent: function(index, successorId) {
+    var spec = this.props.spec;
+    var appId = this.generateAppIdForNew(spec._appId, spec.Component);
+    var newComponent = {'@ComponentRef': successorId, '_appId': appId};
+    log.debug("Replace component", index, spec.Component[index], "with", newComponent);
+    this.props.onComponentChange({Component: {$splice: [[index, 1, newComponent]]}});
+    //TODO: load new successor component
   },
 
   /*=== Functions that add new children ===*/
