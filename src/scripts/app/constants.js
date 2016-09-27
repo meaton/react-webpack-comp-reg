@@ -121,6 +121,10 @@ module.exports = {
   /* item description updated for editor */
   ITEM_UPDATED: "ITEM_UPDATED",
 
+  /* VALUE SCHEME ACTIONS */
+
+  LOAD_VALUE_SCHEME: "LOAD_VALUE_SCHEME",
+
   /* ITEM TYPES */
   TYPE_PROFILE: "profile",
   TYPE_COMPONENT: "component",

@@ -20,7 +20,8 @@ var ItemsStore = require("./stores/ItemsStore"),
     AuthenticationStore = require("./stores/AuthenticationStore"),
     MessageStore = require("./stores/MessageStore"),
     EditorStore = require("./stores/EditorStore"),
-    TeamStore = require("./stores/TeamStore");
+    TeamStore = require("./stores/TeamStore"),
+    ValueSchemeStore = require("./stores/ValueSchemeStore");
 
 var actions = require("./actions");
 
@@ -38,7 +39,8 @@ var stores = {
   AuthenticationStore: new AuthenticationStore(),
   MessageStore: new MessageStore(),
   EditorStore: new EditorStore(),
-  TeamStore: new TeamStore()
+  TeamStore: new TeamStore(),
+  ValueSchemeStore: new ValueSchemeStore()
 };
 
 var flux = new Fluxxor.Flux(stores, actions);
