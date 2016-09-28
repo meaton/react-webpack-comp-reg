@@ -11,7 +11,8 @@ var ValueSchemeStore = Fluxxor.createStore({
     this.pattern =  null;
 
     this.bindActions(
-      Constants.LOAD_VALUE_SCHEME, this.handleLoadValueScheme
+      Constants.LOAD_VALUE_SCHEME, this.handleLoadValueScheme,
+      Constants.UPDATE_VALUE_SCHEME, this.handleUpdateValueScheme
     );
   },
 
@@ -27,6 +28,19 @@ var ValueSchemeStore = Fluxxor.createStore({
     this.vocabulary = values.vocabulary;
     this.type = values.type;
     this.pattern = values.pattern;
+    this.emit("change");
+  },
+
+  handleUpdateValueScheme: function(values) {
+    if(values.vocabulary != undefined) {
+      this.vocabulary = values.vocabulary;
+    }
+    if(values.type != undefined) {
+      this.type = values.type;
+    }
+    if(values.pattern != undefined) {
+      this.pattern = values.pattern;
+    }
     this.emit("change");
   }
 });

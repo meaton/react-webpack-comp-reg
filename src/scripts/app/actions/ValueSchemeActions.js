@@ -31,6 +31,18 @@ var ValueSchemeActions = {
       type: type,
       pattern: pattern
     });
+  },
+
+  updateType: function(value) {
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      type: value,
+    });
+  },
+
+  updatePattern: function(value) {
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      pattern: value,
+    });
   }
 };
 

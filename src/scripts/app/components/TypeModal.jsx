@@ -79,17 +79,18 @@ var TypeModal = React.createClass({
 
   componentDidMount: function() {
     log.debug("TypeModal mounted with state", this.state);
-    var self = this;
-    this.tabSelect(this.state.valueScheme.type != null ? 0 : this.state.valueScheme.vocabulary != null ? 1 : 2);
+    //TODO: set tab depending on current mode
+    //this.tabSelect(this.state.valueScheme.type != null ? 0 : this.state.valueScheme.vocabulary != null ? 1 : 2);
+    //TODO: keep allowed types in value scheme store
     ComponentRegistryClient.loadAllowedTypes(function(data) {
       if(data != null && data.elementType != undefined && $.isArray(data.elementType))
-        self.setState({ reg_types: data.elementType }, function() {
+        this.setState({ reg_types: data.elementType }, function() {
           var simpleType = this.refs.simpleTypeInput;
           if(simpleType != undefined)
             var type = this.state.valueScheme.type;
             ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = (type != null) ? $.inArray(type, data.elementType) : $.inArray("string", data.elementType);
         });
-    });
+    }.bind(this));
   },
 
   tabSelect: function(index) {
@@ -202,7 +203,58 @@ var TypeModal = React.createClass({
     // }
   },
 
+  onSelectType: function(evt) {
+    var type = evt.target.value;
+    log.debug("select type value", type);
+    this.getFlux().actions.updateType(type);
+  },
+
+  onChangePattern: function(evt) {
+    var pattern = evt.target.value;
+    log.debug("update pattern value", pattern);
+    this.getFlux().actions.updatePattern(pattern);
+  },
+
   render: function() {
+
+    var patternValue = (this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : "";
+    var typeValue = this.state.valueScheme.type;
+
+    return (
+      <Modal.Dialog ref="modal" id="typeModal" key="typeModal" className="type-dialog" enforceFocus={true} backdrop={false}>
+
+        <Modal.Header closeButton={true} onHide={this.close}>
+          <Modal.Title>{this.props.title}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
+            <Tab eventKey={0} title="Type">
+              <Input ref="simpleTypeInput" onChange={this.onSelectType} value={typeValue} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
+              {typeValue == null && <option key="null">-- Select --</option>}
+              {$.map(this.state.reg_types, function(type, index) {
+                return <option key={type}>{type}</option>
+              })}
+              </Input>
+            </Tab>
+            <Tab eventKey={1} title="Controlled vocabulary">
+              {this.renderVocabTable()}
+            </Tab>
+            <Tab eventKey={2} title="Pattern">
+              <Input ref="patternInput" type="text" value={patternValue} onChange={this.onChangePattern} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
+            </Tab>
+          </Tabs>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button onClick={this.close}>Cancel</Button>
+        </Modal.Footer>
+
+      </Modal.Dialog>
+    );
+  },
+
+  renderVocabTable: function() {
     var self = this;
     var tableClasses = classNames('table','table-condensed');
 
@@ -219,7 +271,7 @@ var TypeModal = React.createClass({
         self.setState({ value: newValue });
     });
 
-    var enumeration = this.state.valueScheme.Vocabulary && this.state.valueScheme.Vocabulary.enumeration;
+    var enumeration = this.state.valueScheme.vocabulary && this.state.valueScheme.vocabulary.enumeration;
     var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
     if(!$.isArray(vocabData)) {
       // single item, wrap
@@ -275,7 +327,7 @@ var TypeModal = React.createClass({
               {modal}
             </span>)
           };
-        }
+        }.bind(this)
       },
       {
         cell: function(value, data, rowIndex, property) {
@@ -293,45 +345,19 @@ var TypeModal = React.createClass({
     log.debug("Table data:", vocabData);
 
     return (
-      <Modal.Dialog ref="modal" id="typeModal" key="typeModal" className="type-dialog" enforceFocus={true} backdrop={false}>
-
-        <Modal.Header closeButton={true} onHide={this.close}>
-          <Modal.Title>{this.props.title}</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
-            <Tab eventKey={0} title="Type">
-              <Input ref="simpleTypeInput" label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
-              {$.map(this.state.reg_types, function(type, index) {
-                return <option key={type}>{type}</option>
-              })}
-              </Input>
-            </Tab>
-            <Tab eventKey={1} title="Controlled vocabulary">
-              <Table id="typeTable" ref="table" columns={vocabCols} data={vocabData} className={tableClasses}>
-                <tfoot>
-                  <tr>
-                      <td className="info" rowSpan="3" onClick={this.addNewRow}>
-                          Click here to add new row.
-                      </td>
-                      <td></td>
-                  </tr>
-                </tfoot>
-              </Table>
-              <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
-            </Tab>
-            <Tab eventKey={2} title="Pattern">
-              <Input ref="patternInput" type="text" defaultValue={(this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
-            </Tab>
-          </Tabs>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button onClick={this.close}>Cancel</Button>
-        </Modal.Footer>
-
-      </Modal.Dialog>
+      <div>
+        <Table id="typeTable" ref="table" columns={vocabCols} data={vocabData} className={tableClasses}>
+          <tfoot>
+            <tr>
+                <td className="info" rowSpan="3" onClick={this.addNewRow}>
+                    Click here to add new row.
+                </td>
+                <td></td>
+            </tr>
+          </tfoot>
+        </Table>
+        <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
+      </div>
     );
   }
 });
