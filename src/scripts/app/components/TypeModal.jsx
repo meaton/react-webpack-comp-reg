@@ -2,6 +2,11 @@
 var log = require('loglevel');
 
 var React = require('react');
+
+var Fluxxor = require("fluxxor"),
+    FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+
 var ReactDOM = require('react-dom');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
@@ -40,12 +45,19 @@ require('../../../styles/EditorDialog.sass');
 var TypeModal = React.createClass({
   //TODO: add support for open vocabularies (without enum but with @URI and @ValueProperty)
   //        (NB: also support @URI and @ValueProperty for closed vocabularies)
-  mixins: [LinkedStateMixin],
+
+  mixins: [LinkedStateMixin,
+            FluxMixin, StoreWatchMixin("ValueSchemeStore")],
+
+  // Required by StoreWatchMixin
+  getStateFromFlux: function() {
+    var flux = this.getFlux();
+    return {
+      valueScheme: flux.store("ValueSchemeStore").getState()
+    };
+  },
+
   propTypes: {
-    container: React.PropTypes.object.isRequired,
-    type: React.PropTypes.string,
-    pattern: React.PropTypes.string,
-    enumeration: React.PropTypes.object,
     onChange: React.PropTypes.func, //param: object {type/pattern/enumeration}
     onClose: React.PropTypes.func
   },
@@ -64,6 +76,9 @@ var TypeModal = React.createClass({
       title: "Edit and choose a type"
     };
   },
+
+
+
   tabSelect: function(index) {
     log.trace('tabSelect: ' + index);
     this.setState({ currentTabIdx: index, changedTab: true });

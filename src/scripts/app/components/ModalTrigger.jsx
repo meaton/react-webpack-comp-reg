@@ -21,7 +21,9 @@ var ModalTrigger = React.createClass({
     modal: React.PropTypes.object.isRequired,
     label: React.PropTypes.string.isRequired,
     useLink: React.PropTypes.bool,
-    modalTarget: React.PropTypes.string
+    modalTarget: React.PropTypes.string,
+    onOpen: React.PropTypes.func,
+    onClose: React.PropTypes.func
   },
   getDefaultProps: function() {
     return {
@@ -48,9 +50,15 @@ var ModalTrigger = React.createClass({
       //
       if(this.state.isModalOpen) {
         //hide
+        if(this.props.onClose) {
+          this.props.onClose(evt);
+        }
         ReactAlert.closeAlert(this.props.modalTarget, evt);
       } else {
         //show new alert
+        if(this.props.onOpen) {
+          this.props.onOpen(evt);
+        }
         ReactAlert.renderAlert(this.props.modal, this.props.modalTarget);
       }
 

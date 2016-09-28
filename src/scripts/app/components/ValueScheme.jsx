@@ -11,9 +11,12 @@ var ModalTrigger = require('./ModalTrigger');
 var TypeModal = require('./TypeModal');
 
 //boostrap
+var Button = require('react-bootstrap/lib/Button');
 var Input = require('react-bootstrap/lib/Input');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
+
+var ReactAlert = require('../util/ReactAlert');
 
 /**
 * ValueScheme selection component
@@ -22,18 +25,19 @@ var ValueScheme = React.createClass({
 
   propTypes: {
     obj: React.PropTypes.object.isRequired,
+    loadValueSchemeData: React.PropTypes.func,
     enabled: React.PropTypes.bool,
     onChange: React.PropTypes.func
   },
+
+  contextTypes: {
+	    flux: React.PropTypes.object /* to pass to TypeModal (because modal is rendered outside tree, see below) */
+	},
 
   getDefaultProps: function() {
     return {
       enabled: false
     };
-  },
-
-  componentDidMount: function() {
-
   },
 
   render: function() {
@@ -47,26 +51,20 @@ var ValueScheme = React.createClass({
       var pattern = (valueSchemeElem != null) ? valueSchemeElem.pattern : null;
       var enumeration = (vocabulary != null) ? vocabulary.enumeration : null;
 
-      //log.trace("TypeModal params", {obj: obj, valueScheme: valueScheme, vocabulary: vocabulary, pattern: pattern});
-
       var typeTrigger = (
         <ModalTrigger
           ref="modalTrigger"
           modalTarget="typeModalContainer"
           label="Edit..."
+          onOpen={this.props.loadValueSchemeData}
           modal={
             <TypeModal
               onClose={this.closeDialogue}
               onChange={this.props.onChange}
-              container={this}
-              type={valueScheme}
-              enumeration={enumeration}
-              pattern={pattern}
+              flux={this.context.flux /* need to pass flux because modal is rendered outside tree - details at http://stackoverflow.com/a/30372606 */}
               />
           } />
       );
-
-      var obj=this.props.obj;
 
       if(typeof valueScheme != "string") {
         valueScheme = valueSchemeElem;
@@ -105,6 +103,7 @@ var ValueScheme = React.createClass({
           }
         }
       }
+
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
         <Input ref="typeInput" type="text" label="Type"
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"

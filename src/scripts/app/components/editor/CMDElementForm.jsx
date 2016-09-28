@@ -4,6 +4,10 @@ var log = require('loglevel');
 var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
+var Fluxxor = require("fluxxor"),
+    FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
@@ -36,10 +40,18 @@ require('../../../../styles/CMDElement.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDElementForm = React.createClass({
-  mixins: [ImmutableRenderMixin,
+  mixins: [FluxMixin, StoreWatchMixin("ValueSchemeStore"),
+            ImmutableRenderMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
+
+  // Required by StoreWatchMixin
+  getStateFromFlux: function() {
+    return {
+      valueScheme: this.getFlux().store("ValueSchemeStore").getState()
+    };
+  },
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -104,7 +116,10 @@ var CMDElementForm = React.createClass({
                   onChange={this.updateElementValueWithDefault.bind(this, "0")} validate={this.validate}
                   min={0} max={10} step={1}
                   />
-                <ValueScheme obj={elem} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
+                <ValueScheme obj={elem} enabled={true}
+                  onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
+                  loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(elem);}.bind(this)}
+                  />
                 {(elem['@ValueScheme'] == "string" || elem['@Multilingual'] == "true") && //hide multilingual for non-string elements (or if it happens to have been set to true)
                   <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
                 }
