@@ -77,23 +77,17 @@ var TypeModal = React.createClass({
     };
   },
 
-  componentWillMount: function() {
-    log.debug("Setting state to props", this.props);
-    this.setState({
-      type: this.props.type,
-      pattern: this.props.pattern,
-      enumeration: this.props.enumeration
-    });
-    this.tabSelect(this.props.type != null ? 0 : this.props.enumeration != null ? 1 : 2);
-  },
   componentDidMount: function() {
+    log.debug("TypeModal mounted with state", this.state);
     var self = this;
+    this.tabSelect(this.state.valueScheme.type != null ? 0 : this.state.valueScheme.vocabulary != null ? 1 : 2);
     ComponentRegistryClient.loadAllowedTypes(function(data) {
       if(data != null && data.elementType != undefined && $.isArray(data.elementType))
         self.setState({ reg_types: data.elementType }, function() {
           var simpleType = this.refs.simpleTypeInput;
           if(simpleType != undefined)
-            ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = this.state.type != null ? $.inArray(this.state.type, data.elementType) : $.inArray("string", data.elementType);
+            var type = this.state.valueScheme.type;
+            ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = (type != null) ? $.inArray(type, data.elementType) : $.inArray("string", data.elementType);
         });
     });
   },
@@ -102,28 +96,32 @@ var TypeModal = React.createClass({
     log.trace('tabSelect: ' + index);
     this.setState({ currentTabIdx: index, changedTab: true });
   },
+
   setSimpleType: function(evt) {
-    var simpleVal = this.refs.simpleTypeInput.getValue();
-    this.props.onChange({type: simpleVal});
-    this.close(evt);
+    //TODO: use action
+    // var simpleVal = this.refs.simpleTypeInput.getValue();
+    // this.props.onChange({type: simpleVal});
+    // this.close(evt);
   },
 
   setPattern: function(evt) {
-    var patternVal = this.refs.patternInput.getValue();
-    this.props.onChange({pattern: patternVal});
-    this.close(evt);
+    //TODO: use action
+    // var patternVal = this.refs.patternInput.getValue();
+    // this.props.onChange({pattern: patternVal});
+    // this.close(evt);
   },
 
   setControlVocab: function(evt) {
+    //TODO: use action
     //TODO: Pass entire Vocabulary object
-    var enumeration = this.state.enumeration;
-    if(enumeration != undefined
-        && $.isArray(enumeration.item)
-        && Validation.checkVocabularyItems(enumeration.item, this.showFeedback)) {
-          //check for duplicate items
-          this.props.onChange({enumeration: enumeration});
-          this.close(evt);
-    }
+    // var enumeration = this.state.enumeration;
+    // if(enumeration != undefined
+    //     && $.isArray(enumeration.item)
+    //     && Validation.checkVocabularyItems(enumeration.item, this.showFeedback)) {
+    //       //check for duplicate items
+    //       this.props.onChange({enumeration: enumeration});
+    //       this.close(evt);
+    // }
   },
 
   showFeedback: function(message) {
@@ -133,68 +131,75 @@ var TypeModal = React.createClass({
   close: function(evt) {
     this.props.onClose(evt);
   },
+
   addConceptLink: function(rowIndex, newHdlValue) {
-    log.debug('open concept link dialog:', rowIndex, newHdlValue);
-    if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
-      var items = this.state.enumeration.item;
-      if(!$.isArray(items)) {
-        items = [items];
-      }
-      var newRow = update(items[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
-      this.updateConceptLink(rowIndex, newRow);
-    }
+    //TODO: use action
+    // log.debug('open concept link dialog:', rowIndex, newHdlValue);
+    // if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
+    //   var items = this.state.enumeration.item;
+    //   if(!$.isArray(items)) {
+    //     items = [items];
+    //   }
+    //   var newRow = update(items[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
+    //   this.updateConceptLink(rowIndex, newRow);
+    // }
   },
+
   removeConceptLink: function(rowIndex) {
-    if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
-      var items = this.state.enumeration.item;
-      if(!$.isArray(items)) {
-        items = [items];
-      }
-      var newRow = update(items[rowIndex], { '@ConceptLink': { $set: null } });
-      this.updateConceptLink(rowIndex, newRow);
-    }
+    //TODO: use action
+    // if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
+    //   var items = this.state.enumeration.item;
+    //   if(!$.isArray(items)) {
+    //     items = [items];
+    //   }
+    //   var newRow = update(items[rowIndex], { '@ConceptLink': { $set: null } });
+    //   this.updateConceptLink(rowIndex, newRow);
+    // }
   },
   updateConceptLink(rowIndex, newRow) {
-    var newEnum;
-    if($.isArray(this.state.enumeration.item)) {
-      newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
-    } else {
-      newEnum = update(this.state.enumeration, { item: {$set: newRow}});
-    }
-    this.setState({ enumeration: newEnum });
+    //TODO: use action
+    // var newEnum;
+    // if($.isArray(this.state.enumeration.item)) {
+    //   newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
+    // } else {
+    //   newEnum = update(this.state.enumeration, { item: {$set: newRow}});
+    // }
+    // this.setState({ enumeration: newEnum });
   },
   addNewRow: function() {
-    var val = this.state.enumeration;
-    if(val == null)
-      val = {};
-
-    var newRow = {'$':'', '@AppInfo':'', '@ConceptLink':''};
-
-    if(val.item != undefined) {
-      if($.isArray(val.item)) {
-        // push new row to array
-        this.setState({ enumeration: update(val, { item: { $push: [newRow] }}) });
-      } else {
-        // turn into array and add new row
-        this.setState({ enumeration: update(val, {item: {$set: [val.item, newRow]}})});
-      }
-    } else {
-      // create new array with one row
-      this.setState({ enumeration: update(val, { $set: { item: [newRow] }}) });
-    }
+    //TODO: use action
+    // var val = this.state.enumeration;
+    // if(val == null)
+    //   val = {};
+    //
+    // var newRow = {'$':'', '@AppInfo':'', '@ConceptLink':''};
+    //
+    // if(val.item != undefined) {
+    //   if($.isArray(val.item)) {
+    //     // push new row to array
+    //     this.setState({ enumeration: update(val, { item: { $push: [newRow] }}) });
+    //   } else {
+    //     // turn into array and add new row
+    //     this.setState({ enumeration: update(val, {item: {$set: [val.item, newRow]}})});
+    //   }
+    // } else {
+    //   // create new array with one row
+    //   this.setState({ enumeration: update(val, { $set: { item: [newRow] }}) });
+    // }
   },
   removeRow: function(rowIndex) {
-    log.debug('remove row: ' + rowIndex);
-
-    if(this.state.enumeration != null && this.state.enumeration.item != null) {
-      if($.isArray(this.state.enumeration.item)) {
-        // splice existing array
-        this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
-      } else if(rowIndex === 0) {
-        // remove the one (last) item
-        this.setState({ enumeration: null});
-      }
-    }
+    //TODO: use action
+    // log.debug('remove row: ' + rowIndex);
+    //
+    // if(this.state.enumeration != null && this.state.enumeration.item != null) {
+    //   if($.isArray(this.state.enumeration.item)) {
+    //     // splice existing array
+    //     this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
+    //   } else if(rowIndex === 0) {
+    //     // remove the one (last) item
+    //     this.setState({ enumeration: null});
+    //   }
+    // }
   },
 
   render: function() {
@@ -214,12 +219,13 @@ var TypeModal = React.createClass({
         self.setState({ value: newValue });
     });
 
-    var vocabData = (this.state.enumeration != null && this.state.enumeration.item != undefined) ? this.state.enumeration.item : [];
+    var enumeration = this.state.valueScheme.Vocabulary && this.state.valueScheme.Vocabulary.enumeration;
+    var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
     if(!$.isArray(vocabData)) {
       // single item, wrap
       vocabData = [vocabData];
     }
-    
+
     var vocabCols = [
       {
         property: '$',
@@ -296,7 +302,7 @@ var TypeModal = React.createClass({
         <Modal.Body>
           <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <Tab eventKey={0} title="Type">
-              <Input ref="simpleTypeInput" linkValue={this.linkState('value')} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
+              <Input ref="simpleTypeInput" label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
               {$.map(this.state.reg_types, function(type, index) {
                 return <option key={type}>{type}</option>
               })}
@@ -316,7 +322,7 @@ var TypeModal = React.createClass({
               <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
             </Tab>
             <Tab eventKey={2} title="Pattern">
-              <Input ref="patternInput" type="text" defaultValue={(this.props.pattern != undefined) ? this.props.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
+              <Input ref="patternInput" type="text" defaultValue={(this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : ""} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
             </Tab>
           </Tabs>
         </Modal.Body>

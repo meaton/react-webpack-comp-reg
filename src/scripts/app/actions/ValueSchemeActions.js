@@ -6,7 +6,7 @@ var Constants = require("../constants");
 
 var ValueSchemeActions = {
   loadValueScheme: function(element) {
-    log.debug("Loading value scheme for element", element);
+    log.trace("Loading value scheme for element", element);
 
     var vocabulary = null;
     var type = null;

@@ -23,8 +23,10 @@ var ValueSchemeStore = Fluxxor.createStore({
     };
   },
 
-  handleLoadValueScheme: function(scheme) {
-    //TODO
+  handleLoadValueScheme: function(values) {
+    this.vocabulary = values.vocabulary;
+    this.type = values.type;
+    this.pattern = values.pattern;
     this.emit("change");
   }
 });
