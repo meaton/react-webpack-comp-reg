@@ -449,7 +449,7 @@ deleteComment: function(componentId, type, commentId, success, failure) {
   }, corsRequestParams));
 },
 
-loadAllowedTypes: function(cb) {
+loadAllowedTypes: function(success, failure) {
   $.ajax($.extend({
     type: 'GET',
     url: restUrl + '/allowedTypes',
@@ -457,11 +457,11 @@ loadAllowedTypes: function(cb) {
     contentType: false,
     dataType:'json',
     success: function(data) {
-      if(cb) cb(data);
+      if(success) success(data);
     }.bind(this),
     error: function(xhr, status, err) {
       log.error("Failed to retrieve allowed types", err);
-      cb(null);
+      failure(err);
     }.bind(this)
   }, corsRequestParams));
 },

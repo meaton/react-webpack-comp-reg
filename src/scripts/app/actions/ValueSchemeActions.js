@@ -4,7 +4,22 @@ var _ = require('lodash');
 
 var Constants = require("../constants");
 
+var ComponentRegistryClient = require('../service/ComponentRegistryClient');
+
 var ValueSchemeActions = {
+
+  loadAllowedTypes: function() {
+    var success = function(data) {
+      this.dispatch(Constants.LOAD_ALLOWED_TYPES_SUCCESS, data.elementType);
+    }.bind(this);
+
+    var failure = function(msg) {
+      this.dispatch(Constants.LOAD_ALLOWED_TYPES_FAILURE, msg);
+    }.bind(this);
+
+    ComponentRegistryClient.loadAllowedTypes(success, failure);
+  },
+
   loadValueScheme: function(element) {
     log.trace("Loading value scheme for element", element);
 

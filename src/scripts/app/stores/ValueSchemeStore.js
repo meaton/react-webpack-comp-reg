@@ -6,11 +6,13 @@ var Fluxxor = require("fluxxor"),
 
 var ValueSchemeStore = Fluxxor.createStore({
   initialize: function(options) {
+    this.allowedTypes = null;
     this.vocabulary = null;
     this.type = null;
     this.pattern =  null;
 
     this.bindActions(
+      Constants.LOAD_ALLOWED_TYPES_SUCCESS, this.handleLoadAllowedTypes,
       Constants.LOAD_VALUE_SCHEME, this.handleLoadValueScheme,
       Constants.UPDATE_VALUE_SCHEME, this.handleUpdateValueScheme
     );
@@ -18,10 +20,16 @@ var ValueSchemeStore = Fluxxor.createStore({
 
   getState: function() {
     return {
+      allowedTypes: this.allowedTypes,
       vocabulary: this.vocabulary,
       type: this.type,
       pattern: this.pattern
     };
+  },
+
+  handleLoadAllowedTypes: function(data) {
+    this.allowedTypes = data;
+    this.emit("change");
   },
 
   handleLoadValueScheme: function(values) {

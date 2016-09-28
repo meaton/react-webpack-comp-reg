@@ -27,7 +27,6 @@ var ModalTrigger = require('./ModalTrigger');
 var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
 //service
-var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 var Validation = require('../service/Validation');
 
 //utils
@@ -78,19 +77,14 @@ var TypeModal = React.createClass({
   },
 
   componentDidMount: function() {
-    log.debug("TypeModal mounted with state", this.state);
-    //TODO: set tab depending on current mode
+    log.trace("TypeModal mounted with state", this.state);
+    //request loading of allowed types if not loaded yet
+    if(this.state.valueScheme.allowedTypes == null) {
+      this.getFlux().actions.loadAllowedTypes();
+    }
+    //set tab depending on current mode
+    //TODO
     //this.tabSelect(this.state.valueScheme.type != null ? 0 : this.state.valueScheme.vocabulary != null ? 1 : 2);
-    //TODO: keep allowed types in value scheme store
-    ComponentRegistryClient.loadAllowedTypes(function(data) {
-      if(data != null && data.elementType != undefined && $.isArray(data.elementType))
-        this.setState({ reg_types: data.elementType }, function() {
-          var simpleType = this.refs.simpleTypeInput;
-          if(simpleType != undefined)
-            var type = this.state.valueScheme.type;
-            ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = (type != null) ? $.inArray(type, data.elementType) : $.inArray("string", data.elementType);
-        });
-    }.bind(this));
   },
 
   tabSelect: function(index) {
@@ -216,7 +210,6 @@ var TypeModal = React.createClass({
   },
 
   render: function() {
-
     var patternValue = (this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : "";
     var typeValue = this.state.valueScheme.type;
 
@@ -230,12 +223,7 @@ var TypeModal = React.createClass({
         <Modal.Body>
           <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
             <Tab eventKey={0} title="Type">
-              <Input ref="simpleTypeInput" onChange={this.onSelectType} value={typeValue} label="Select type:" type="select" buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
-              {typeValue == null && <option key="null">-- Select --</option>}
-              {$.map(this.state.reg_types, function(type, index) {
-                return <option key={type}>{type}</option>
-              })}
-              </Input>
+              {this.renderTypeOptions()}
             </Tab>
             <Tab eventKey={1} title="Controlled vocabulary">
               {this.renderVocabTable()}
@@ -252,6 +240,27 @@ var TypeModal = React.createClass({
 
       </Modal.Dialog>
     );
+  },
+
+  renderTypeOptions: function() {
+    var typeValue = this.state.valueScheme.type;
+    log.debug("Type value", typeValue);
+    return (
+      <Input
+        label="Select type:" type="select"
+        value={typeValue} onChange={this.onSelectType}
+        buttonAfter={<Button onClick={this.setSimpleType}>Use Type</Button>}>
+          {typeValue == null && <option key="null">-- Select --</option>}
+
+          {this.state.valueScheme.allowedTypes != null &&
+            $.map(this.state.valueScheme.allowedTypes, function(type, index) {
+              return <option key={"type-"+type} value={type}>{type}</option>
+          })}
+
+          {this.state.valueScheme.allowedTypes == null &&
+            <option key="loading">Loading, please wait...</option>
+          }
+      </Input>);
   },
 
   renderVocabTable: function() {
