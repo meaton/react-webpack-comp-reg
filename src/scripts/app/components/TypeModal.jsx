@@ -77,7 +77,26 @@ var TypeModal = React.createClass({
     };
   },
 
-
+  componentWillMount: function() {
+    log.debug("Setting state to props", this.props);
+    this.setState({
+      type: this.props.type,
+      pattern: this.props.pattern,
+      enumeration: this.props.enumeration
+    });
+    this.tabSelect(this.props.type != null ? 0 : this.props.enumeration != null ? 1 : 2);
+  },
+  componentDidMount: function() {
+    var self = this;
+    ComponentRegistryClient.loadAllowedTypes(function(data) {
+      if(data != null && data.elementType != undefined && $.isArray(data.elementType))
+        self.setState({ reg_types: data.elementType }, function() {
+          var simpleType = this.refs.simpleTypeInput;
+          if(simpleType != undefined)
+            ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = this.state.type != null ? $.inArray(this.state.type, data.elementType) : $.inArray("string", data.elementType);
+        });
+    });
+  },
 
   tabSelect: function(index) {
     log.trace('tabSelect: ' + index);
@@ -113,27 +132,6 @@ var TypeModal = React.createClass({
 
   close: function(evt) {
     this.props.onClose(evt);
-  },
-
-  componentWillMount: function() {
-    log.debug("Setting state to props", this.props);
-    this.setState({
-      type: this.props.type,
-      pattern: this.props.pattern,
-      enumeration: this.props.enumeration
-    });
-    this.tabSelect(this.props.type != null ? 0 : this.props.enumeration != null ? 1 : 2);
-  },
-  componentDidMount: function() {
-    var self = this;
-    ComponentRegistryClient.loadAllowedTypes(function(data) {
-      if(data != null && data.elementType != undefined && $.isArray(data.elementType))
-        self.setState({ reg_types: data.elementType }, function() {
-          var simpleType = this.refs.simpleTypeInput;
-          if(simpleType != undefined)
-            ReactDOM.findDOMNode(simpleType.refs.input).selectedIndex = this.state.type != null ? $.inArray(this.state.type, data.elementType) : $.inArray("string", data.elementType);
-        });
-    });
   },
   addConceptLink: function(rowIndex, newHdlValue) {
     log.debug('open concept link dialog:', rowIndex, newHdlValue);
@@ -198,6 +196,7 @@ var TypeModal = React.createClass({
       }
     }
   },
+
   render: function() {
     var self = this;
     var tableClasses = classNames('table','table-condensed');
@@ -220,6 +219,7 @@ var TypeModal = React.createClass({
       // single item, wrap
       vocabData = [vocabData];
     }
+    
     var vocabCols = [
       {
         property: '$',
