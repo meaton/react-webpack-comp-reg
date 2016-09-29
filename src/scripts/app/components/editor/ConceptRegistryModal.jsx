@@ -26,7 +26,6 @@ require('../../../../styles/EditorDialog.sass');
 /**
 * ConceptRegistryModal - Bootstrap Modal dialog for setting the Concept Registry (CCR) link.
 * @constructor
-* @mixes Loader
 * @mixes require('react-addons-linked-state-mixin')
 */
 var ConceptRegistryModal = React.createClass({
@@ -130,7 +129,7 @@ var ConceptRegistryModal = React.createClass({
         </Modal.Body>
 
         <Modal.Footer>
-          <Button onClick={this.confirm} disabled={this.state.currentLinkSelection == null}>Ok</Button>
+          <Button onClick={this.confirm} disabled={this.state.selectedRow.pid == null}>Ok</Button>
           <Button onClick={this.clear}>Clear Setting</Button>
           <Button onClick={this.close}>Cancel</Button>
         </Modal.Footer>
@@ -143,7 +142,7 @@ var ConceptRegistryModal = React.createClass({
   inputSearchUpdate: function(evt) {
     console.log('search query: ' + this.state.inputSearch);
     var self = this;
-    this.setState({ rows: [], currentLinkSelection: null });
+    this.setState({ rows: [], selectedRow: {} });
     ComponentRegistryClient.queryCCR(this.state.inputSearch, function(data) {
       if(data != null) {
         log.debug("CCR response", data);
@@ -167,7 +166,7 @@ var ConceptRegistryModal = React.createClass({
   },
 
   confirm: function(evt) {
-    var selectedValue = (this.state.currentLinkSelection != null) ? this.state.rows[this.state.currentLinkSelection].pid : "";
+    var selectedValue = this.state.selectedRow.pid || "";
     this.assignValue(selectedValue);
     this.close();
   },
