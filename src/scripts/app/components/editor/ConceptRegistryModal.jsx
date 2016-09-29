@@ -104,7 +104,11 @@ var ConceptRegistryModal = React.createClass({
           {this.state.queryError != null && <div class='error'>
             {this.state.queryError}
           </div>}
-          <Table id="ccrTable" ref="table" columns={this.state.columns} data={this.state.data} header={conceptRegHeader} className={tableClasses} />
+          {/*<Table   data={this.state.data} header={conceptRegHeader}  />*/}
+          <Table.Provider id="ccrTable" ref="table" className={tableClasses} columns={this.state.columns}>
+            <Table.Header />
+            <Table.Body rows={this.state.data} rowKey="identifier" />
+          </Table.Provider>
           <a onClick={this.toggleHelp}><Glyphicon glyph='question-sign' /></a>
           {this.state.helpShown &&
             <div>
@@ -183,78 +187,81 @@ var ConceptRegistryModal = React.createClass({
   /*=== Table definition ====*/
 
   getColumnsDefinition: function() {
-    var defaultClick = this.handleCellClick;
-    var cellWithTooltip = this.handleCellWithTooltip;
-    var defaultProps = this.defaultCellProps;
-
     return [
       {
         property: 'name',
-        header: 'Name',
-        cell: cellWithTooltip
+        header: {label: 'Name'},
+        cell: {format: this.handleCellWithTooltip}
       },
       {
         property: 'definition',
-        header: 'Definition',
-        cell: cellWithTooltip
+        header: {label: 'Definition'},
+        cell: {format: this.handleCellWithTooltip}
       },
       {
         property: 'identifier',
-        header: 'Identifier',
-        cell: defaultClick
+        header: {label:  'Identifier'},
+        cell: {format: this.handleCellWithTooltip}
       },
       {
         property: 'owner',
-        header: 'Owner',
-        cell: defaultClick
+        header: {label: 'Owner'},
+        cell: {format: this.handleCellClick}
       },
       {
         property: 'pid',
-        header: 'PersistentId',
-        cell: function(value, data, rowIndex) {
-          return {
-            value: (value) ? (<span><a title={value} href={value} target="_blank">{
-              value.replace(new RegExp("^https?:\/\/hdl.handle.net\/([0-9]+\/)?"), "") //TODO: REGEX?
-            }</a></span>) : "",
-            props: defaultProps(rowIndex)
-          }
-        }
+        header: {label: 'PersistentId'},
+        cell: {format: this.handlePidLink}
       },
       {
         property: 'type',
-        header: 'Type',
-        cell: this.handleCellClick
+        header: {label: 'Type'},
+        cell: {format: this.handleCellClick}
       },
       {
         property: 'version',
-        header: 'Version',
-        cell: this.handleCellClick
+        header: {label: 'Version'},
+        cell: {format: this.handleCellClick}
       }
     ];
   },
 
-  defaultCellProps: function(rowIndex) {
-    var self = this;
+  handleCellSelect: function(rowIndex) {
+    this.setState({ currentLinkSelection: rowIndex });
+  },
+
+  getCellClasses: function(rowIndex) {
     var isEven = (rowIndex % 2);
-
-    return {
-      onClick: function(evt) {
-        self.setState({ currentLinkSelection: rowIndex });
-      },
-      className: classNames({ odd: !isEven, even: isEven })
-    };
+    return classNames({ odd: !isEven, even: isEven });
   },
 
-  handleCellWithTooltip: function(value, data, rowIndex) {
-    var tooltipValue = (<span title={value}>{value}</span>);
-    return this.handleCellClick(tooltipValue, data, rowIndex);
+  handleCellWithTooltip: function(value, extras) {
+    return (<span
+        title={value}
+        className={this.getCellClasses(extras.rowIndex)}
+        onClick={this.handleCellSelect.bind(this, extras.rowIndex)}
+      >{value}</span>
+    );
   },
 
-  handleCellClick: function(value, data, rowIndex) {
-    return {
-      value: value,
-      props: this.defaultCellProps(rowIndex)
-    };
+  handleCellClick: function(value, extras) {
+    return (<span
+      className={this.getCellClasses(extras.rowIndex)}
+      onClick={this.handleCellSelect.bind(this, extras.rowIndex)}
+    >{value}</span>);
+  },
+
+  handlePidLink: function(value, extras) {
+    if(value == null) {
+      return "";
+    } else {
+      return (<span
+        className={this.getCellClasses(extras.rowIndex)}
+        onClick={this.handleCellSelect.bind(this, extras.rowIndex)}
+        ><a title={value} href={value} target="_blank">{
+        value.replace(new RegExp("^https?:\/\/hdl.handle.net\/([0-9]+\/)?"), "") //TODO: REGEX?
+      }</a></span>);
+    }
   }
 });
 
