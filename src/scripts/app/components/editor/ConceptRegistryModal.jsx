@@ -1,9 +1,11 @@
 'use strict';
 var log = require('loglevel');
+var _ = require('lodash');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Table = require('reactabular').Table;
+var select = require('reactabular').select;
 var sortColumn = require('reactabular').sortColumn;
 
 //mixins
@@ -37,13 +39,13 @@ var ConceptRegistryModal = React.createClass({
 
   getInitialState: function() {
     return {
-      data: [],
+      rows: [],
       columns: [],
       inputSearch: "",
-      currentLinkSelection: null,
       helpShown: false,
       queryError: null,
-      queryDone: false
+      queryDone: false,
+      selectedRow: {}
     }
   },
 
@@ -52,15 +54,6 @@ var ConceptRegistryModal = React.createClass({
       title: "Search in CLARIN Concept Registry",
       show: true
     };
-  },
-
-  componentDidUpdate: function(prevProps, prevState) {
-    if(prevState.currentLinkSelection != this.state.currentLinkSelection) {
-      var selectedClass = "selected";
-      var tbody = $('#' + ReactDOM.findDOMNode(this.refs.table).id + " tbody");
-      tbody.children('.' + selectedClass).toggleClass(selectedClass);
-      tbody.children().eq(this.state.currentLinkSelection).toggleClass(selectedClass);
-    }
   },
 
   componentWillUnmount: function() {
@@ -78,11 +71,19 @@ var ConceptRegistryModal = React.createClass({
     var tableClasses = classNames('table', 'table-bordered', 'table-hover', 'table-striped', 'table-condensed');
     var conceptRegHeader = {
       onClick: function(col) {
-        sortColumn(self.state.columns, col, self.state.data, self.setState.bind(self));
+        sortColumn(self.state.columns, col, self.state.rows, self.setState.bind(self));
       }
     };
 
-    return (
+    var rows = this.state.rows;
+    var selectedRowIndex = this.getSelectedRowIndex(this.state.selectedRow);
+    var onRow = this.onRow;
+
+    return select.byArrowKeys({
+          rows: this.state.rows,
+          selectedRowIndex: selectedRowIndex,
+          onSelectRow: this.onSelectRow
+        })(
       <Modal.Dialog show={this.props.show} key="ccrModal" ref="modal" id="ccrModal" className="registry-dialog" enforceFocus={true} backdrop={false}>
 
         <Modal.Header closeButton={true} onHide={this.close}>
@@ -98,16 +99,16 @@ var ConceptRegistryModal = React.createClass({
               <Button onClick={this.inputSearchUpdate} disabled={this.state.inputSearch.length <= 1}>Search</Button>
             }
             />
-          {this.state.queryDone && this.state.data != null && <div>
-            {this.state.data.length} results:
+          {this.state.queryDone && this.state.rows != null && <div>
+            {this.state.rows.length} results:
           </div>}
           {this.state.queryError != null && <div class='error'>
             {this.state.queryError}
           </div>}
-          {/*<Table   data={this.state.data} header={conceptRegHeader}  />*/}
+          {/*<Table   data={this.state.rows} header={conceptRegHeader}  />*/}
           <Table.Provider id="ccrTable" ref="table" className={tableClasses} columns={this.state.columns}>
             <Table.Header />
-            <Table.Body rows={this.state.data} rowKey="identifier" />
+            <Table.Body rows={this.state.rows} rowKey="identifier" onRow={onRow} />
           </Table.Provider>
           <a onClick={this.toggleHelp}><Glyphicon glyph='question-sign' /></a>
           {this.state.helpShown &&
@@ -142,13 +143,13 @@ var ConceptRegistryModal = React.createClass({
   inputSearchUpdate: function(evt) {
     console.log('search query: ' + this.state.inputSearch);
     var self = this;
-    this.setState({ data: [], currentLinkSelection: null });
+    this.setState({ rows: [], currentLinkSelection: null });
     ComponentRegistryClient.queryCCR(this.state.inputSearch, function(data) {
       if(data != null) {
         log.debug("CCR response", data);
-        self.setState({ data: data, queryDone: true, queryError: null });
+        self.setState({ rows: data, queryDone: true, queryError: null });
       } else {
-        self.setState({data: null, queryError: "Failed to query concept registry"})
+        self.setState({rows: null, queryError: "Failed to query concept registry"})
         log.error("Failed to query CCR");
       }
     });
@@ -166,7 +167,7 @@ var ConceptRegistryModal = React.createClass({
   },
 
   confirm: function(evt) {
-    var selectedValue = (this.state.currentLinkSelection != null) ? this.state.data[this.state.currentLinkSelection].pid : "";
+    var selectedValue = (this.state.currentLinkSelection != null) ? this.state.rows[this.state.currentLinkSelection].pid : "";
     this.assignValue(selectedValue);
     this.close();
   },
@@ -232,27 +233,13 @@ var ConceptRegistryModal = React.createClass({
     }
   },
 
-  handleCellSelect: function(rowIndex) {
-    this.setState({ currentLinkSelection: rowIndex });
-  },
-
-  getCellClasses: function(rowIndex) {
-    var isEven = (rowIndex % 2);
-    return classNames({ odd: !isEven, even: isEven });
-  },
-
   handleCellWithTooltip: function(value, extras) {
-    return (<span
-        title={value}
-        className={this.getCellClasses(extras.rowIndex)}
-      >{value}</span>
+    return (<span title={value}>{value}</span>
     );
   },
 
   handleCell: function(value, extras) {
-    return (<span
-      className={this.getCellClasses(extras.rowIndex)}
-    >{value}</span>);
+    return (<span>{value}</span>);
   },
 
   handlePidLink: function(value, extras) {
@@ -260,11 +247,52 @@ var ConceptRegistryModal = React.createClass({
       return "";
     } else {
       return (<span
-        className={this.getCellClasses(extras.rowIndex)}
         ><a title={value} href={value} target="_blank">{
         value.replace(new RegExp("^https?:\/\/hdl.handle.net\/([0-9]+\/)?"), "") //TODO: REGEX?
       }</a></span>);
     }
+  },
+
+  onRow(row, extras) {
+    var selectedRow = this.state.selectedRow;
+    return {
+      className: classNames(
+        extras.rowIndex % 2 ? 'odd' : 'even',
+        {
+          'selected-row': selectedRow.identifier && row.identifier === selectedRow.identifier
+        }
+      ),
+      onClick: function(){this.onSelectRow(extras.rowIndex)}.bind(this)
+    };
+  },
+
+  onSelectRow(selectedRowIndex) {
+    log.debug("Select row", selectedRowIndex);
+    var rows = this.state.rows;
+
+    log.debug(select.row({
+      rows,
+      selectedRowId: rows[selectedRowIndex].identifier
+    }));
+
+    this.setState(
+      select.row({
+        rows,
+        selectedRowId: rows[selectedRowIndex].identifier,
+        isSelected: function(row, selectedRowId) {
+          return selectedRowId === row.identifier;
+        }
+      })
+    );
+  },
+
+  getSelectedRowIndex(selectedRow) {
+    if(selectedRow == null) {
+      return -1;
+    }
+    return _.findIndex(this.state.rows, {
+      identifier: selectedRow.identifier
+    });
   }
 });
 
