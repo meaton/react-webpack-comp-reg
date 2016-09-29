@@ -120,6 +120,7 @@ var CMDAttributeForm = React.createClass({
        '@ValueScheme': type,
        ValueScheme: valScheme
      }});
+     //unlike elements, attributes cannot be multilingual (see method of same name in CMDElementForm)
   },
 
   /*=== Validation of field values ====*/

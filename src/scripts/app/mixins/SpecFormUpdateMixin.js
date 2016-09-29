@@ -77,29 +77,22 @@ var SpecFormUpdateMixin = {
  * @param  {function} onChange function that takes two parameters: type, valueScheme, one of which is non-null
  * @param  {object} val      [description]
  */
-  updateValueScheme: function(onChange, val) {
-    log.debug("Value scheme", val);
+  updateValueScheme: function(onChange, valueScheme) {
+    log.debug("Value scheme", valueScheme);
 
     var type = null;
     var valScheme = null;
 
-    if(val.type != undefined) {
-      type = val.type;
-    }
-
-    if(val.pattern != undefined) {
+    if(valueScheme.type != null) {
+      type = valueScheme.type;
+    } else if(valueScheme.pattern != null) {
       valScheme = {
-        pattern: val.pattern
-      }
-    }
-
-    //TODO: Change when TypeModal passed Vocabulary instead of enumeration
-    if(val.enumeration != undefined) {
+        pattern: valueScheme.pattern
+      };
+    } else if(valueScheme.vocabulary != null) {
       valScheme = {
-        Vocabulary: {
-          enumeration: val.enumeration
-        }
-      }
+        Vocabulary: valueScheme.vocabulary
+      };
     }
 
     onChange(type, valScheme);

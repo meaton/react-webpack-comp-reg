@@ -5,8 +5,7 @@ var React = require('react');
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 var Fluxxor = require("fluxxor"),
-    FluxMixin = Fluxxor.FluxMixin(React),
-    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+    FluxMixin = Fluxxor.FluxMixin(React);
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -40,18 +39,11 @@ require('../../../../styles/CMDElement.sass');
 * @mixes ActionButtonsMixin
 */
 var CMDElementForm = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin("ValueSchemeStore"),
+  mixins: [FluxMixin,
             ImmutableRenderMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
-
-  // Required by StoreWatchMixin
-  getStateFromFlux: function() {
-    return {
-      valueScheme: this.getFlux().store("ValueSchemeStore").getState()
-    };
-  },
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,

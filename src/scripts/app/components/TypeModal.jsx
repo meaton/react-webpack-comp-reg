@@ -93,30 +93,24 @@ var TypeModal = React.createClass({
   },
 
   setSimpleType: function(evt) {
-    //TODO: use action
-    // var simpleVal = this.refs.simpleTypeInput.getValue();
-    // this.props.onChange({type: simpleVal});
-    // this.close(evt);
+      this.props.onChange({
+        type: this.state.valueScheme.type
+      });
+      this.close(evt);
   },
 
   setPattern: function(evt) {
-    //TODO: use action
-    // var patternVal = this.refs.patternInput.getValue();
-    // this.props.onChange({pattern: patternVal});
-    // this.close(evt);
+    this.props.onChange({
+      pattern: this.state.valueScheme.pattern
+    });
+    this.close(evt);
   },
 
   setControlVocab: function(evt) {
-    //TODO: use action
-    //TODO: Pass entire Vocabulary object
-    // var enumeration = this.state.enumeration;
-    // if(enumeration != undefined
-    //     && $.isArray(enumeration.item)
-    //     && Validation.checkVocabularyItems(enumeration.item, this.showFeedback)) {
-    //       //check for duplicate items
-    //       this.props.onChange({enumeration: enumeration});
-    //       this.close(evt);
-    // }
+    this.props.onChange({
+      vocabulary: this.state.valueScheme.vocabulary
+    });
+    this.close(evt);
   },
 
   showFeedback: function(message) {
