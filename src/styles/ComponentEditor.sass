@@ -25,7 +25,7 @@
       margin-bottom: 1%;
       transition: height 0.4s;
       padding-left: 1em;
-      padding-bottom: 5em; //allow space for '+component' drop-down menu 
+      padding-bottom: 5em; //allow space for '+component' drop-down menu
 
     .CMDComponent, .CMDElement, .CMDAttribute {
       padding-left: 1em;
@@ -124,6 +124,14 @@
       .editorFormField {
         width: 75%;
         display: inline-block;
+
+        &.simpletype input {
+          font-family: monospace;
+        }
+
+        &.pattern input {
+          font-style: italic;
+        }
       }
 
       .input-group-btn:last-child>.btn {

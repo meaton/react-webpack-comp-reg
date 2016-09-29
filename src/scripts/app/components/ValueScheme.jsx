@@ -16,7 +16,9 @@ var Input = require('react-bootstrap/lib/Input');
 var DropdownButton = require('react-bootstrap/lib/DropdownButton');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 
+//utils
 var ReactAlert = require('../util/ReactAlert');
+var classnames = require('classnames');
 
 /**
 * ValueScheme selection component
@@ -88,7 +90,7 @@ var ValueScheme = React.createClass({
               });
               if(enabled) {
                 return (
-                  <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField" defaultValue={0}>
+                  <Input ref="typeInput" type="select" label="Type" buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField vocabulary" defaultValue={0}>
                     {items}
                   </Input>
                 );
@@ -104,9 +106,16 @@ var ValueScheme = React.createClass({
         }
       }
 
+      var inputClasses = classnames("editorFormField",
+        {
+            pattern: (pattern != null),
+            simpletype: (pattern == null)
+        }
+      );
+
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
         <Input ref="typeInput" type="text" label="Type"
-          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          labelClassName="editorFormLabel" wrapperClassName={inputClasses}
           value={valueScheme} buttonAfter={typeTrigger}
           readOnly />;
     },
