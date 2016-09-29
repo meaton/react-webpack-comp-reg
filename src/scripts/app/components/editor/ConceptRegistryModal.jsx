@@ -206,7 +206,7 @@ var ConceptRegistryModal = React.createClass({
       {
         property: 'owner',
         header: {label: 'Owner'},
-        cell: {format: this.handleCellClick}
+        cell: {format: this.handleCell}
       },
       {
         property: 'pid',
@@ -216,14 +216,20 @@ var ConceptRegistryModal = React.createClass({
       {
         property: 'type',
         header: {label: 'Type'},
-        cell: {format: this.handleCellClick}
+        cell: {format: this.handleCell}
       },
       {
         property: 'version',
         header: {label: 'Version'},
-        cell: {format: this.handleCellClick}
+        cell: {format: this.handleCell}
       }
     ];
+  },
+
+  cellSelectTransform: function(value, extras) {
+    return {
+      onClick: this.handleCellSelect.bind(this, extras.rowIndex)
+    }
   },
 
   handleCellSelect: function(rowIndex) {
@@ -239,15 +245,13 @@ var ConceptRegistryModal = React.createClass({
     return (<span
         title={value}
         className={this.getCellClasses(extras.rowIndex)}
-        onClick={this.handleCellSelect.bind(this, extras.rowIndex)}
       >{value}</span>
     );
   },
 
-  handleCellClick: function(value, extras) {
+  handleCell: function(value, extras) {
     return (<span
       className={this.getCellClasses(extras.rowIndex)}
-      onClick={this.handleCellSelect.bind(this, extras.rowIndex)}
     >{value}</span>);
   },
 
@@ -257,7 +261,6 @@ var ConceptRegistryModal = React.createClass({
     } else {
       return (<span
         className={this.getCellClasses(extras.rowIndex)}
-        onClick={this.handleCellSelect.bind(this, extras.rowIndex)}
         ><a title={value} href={value} target="_blank">{
         value.replace(new RegExp("^https?:\/\/hdl.handle.net\/([0-9]+\/)?"), "") //TODO: REGEX?
       }</a></span>);
