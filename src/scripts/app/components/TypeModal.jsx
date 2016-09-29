@@ -3,6 +3,8 @@ var log = require('loglevel');
 
 var React = require('react');
 
+var Constants = require('../constants');
+
 var Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
@@ -82,14 +84,11 @@ var TypeModal = React.createClass({
     if(this.state.valueScheme.allowedTypes == null) {
       this.getFlux().actions.loadAllowedTypes();
     }
-    //set tab depending on current mode
-    //TODO
-    //this.tabSelect(this.state.valueScheme.type != null ? 0 : this.state.valueScheme.vocabulary != null ? 1 : 2);
   },
 
-  tabSelect: function(index) {
-    log.trace('tabSelect: ' + index);
-    this.setState({ currentTabIdx: index, changedTab: true });
+  tabSelect: function(tab) {
+    log.trace('tabSelect: ' + tab);
+    this.getFlux().actions.setValueSchemeTab(tab);
   },
 
   setSimpleType: function(evt) {
@@ -215,14 +214,14 @@ var TypeModal = React.createClass({
         </Modal.Header>
 
         <Modal.Body>
-          <Tabs activeKey={this.state.currentTabIdx} onSelect={this.tabSelect}>
-            <Tab eventKey={0} title="Type">
+          <Tabs activeKey={this.state.valueScheme.tab} onSelect={this.tabSelect}>
+            <Tab eventKey={Constants.VALUE_SCHEME_TAB_TYPE} title="Type">
               {this.renderTypeOptions()}
             </Tab>
-            <Tab eventKey={1} title="Controlled vocabulary">
+            <Tab eventKey={Constants.VALUE_SCHEME_TAB_VOCAB} title="Controlled vocabulary">
               {this.renderVocabTable()}
             </Tab>
-            <Tab eventKey={2} title="Pattern">
+            <Tab eventKey={Constants.VALUE_SCHEME_TAB_PATTERN} title="Pattern">
               <Input ref="patternInput" type="text" value={patternValue} onChange={this.onChangePattern} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
             </Tab>
           </Tabs>
@@ -238,7 +237,6 @@ var TypeModal = React.createClass({
 
   renderTypeOptions: function() {
     var typeValue = this.state.valueScheme.type;
-    log.debug("Type value", typeValue);
     return (
       <Input
         label="Select type:" type="select"

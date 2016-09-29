@@ -10,11 +10,13 @@ var ValueSchemeStore = Fluxxor.createStore({
     this.vocabulary = null;
     this.type = null;
     this.pattern =  null;
+    this.tab = Constants.VALUE_SCHEME_TAB_TYPE;
 
     this.bindActions(
       Constants.LOAD_ALLOWED_TYPES_SUCCESS, this.handleLoadAllowedTypes,
       Constants.LOAD_VALUE_SCHEME, this.handleLoadValueScheme,
-      Constants.UPDATE_VALUE_SCHEME, this.handleUpdateValueScheme
+      Constants.UPDATE_VALUE_SCHEME, this.handleUpdateValueScheme,
+      Constants.SET_VALUE_SCHEME_TAB, this.setTab
     );
   },
 
@@ -23,7 +25,8 @@ var ValueSchemeStore = Fluxxor.createStore({
       allowedTypes: this.allowedTypes,
       vocabulary: this.vocabulary,
       type: this.type,
-      pattern: this.pattern
+      pattern: this.pattern,
+      tab: this.tab
     };
   },
 
@@ -49,6 +52,11 @@ var ValueSchemeStore = Fluxxor.createStore({
     if(values.pattern != undefined) {
       this.pattern = values.pattern;
     }
+    this.emit("change");
+  },
+
+  setTab: function(tab) {
+    this.tab = tab;
     this.emit("change");
   }
 });

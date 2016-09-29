@@ -46,6 +46,16 @@ var ValueSchemeActions = {
       type: type,
       pattern: pattern
     });
+
+    //set initial tab after data load
+    if (vocabulary != null) var tab = Constants.VALUE_SCHEME_TAB_VOCAB;
+    else if (pattern != null) var tab = Constants.VALUE_SCHEME_TAB_PATTERN;
+    else var tab = Constants.VALUE_SCHEME_TAB_TYPE;
+    this.dispatch(Constants.SET_VALUE_SCHEME_TAB, tab);
+  },
+
+  setValueSchemeTab: function(tab) {
+    this.dispatch(Constants.SET_VALUE_SCHEME_TAB, tab);
   },
 
   updateType: function(value) {
