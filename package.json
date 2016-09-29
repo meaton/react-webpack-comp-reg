@@ -61,7 +61,7 @@
     "spark-md5": "0.0.5",
     "react-draggable": "^1.1.x",
     "classnames": "^2.2.x",
-    "reactabular": "^0.9.x",
+    "reactabular": "^5.0.x",
     "lodash": "^3.10.x",
     "expose-loader": "^0.7.x",
     "loglevel": "^1.4.x",

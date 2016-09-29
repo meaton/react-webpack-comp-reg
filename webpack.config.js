@@ -38,7 +38,13 @@ var config = {
   },
 
   resolve: {
-    alias: {},
+    alias: {
+      'lodash/cloneDeep$': 'lodash/lang/cloneDeep',
+      'lodash/get$': 'lodash/object/get',
+      'lodash/has$': 'lodash/object/has',
+      'lodash/isEqual$': 'lodash/lang/isEqual',
+      'lodash/find$': 'lodash/collection/find'
+    },
     extensions: ['', '.js', '.jsx']
   },
 
