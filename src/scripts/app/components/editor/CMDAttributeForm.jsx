@@ -3,6 +3,9 @@ var log = require('loglevel');
 
 var React = require('react');
 
+var Fluxxor = require("fluxxor"),
+    FluxMixin = Fluxxor.FluxMixin(React);
+
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
@@ -35,7 +38,8 @@ require('../../../../styles/CMDAttribute.sass');
 */
 var CMDAttributeForm = React.createClass({
 
-  mixins: [ImmutableRenderMixin,
+  mixins: [FluxMixin,
+            ImmutableRenderMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin],
@@ -73,7 +77,9 @@ var CMDAttributeForm = React.createClass({
           onChange={this.updateAttributeValue} validate={this.validate}
           updateConceptLink={this.propagateValue.bind(this, "@ConceptLink")} />
         <DocumentationInput name="Documentation" label="Documentation" value={attr['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
-        <ValueScheme obj={attr} enabled={true} onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)} />
+        <ValueScheme obj={attr} enabled={true}
+          onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
+          loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(attr);}.bind(this)} />
         <Input type="checkbox" name="@Required" label="Required" checked={required} onChange={this.updateAttributeSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
       </div>
     ) : null;
