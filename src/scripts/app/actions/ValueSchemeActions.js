@@ -86,6 +86,18 @@ var ValueSchemeActions = {
       vocabulary: updatedVocab
     });
   },
+
+  removeVocabularyItem: function(oldVocabulary, itemIndex) {
+    var updatedVocab = update(oldVocabulary,
+      {enumeration:
+        {item:
+          {$splice: [[itemIndex, 1]]}
+        }
+      });
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
+  }
 };
 
 module.exports = ValueSchemeActions;

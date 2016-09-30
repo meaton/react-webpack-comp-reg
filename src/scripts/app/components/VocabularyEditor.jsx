@@ -9,6 +9,7 @@ var sortColumn = require('reactabular').sortColumn;
 
 //react
 var Button = require('react-bootstrap/lib/Button');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -27,8 +28,9 @@ var VocabularyEditor = React.createClass({
 
     propTypes: {
       vocabulary: React.PropTypes.object,
-      onVocabularyPropertyChange: React.PropTypes.func,
-      onOk: React.PropTypes.func
+      onVocabularyPropertyChange: React.PropTypes.func.isRequired,
+      onRemoveVocabularyItem: React.PropTypes.func.isRequired,
+      onOk: React.PropTypes.func.isRequired
     },
 
     getInitialState: function() {
@@ -214,16 +216,16 @@ var VocabularyEditor = React.createClass({
           // }.bind(this)
         },
         {
-          //TODO
-          // cell: function(value, data, rowIndex, property) {
-          //   return {
-          //       value: (
-          //         <span>
-          //           <Glyphicon glyph="remove-circle" onClick={self.removeRow.bind(self, rowIndex)} style={{cursor: 'pointer'}} title="Remove item" />
-          //         </span>
-          //       )
-          //   };
-          // }
+          /* nameless column with a delete button for each row */
+          cell: {
+            format: function(value, extra){
+              return (<Glyphicon
+                        glyph="trash"
+                        style={{cursor: 'pointer'}}
+                        title="Remove item"
+                        onClick={self.props.onRemoveVocabularyItem.bind(null, extra.rowIndex)} />);
+            }
+          }
         }
       ];
 
