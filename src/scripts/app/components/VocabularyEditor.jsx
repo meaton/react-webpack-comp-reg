@@ -27,7 +27,8 @@ var VocabularyEditor = React.createClass({
 
     propTypes: {
       vocabulary: React.PropTypes.object,
-      onVocabularyPropertyChange: React.PropTypes.func
+      onVocabularyPropertyChange: React.PropTypes.func,
+      onOk: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -244,7 +245,7 @@ var VocabularyEditor = React.createClass({
 
             <Table.Body rows={vocabData} rowKey="$" />
           </Table.Provider>
-          <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
+          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
         </div>
       );
     }

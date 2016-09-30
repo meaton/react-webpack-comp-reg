@@ -149,6 +149,7 @@ var TypeModal = React.createClass({
               <VocabularyEditor
                 vocabulary={this.state.valueScheme.vocabulary}
                 onVocabularyPropertyChange={this.handleVocabularyPropertyChange}
+                onOk={this.setControlVocab}
                 />
             </Tab>
             <Tab eventKey={Constants.VALUE_SCHEME_TAB_PATTERN} title="Pattern">
