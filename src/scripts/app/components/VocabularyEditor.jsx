@@ -100,18 +100,18 @@ var VocabularyEditor = React.createClass({
       var self = this;
       var tableClasses = classNames('table','table-condensed');
 
-      var cells = require('reactabular').cells;
-      var editors = require('reactabular').editors;
-      var editable = cells.edit.bind(this, 'editedCell', function(value, celldata, rowIndex, property) {
-          log.debug('row data update: ', value, celldata, rowIndex, property);
-          if(value == null) {
-            value = "";
-          }
-          var newData = celldata[rowIndex];
-          newData[property] = value;
-          var newValue = update(self.state.enumeration, { item: { $splice: [[rowIndex, 1, newData]] } });
-          self.setState({ value: newValue });
-      });
+      // var cells = require('reactabular').cells;
+      // var editors = require('reactabular').editors;
+      // var editable = cells.edit.bind(this, 'editedCell', function(value, celldata, rowIndex, property) {
+      //     log.debug('row data update: ', value, celldata, rowIndex, property);
+      //     if(value == null) {
+      //       value = "";
+      //     }
+      //     var newData = celldata[rowIndex];
+      //     newData[property] = value;
+      //     var newValue = update(self.state.enumeration, { item: { $splice: [[rowIndex, 1, newData]] } });
+      //     self.setState({ value: newValue });
+      // });
 
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
@@ -124,63 +124,63 @@ var VocabularyEditor = React.createClass({
         {
           property: '$',
           header: 'Value',
-          cell:
-            editable({editor: editors.input()})
+          // cell:
+          //   editable({editor: editors.input()})
         }, {
           property: '@AppInfo',
           header: 'Description',
-          cell:
-            function(v, data, index, prop) {
-              //make sure that a value is always passed (field for this column is optional)
-              var value = (v == null) ? "" : v;
-              var createEditor = editable({editor: editors.input()});
-              return createEditor(value, data, index, prop);
-            }
+          // cell:
+          //   function(v, data, index, prop) {
+          //     //make sure that a value is always passed (field for this column is optional)
+          //     var value = (v == null) ? "" : v;
+          //     var createEditor = editable({editor: editors.input()});
+          //     return createEditor(value, data, index, prop);
+          //   }
         }, {
           property: '@ConceptLink',
           header: 'Concept link',
-          cell: function(value, data, rowIndex) {
-            var modalRef;
-            var closeHandler = function(evt) {
-              modalRef.toggleModal();
-            }
-            var modal = (
-              <ModalTrigger
-                ref={function(modal) {
-                   modalRef = modal;
-                 }}
-                modalTarget="ccrModalContainer"
-                label="add link"
-                modal={
-                  <ConceptRegistryModal
-                    onClose={closeHandler}
-                    onSelect={self.addConceptLink.bind(self, rowIndex)}
-                    container={this} />
-                } />
-            );
-
-            return {
-              value: (value) ?
-              (<span>
-                <a href={value} target="_blank">{value}</a> &nbsp;
-                <a onClick={self.removeConceptLink.bind(self, rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>
-              </span>) :
-              (<span>
-                {modal}
-              </span>)
-            };
-          }.bind(this)
+          // cell: function(value, data, rowIndex) {
+          //   var modalRef;
+          //   var closeHandler = function(evt) {
+          //     modalRef.toggleModal();
+          //   }
+          //   var modal = (
+          //     <ModalTrigger
+          //       ref={function(modal) {
+          //          modalRef = modal;
+          //        }}
+          //       modalTarget="ccrModalContainer"
+          //       label="add link"
+          //       modal={
+          //         <ConceptRegistryModal
+          //           onClose={closeHandler}
+          //           onSelect={self.addConceptLink.bind(self, rowIndex)}
+          //           container={this} />
+          //       } />
+          //   );
+          //
+          //   return {
+          //     value: (value) ?
+          //     (<span>
+          //       <a href={value} target="_blank">{value}</a> &nbsp;
+          //       <a onClick={self.removeConceptLink.bind(self, rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>
+          //     </span>) :
+          //     (<span>
+          //       {modal}
+          //     </span>)
+          //   };
+          // }.bind(this)
         },
         {
-          cell: function(value, data, rowIndex, property) {
-            return {
-                value: (
-                  <span>
-                    <Glyphicon glyph="remove-circle" onClick={self.removeRow.bind(self, rowIndex)} style={{cursor: 'pointer'}} title="Remove item" />
-                  </span>
-                )
-            };
-          }
+          // cell: function(value, data, rowIndex, property) {
+          //   return {
+          //       value: (
+          //         <span>
+          //           <Glyphicon glyph="remove-circle" onClick={self.removeRow.bind(self, rowIndex)} style={{cursor: 'pointer'}} title="Remove item" />
+          //         </span>
+          //       )
+          //   };
+          // }
         }
       ];
 
@@ -188,16 +188,20 @@ var VocabularyEditor = React.createClass({
 
       return (
         <div>
-          <Table id="typeTable" ref="table" columns={vocabCols} data={vocabData} className={tableClasses}>
-            <tfoot>
-              <tr>
-                  <td className="info" rowSpan="3" onClick={this.addNewRow}>
-                      Click here to add new row.
-                  </td>
-                  <td></td>
-              </tr>
-            </tfoot>
-          </Table>
+          {/* todo: add row
+            <td className="info" rowSpan="3" onClick={this.addNewRow}>
+                Click here to add new row.
+            </td>
+            */}
+          <Table.Provider
+            id="typeTable" ref="table"
+            className={tableClasses}
+            columns={vocabCols}
+          >
+            <Table.Header />
+
+            <Table.Body rows={vocabData} rowKey="$" />
+          </Table.Provider>
           <div className="modal-inline"><Button onClick={this.setControlVocab} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
         </div>
       );
