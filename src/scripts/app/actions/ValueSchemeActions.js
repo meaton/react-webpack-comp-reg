@@ -68,7 +68,24 @@ var ValueSchemeActions = {
     this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
       pattern: value,
     });
-  }
+  },
+
+  updateVocabularyItem: function(oldVocabulary, itemIndex, property, newValue) {
+    log.debug("Update item",itemIndex, "of vocabulary", oldVocabulary);
+    var newItem = _.cloneDeep(oldVocabulary.enumeration.item[itemIndex]);
+    newItem[property] = newValue;
+
+    var updatedVocab = update(oldVocabulary,
+      {enumeration:
+        {item:
+          {$splice: [[itemIndex, 1, newItem]]}
+        }
+      });
+
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
+  },
 };
 
 module.exports = ValueSchemeActions;

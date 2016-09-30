@@ -27,7 +27,7 @@ var VocabularyEditor = React.createClass({
 
     propTypes: {
       vocabulary: React.PropTypes.object,
-      onChange: React.PropTypes.func
+      onVocabularyPropertyChange: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -111,19 +111,6 @@ var VocabularyEditor = React.createClass({
       var self = this;
       var tableClasses = classNames('table','table-condensed');
 
-      // var cells = require('reactabular').cells;
-      // var editors = require('reactabular').editors;
-      // var editable = cells.edit.bind(this, 'editedCell', function(value, celldata, rowIndex, property) {
-      //     log.debug('row data update: ', value, celldata, rowIndex, property);
-      //     if(value == null) {
-      //       value = "";
-      //     }
-      //     var newData = celldata[rowIndex];
-      //     newData[property] = value;
-      //     var newValue = update(self.state.enumeration, { item: { $splice: [[rowIndex, 1, newData]] } });
-      //     self.setState({ value: newValue });
-      // });
-
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -155,10 +142,11 @@ var VocabularyEditor = React.createClass({
         // Capture the value when the user has finished and update
         // application state.
         onValue: function(props) {
-          log.debug("value", props.value, props.rowData, props.property);
+          log.debug("value '", props.value, "' for", props.property, "of", props.rowData);
 
-          //TODO: apply data change
+          self.props.onVocabularyPropertyChange(props.rowData.rowIdx, props.property, props.value);
 
+          //unset edited cell
           self.setState({
             editedRow: -1,
             editedColumn: -1

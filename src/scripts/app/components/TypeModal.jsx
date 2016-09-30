@@ -125,6 +125,10 @@ var TypeModal = React.createClass({
     this.getFlux().actions.updatePattern(pattern);
   },
 
+  handleVocabularyPropertyChange: function(itemIndex, property, newValue) {
+    this.getFlux().actions.updateVocabularyItem(this.state.valueScheme.vocabulary, itemIndex, property, newValue);
+  },
+
   render: function() {
     var patternValue = (this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : "";
     var typeValue = this.state.valueScheme.type;
@@ -142,7 +146,10 @@ var TypeModal = React.createClass({
               {this.renderTypeOptions()}
             </Tab>
             <Tab eventKey={Constants.VALUE_SCHEME_TAB_VOCAB} title="Controlled vocabulary">
-              <VocabularyEditor vocabulary={this.state.valueScheme.vocabulary} />
+              <VocabularyEditor
+                vocabulary={this.state.valueScheme.vocabulary}
+                onVocabularyPropertyChange={this.handleVocabularyPropertyChange}
+                />
             </Tab>
             <Tab eventKey={Constants.VALUE_SCHEME_TAB_PATTERN} title="Pattern">
               <Input ref="patternInput" type="text" value={patternValue} onChange={this.onChangePattern} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
