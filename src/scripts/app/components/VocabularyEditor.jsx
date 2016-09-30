@@ -145,7 +145,14 @@ var VocabularyEditor = React.createClass({
         onValue: function(props) {
           log.debug("value '", props.value, "' for", props.property, "of", props.rowData);
 
-          self.props.onVocabularyPropertyChange(props.rowData.rowIdx, props.property, props.value);
+          var value = props.value;
+          if(props.property === '$' || props.property === '@AppInfo') {
+            if(value == null) {
+              value = ""; //make sure to always set a value
+            }
+          }
+
+          self.props.onVocabularyPropertyChange(props.rowData.rowIdx, props.property, value);
 
           //unset edited cell
           self.setState({
@@ -168,13 +175,6 @@ var VocabularyEditor = React.createClass({
           cell: {
             transforms: [editable(edit.input())]
           }
-          // cell:
-          //   function(v, data, index, prop) {
-          //     //make sure that a value is always passed (field for this column is optional)
-          //     var value = (v == null) ? "" : v;
-          //     var createEditor = editable({editor: editors.input()});
-          //     return createEditor(value, data, index, prop);
-          //   }
         }, {
           property: '@ConceptLink',
           header: {label: 'Concept link'},
