@@ -6,6 +6,7 @@ var React = require('react');
 //components
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
+
 //react
 var Button = require('react-bootstrap/lib/Button');
 
@@ -14,6 +15,9 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //utils
 var classNames = require('classnames');
+var edit = require('react-edit');
+var cloneDeep = require('lodash/lang/cloneDeep');
+var findIndex = require('lodash/array/findIndex');
 
 var VocabularyEditor = React.createClass({
     //TODO: add support for open vocabularies (without enum but with @URI and @ValueProperty)
@@ -24,6 +28,13 @@ var VocabularyEditor = React.createClass({
     propTypes: {
       vocabulary: React.PropTypes.object,
       onChange: React.PropTypes.func
+    },
+
+    getInitialState: function() {
+      return {
+        editedRow: -1,
+        editedColumn: -1
+      }
     },
 
     addConceptLink: function(rowIndex, newHdlValue) {
@@ -119,16 +130,55 @@ var VocabularyEditor = React.createClass({
         // single item, wrap
         vocabData = [vocabData];
       }
+      vocabData = vocabData.map(function(val, idx) {
+        val.rowIdx = idx;
+        return val;
+      });
+
+      var editable = edit.edit({
+        // Determine whether the current cell is being edited or not.
+        isEditing: function(props) {
+           return props.columnIndex === self.state.editedColumn && props.rowData.rowIdx === self.state.editedRow
+        },
+
+        // The user requested activation, mark the current cell as edited.
+        // IMPORTANT! If you stash the rows at this.state.rows, DON'T
+        // mutate it as that will break Table.Body optimization check.
+        onActivate: function(props) {
+          log.trace("activate", props.columnIndex, props.rowData);
+          self.setState({
+            editedRow: props.rowData.rowIdx,
+            editedColumn: props.columnIndex
+          });
+        },
+
+        // Capture the value when the user has finished and update
+        // application state.
+        onValue: function(props) {
+          log.debug("value", props.value, props.rowData, props.property);
+
+          //TODO: apply data change
+
+          self.setState({
+            editedRow: -1,
+            editedColumn: -1
+          });
+        }
+      });
 
       var vocabCols = [
         {
           property: '$',
-          header: 'Value',
-          // cell:
-          //   editable({editor: editors.input()})
+          header: {label: 'Value'},
+          cell: {
+            transforms: [editable(edit.input())]
+          }
         }, {
           property: '@AppInfo',
-          header: 'Description',
+          header: {label: 'Description'},
+          cell: {
+            transforms: [editable(edit.input())]
+          }
           // cell:
           //   function(v, data, index, prop) {
           //     //make sure that a value is always passed (field for this column is optional)
@@ -138,7 +188,10 @@ var VocabularyEditor = React.createClass({
           //   }
         }, {
           property: '@ConceptLink',
-          header: 'Concept link',
+          header: {label: 'Concept link'},
+          cell: {
+            transforms: [editable(edit.input())]
+          }
           // cell: function(value, data, rowIndex) {
           //   var modalRef;
           //   var closeHandler = function(evt) {
@@ -172,6 +225,7 @@ var VocabularyEditor = React.createClass({
           // }.bind(this)
         },
         {
+          //TODO
           // cell: function(value, data, rowIndex, property) {
           //   return {
           //       value: (

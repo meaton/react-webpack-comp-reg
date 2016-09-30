@@ -62,6 +62,7 @@
     "react-draggable": "^1.1.x",
     "classnames": "^2.2.x",
     "reactabular": "^5.0.x",
+    "react-edit": "^4.1.x",
     "lodash": "^3.10.x",
     "expose-loader": "^0.7.x",
     "loglevel": "^1.4.x",
