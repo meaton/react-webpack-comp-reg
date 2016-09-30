@@ -7,6 +7,9 @@ var React = require('react');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
+var ModalTrigger = require('./ModalTrigger');
+var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
+
 //react
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
@@ -41,39 +44,15 @@ var VocabularyEditor = React.createClass({
     },
 
     addConceptLink: function(rowIndex, newHdlValue) {
-      //TODO: use action
-      // log.debug('open concept link dialog:', rowIndex, newHdlValue);
-      // if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
-      //   var items = this.state.enumeration.item;
-      //   if(!$.isArray(items)) {
-      //     items = [items];
-      //   }
-      //   var newRow = update(items[rowIndex], { '@ConceptLink': { $set: newHdlValue } });
-      //   this.updateConceptLink(rowIndex, newRow);
-      // }
+      log.debug('add concept link to row', rowIndex, ":", newHdlValue);
+      this.props.onVocabularyPropertyChange(rowIndex, '@ConceptLink', newHdlValue);
     },
 
     removeConceptLink: function(rowIndex) {
-      //TODO: use action
-      // if(this.state.enumeration != null && this.state.enumeration.item != undefined) {
-      //   var items = this.state.enumeration.item;
-      //   if(!$.isArray(items)) {
-      //     items = [items];
-      //   }
-      //   var newRow = update(items[rowIndex], { '@ConceptLink': { $set: null } });
-      //   this.updateConceptLink(rowIndex, newRow);
-      // }
+      log.debug("Remove concept link for row", rowIndex);
+      this.props.onVocabularyPropertyChange(rowIndex, '@ConceptLink', null);
     },
-    updateConceptLink(rowIndex, newRow) {
-      //TODO: use action
-      // var newEnum;
-      // if($.isArray(this.state.enumeration.item)) {
-      //   newEnum = update(this.state.enumeration, { item: { $splice: [[rowIndex, 1, newRow]] } });
-      // } else {
-      //   newEnum = update(this.state.enumeration, { item: {$set: newRow}});
-      // }
-      // this.setState({ enumeration: newEnum });
-    },
+
     addNewRow: function() {
       //TODO: use action
       // var val = this.state.enumeration;
@@ -93,20 +72,6 @@ var VocabularyEditor = React.createClass({
       // } else {
       //   // create new array with one row
       //   this.setState({ enumeration: update(val, { $set: { item: [newRow] }}) });
-      // }
-    },
-    removeRow: function(rowIndex) {
-      //TODO: use action
-      // log.debug('remove row: ' + rowIndex);
-      //
-      // if(this.state.enumeration != null && this.state.enumeration.item != null) {
-      //   if($.isArray(this.state.enumeration.item)) {
-      //     // splice existing array
-      //     this.setState({ enumeration: update(this.state.enumeration, { item: { $splice: [[rowIndex, 1]] }}) });
-      //   } else if(rowIndex === 0) {
-      //     // remove the one (last) item
-      //     this.setState({ enumeration: null});
-      //   }
       // }
     },
 
@@ -181,39 +146,39 @@ var VocabularyEditor = React.createClass({
           property: '@ConceptLink',
           header: {label: 'Concept link'},
           cell: {
-            transforms: [editable(edit.input())]
+            //transforms: [editable(edit.input())],
+            format: function(value, extra){
+                var modalRef;
+                var closeHandler = function(evt) {
+                  modalRef.toggleModal();
+                }
+                var modal = (
+                  <ModalTrigger
+                    ref={function(modal) {
+                       modalRef = modal;
+                     }}
+                    modalTarget="ccrModalContainer"
+                    label="add link"
+                    modal={
+                      <ConceptRegistryModal
+                        onClose={closeHandler}
+                        onSelect={self.addConceptLink.bind(self, extra.rowIndex)}
+                        container={self} />
+                    } />
+                );
+
+                if(value && value != "") {
+                  return (
+                    <span>
+                      <a href={value} target="_blank">{value}</a> &nbsp;
+                      <a onClick={self.removeConceptLink.bind(self, extra.rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>
+                    </span>);
+                } else {
+                  return (<span>{modal}</span>);
+                }
+                return <span>click</span>
+            }
           }
-          // cell: function(value, data, rowIndex) {
-          //   var modalRef;
-          //   var closeHandler = function(evt) {
-          //     modalRef.toggleModal();
-          //   }
-          //   var modal = (
-          //     <ModalTrigger
-          //       ref={function(modal) {
-          //          modalRef = modal;
-          //        }}
-          //       modalTarget="ccrModalContainer"
-          //       label="add link"
-          //       modal={
-          //         <ConceptRegistryModal
-          //           onClose={closeHandler}
-          //           onSelect={self.addConceptLink.bind(self, rowIndex)}
-          //           container={this} />
-          //       } />
-          //   );
-          //
-          //   return {
-          //     value: (value) ?
-          //     (<span>
-          //       <a href={value} target="_blank">{value}</a> &nbsp;
-          //       <a onClick={self.removeConceptLink.bind(self, rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>
-          //     </span>) :
-          //     (<span>
-          //       {modal}
-          //     </span>)
-          //   };
-          // }.bind(this)
         },
         {
           /* nameless column with a delete button for each row */

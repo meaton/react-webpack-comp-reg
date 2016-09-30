@@ -21,8 +21,6 @@ var Tab = require('react-bootstrap/lib/Tab');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //components
-var ModalTrigger = require('./ModalTrigger');
-var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 var VocabularyEditor = require('./VocabularyEditor');
 
 //service
