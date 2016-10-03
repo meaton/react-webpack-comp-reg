@@ -62,22 +62,26 @@
 }
 
 #typeTable {
-
+  width: 100%;
   border-collapse: collapse;
   border: 1px solid #999;
   margin-bottom: 0px;
 
   tbody {
+    max-height: 130px;
+    height: auto;
     margin-top: -1px;
+    width: 100%;
   }
 
   th, td {
     border: 1px solid #999;
     width: 32%;
-    line-height: 1.4em;
-    min-height: 24px;
+    height: 30px;
     word-wrap: break-word;
     overflow: hidden;
+    padding: 5px;
+    margin: 0;
   }
 
   th:last-child, td:last-child {
@@ -85,10 +89,15 @@
   }
 
   td input {
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
     line-height: 100%;
-    display: block;
+    margin: -5px;
+    padding: 3px;
+    border: 2px #f00;
+    display:inline-block;
+    position:relative;
   }
 }
 
