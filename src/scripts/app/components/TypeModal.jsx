@@ -132,7 +132,7 @@ var TypeModal = React.createClass({
   },
 
   handleAddVocabularyItem: function() {
-    log.debug("Add item");
+    this.getFlux().actions.addVocabularyItem(this.state.valueScheme.vocabulary);
   },
 
   render: function() {

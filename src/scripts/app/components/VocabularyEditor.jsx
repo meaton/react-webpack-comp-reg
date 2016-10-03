@@ -215,7 +215,7 @@ var VocabularyEditor = React.createClass({
 
               <tfoot>
               <tr>
-                <td colspan="4"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></td>
+                <td colSpan="4"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></td>
               </tr>
             </tfoot>
           </Table.Provider>

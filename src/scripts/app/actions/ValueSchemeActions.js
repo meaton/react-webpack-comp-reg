@@ -87,6 +87,37 @@ var ValueSchemeActions = {
     });
   },
 
+  addVocabularyItem: function(oldVocabulary) {
+    log.debug("Add new item to vocabulary", oldVocabulary);
+
+    if(oldVocabulary == null) {
+      var vocab = {};
+    } else {
+      var vocab = oldVocabulary;
+    }
+
+    if(!vocab.enumeration || !vocab.enumeration.item) {
+      vocab = update(vocab, {enumeration: {$set:
+          {item: []}
+      }});
+    }
+
+    var updatedVocab = update(vocab,
+      {enumeration:
+        {item:
+          {$push:
+            [
+              {'$': ""}
+            ]
+          }
+        }
+      });
+
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
+  },
+
   removeVocabularyItem: function(oldVocabulary, itemIndex) {
     var updatedVocab = update(oldVocabulary,
       {enumeration:
