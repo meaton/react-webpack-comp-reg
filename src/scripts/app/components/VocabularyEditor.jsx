@@ -99,9 +99,7 @@ var VocabularyEditor = React.createClass({
            return props.columnIndex === self.state.editedColumn && props.rowData.rowIdx === self.state.editedRow
         },
 
-        // The user requested activation, mark the current cell as edited.
-        // IMPORTANT! If you stash the rows at this.state.rows, DON'T
-        // mutate it as that will break Table.Body optimization check.
+        // The user requested activation...
         onActivate: function(props) {
           log.trace("activate", props.columnIndex, props.rowData);
           self.setState({
@@ -110,8 +108,7 @@ var VocabularyEditor = React.createClass({
           });
         },
 
-        // Capture the value when the user has finished and update
-        // application state.
+        // Capture the value when the user has finished, propagate change
         onValue: function(props) {
           log.debug("value '", props.value, "' for", props.property, "of", props.rowData);
 
@@ -149,7 +146,6 @@ var VocabularyEditor = React.createClass({
           property: '@ConceptLink',
           header: {label: 'Concept link'},
           cell: {
-            //transforms: [editable(edit.input())],
             format: function(value, extra){
                 var modalRef;
                 var closeHandler = function(evt) {
