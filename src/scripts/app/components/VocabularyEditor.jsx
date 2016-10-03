@@ -129,18 +129,26 @@ var VocabularyEditor = React.createClass({
         }
       });
 
+      var highlightEdited = function(value, extras) {
+        if(extras.rowIndex === self.state.editedRow && extras.columnIndex === self.state.editedColumn) {
+          return {
+            className: "cell-selected"
+          };
+        }
+      };
+
       var vocabCols = [
         {
           property: '$',
           header: {label: 'Value'},
           cell: {
-            transforms: [editable(edit.input())]
+            transforms: [editable(edit.input()), highlightEdited]
           }
         }, {
           property: '@AppInfo',
           header: {label: 'Description'},
           cell: {
-            transforms: [editable(edit.input())]
+            transforms: [editable(edit.input()), highlightEdited]
           }
         }, {
           property: '@ConceptLink',
