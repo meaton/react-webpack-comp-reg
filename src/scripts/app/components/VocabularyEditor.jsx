@@ -209,13 +209,8 @@ var VocabularyEditor = React.createClass({
             <Table.Header />
 
             <Table.Body rows={vocabData} rowKey="rowIdx" />
-
-              <tfoot>
-              <tr>
-                <td colSpan="4"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></td>
-              </tr>
-            </tfoot>
           </Table.Provider>
+          <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
         </div>
       );
