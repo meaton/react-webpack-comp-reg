@@ -44,6 +44,30 @@ var VocabularyEditor = React.createClass({
       }
     },
 
+    componentDidMount: function() {
+      fixVocabTableColumnSizes();
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+      var vocab = this.props.vocabulary;
+      var prevVocab = prevProps.vocabulary;
+
+      if(vocab !== prevVocab) {
+        //in case number of items affect scrollbar visibility
+        fixVocabTableColumnSizes();
+
+        if(vocab != null) {
+          if(prevVocab == null || vocab.enumeration.item.length > prevVocab.enumeration.item.length) {
+            //scroll to bottom
+            var tableBody = $('table#typeTable tbody');
+            var height = tableBody.prop("scrollHeight");
+            log.debug("table height",  height);
+            tableBody.animate({scrollTop: height}, "slow");
+          }
+        }
+      }
+    },
+
     addConceptLink: function(rowIndex, newHdlValue) {
       log.debug('add concept link to row', rowIndex, ":", newHdlValue);
       this.props.onVocabularyPropertyChange(rowIndex, '@ConceptLink', newHdlValue);
@@ -227,3 +251,20 @@ var VocabularyEditor = React.createClass({
 });
 
 module.exports = VocabularyEditor;
+
+function fixVocabTableColumnSizes() {
+    // Change the selector if needed
+  var $table = $('table#typeTable'),
+      $bodyCells = $table.find('tbody tr:first').children(),
+      colWidth;
+
+  // Get the tbody columns width array
+  colWidth = $bodyCells.map(function() {
+      return $(this).width();
+  }).get();
+
+  // Set the width of thead columns
+  $table.find('thead tr').children().each(function(i, v) {
+      $(v).width(colWidth[i]);
+  });
+}

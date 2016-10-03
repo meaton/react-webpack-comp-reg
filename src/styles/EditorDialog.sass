@@ -49,6 +49,10 @@
 
 #typeTable, #ccrTable {
 
+  & thead, & tbody {
+    display: block;
+  }
+
   & tbody {
     height: 130px;
     overflow-y: auto;
@@ -85,11 +89,6 @@
 
 #ccrTable {
   margin-bottom: 30px;
-
-  & thead, & tbody {
-    display: block;
-  }
-
   &.with-scroll th, &.with-scroll td {
     width: 104.285px;
   }
