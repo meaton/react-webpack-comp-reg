@@ -131,6 +131,10 @@ var TypeModal = React.createClass({
     this.getFlux().actions.removeVocabularyItem(this.state.valueScheme.vocabulary, itemIndex);
   },
 
+  handleAddVocabularyItem: function() {
+    log.debug("Add item");
+  },
+
   render: function() {
     var patternValue = (this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : "";
     var typeValue = this.state.valueScheme.type;
@@ -151,6 +155,7 @@ var TypeModal = React.createClass({
               <VocabularyEditor
                 vocabulary={this.state.valueScheme.vocabulary}
                 onVocabularyPropertyChange={this.handleVocabularyPropertyChange}
+                onAddVocabularyItem={this.handleAddVocabularyItem}
                 onRemoveVocabularyItem={this.handleRemoveVocabularyItem}
                 onOk={this.setControlVocab}
                 />

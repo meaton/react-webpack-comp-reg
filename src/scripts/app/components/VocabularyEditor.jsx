@@ -33,6 +33,7 @@ var VocabularyEditor = React.createClass({
       vocabulary: React.PropTypes.object,
       onVocabularyPropertyChange: React.PropTypes.func.isRequired,
       onRemoveVocabularyItem: React.PropTypes.func.isRequired,
+      onAddVocabularyItem: React.PropTypes.func.isRequired,
       onOk: React.PropTypes.func.isRequired
     },
 
@@ -211,6 +212,12 @@ var VocabularyEditor = React.createClass({
             <Table.Header />
 
             <Table.Body rows={vocabData} rowKey="$" />
+
+              <tfoot>
+              <tr>
+                <td colspan="4"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></td>
+              </tr>
+            </tfoot>
           </Table.Provider>
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
         </div>
