@@ -49,13 +49,8 @@
 
 #typeTable, #ccrTable {
 
-  & thead, & tbody {
-    display: block;
-  }
-
   & tbody {
     height: 130px;
-    display: block;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -63,12 +58,12 @@
 }
 
 #typeTable {
-  tr, tfoot {
-    display: block;
-  }
+
+  border-collapse: collapse;
+  border: 1px solid #999;
 
   th, td {
-    display: inline-block;
+    border: 1px solid #999;
     width: 32%;
     line-height: 1.4em;
     min-height: 24px;
@@ -76,20 +71,24 @@
     overflow: hidden;
   }
 
-  tfoot td:first-child {
-    cursor: pointer;
-  }
-
-  tfoot td:last-child {
-    width: 68%;
-  }
   th:last-child, td:last-child {
     width: 4%;
+  }
+
+  td input {
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    display: block;
   }
 }
 
 #ccrTable {
   margin-bottom: 30px;
+
+  & thead, & tbody {
+    display: block;
+  }
 
   &.with-scroll th, &.with-scroll td {
     width: 104.285px;
