@@ -78,28 +78,6 @@ var VocabularyEditor = React.createClass({
       this.props.onVocabularyPropertyChange(rowIndex, '@ConceptLink', null);
     },
 
-    addNewRow: function() {
-      //TODO: use action
-      // var val = this.state.enumeration;
-      // if(val == null)
-      //   val = {};
-      //
-      // var newRow = {'$':'', '@AppInfo':'', '@ConceptLink':''};
-      //
-      // if(val.item != undefined) {
-      //   if($.isArray(val.item)) {
-      //     // push new row to array
-      //     this.setState({ enumeration: update(val, { item: { $push: [newRow] }}) });
-      //   } else {
-      //     // turn into array and add new row
-      //     this.setState({ enumeration: update(val, {item: {$set: [val.item, newRow]}})});
-      //   }
-      // } else {
-      //   // create new array with one row
-      //   this.setState({ enumeration: update(val, { $set: { item: [newRow] }}) });
-      // }
-    },
-
     render: function() {
       var self = this;
       var tableClasses = classNames('table','table-condensed');
@@ -223,16 +201,11 @@ var VocabularyEditor = React.createClass({
 
       return (
         <div>
-          {/* todo: add row
-            <td className="info" rowSpan="3" onClick={this.addNewRow}>
-                Click here to add new row.
-            </td>
-            */}
           <Table.Provider
             id="typeTable" ref="table"
             className={tableClasses}
-            columns={vocabCols}
-          >
+            columns={vocabCols}>
+
             <Table.Header />
 
             <Table.Body rows={vocabData} rowKey="rowIdx" />
