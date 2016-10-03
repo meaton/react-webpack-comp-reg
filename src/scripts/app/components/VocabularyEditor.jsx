@@ -235,7 +235,7 @@ var VocabularyEditor = React.createClass({
           >
             <Table.Header />
 
-            <Table.Body rows={vocabData} rowKey="$" />
+            <Table.Body rows={vocabData} rowKey="rowIdx" />
 
               <tfoot>
               <tr>
