@@ -128,6 +128,15 @@ var ValueSchemeActions = {
     this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
       vocabulary: updatedVocab
     });
+  },
+
+  resetValueSchemeValidationError: function() {
+    this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, null);
+  },
+
+  validateValueScheme: function(valueScheme) {
+    this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "Validation failed");
+    return false;
   }
 };
 

@@ -19,6 +19,7 @@ var Button = require('react-bootstrap/lib/Button');
 var Tabs = require('react-bootstrap/lib/Tabs');
 var Tab = require('react-bootstrap/lib/Tab');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+var Alert = require('react-bootstrap/lib/Alert');
 
 //components
 var VocabularyEditor = require('./VocabularyEditor');
@@ -83,28 +84,31 @@ var TypeModal = React.createClass({
   },
 
   setSimpleType: function(evt) {
-      this.props.onChange({
-        type: this.state.valueScheme.type
-      });
+    var changeRequest = {type: this.state.valueScheme.type};
+    if(this.validate(changeRequest)) {
+      this.props.onChange(changeRequest);
       this.close(evt);
+    }
   },
 
   setPattern: function(evt) {
-    this.props.onChange({
-      pattern: this.state.valueScheme.pattern
-    });
-    this.close(evt);
+    var changeRequest = {pattern: this.state.valueScheme.pattern};
+    if(this.validate(changeRequest)) {
+      this.props.onChange(changeRequest);
+      this.close(evt);
+    }
   },
 
   setControlVocab: function(evt) {
-    this.props.onChange({
-      vocabulary: this.state.valueScheme.vocabulary
-    });
-    this.close(evt);
+    var changeRequest = {vocabulary: this.state.valueScheme.vocabulary};
+    if(this.validate(changeRequest)) {
+      this.props.onChange(changeRequest);
+      this.close(evt);
+    }
   },
 
-  showFeedback: function(message) {
-    alert("Invalid vocabulary: " + message);
+  validate: function(changeRequest) {
+    return this.getFlux().actions.validateValueScheme(changeRequest);
   },
 
   close: function(evt) {
@@ -135,9 +139,18 @@ var TypeModal = React.createClass({
     this.getFlux().actions.addVocabularyItem(this.state.valueScheme.vocabulary);
   },
 
+  resetValidationError: function() {
+    this.getFlux().actions.resetValueSchemeValidationError();
+  },
+
+  doValidate: function() {
+    this.getFlux().actions.validateValueScheme(this.state.valueScheme);
+  },
+
   render: function() {
     var patternValue = (this.state.valueScheme.pattern != undefined) ? this.state.valueScheme.pattern : "";
     var typeValue = this.state.valueScheme.type;
+    var errorMessage = this.state.valueScheme.validationErrorMessage;
 
     return (
       <Modal.Dialog ref="modal" id="typeModal" key="typeModal" className="type-dialog" enforceFocus={true} backdrop={false}>
@@ -164,6 +177,12 @@ var TypeModal = React.createClass({
               <Input ref="patternInput" type="text" value={patternValue} onChange={this.onChangePattern} label="Enter pattern:" buttonAfter={<Button onClick={this.setPattern}>Use Pattern</Button>} />
             </Tab>
           </Tabs>
+          {errorMessage &&
+            <Alert bsStyle="danger" onDismiss={this.resetValidationError}>
+              {errorMessage}
+            </Alert>
+            }
+
         </Modal.Body>
 
         <Modal.Footer>
