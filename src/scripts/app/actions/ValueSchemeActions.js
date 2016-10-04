@@ -135,8 +135,50 @@ var ValueSchemeActions = {
   },
 
   validateValueScheme: function(valueScheme) {
-    this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "Validation failed");
-    return false;
+    log.debug("Validating value scheme", valueScheme);
+
+    if(!valueScheme) {
+      this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "Validation failed");
+      return false;
+    }
+
+    if(valueScheme.hasOwnProperty('type')) {
+      // Validate simple type
+      var type = valueScheme.type;
+      log.debug("Validating type", type);
+
+      if(type == null || (typeof type !== 'string') || type.trim() === "") {
+        this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "Type cannot be empty");
+        return false;
+      }
+    } else if(valueScheme.hasOwnProperty('pattern')) {
+      // Validate pattern
+      var pattern = valueScheme.pattern;
+      log.debug("Validating pattern", pattern);
+
+      if(pattern == null || (typeof pattern !== 'string') || pattern.trim() === "") {
+        this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "Pattern cannot be empty");
+        return false;
+      }
+      //TODO: check whether valid RegEx
+    } else if(valueScheme.hasOwnProperty('vocabulary')) {
+      // Validate vocabulary
+      var vocab = valueScheme.vocabulary;
+      log.debug("Validating vocabulary", vocab);
+
+      if(vocab == null || !vocab.enumeration || !vocab.enumeration.item || !$.isArray(vocab.enumeration.item)) {
+        this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "Vocabulary must have one or more items");
+        return false;
+      }
+      var items = vocab.enumeration.item;
+      //TODO: validate items in vocabulary
+      //TODO: validate vocabulary URI (if set)
+    } else {
+      //no value at all!
+      this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, "A value must be provided");
+      return false;
+    }
+    return true;
   }
 };
 
