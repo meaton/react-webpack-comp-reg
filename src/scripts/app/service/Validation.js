@@ -167,6 +167,34 @@ var Validation = {
     return true;
   },
 
+  validateSimpleTypeValueScheme: function(type, feedback) {
+    if(type == null || (typeof type !== 'string') || type.trim() === "") {
+      feedback("Type cannot be empty");
+      return false;
+    }
+    return true;
+  },
+
+  validatePatternValueScheme: function(pattern, feedback) {
+    if(pattern == null || (typeof pattern !== 'string') || pattern.trim() === "") {
+      feedback("Pattern cannot be empty");
+      return false;
+    }
+    //TODO: check whether valid RegEx
+    return true;
+  },
+
+  validateVocabularyValueScheme: function(vocab, feedback) {
+    if(vocab == null || !vocab.enumeration || !vocab.enumeration.item || !$.isArray(vocab.enumeration.item)) {
+      feedback("Vocabulary must have one or more items");
+      return false;
+    }
+    var items = vocab.enumeration.item;
+    //TODO: validate items in vocabulary
+    //TODO: validate vocabulary URI (if set)
+    return true;
+  },
+
   checkVocabularyItems: function(items, feedback) {
     var itemValuesChain = _.chain(items).map(function(item) {
       return item['$'];
