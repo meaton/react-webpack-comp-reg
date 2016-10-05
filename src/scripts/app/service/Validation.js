@@ -197,6 +197,7 @@ var Validation = {
 
   validateVocabularyValueScheme: function(vocab, feedback) {
     //check if we have anything to work with...
+    //TODO: only require enumeration if no URI
     if(vocab == null || !vocab.enumeration || !vocab.enumeration.item || !$.isArray(vocab.enumeration.item)) {
       feedback("Vocabulary must have one or more items");
       return false;
@@ -206,6 +207,7 @@ var Validation = {
     if(!this.checkVocabularyItems(vocab.enumeration.item, feedback)) {
       return false;
     }
+    //TODO: if open vocabulary, URI is mandatory
     //TODO: validate vocabulary URI (if set)
     return true;
   },

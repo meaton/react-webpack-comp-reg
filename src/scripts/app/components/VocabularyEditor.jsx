@@ -10,9 +10,10 @@ var sortColumn = require('reactabular').sortColumn;
 var ModalTrigger = require('./ModalTrigger');
 var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
-//react
+//bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+var Input = require('react-bootstrap/lib/Input');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -22,6 +23,9 @@ var classNames = require('classnames');
 var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
+
+var OPEN_VOCAB = "open";
+var CLOSED_VOCAB = "closed";
 
 var VocabularyEditor = React.createClass({
     //TODO: add support for open vocabularies (without enum but with @URI and @ValueProperty)
@@ -78,8 +82,26 @@ var VocabularyEditor = React.createClass({
       this.props.onVocabularyPropertyChange(rowIndex, '@ConceptLink', null);
     },
 
+    onChangeVocabType: function(evt) {
+      var value = evt.target.value;
+      log.debug("Vocab type changed to", value);
+      if(value === OPEN_VOCAB) {
+        //make open vocabulary.
+        //TODO: Warn if items already defined... problem is that ReactAlert modal pops up below the type modal dialogue :(
+        this.props.onChangeVocabularyType(OPEN_VOCAB);
+      } else {
+        this.props.onChangeVocabularyType(CLOSED_VOCAB);
+      }
+    },
+
+    isClosedVocabulary: function() {
+      return this.props.vocabulary && this.props.vocabulary.hasOwnProperty("enumeration");
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
+      var vocabType = this.isClosedVocabulary() ? CLOSED_VOCAB : OPEN_VOCAB;
+
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
         // single item, wrap
@@ -94,6 +116,10 @@ var VocabularyEditor = React.createClass({
       var tableClasses = classNames('table','table-condensed');
       return (
         <div>
+          <Input type="select" label="Vocabulary type:" value={vocabType} onChange={this.onChangeVocabType}>
+            <option value={OPEN_VOCAB}>Open</option>
+            <option value={CLOSED_VOCAB}>Closed</option>
+          </Input>
           <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
             <Table.Header />
             <Table.Body rows={vocabData} rowKey="rowIdx" />

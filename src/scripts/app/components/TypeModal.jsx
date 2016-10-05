@@ -139,6 +139,16 @@ var TypeModal = React.createClass({
     this.getFlux().actions.addVocabularyItem(this.state.valueScheme.vocabulary);
   },
 
+  handleChangeVocabularyType: function(type) {
+    if(type === 'open') {
+      this.getFlux().actions.setVocabularyTypeOpen(this.state.valueScheme.vocabulary);
+    } else if(type === 'closed') {
+      this.getFlux().actions.setVocabularyTypeClosed(this.state.valueScheme.vocabulary);
+    } else {
+      log.warn('Unknown vocabulary type', type);
+    }
+  },
+
   resetValidationError: function() {
     this.getFlux().actions.resetValueSchemeValidationError();
   },
@@ -170,6 +180,7 @@ var TypeModal = React.createClass({
                 onVocabularyPropertyChange={this.handleVocabularyPropertyChange}
                 onAddVocabularyItem={this.handleAddVocabularyItem}
                 onRemoveVocabularyItem={this.handleRemoveVocabularyItem}
+                onChangeVocabularyType={this.handleChangeVocabularyType}
                 onOk={this.setControlVocab}
                 />
             </Tab>

@@ -135,6 +135,41 @@ var ValueSchemeActions = {
     this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, null);
   },
 
+  setVocabularyTypeOpen: function(oldVocabulary) {
+    if(oldVocabulary != null) {
+      //copy properties to be kept (not enumeration)
+      var updatedVocab = {
+        '@URI': oldVocabulary['@URI'],
+        '@ValueProperty': oldVocabulary['@ValueProperty'],
+        '@ValueLanguage': oldVocabulary['@ValueLanguage']
+      };
+      this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+        vocabulary: updatedVocab
+      });
+    }
+  },
+
+  setVocabularyTypeClosed: function(oldVocabulary) {
+    if(oldVocabulary == null) {
+      var updatedVocab = {
+        enumeration: {
+          item: []
+        }
+      };
+    } else {
+      var updatedVocab = update(oldVocabulary, {
+        $merge: {
+          enumeration: {
+            item: []
+          }
+        }
+      });
+    }
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
+  },
+
   validateValueScheme: function(valueScheme) {
     log.trace("Validating value scheme", valueScheme);
 
