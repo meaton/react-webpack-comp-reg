@@ -136,17 +136,20 @@ var ValueSchemeActions = {
   },
 
   validateValueScheme: function(valueScheme) {
-    log.debug("Validating value scheme", valueScheme);
+    log.trace("Validating value scheme", valueScheme);
 
+    //function to propagate feedback message from validator to store(s)
     setValidationError = function(msg){
       this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, msg);
     }.bind(this);
 
+    //in case no value scheme is set at all
     if(!valueScheme) {
       setValidationError("Validation failed");
       return false;
     }
 
+    //there should be a type, pattern or vocabulary in the change request
     if(valueScheme.hasOwnProperty('type')) {
       log.debug("Validating type", valueScheme.type);
       return Validation.validateSimpleTypeValueScheme(valueScheme.type, setValidationError);
@@ -154,10 +157,10 @@ var ValueSchemeActions = {
       log.debug("Validating pattern", valueScheme.pattern);
       return Validation.validatePatternValueScheme(valueScheme.pattern, setValidationError);
     } else if(valueScheme.hasOwnProperty('vocabulary')) {
-      log.debug("Validating vocabulary", vocab);
-      return Validation.validateVocabularyValueScheme(valueScheme.pattern, setValidationError);
+      log.debug("Validating vocabulary", valueScheme.vocabulary);
+      return Validation.validateVocabularyValueScheme(valueScheme.vocabulary, setValidationError);
     } else {
-      //no value at all!
+      //no value scheme at all!
       setValidationError("A value must be provided");
       return false;
     }

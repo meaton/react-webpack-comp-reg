@@ -189,8 +189,11 @@ var Validation = {
       feedback("Vocabulary must have one or more items");
       return false;
     }
-    var items = vocab.enumeration.item;
-    //TODO: validate items in vocabulary
+
+    //validate items in vocabulary
+    if(!this.checkVocabularyItems(vocab.enumeration.item, feedback)) {
+      return false;
+    }
     //TODO: validate vocabulary URI (if set)
     return true;
   },
