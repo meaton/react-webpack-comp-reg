@@ -80,7 +80,6 @@ var VocabularyEditor = React.createClass({
 
     render: function() {
       var self = this;
-      var tableClasses = classNames('table','table-condensed');
 
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
@@ -92,6 +91,7 @@ var VocabularyEditor = React.createClass({
         val.rowIdx = idx;
         return val;
       });
+      log.trace("Table data:", vocabData);
 
       var editable = edit.edit({
         // Determine whether the current cell is being edited or not.
@@ -201,17 +201,11 @@ var VocabularyEditor = React.createClass({
         }
       ];
 
-      log.debug("Table data:", vocabData);
-
+      var tableClasses = classNames('table','table-condensed');
       return (
         <div>
-          <Table.Provider
-            id="typeTable" ref="table"
-            className={tableClasses}
-            columns={vocabCols}>
-
+          <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={vocabCols}>
             <Table.Header />
-
             <Table.Body rows={vocabData} rowKey="rowIdx" />
           </Table.Provider>
           <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
