@@ -79,8 +79,6 @@ var VocabularyEditor = React.createClass({
     },
 
     render: function() {
-      var self = this;
-
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -93,6 +91,21 @@ var VocabularyEditor = React.createClass({
       });
       log.trace("Table data:", vocabData);
 
+      var tableClasses = classNames('table','table-condensed');
+      return (
+        <div>
+          <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
+            <Table.Header />
+            <Table.Body rows={vocabData} rowKey="rowIdx" />
+          </Table.Provider>
+          <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
+          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
+        </div>
+      );
+    },
+
+    getColumns: function() {
+      var self = this;
       var editable = edit.edit({
         // Determine whether the current cell is being edited or not.
         isEditing: function(props) {
@@ -137,7 +150,7 @@ var VocabularyEditor = React.createClass({
         }
       };
 
-      var vocabCols = [
+      return [
         {
           property: '$',
           header: {label: 'Value'},
@@ -145,12 +158,14 @@ var VocabularyEditor = React.createClass({
             transforms: [editable(edit.input()), highlightEdited]
           }
         }, {
+          /* Description column */
           property: '@AppInfo',
           header: {label: 'Description'},
           cell: {
             transforms: [editable(edit.input()), highlightEdited]
           }
         }, {
+          /* Concept link column */
           property: '@ConceptLink',
           header: {label: 'Concept link'},
           cell: {
@@ -200,18 +215,6 @@ var VocabularyEditor = React.createClass({
           }
         }
       ];
-
-      var tableClasses = classNames('table','table-condensed');
-      return (
-        <div>
-          <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={vocabCols}>
-            <Table.Header />
-            <Table.Body rows={vocabData} rowKey="rowIdx" />
-          </Table.Provider>
-          <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
-          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
-        </div>
-      );
     }
 
 });
