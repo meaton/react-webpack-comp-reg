@@ -197,18 +197,33 @@ var Validation = {
 
   validateVocabularyValueScheme: function(vocab, feedback) {
     //check if we have anything to work with...
-    //TODO: only require enumeration if no URI
-    if(vocab == null || !vocab.enumeration || !vocab.enumeration.item || !$.isArray(vocab.enumeration.item)) {
-      feedback("Vocabulary must have one or more items");
+    if(vocab == null) {
+      feedback("Vocabulary is undefined");
       return false;
     }
 
-    //validate items in vocabulary
-    if(!this.checkVocabularyItems(vocab.enumeration.item, feedback)) {
-      return false;
+    var hasUri = vocab['@URI'] != null && vocab['@URI'].trim() != "";
+
+    //TODO: if hasUri, make sure is a valid URI?
+
+    if(vocab.enumeration != null) {
+      //require enumeration with one or more items if no URI is set
+      if(!$.isArray(vocab.enumeration.item)) {
+        feedback("Vocabulary must have one or more items");
+        return false;
+      }
+
+      //validate items in vocabulary
+      if(!this.checkVocabularyItems(vocab.enumeration.item, feedback)) {
+        return false;
+      }
+    } else {
+      //no enumaration => open vocabulary => URI required
+      if(!hasUri) {
+        feedback("An open vocabulary requires a URI to be set");
+        return false;
+      }
     }
-    //TODO: if open vocabulary, URI is mandatory
-    //TODO: validate vocabulary URI (if set)
     return true;
   },
 
