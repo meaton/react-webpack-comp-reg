@@ -60,8 +60,8 @@ var VocabularyEditor = React.createClass({
         //in case number of items affect scrollbar visibility
         fixVocabTableColumnSizes();
 
-        if(vocab != null) {
-          if(prevVocab == null || vocab.enumeration.item.length > prevVocab.enumeration.item.length) {
+        if(vocab != null && vocab.enumeration !=null && $.isArray(vocab.enumeration.item)) {
+          if(prevVocab == null || prevVocab.enumeration == null || vocab.enumeration.item.length > prevVocab.enumeration.item.length) {
             //scroll to bottom
             var tableBody = $('table#typeTable tbody');
             var height = tableBody.prop("scrollHeight");
@@ -90,6 +90,7 @@ var VocabularyEditor = React.createClass({
         //TODO: Warn if items already defined... problem is that ReactAlert modal pops up below the type modal dialogue :(
         this.props.onChangeVocabularyType(OPEN_VOCAB);
       } else {
+        //make closed vocabulary
         this.props.onChangeVocabularyType(CLOSED_VOCAB);
       }
     },
@@ -120,12 +121,16 @@ var VocabularyEditor = React.createClass({
             <option value={OPEN_VOCAB}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
-          <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
-            <Table.Header />
-            <Table.Body rows={vocabData} rowKey="rowIdx" />
-          </Table.Provider>
-          <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
-          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
+          {vocabType === CLOSED_VOCAB &&
+            <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
+              <Table.Header />
+              <Table.Body rows={vocabData} rowKey="rowIdx" />
+            </Table.Provider>
+          }
+          {vocabType === CLOSED_VOCAB &&
+            <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
+          }
+          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabType === CLOSED_VOCAB && vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
         </div>
       );
     },
