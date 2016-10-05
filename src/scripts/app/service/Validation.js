@@ -180,7 +180,14 @@ var Validation = {
       feedback("Pattern cannot be empty");
       return false;
     }
-    //TODO: check whether valid RegEx
+    //check whether pattern is a valid regex
+    try {
+      new RegExp(pattern);
+    } catch(exception) {
+      log.warn("Cannot parse regular expression", exception);
+      feedback("Not a valid regular expression! " + exception);
+      return false;
+    }
     return true;
   },
 
