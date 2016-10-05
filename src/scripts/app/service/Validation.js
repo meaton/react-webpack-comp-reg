@@ -168,6 +168,7 @@ var Validation = {
   },
 
   validateSimpleTypeValueScheme: function(type, feedback) {
+    //check if we have anything to work with...
     if(type == null || (typeof type !== 'string') || type.trim() === "") {
       feedback("Type cannot be empty");
       return false;
@@ -176,14 +177,17 @@ var Validation = {
   },
 
   validatePatternValueScheme: function(pattern, feedback) {
+    //check if we have anything to work with...
     if(pattern == null || (typeof pattern !== 'string') || pattern.trim() === "") {
       feedback("Pattern cannot be empty");
       return false;
     }
-    //check whether pattern is a valid regex
+
+    //check whether pattern is a valid regex by trying to parse it
     try {
       new RegExp(pattern);
     } catch(exception) {
+      //an exception is thrown if the regexp objet cannot be created, usually because of an error in the definition
       log.warn("Cannot parse regular expression", exception);
       feedback("Not a valid regular expression! " + exception);
       return false;
@@ -192,6 +196,7 @@ var Validation = {
   },
 
   validateVocabularyValueScheme: function(vocab, feedback) {
+    //check if we have anything to work with...
     if(vocab == null || !vocab.enumeration || !vocab.enumeration.item || !$.isArray(vocab.enumeration.item)) {
       feedback("Vocabulary must have one or more items");
       return false;
