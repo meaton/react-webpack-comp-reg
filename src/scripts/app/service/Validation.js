@@ -34,8 +34,8 @@ var regex = function(expr, msg) {
   };
 }
 
-var conceptLinkPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
-var conceptLinkUri = regex(conceptLinkPattern, "Must be a valid URI")
+var uriPattern = /^([^:\/?#]+):(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/;
+var conceptLinkUri = regex(uriPattern, "Must be a valid URI")
 
 var validators = {
   header: {
@@ -58,7 +58,7 @@ var validators = {
 };
 
 var testConceptLink = function(fieldValue) {
-  var regExp = conceptLinkPattern;
+  var regExp = uriPattern;
   if(typeof fieldValue === "string" && fieldValue.length > 0 && !regExp.test(fieldValue))
     return false;
   return true;
@@ -202,9 +202,7 @@ var Validation = {
       return false;
     }
 
-    var hasUri = vocab['@URI'] != null && vocab['@URI'].trim() != "";
-
-    //TODO: if hasUri, make sure is a valid URI?
+    var hasUri = vocab['@URI'] != null && vocab['@URI'].trim() != '';
 
     if(vocab.enumeration != null) {
       //require enumeration with one or more items if no URI is set
@@ -224,6 +222,24 @@ var Validation = {
         return false;
       }
     }
+
+    if(hasUri) {
+        var uriLower = vocab['@URI'].toLowerCase();
+        if(!uriLower.startsWith('http://') && !uriLower.startsWith('https://') || !uriPattern.test(vocab['@URI'])) {
+          feedback('Vocabulary URI must be a valid URI with \'http\' or \'https\' as scheme!');
+          return false;
+        }
+        if(!vocab['@ValueProperty'] || vocab['@ValueProperty'].trim() == '') {
+          feedback('A value property has to be set if an external vocabulary URI is defined. Please check the details!');
+          return false;
+        }
+    } else {
+      if(vocab['@ValueProperty'] && vocab['@ValueProperty'].trim() != '') {
+        feedback('A value property must not be defined unless an external vocabulary URI is defined. Please check the details!');
+        return false;
+      }
+    }
+
     return true;
   },
 
