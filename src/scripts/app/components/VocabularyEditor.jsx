@@ -38,7 +38,7 @@ var VocabularyEditor = React.createClass({
       onVocabularyPropertyChange: React.PropTypes.func.isRequired,
       onRemoveVocabularyItem: React.PropTypes.func.isRequired,
       onAddVocabularyItem: React.PropTypes.func.isRequired,
-      onChangeVocabUri:  React.PropTypes.func.isRequired,
+      onChangeExternalVocab:  React.PropTypes.func.isRequired,
       onOk: React.PropTypes.func.isRequired
     },
 
@@ -97,8 +97,17 @@ var VocabularyEditor = React.createClass({
       }
     },
 
-    onChangeVocabUri: function(evt) {
-      this.props.onChangeVocabUri(evt.target.value);
+    onChangeExternalVocab: function(evt) {
+      var target = evt.target;
+      if(target.id === 'external-vocab-uri') {
+        this.props.onChangeExternalVocab(target.value, this.props.vocabulary && this.props.vocabulary['@ValueProperty'] || null);
+      } else if(target.id === 'external-vocab-property') {
+        this.props.onChangeExternalVocab(this.props.vocabulary && this.props.vocabulary['@URI'] || null, target.value);
+      }
+    },
+
+    unsetExternalVocab: function() {
+      this.props.onChangeExternalVocab(null, null);
     },
 
     isClosedVocabulary: function() {
@@ -136,15 +145,15 @@ var VocabularyEditor = React.createClass({
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
           <div className="external-vocab-editor">
-            External vocabulary:
-              {vocabUri && <span><a href="">{vocabUri}</a> <a href="">unset</a></span>}
-            <Button>Search</Button>
+            External vocabulary: {vocabUri &&
+              <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
+            } <Button>Search</Button>
             <div>
               <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
               {this.state.externalVocabDetailsShown &&
                 <div className="external-vocab-editor-details">
-                  <label for="external-vocab-uri">URI:</label><Input id="external-vocab-uri" type="text" value={vocabUri || ""} onChange={this.onChangeVocabUri} />
-                  <label for="external-vocab-uri">Value property:</label><Input id="external-vocab-property" type="text" value={vocabValueProp || ""} onChange={this.onChangeVocabValueProperty} />
+                  <label for="external-vocab-uri">URI:</label><Input id="external-vocab-uri" type="text" value={vocabUri || ""} onChange={this.onChangeExternalVocab} />
+                  <label for="external-vocab-property">Value property:</label><Input id="external-vocab-property" type="text" value={vocabValueProp || ""} onChange={this.onChangeExternalVocab} />
                 </div>
               }
             </div>

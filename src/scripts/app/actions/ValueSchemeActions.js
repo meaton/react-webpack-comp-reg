@@ -135,19 +135,28 @@ var ValueSchemeActions = {
     this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, null);
   },
 
-  setVocabularyUri: function(oldVocabulary, uri) {
+  setVocabularyUri: function(oldVocabulary, uri, valueProperty) {
     if(uri == null || uri.trim() === '') {
       var newUri = null;
     } else {
       var newUri = uri;
     }
 
-    if(oldVocabulary == null) {
-      var updatedVocab = {
-        '@URI': newUri
-      }
+    if(valueProperty == null || valueProperty.trim() === '') {
+      var newValueProperty = null;
     } else {
-      var updatedVocab = update(oldVocabulary, {'@URI': {$set: newUri}});
+      var newValueProperty = valueProperty;
+    }
+
+    var newValues = {
+      '@URI': newUri,
+      '@ValueProperty': newValueProperty
+    };
+
+    if(oldVocabulary == null) {
+      var updatedVocab = newValues;
+    } else {
+      var updatedVocab = update(oldVocabulary, {$merge: newValues});
     }
     this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
       vocabulary: updatedVocab
