@@ -45,7 +45,8 @@ var VocabularyEditor = React.createClass({
     getInitialState: function() {
       return {
         editedRow: -1,
-        editedColumn: -1
+        editedColumn: -1,
+        externalVocabDetailsShown: false
       }
     },
 
@@ -104,10 +105,17 @@ var VocabularyEditor = React.createClass({
       return this.props.vocabulary && this.props.vocabulary.hasOwnProperty("enumeration");
     },
 
+    toggleExternalVocabDetails: function() {
+      this.setState({
+        externalVocabDetailsShown: !this.state.externalVocabDetailsShown
+      })
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = this.isClosedVocabulary() ? CLOSED_VOCAB : OPEN_VOCAB;
-      var vocabUri = (this.props.vocabulary && this.props.vocabulary.hasOwnProperty('@URI')) ? this.props.vocabulary['@URI'] : "";
+      var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
+      var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
 
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -127,7 +135,20 @@ var VocabularyEditor = React.createClass({
             <option value={OPEN_VOCAB}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
-          <Input type="text" value={vocabUri} onChange={this.onChangeVocabUri} />
+          <div className="external-vocab-editor">
+            External vocabulary:
+              {vocabUri && <span><a href="">{vocabUri}</a> <a href="">unset</a></span>}
+            <Button>Search</Button>
+            <div>
+              <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
+              {this.state.externalVocabDetailsShown &&
+                <div className="external-vocab-editor-details">
+                  <label for="external-vocab-uri">URI:</label><Input id="external-vocab-uri" type="text" value={vocabUri || ""} onChange={this.onChangeVocabUri} />
+                  <label for="external-vocab-uri">Value property:</label><Input id="external-vocab-property" type="text" value={vocabValueProp || ""} onChange={this.onChangeVocabValueProperty} />
+                </div>
+              }
+            </div>
+          </div>
           {vocabType === CLOSED_VOCAB &&
             <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
               <Table.Header />
