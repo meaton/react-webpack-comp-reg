@@ -123,6 +123,8 @@ var VocabularyEditor = React.createClass({
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = this.isClosedVocabulary() ? CLOSED_VOCAB : OPEN_VOCAB;
+      var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
+      var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
 
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -135,6 +137,17 @@ var VocabularyEditor = React.createClass({
       });
       log.trace("Table data:", vocabData);
 
+      if(vocabType === CLOSED_VOCAB ) {
+        var allowSubmit = vocabData && vocabData.length > 0;
+        var allowSubmitMessage = allowSubmit ? "Use the defined closed vocabulary" : "A closed vocabulary should contain at least one item!";
+      } else if(vocabType === OPEN_VOCAB) {
+        var allowSubmit = vocabUri != null && vocabUri.trim() != '';
+        var allowSubmitMessage = allowSubmit ? "Use with the selected external vocabulary " + vocabUri : "An open vocabulary should be linked to an external vocabulary!";
+      } else {
+        var allowSubmit = false;
+        var allowSubmitMessage = "Unknown vocabulary type";
+      }
+
       var tableClasses = classNames('table','table-condensed');
       return (
         <div>
@@ -142,7 +155,7 @@ var VocabularyEditor = React.createClass({
             <option value={OPEN_VOCAB}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
-          {this.renderExternalVocabularyEditor()}
+          {this.renderExternalVocabularyEditor(vocabUri, vocabValueProp)}
           {vocabType === CLOSED_VOCAB &&
             <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
               <Table.Header />
@@ -152,15 +165,12 @@ var VocabularyEditor = React.createClass({
           {vocabType === CLOSED_VOCAB &&
             <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
           }
-          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabType === CLOSED_VOCAB && vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
+          <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
         </div>
       );
     },
 
-    renderExternalVocabularyEditor: function() {
-      var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
-      var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
-
+    renderExternalVocabularyEditor: function(vocabUri, vocabValueProp) {
       return (
         <div className="external-vocab-editor">
           External vocabulary: {vocabUri &&
