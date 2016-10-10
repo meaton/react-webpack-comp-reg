@@ -135,6 +135,25 @@ var ValueSchemeActions = {
     this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, null);
   },
 
+  setVocabularyUri: function(oldVocabulary, uri) {
+    if(uri == null || uri.trim() === '') {
+      var newUri = null;
+    } else {
+      var newUri = uri;
+    }
+
+    if(oldVocabulary == null) {
+      var updatedVocab = {
+        '@URI': newUri
+      }
+    } else {
+      var updatedVocab = update(oldVocabulary, {'@URI': {$set: newUri}});
+    }
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
+  },
+
   setVocabularyTypeOpen: function(oldVocabulary) {
     if(oldVocabulary != null) {
       //copy properties to be kept (not enumeration)

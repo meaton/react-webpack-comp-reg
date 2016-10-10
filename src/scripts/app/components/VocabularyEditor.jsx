@@ -38,6 +38,7 @@ var VocabularyEditor = React.createClass({
       onVocabularyPropertyChange: React.PropTypes.func.isRequired,
       onRemoveVocabularyItem: React.PropTypes.func.isRequired,
       onAddVocabularyItem: React.PropTypes.func.isRequired,
+      onChangeVocabUri:  React.PropTypes.func.isRequired,
       onOk: React.PropTypes.func.isRequired
     },
 
@@ -95,6 +96,10 @@ var VocabularyEditor = React.createClass({
       }
     },
 
+    onChangeVocabUri: function(evt) {
+      this.props.onChangeVocabUri(evt.target.value);
+    },
+
     isClosedVocabulary: function() {
       return this.props.vocabulary && this.props.vocabulary.hasOwnProperty("enumeration");
     },
@@ -102,6 +107,7 @@ var VocabularyEditor = React.createClass({
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = this.isClosedVocabulary() ? CLOSED_VOCAB : OPEN_VOCAB;
+      var vocabUri = (this.props.vocabulary && this.props.vocabulary.hasOwnProperty('@URI')) ? this.props.vocabulary['@URI'] : "";
 
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -121,6 +127,7 @@ var VocabularyEditor = React.createClass({
             <option value={OPEN_VOCAB}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
+          <Input type="text" value={vocabUri} onChange={this.onChangeVocabUri} />
           {vocabType === CLOSED_VOCAB &&
             <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
               <Table.Header />

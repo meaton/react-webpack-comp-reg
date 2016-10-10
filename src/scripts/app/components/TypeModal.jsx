@@ -149,6 +149,10 @@ var TypeModal = React.createClass({
     }
   },
 
+  handleChangeVocabularyUri: function(uri) {
+    this.getFlux().actions.setVocabularyUri(this.state.valueScheme.vocabulary, uri);
+  },
+
   resetValidationError: function() {
     this.getFlux().actions.resetValueSchemeValidationError();
   },
@@ -181,6 +185,7 @@ var TypeModal = React.createClass({
                 onAddVocabularyItem={this.handleAddVocabularyItem}
                 onRemoveVocabularyItem={this.handleRemoveVocabularyItem}
                 onChangeVocabularyType={this.handleChangeVocabularyType}
+                onChangeVocabUri={this.handleChangeVocabularyUri}
                 onOk={this.setControlVocab}
                 />
             </Tab>
