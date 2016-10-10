@@ -78,7 +78,12 @@ var ValueScheme = React.createClass({
             valueScheme = pattern;
           } else if(vocabulary != null) {
             if(enumeration == null) {
-              //TODO: Open vocabularies do not have an enumeration
+              if(vocabulary['@URI'] != null) {
+                var uri = vocabulary['@URI'];
+                valueScheme = <span>Vocabulary: <a target="_blank" href={uri}>{uri}</a></span>
+              } else {
+                valueScheme = "";
+              }
             } else {
               var enumItems = (!$.isArray(enumeration.item)) ? [enumeration.item] : enumeration.item;
               var items = $.map(enumItems, function(item, index) {
@@ -112,6 +117,8 @@ var ValueScheme = React.createClass({
             simpletype: (pattern == null)
         }
       );
+
+      log.debug("value scheme", valueScheme);
 
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
         <Input ref="typeInput" type="text" label="Type"
