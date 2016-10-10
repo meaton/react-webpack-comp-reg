@@ -123,8 +123,6 @@ var VocabularyEditor = React.createClass({
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = this.isClosedVocabulary() ? CLOSED_VOCAB : OPEN_VOCAB;
-      var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
-      var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
 
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -144,20 +142,7 @@ var VocabularyEditor = React.createClass({
             <option value={OPEN_VOCAB}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
-          <div className="external-vocab-editor">
-            External vocabulary: {vocabUri &&
-              <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
-            } <Button>Search</Button>
-            <div>
-              <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
-              {this.state.externalVocabDetailsShown &&
-                <div className="external-vocab-editor-details">
-                  <label for="external-vocab-uri">URI:</label><Input id="external-vocab-uri" type="text" value={vocabUri || ""} onChange={this.onChangeExternalVocab} />
-                  <label for="external-vocab-property">Value property:</label><Input id="external-vocab-property" type="text" value={vocabValueProp || ""} onChange={this.onChangeExternalVocab} />
-                </div>
-              }
-            </div>
-          </div>
+          {this.renderExternalVocabularyEditor()}
           {vocabType === CLOSED_VOCAB &&
             <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
               <Table.Header />
@@ -168,6 +153,36 @@ var VocabularyEditor = React.createClass({
             <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
           }
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={vocabType === CLOSED_VOCAB && vocabData.length <= 0}>Use Controlled Vocabulary</Button></div>
+        </div>
+      );
+    },
+
+    renderExternalVocabularyEditor: function() {
+      var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
+      var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
+
+      return (
+        <div className="external-vocab-editor">
+          External vocabulary: {vocabUri &&
+            <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
+          } <Button>Search</Button>
+          <div>
+            <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
+            {this.state.externalVocabDetailsShown && /* show external vocab details */
+              <div className="external-vocab-editor-details">
+                <Input id="external-vocab-uri"
+                   type="text"
+                   label="URI:"
+                  value={vocabUri || ""}
+                  onChange={this.onChangeExternalVocab} />
+                <Input id="external-vocab-property"
+                  type="text"
+                  label="Value property:"
+                  value={vocabValueProp || ""}
+                  onChange={this.onChangeExternalVocab} />
+              </div>
+            }
+          </div>
         </div>
       );
     },
