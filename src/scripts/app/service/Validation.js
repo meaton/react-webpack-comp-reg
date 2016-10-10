@@ -97,7 +97,10 @@ var testValueScheme = function(item) {
     var fieldValue = item['ValueScheme'];
     var vocabulary = fieldValue.Vocabulary;
     var pattern = fieldValue.pattern;
-    if((vocabulary != null && vocabulary.enumeration != null && vocabulary.enumeration.item != null) || (pattern != null && pattern.length > 0))
+    if((vocabulary != null &&
+          (vocabulary.enumeration != null && vocabulary.enumeration.item != null
+            || vocabulary['@URI'] != null && vocabulary['@ValueProperty'] != null))
+          || (pattern != null && pattern.length > 0))
       return true;
     else
       return false;
