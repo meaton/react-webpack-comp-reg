@@ -62,10 +62,8 @@
 }
 
 #typeTable {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #999;
   margin-bottom: 0px;
+  border-collapse: collapse;
 
   tbody {
     max-height: 130px;
@@ -114,22 +112,37 @@ div.add-new-vocab {
   margin-top: 0;
   padding: .5em;
   width: 100%;
-  border-bottom: 1px solid #999;
-  margin-bottom: 1em;
 }
 
-div.external-vocab-editor {
-  border: 1px groove;
-  padding-left: .5em;
-  margin: .5em;
+div.vocabulary-editor {
 
-  a.remove {
-    color: #f00;
+  .form-group {
+    .control-label {
+      display: inline-block;
+      width: 20%;
+    }
+    .form-control {
+      display: inline-block;
+      width: 70%;
+    }
   }
 
-  .external-vocab-editor-details {
-    padding-left: 1em;
-    border-left: 2px solid #999;
+  div.vocabulary-items, div.external-vocab-editor {
+    border: 2px groove;
+    padding: .5em;
+    margin: .5em;
+  }
+
+  div.external-vocab-editor {
+
+    a.remove {
+      color: #f00;
+    }
+
+    .external-vocab-editor-details {
+      padding-left: 1em;
+      border-left: 2px solid #999;
+    }
   }
 }
 

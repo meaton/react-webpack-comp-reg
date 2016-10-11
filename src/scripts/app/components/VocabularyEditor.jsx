@@ -150,32 +150,42 @@ var VocabularyEditor = React.createClass({
 
       var tableClasses = classNames('table','table-condensed');
       return (
-        <div>
+        <div className="vocabulary-editor">
           <Input type="select" label="Vocabulary type:" value={vocabType} onChange={this.onChangeVocabType}>
             <option value={OPEN_VOCAB}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
-          {this.renderExternalVocabularyEditor(vocabUri, vocabValueProp)}
           {vocabType === CLOSED_VOCAB &&
-            <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
-              <Table.Header />
-              <Table.Body rows={vocabData} rowKey="rowIdx" />
-            </Table.Provider>
+            <div className="vocabulary-items">
+              Closed vocabulary items:
+              <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
+                <Table.Header />
+                <Table.Body rows={vocabData} rowKey="rowIdx" />
+              </Table.Provider>
+              <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
+              {vocabData == null || vocabData.length == 0 &&
+                <div className="error">Add one or more items to this vocabulary to make it valid!</div>
+              }
+            </div>
           }
-          {vocabType === CLOSED_VOCAB &&
-            <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
-          }
+          {this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp)}
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
         </div>
       );
     },
 
-    renderExternalVocabularyEditor: function(vocabUri, vocabValueProp) {
+    renderExternalVocabularyEditor: function(vocabType, vocabUri, vocabValueProp) {
       return (
         <div className="external-vocab-editor">
-          External vocabulary: {vocabUri &&
-            <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
-          } <Button>Search</Button>
+          {!vocabUri && vocabType === OPEN_VOCAB &&
+            <div className="error">Please select or define an external vocabulary for this open vocabulary!</div>}
+          {vocabType === CLOSED_VOCAB &&
+            <div><strong>Optionally</strong> select or define an external vocabulary for this closed vocabulary. You can choose to import the items of the selected external vocabulary into the current vocabulary.</div>}
+          <div>
+            External vocabulary: {vocabUri &&
+              <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
+            } {!vocabUri && "none"} <Button>Search</Button>
+          </div>
           <div>
             <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
             {this.state.externalVocabDetailsShown && /* show external vocab details */
