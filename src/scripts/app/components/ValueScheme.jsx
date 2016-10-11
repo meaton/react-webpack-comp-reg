@@ -80,9 +80,13 @@ var ValueScheme = React.createClass({
             if(enumeration == null) {
               if(vocabulary['@URI'] != null) {
                 var uri = vocabulary['@URI'];
-                valueScheme = <span>Vocabulary: <a target="_blank" href={uri}>{uri}</a></span>
+                if(enabled) {
+                  return (<Input type="text" label="Type" value={"Open vocabulary: " + uri} buttonAfter={typeTrigger} labelClassName="editorFormLabel" wrapperClassName="editorFormField open-vocabulary" readOnly/>);
+                } else {
+                  return(<span>Open vocabulary: <a target="_blank" href={uri}>{uri}</a></span>);
+                }
               } else {
-                valueScheme = "";
+                return (<span>Unspecified open vocabulary</span>);
               }
             } else {
               var enumItems = (!$.isArray(enumeration.item)) ? [enumeration.item] : enumeration.item;
