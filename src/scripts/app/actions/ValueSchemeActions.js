@@ -164,17 +164,20 @@ var ValueSchemeActions = {
   },
 
   setVocabularyTypeOpen: function(oldVocabulary) {
-    if(oldVocabulary != null) {
+    if(oldVocabulary == null) {
+      var updatedVocab = {};
+    } else {
       //copy properties to be kept (not enumeration)
       var updatedVocab = {
         '@URI': oldVocabulary['@URI'],
         '@ValueProperty': oldVocabulary['@ValueProperty'],
         '@ValueLanguage': oldVocabulary['@ValueLanguage']
       };
-      this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
-        vocabulary: updatedVocab
-      });
     }
+
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
   },
 
   setVocabularyTypeClosed: function(oldVocabulary) {

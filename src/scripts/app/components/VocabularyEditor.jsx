@@ -122,7 +122,7 @@ var VocabularyEditor = React.createClass({
 
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
-      var vocabType = this.isClosedVocabulary() ? CLOSED_VOCAB : OPEN_VOCAB;
+      var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
       var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
       var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
 
