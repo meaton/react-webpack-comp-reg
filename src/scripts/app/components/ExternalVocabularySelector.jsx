@@ -3,6 +3,7 @@ var log = require('loglevel');
 var React = require('react');
 
 //bootstrap
+var Modal = require('react-bootstrap/lib/Modal');
 var Button = require('react-bootstrap/lib/Button');
 
 //mixins
@@ -71,34 +72,48 @@ var ExternalVocabularySelector = React.createClass({
       var classes = classnames('external-vocabulary-search', {
         loading: this.state.loading
       });
-      return (<div className={classes}>
-        Available external vocabularies:
-        <div>
-          {this.state.loading && <strong>Retrieving vocabularies</strong>}
-          {this.state.error && <div className="error">{this.state.error}<br /><a onClick={this.doQuery}>Try again</a></div>}
-        </div>
-        <div className="external-vocabulary-items">
-          {!this.state.loading && this.state.vocabularies.length == 0 && <strong>No vocabularies found</strong>}
-          {this.state.vocabularies.map(function(item, idx){
-            var title = item['title@en'] || item['title'] || "[No title]";
-            var description = item['description@en'];
-            var itemClasses = classnames('external-vocabulary-item', {
-              selected: this.state.selected && this.state.selected.uuid === item.uuid
-            });
-            return (
-              <div onClick={this.selectItem.bind(null, item)} className={itemClasses} key={idx}>
-                <div className="title">{title}</div>
-                {description &&
-                  <div className="description">{description}</div>
-                }
-              </div>);
-          }.bind(this))}
-        </div>
-        <div className="external-vocabulary-search-buttons modal-inline">
-          <Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;
-          <Button onClick={this.props.onCancel}>Back</Button>
-        </div>
-      </div>);
+
+    return(
+      <Modal.Dialog show={true} key="externalVocabModal" ref="modal" id="externalVocabModal" className="registry-dialog" enforceFocus={true} backdrop={false}>
+
+        <Modal.Header closeButton={true} onHide={this.close}>
+          <Modal.Title>Available external vocabularies</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div className={classes}>
+            <div>
+              {this.state.loading && <strong>Retrieving vocabularies</strong>}
+              {this.state.error && <div className="error">{this.state.error}<br /><a onClick={this.doQuery}>Try again</a></div>}
+            </div>
+            <div className="external-vocabulary-items">
+              {!this.state.loading && this.state.vocabularies.length == 0 && <strong>No vocabularies found</strong>}
+              {this.state.vocabularies.map(function(item, idx){
+                var title = item['title@en'] || item['title'] || "[No title]";
+                var description = item['description@en'];
+                var itemClasses = classnames('external-vocabulary-item', {
+                  selected: this.state.selected && this.state.selected.uuid === item.uuid
+                });
+                return (
+                  <div onClick={this.selectItem.bind(null, item)} className={itemClasses} key={idx}>
+                    <div className="title">{title}</div>
+                    {description &&
+                      <div className="description">{description}</div>
+                    }
+                  </div>);
+              }.bind(this))}
+            </div>
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <div className="external-vocabulary-search-buttons modal-inline">
+            <Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;
+            <Button onClick={this.props.onCancel}>Back</Button>
+          </div>
+        </Modal.Footer>
+      </Modal.Dialog>
+    );
     }
 
 });

@@ -130,17 +130,6 @@ var VocabularyEditor = React.createClass({
     },
 
     render: function() {
-      if(this.state.selectExternalVocabularyMode) {
-        var doSelect = function(vocabUri, valueProperty) {
-          this.props.onChangeExternalVocab(vocabUri, valueProperty);
-          this.setState({selectExternalVocabularyMode: false});
-        }.bind(this);
-        var doCancel = function() {
-          this.setState({selectExternalVocabularyMode: false});
-        }.bind(this);
-        return <ExternalVocabularySelector onSelect={doSelect} onCancel={doCancel} />;
-      }
-
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
       var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
@@ -195,6 +184,15 @@ var VocabularyEditor = React.createClass({
     },
 
     renderExternalVocabularyEditor: function(vocabType, vocabUri, vocabValueProp) {
+      var modalRef;
+      var closeHandler = function(evt) {
+        modalRef.toggleModal();
+      }
+
+      var doSelect = function(vocabUri, valueProperty) {
+        this.props.onChangeExternalVocab(vocabUri, valueProperty);
+      }.bind(this);
+
       return (
         <div className="external-vocab-editor">
           {!vocabUri && vocabType === OPEN_VOCAB &&
@@ -204,7 +202,17 @@ var VocabularyEditor = React.createClass({
           <div>
             External vocabulary: {vocabUri &&
               <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
-            } {!vocabUri && "none"} <Button onClick={this.doSearchVocabularies}>Search</Button>
+            } {!vocabUri && "none"} &nbsp;
+            <ModalTrigger
+              ref={function(modal) {
+                 modalRef = modal;
+               }}
+              modalTarget="externalVocabModalContainer"
+              label="Search"
+              modal={
+                  <ExternalVocabularySelector
+                    onSelect={doSelect} onCancel={closeHandler} />
+              } />
           </div>
           <div>
             <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
