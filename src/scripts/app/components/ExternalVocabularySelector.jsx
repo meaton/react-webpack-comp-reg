@@ -34,9 +34,6 @@ var ExternalVocabularySelector = React.createClass({
       this.doQuery();
     },
 
-    componentDidUpdate: function(prevProps, prevState) {
-    },
-
     doQuery: function() {
       this.setState({
         loading: true,
@@ -58,11 +55,16 @@ var ExternalVocabularySelector = React.createClass({
     },
 
     selectItem: function(item) {
-      this.setState({selected: item});
+      if(this.state.selected && this.state.selected.uuid === item.uuid) {
+        //unselect
+        this.setState({selected: null});
+      } else {
+        this.setState({selected: item});
+      }
     },
 
     submitSelection: function(item) {
-      this.props.onSelect(this.state.selected['uri'], 'prop');
+      this.props.onSelect(this.state.selected['uri'], 'skos:prefLabel');
     },
 
     render: function() {
@@ -70,7 +72,7 @@ var ExternalVocabularySelector = React.createClass({
         loading: this.state.loading
       });
       return (<div className={classes}>
-        Available CLAVAS vocabularies:
+        Available external vocabularies:
         <div>
           {this.state.loading && <strong>Retrieving vocabularies</strong>}
           {this.state.error && <div className="error">{this.state.error}<br /><a onClick={this.doQuery}>Try again</a></div>}
@@ -92,9 +94,9 @@ var ExternalVocabularySelector = React.createClass({
               </div>);
           }.bind(this))}
         </div>
-        <div>
-          <Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>
-          <Button onClick={this.props.onCancel}>Cancel</Button>
+        <div className="external-vocabulary-search-buttons modal-inline">
+          <Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;
+          <Button onClick={this.props.onCancel}>Back</Button>
         </div>
       </div>);
     }
