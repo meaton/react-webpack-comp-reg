@@ -187,3 +187,28 @@ div.vocabulary-editor {
     }
   }
 }
+
+.external-vocabulary-search {
+  .external-vocabulary-items {
+    border-top: 1px solid;
+
+    .external-vocabulary-item {
+      padding: .5em;
+      border-bottom: 1px dashed;
+      cursor: pointer;
+
+      &.selected {
+        background: #ccc;
+      }
+
+      .title {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      .description {
+        font-style: italic;
+      }
+    }
+  }
+}

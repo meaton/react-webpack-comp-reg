@@ -14,6 +14,7 @@ var Config = require('../../config').Config;
 var restUrl = require('../../config').restUrl;
 var authUrl = restUrl + "/authentication";
 var ccrUrl = require('../../config').ccrUrl;
+var vocabulariesUrl = require('../../config').vocabulariesUrl;
 
 var Validation = require('./Validation');
 
@@ -594,6 +595,23 @@ queryCCR: function(searchQuery, cb) {
         cb(null);
       }.bind(this)
     }, corsRequestParams));
+},
+
+queryVocabularies: function(cb) {
+  $.ajax($.extend({
+    type: 'GET',
+    url: vocabulariesUrl,
+    processData: false,
+    contentType: false,
+    dataType: "json",
+    success: function(data) {
+      if(cb)
+        cb(data);
+    }.bind(this),
+    error: function(xhr, status, err) {
+      cb(null);
+    }.bind(this)
+  }, corsRequestParams));
 },
 
 getAuthState: function(handleSuccess, handleFailure) {
