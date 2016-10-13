@@ -207,6 +207,7 @@ var VocabularyEditor = React.createClass({
               label="Search"
               modal={
                   <ExternalVocabularySelector
+                    initialSelectionUri={vocabUri}
                     onSelect={this.props.onChangeExternalVocab} onClose={closeHandler} />
               } />
           </div>

@@ -19,7 +19,8 @@ var ExternalVocabularySelector = React.createClass({
 
     propTypes: {
       onSelect: React.PropTypes.func.isRequired,
-      onClose: React.PropTypes.func.isRequired
+      onClose: React.PropTypes.func.isRequired,
+      initialSelectionUri: React.PropTypes.string
     },
 
     getInitialState: function() {
@@ -47,10 +48,25 @@ var ExternalVocabularySelector = React.createClass({
             error: "Failed to retrieve vocabularies"
           });
         }
-        log.debug("Retrieved vocabularies", data);
+        log.trace("Retrieved data", data);
+
+        var vocabularies = data.response.docs;
+        log.debug("Retrieved vocabularies", vocabularies);
+
+        var selected = this.state.selected;
+        if(selected == null && this.props.initialSelectionUri != null) {
+          log.debug("Initial selection:", this.props.initialSelectionUri);
+          var targetUri = this.props.initialSelectionUri;
+          for(var i=0;i<vocabularies.length;i++) {
+            if(vocabularies[i].uri === targetUri) {
+              selected = vocabularies[i];
+            }
+          }
+        }
         this.setState({
           loading: false,
-          vocabularies: data.response.docs
+          vocabularies: vocabularies,
+          selected: selected
         });
       }.bind(this));
     },
