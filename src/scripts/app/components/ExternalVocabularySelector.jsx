@@ -126,7 +126,7 @@ var ExternalVocabularySelector = React.createClass({
         <Modal.Footer>
           <div className="external-vocabulary-search-buttons modal-inline">
             <Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;
-            <Button onClick={this.props.onClose}>Close</Button>
+            <Button onClick={this.props.onClose}>Cancel</Button>
           </div>
         </Modal.Footer>
       </Modal.Dialog>
