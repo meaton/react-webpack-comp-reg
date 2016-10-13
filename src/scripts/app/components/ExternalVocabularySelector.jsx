@@ -19,7 +19,7 @@ var ExternalVocabularySelector = React.createClass({
 
     propTypes: {
       onSelect: React.PropTypes.func.isRequired,
-      onCancel: React.PropTypes.func.isRequired
+      onClose: React.PropTypes.func.isRequired
     },
 
     getInitialState: function() {
@@ -66,6 +66,7 @@ var ExternalVocabularySelector = React.createClass({
 
     submitSelection: function(item) {
       this.props.onSelect(this.state.selected['uri'], 'skos:prefLabel');
+      this.props.onClose();
     },
 
     render: function() {
@@ -76,7 +77,7 @@ var ExternalVocabularySelector = React.createClass({
     return(
       <Modal.Dialog show={true} key="externalVocabModal" ref="modal" id="externalVocabModal" className="registry-dialog" enforceFocus={true} backdrop={false}>
 
-        <Modal.Header closeButton={true} onHide={this.close}>
+        <Modal.Header closeButton={true} onHide={this.props.onClose}>
           <Modal.Title>Available external vocabularies</Modal.Title>
         </Modal.Header>
 
@@ -109,7 +110,7 @@ var ExternalVocabularySelector = React.createClass({
         <Modal.Footer>
           <div className="external-vocabulary-search-buttons modal-inline">
             <Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;
-            <Button onClick={this.props.onCancel}>Back</Button>
+            <Button onClick={this.props.onClose}>Close</Button>
           </div>
         </Modal.Footer>
       </Modal.Dialog>

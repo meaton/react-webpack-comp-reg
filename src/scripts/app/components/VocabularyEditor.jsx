@@ -189,10 +189,6 @@ var VocabularyEditor = React.createClass({
         modalRef.toggleModal();
       }
 
-      var doSelect = function(vocabUri, valueProperty) {
-        this.props.onChangeExternalVocab(vocabUri, valueProperty);
-      }.bind(this);
-
       return (
         <div className="external-vocab-editor">
           {!vocabUri && vocabType === OPEN_VOCAB &&
@@ -211,7 +207,7 @@ var VocabularyEditor = React.createClass({
               label="Search"
               modal={
                   <ExternalVocabularySelector
-                    onSelect={doSelect} onCancel={closeHandler} />
+                    onSelect={this.props.onChangeExternalVocab} onClose={closeHandler} />
               } />
           </div>
           <div>
