@@ -19,7 +19,7 @@ More information, including UML diagrams, can be found in the project's [wiki](.
 
 ## Getting started quickly
 To run the application in development mode:
-- Start the Component Registry back end/REST service (see CLARIN [wiki](https://trac.clarin.eu/wiki/ComponentRegistryAndEditor) or [SVN](https://svn.clarin.eu/ComponentRegistry))
+- Start the Component Registry back end/REST service (see https://github.com/clarin-eric/component-registry-rest)
 - Adapt the configuration in `compRegConfig.jsp` to match the back end root location
 - Install dependencies by running `npm install`
 - Start the webpack dev server by running `grunt serve`
