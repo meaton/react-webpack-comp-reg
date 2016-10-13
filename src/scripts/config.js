@@ -31,6 +31,7 @@ function getUrl() {
 module.exports = {
   Config: Config,
   ccrUrl: getUrl() + "/ccr",
+  vocabulariesUrl: getUrl() + "/vocabulary/conceptscheme",
   restUrl: getUrl() + "/rest",
   adminUrl: getUrl() + "/admin",
   webappUrl: getUrl()

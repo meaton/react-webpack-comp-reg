@@ -8,6 +8,7 @@ var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
 var ModalTrigger = require('./ModalTrigger');
+var ExternalVocabularySelector = require('./ExternalVocabularySelector');
 var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
 //bootstrap
@@ -23,6 +24,7 @@ var classNames = require('classnames');
 var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
+var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 
 var OPEN_VOCAB = "open";
 var CLOSED_VOCAB = "closed";
@@ -46,7 +48,8 @@ var VocabularyEditor = React.createClass({
       return {
         editedRow: -1,
         editedColumn: -1,
-        externalVocabDetailsShown: false
+        externalVocabDetailsShown: false,
+        selectExternalVocabularyMode: false
       }
     },
 
@@ -120,6 +123,12 @@ var VocabularyEditor = React.createClass({
       })
     },
 
+    doSearchVocabularies: function() {
+      this.setState({
+        selectExternalVocabularyMode: true
+      });
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
@@ -175,6 +184,11 @@ var VocabularyEditor = React.createClass({
     },
 
     renderExternalVocabularyEditor: function(vocabType, vocabUri, vocabValueProp) {
+      var modalRef;
+      var closeHandler = function(evt) {
+        modalRef.toggleModal();
+      }
+
       return (
         <div className="external-vocab-editor">
           {!vocabUri && vocabType === OPEN_VOCAB &&
@@ -184,7 +198,18 @@ var VocabularyEditor = React.createClass({
           <div>
             External vocabulary: {vocabUri &&
               <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
-            } {!vocabUri && "none"} <Button>Search</Button>
+            } {!vocabUri && "none"} &nbsp;
+            <ModalTrigger
+              ref={function(modal) {
+                 modalRef = modal;
+               }}
+              modalTarget="externalVocabModalContainer"
+              label="Search"
+              modal={
+                  <ExternalVocabularySelector
+                    initialSelectionUri={vocabUri}
+                    onSelect={this.props.onChangeExternalVocab} onClose={closeHandler} />
+              } />
           </div>
           <div>
             <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>

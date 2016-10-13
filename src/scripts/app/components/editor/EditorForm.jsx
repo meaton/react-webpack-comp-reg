@@ -76,6 +76,7 @@ var EditorForm = React.createClass({
           {/* 'hook' for editor modals */}
           <div id="typeModalContainer"></div>
           <div id="ccrModalContainer"></div>
+          <div id="externalVocabModalContainer"></div>
 
           <h3>
             {ComponentSpec.isProfile(this.props.spec)
