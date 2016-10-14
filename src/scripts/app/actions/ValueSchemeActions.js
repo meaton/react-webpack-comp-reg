@@ -188,8 +188,14 @@ var ValueSchemeActions = {
         }
       };
     } else {
+      //switch to an closed vocabulary
       var updatedVocab = update(oldVocabulary, {
         $merge: {
+          //unset extrnal vocabulary link
+          '@URI': null,
+          '@ValueProperty': null,
+          '@ValueLanguage': null,
+          //instantiate an empty enumeration
           enumeration: {
             item: []
           }
