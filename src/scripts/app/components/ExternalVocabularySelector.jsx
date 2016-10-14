@@ -12,6 +12,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 //utils
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 var classnames = require('classnames');
+var Config = require('../../config');
 
 var ExternalVocabularySelector = React.createClass({
 
@@ -108,12 +109,14 @@ var ExternalVocabularySelector = React.createClass({
               {this.state.vocabularies.map(function(item, idx){
                 var title = item['title@en'] || item['title'] || "[No title]";
                 var description = item['description@en'];
+                var vocabPageUrl = Config.vocabulariesUrl + '/vocabpage?id=' + item['uuid'];
                 var itemClasses = classnames('external-vocabulary-item', {
                   selected: this.state.selected && this.state.selected.uuid === item.uuid
                 });
                 return (
                   <div onClick={this.selectItem.bind(null, item)} className={itemClasses} key={idx}>
                     <div className="title">{title}</div>
+                    <a href={vocabPageUrl} target="_blank">{item['uri']}</a>
                     {description &&
                       <div className="description">{description}</div>
                     }
