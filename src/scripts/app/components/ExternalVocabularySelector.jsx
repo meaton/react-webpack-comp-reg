@@ -5,6 +5,7 @@ var React = require('react');
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
 var Button = require('react-bootstrap/lib/Button');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -115,8 +116,7 @@ var ExternalVocabularySelector = React.createClass({
                 });
                 return (
                   <div onClick={this.selectItem.bind(null, item)} className={itemClasses} key={idx}>
-                    <div className="title">{title}</div>
-                    <a href={vocabPageUrl} target="_blank">{item['uri']}</a>
+                    <div className="title">{title} <a href={vocabPageUrl} target="_blank"><Glyphicon glyph="info-sign" /></a></div>
                     {description &&
                       <div className="description">{description}</div>
                     }
