@@ -325,6 +325,13 @@ normaliseValueScheme: function(valueScheme) {
       if(item != undefined && !$.isArray(item)) {
         vocab.enumeration.item = [item];
       }
+      vocab.enumeration.item = vocab.enumeration.item.map(function(item) {
+        if(!$.isPlainObject(item)) {
+          return {'$': item};
+        } else {
+          return item;
+        }
+      });
     }
   }
 },
