@@ -167,12 +167,9 @@ var ValueSchemeActions = {
     if(oldVocabulary == null) {
       var updatedVocab = {};
     } else {
-      //copy properties to be kept (not enumeration)
-      var updatedVocab = {
-        '@URI': oldVocabulary['@URI'],
-        '@ValueProperty': oldVocabulary['@ValueProperty'],
-        '@ValueLanguage': oldVocabulary['@ValueLanguage']
-      };
+      var updatedVocab = update(oldVocabulary, {
+        enumeration: {$set: null}
+      });
     }
 
     this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
