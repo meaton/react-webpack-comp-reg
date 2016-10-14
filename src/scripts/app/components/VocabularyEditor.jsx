@@ -114,7 +114,7 @@ var VocabularyEditor = React.createClass({
     },
 
     isClosedVocabulary: function() {
-      return this.props.vocabulary && this.props.vocabulary.hasOwnProperty("enumeration");
+      return this.props.vocabulary && this.props.vocabulary.enumeration != null;
     },
 
     toggleExternalVocabDetails: function() {
