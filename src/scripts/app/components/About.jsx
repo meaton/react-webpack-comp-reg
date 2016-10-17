@@ -46,6 +46,9 @@ var Main = React.createClass({
           <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
           <p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
         </div>
+        <div>
+          Icons by <a href="http://glyphicons.com/">Glyphicons</a>
+        </div>
       </div>
     );
   }
