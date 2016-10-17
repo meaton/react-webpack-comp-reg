@@ -12,6 +12,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
+var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -43,7 +44,8 @@ var CMDElementForm = React.createClass({
             ImmutableRenderMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
-            ActionButtonsMixin],
+            ActionButtonsMixin,
+            MoreLessComponentMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -116,6 +118,12 @@ var CMDElementForm = React.createClass({
                   <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
                 }
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
+                {this.isMoreShown() && /* MoreLessComponentMixin */
+                  <div className="more">
+                    <div>More stuff...</div>
+                  </div>
+                }
+                <a onClick={this.toggleMoreLess}>{this.isMoreShown() ? "Less...":"More..."}</a>
               </div>
             </div>
           )}
