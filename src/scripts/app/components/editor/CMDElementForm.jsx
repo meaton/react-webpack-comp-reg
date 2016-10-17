@@ -123,7 +123,7 @@ var CMDElementForm = React.createClass({
                     <div>More stuff...</div>
                   </div>
                 }
-                <a onClick={this.toggleMoreLess}>{this.isMoreShown() ? "Less...":"More..."}</a>
+                {this.renderMoreLessToggler()}
               </div>
             </div>
           )}
