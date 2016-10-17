@@ -123,7 +123,10 @@ var CMDElementForm = React.createClass({
                     <div>More stuff...</div>
                   </div>
                 }
-                {this.renderMoreLessToggler()}
+                {this.renderMoreLessToggler({
+                  expandText: "Additional element options",
+                  collapseText: "Hide additional element options"
+                })}
               </div>
             </div>
           )}

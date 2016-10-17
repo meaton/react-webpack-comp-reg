@@ -25,16 +25,20 @@ var MoreLessComponentMixin = {
     return this.state['_moreLessExpanded'];
   },
 
-  renderMoreLessToggler: function() {
-    if(this.isMoreShown()) {
-      var glyph =  "chevron-up";
-      var title = "Show less";
+  renderMoreLessToggler: function(opts) {
+    if(!this.isMoreShown()) {
+      //toggle will expand
+      var glyph = opts && opts.expandGlyph || "chevron-right";
+      var title = opts && opts.expandTitle || "Show more";
+      var text = opts && opts.expandText; // optional
     } else {
-      var glyph =  "chevron-down";
-      var title = "Show more";
+      //toggle will collapse
+      var glyph = opts && opts.collapseGlyph || "chevron-up";
+      var title = opts && opts.collapseTitle || "Show less";
+      var text = opts && opts.collapseText; // optional
     }
 
-    return (<Button onClick={this.toggleMoreLess} title={title}><Glyphicon glyph={glyph} /></Button>);
+    return (<a onClick={this.toggleMoreLess} title={title}><Glyphicon glyph={glyph} />{text && " " + text}</a>);
   }
 
 }
