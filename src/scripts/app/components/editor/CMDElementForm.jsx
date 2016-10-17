@@ -127,8 +127,8 @@ var CMDElementForm = React.createClass({
                           {$.isArray(elem.AutoValue) &&
                             elem.AutoValue.map(function(value, idx) {
                               return (
-                                <Input key={idx} type="text" value={value}
-                                wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} />
+                                <ValidatingTextInput key={idx} name="AutoValue" type="text" value={value}
+                                wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} validate={this.validate} />
                               );
                             }.bind(this))
                           }
