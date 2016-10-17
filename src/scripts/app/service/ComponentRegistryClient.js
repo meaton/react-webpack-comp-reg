@@ -312,7 +312,7 @@ normaliseAttributeList: function(attrList) {
         //normalise 'Documentation' element (must be an array supporting attributes)
         attrArray[j].Documentation = this.normaliseDocumentation(attrArray[j].Documentation);
         //normalise 'AutoValue' element (must be an simple string array)
-        attrArray[i].AutoValue = this.normaliseAutoValue(attrArray[i].AutoValue);
+        attrArray[j].AutoValue = this.normaliseAutoValue(attrArray[j].AutoValue);
       }
 
       attrList.Attribute = attrArray;
