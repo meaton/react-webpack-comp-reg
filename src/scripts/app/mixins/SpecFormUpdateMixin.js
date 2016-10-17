@@ -2,6 +2,7 @@
 
 var log = require('loglevel');
 var changeObj = require('../util/ImmutabilityUtil').changeObj;
+var update = require('../util/ImmutabilityUtil').update;
 var ComponentSpec = require('../service/ComponentSpec');
 /**
 * SpecFormUpdateMixin - Common functions and properties for the specification
@@ -24,6 +25,15 @@ var SpecFormUpdateMixin = {
   updateDocumentation: function(documentation) {
     log.trace("Update documentation", documentation);
     this.propagateValue("Documentation", documentation);
+  },
+
+  addAutoValueExpression: function() {
+    var spec = this.props.spec;
+    if($.isArray(spec.AutoValue)) {
+      this.propagateValue("AutoValue", update(spec.AutoValue, {$push: [""]}));
+    } else {
+      this.propagateValue("AutoValue", [""]);
+    }
   },
 
   addNewAttribute: function(onChange, evt) {

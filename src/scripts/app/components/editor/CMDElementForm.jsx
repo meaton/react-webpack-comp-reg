@@ -16,6 +16,7 @@ var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //components
 var CMDAttributeForm = require('./CMDAttributeForm');
@@ -122,8 +123,17 @@ var CMDElementForm = React.createClass({
                   <div className="more">
                     <div className="auto-value">
                         <label className="control-label editorFormLabel">Automatic value expressions</label>
-                        <Input type="text" name="AutoValue" value={elem['AutoValue']}
-                          wrapperClassName="editorFormField" onChange={this.updateElementValue} />
+                        <div className="form-groups">
+                          {$.isArray(elem.AutoValue) &&
+                            elem.AutoValue.map(function(value, idx) {
+                              return (
+                                <Input key={idx} type="text" value={value}
+                                wrapperClassName="editorFormField" onChange={this.updateElementValue} />
+                              );
+                            }.bind(this))
+                          }
+                          <div><a onClick={this.addAutoValueExpression}><Glyphicon glyph="plus" />Add automatic value expression</a></div>
+                        </div>
                     </div>
                   </div>
                 }
