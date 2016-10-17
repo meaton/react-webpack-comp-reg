@@ -68,6 +68,14 @@ var CMDAttributeView = React.createClass({
               <span className="attrLabel">Required:</span>
               <span className="attrValue">{required ? "Yes":"No"}</span>
             </li>
+            {$.isArray(attr.AutoValue) && (
+              <li className="attrElem">
+                <span className="attrLabel">Automatic value expression(s):</span>
+                <span className="attrValue">{attr.AutoValue.map(function(value){
+                    return <div>{value}</div>;
+                  })}</span>
+              </li>
+            )}
           </ul>
         </div>
       </div>
