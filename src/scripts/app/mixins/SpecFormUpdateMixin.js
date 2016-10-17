@@ -37,9 +37,14 @@ var SpecFormUpdateMixin = {
   },
 
   updateAutoValueExpression: function(index, evt) {
-    log.debug("Update auto value expression", evt);
+    log.debug("Update auto value expression", index, evt);
     var newValue = evt.target.value;
     this.propagateValue("AutoValue", update(this.props.spec.AutoValue, {$splice: [[index, 1, newValue]]}));
+  },
+
+  removeAutoValueExpression: function(index) {
+    log.debug("Remove auto value expression", index);
+    this.propagateValue("AutoValue", update(this.props.spec.AutoValue, {$splice: [[index, 1]]}));
   },
 
   addNewAttribute: function(onChange, evt) {

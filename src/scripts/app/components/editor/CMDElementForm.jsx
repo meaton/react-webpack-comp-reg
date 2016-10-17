@@ -16,6 +16,7 @@ var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
+var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //components
@@ -128,7 +129,9 @@ var CMDElementForm = React.createClass({
                             elem.AutoValue.map(function(value, idx) {
                               return (
                                 <ValidatingTextInput key={idx} name="AutoValue" type="text" value={value}
-                                wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} validate={this.validate} />
+                                wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} validate={this.validate}
+                                buttonAfter={<Button onClick={this.removeAutoValueExpression.bind(this, idx)}><Glyphicon glyph="trash"/></Button>}
+                                />
                               );
                             }.bind(this))
                           }
