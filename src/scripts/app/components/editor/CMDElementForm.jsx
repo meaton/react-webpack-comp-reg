@@ -16,8 +16,6 @@ var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //components
 var CMDAttributeForm = require('./CMDAttributeForm');
@@ -26,6 +24,7 @@ var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var DocumentationInput = require('./DocumentationInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
+var AutoValueEditor = require('./AutoValueEditor');
 
 //utils
 var classNames = require('classnames');
@@ -122,22 +121,7 @@ var CMDElementForm = React.createClass({
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
                 {this.isMoreShown() && /* MoreLessComponentMixin */
                   <div className="more">
-                    <div className="auto-value">
-                        <label className="control-label editorFormLabel">Automatic value expressions</label>
-                        <div className="form-groups">
-                          {$.isArray(elem.AutoValue) &&
-                            elem.AutoValue.map(function(value, idx) {
-                              return (
-                                <ValidatingTextInput key={idx} name="AutoValue" type="text" value={value}
-                                wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} validate={this.validate}
-                                buttonAfter={<Button onClick={this.removeAutoValueExpression.bind(this, idx)}><Glyphicon glyph="trash"/></Button>}
-                                />
-                              );
-                            }.bind(this))
-                          }
-                          <div><a onClick={this.addAutoValueExpression}><Glyphicon glyph="plus" />Add automatic value expression</a></div>
-                        </div>
-                    </div>
+                    <AutoValueEditor autoValue={elem.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}/>
                   </div>
                 }
                 {this.renderMoreLessToggler({
