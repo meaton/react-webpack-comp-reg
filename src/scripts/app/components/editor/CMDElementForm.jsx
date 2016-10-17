@@ -120,7 +120,11 @@ var CMDElementForm = React.createClass({
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
                 {this.isMoreShown() && /* MoreLessComponentMixin */
                   <div className="more">
-                    <div>More stuff...</div>
+                    <div className="auto-value">
+                        <label className="control-label editorFormLabel">Automatic value expressions</label>
+                        <Input type="text" name="AutoValue" value={elem['AutoValue']}
+                          wrapperClassName="editorFormField" onChange={this.updateElementValue} />
+                    </div>
                   </div>
                 }
                 {this.renderMoreLessToggler({
