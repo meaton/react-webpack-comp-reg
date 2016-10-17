@@ -12,6 +12,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
+var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -23,6 +24,7 @@ var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var DocumentationInput = require('./DocumentationInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
+var AutoValueEditor = require('./AutoValueEditor');
 
 //utils
 var classNames = require('classnames');
@@ -43,7 +45,8 @@ var CMDElementForm = React.createClass({
             ImmutableRenderMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
-            ActionButtonsMixin],
+            ActionButtonsMixin,
+            MoreLessComponentMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -116,6 +119,15 @@ var CMDElementForm = React.createClass({
                   <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
                 }
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
+                {this.isMoreShown() && /* MoreLessComponentMixin */
+                  <div className="more">
+                    <AutoValueEditor autoValue={elem.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}/>
+                  </div>
+                }
+                {this.renderMoreLessToggler({
+                  expandText: "Additional element options",
+                  collapseText: "Hide additional element options"
+                })}
               </div>
             </div>
           )}

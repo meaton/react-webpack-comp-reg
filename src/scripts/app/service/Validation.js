@@ -49,11 +49,13 @@ var validators = {
   },
   element: {
     '@name': [requiredString, noSpaces, ncName],
-    '@ConceptLink': [conceptLinkUri]
+    '@ConceptLink': [conceptLinkUri],
+    'AutoValue': [requiredString]
   },
   attribute: {
     '@name': [requiredString, noSpaces, ncName],
-    '@ConceptLink': [conceptLinkUri]
+    '@ConceptLink': [conceptLinkUri],
+    'AutoValue': [requiredString]
   }
 };
 

@@ -263,8 +263,10 @@ normaliseSpec: function(data) {
         for(i=0; i<elemsArray.length; i++) {
           this.normaliseAttributeList(elemsArray[i].AttributeList);
           this.normaliseValueScheme(elemsArray[i].ValueScheme);
-          //normalise 'Documentation' element (must be an array)
+          //normalise 'Documentation' element (must be an array supporting attributes)
           elemsArray[i].Documentation = this.normaliseDocumentation(elemsArray[i].Documentation);
+          //normalise 'AutoValue' element (must be an simple string array)
+          elemsArray[i].AutoValue = this.normaliseAutoValue(elemsArray[i].AutoValue);
         }
         data.Element = elemsArray;
       }
@@ -307,8 +309,10 @@ normaliseAttributeList: function(attrList) {
       // normalise all value schemes in the attributes
       for(j=0; j<attrArray.length; j++) {
         this.normaliseValueScheme(attrArray[j].ValueScheme);
-        //normalise 'Documentation' element (must be an array)
+        //normalise 'Documentation' element (must be an array supporting attributes)
         attrArray[j].Documentation = this.normaliseDocumentation(attrArray[j].Documentation);
+        //normalise 'AutoValue' element (must be an simple string array)
+        attrArray[j].AutoValue = this.normaliseAutoValue(attrArray[j].AutoValue);
       }
 
       attrList.Attribute = attrArray;
@@ -341,8 +345,18 @@ normaliseDocumentation: function(documentation) {
   if(documentation == null || $.isArray(documentation)) {
     return documentation;
   } else {
-    log.trace("Turned into array", [documentation]);
+    log.trace("Turned into array", documentation);
     return [{'$': documentation}];
+  }
+},
+
+normaliseAutoValue: function(autoValue) {
+  log.trace("AutoValue: ", autoValue);
+  if(autoValue == null || $.isArray(autoValue)) {
+    return autoValue;
+  } else {
+    log.trace("Turned into array", autoValue);
+    return [autoValue];
   }
 },
 

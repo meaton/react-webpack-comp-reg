@@ -11,6 +11,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
+var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -21,6 +22,7 @@ var ValueScheme = require('../ValueScheme');
 var ValidatingTextInput = require('./ValidatingTextInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
 var DocumentationInput = require('./DocumentationInput');
+var AutoValueEditor = require('./AutoValueEditor');
 
 //utils
 var classNames = require('classnames');
@@ -42,7 +44,8 @@ var CMDAttributeForm = React.createClass({
             ImmutableRenderMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
-            ActionButtonsMixin],
+            ActionButtonsMixin,
+            MoreLessComponentMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -81,7 +84,16 @@ var CMDAttributeForm = React.createClass({
           onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
           loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(attr);}.bind(this)} />
         <Input type="checkbox" name="@Required" label="Required" checked={required} onChange={this.updateAttributeSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
-      </div>
+        {this.isMoreShown() && /* MoreLessComponentMixin */
+          <div className="more">
+            <AutoValueEditor autoValue={attr.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}/>
+          </div>
+        }
+        {this.renderMoreLessToggler({
+          expandText: "Additional element options",
+          collapseText: "Hide additional element options"
+        })}
+    </div>
     ) : null;
 
     return (

@@ -104,6 +104,15 @@ var CMDElementView = React.createClass({
                 <span className="attrValue">{multilingual ? "yes" : "no"}</span>
                 </li>
               )}
+
+              {$.isArray(elem.AutoValue) && (
+                <li className="attrElem">
+                  <span className="attrLabel">Automatic value expression(s):</span>
+                  <span className="attrValue">{elem.AutoValue.map(function(value){
+                      return <div>{value}</div>;
+                    })}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
