@@ -58,7 +58,7 @@ var AutoValueEditor = React.createClass({
                 return (
                   <ValidatingTextInput key={idx} name="AutoValue" type="text" value={value}
                   wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} validate={this.props.validate}
-                  buttonAfter={<Button onClick={this.removeAutoValueExpression.bind(this, idx)}><Glyphicon glyph="trash"/></Button>}
+                  addonAfter={<a className="delete" onClick={this.removeAutoValueExpression.bind(this, idx)}><Glyphicon glyph="trash"/></a>}
                   />
                 );
               }.bind(this))
