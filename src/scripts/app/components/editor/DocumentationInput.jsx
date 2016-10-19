@@ -16,6 +16,12 @@ var Modal = require('react-bootstrap/lib/Modal');
 //utils
 var update = require('react-addons-update');
 
+var languageCodes = {
+  eng: "English",
+  deu: "German",
+  nld: "Dutch"
+};
+
 /**
 * ConceptLinkInput - Text input with button to trigger CCR search
 *
@@ -187,7 +193,6 @@ var DocumentationLanguageModal = React.createClass({
   },
 
   render: function() {
-
     return (
       <Modal.Dialog ref="modal" id="typeModal" key="typeModal" className="type-dialog" enforceFocus={true} backdrop={false}>
 
@@ -198,12 +203,15 @@ var DocumentationLanguageModal = React.createClass({
         <Modal.Body>
           <Input type="select" value={this.state.languageCode} onChange={this.setLanguageCode} label="Select a language:">
             <option value="">...</option>
-            <option value="eng">English</option>
-            <option value="de">German</option>
+            {
+              Object.keys(languageCodes).map(function(code){
+                return <option key={code} value={code}>{languageCodes[code]}</option>;
+              })
+            }
           </Input>
           <Input type="text" ref="languageCodeInput" value={this.state.languageCode || ""} label="or enter a language code:" labelClassName="editorFormLabel" wrapperClassName="editorFormField"
             onChange={this.setLanguageCode} buttonAfter={
-              <Button onClick={this.onChange}>Ok</Button>
+              <Button disabled={this.state.languageCode == null || this.state.languageCode === ''} onClick={this.onChange}>Ok</Button>
             } />
           {this.props.languageCode &&
             <div>
