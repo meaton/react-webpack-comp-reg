@@ -13,6 +13,9 @@ var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
 
+//utils
+var update = require('react-addons-update');
+
 /**
 * ConceptLinkInput - Text input with button to trigger CCR search
 *
@@ -30,6 +33,20 @@ var DocumentationInput = React.createClass({
 
   updateValue: function(index, evt) {
     log.debug("Update documentation", index, evt);
+    var newValue = evt.target.value;
+
+    var doc = this.props.value;
+    if(doc == null || !$.isArray(doc) || doc.length == 0) {
+      this.props.onChange([{'$': newValue}]);
+    } else if($.isArray(doc)) {
+      var currentDoc = doc[index];
+      var newDoc = {'$': newValue};
+      if(currentDoc != null) {
+        var newDoc = update(currentDoc, {$merge: newDoc});
+      }
+      log.debug("New doc:", newDoc);
+      this.props.onChange(update(doc, {$splice: [[index, 1, newDoc]]}));
+    }
   },
 
   render: function() {
@@ -58,7 +75,8 @@ var DocumentationInput = React.createClass({
                 onChange={this.updateLanguageCode.bind(this, index)}
                 />
             } />
-          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)} addonAfter={languageInput} />
+          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)} addonBefore={languageInput} />
+          /* todo: addonAfter: remove */
         }.bind(this))
       }
       </div>

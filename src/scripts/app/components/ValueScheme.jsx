@@ -122,8 +122,6 @@ var ValueScheme = React.createClass({
         }
       );
 
-      log.debug("value scheme", valueScheme);
-
       return (!this.props.enabled) ? <span className="attribute_scheme">{valueScheme}</span> :
         <Input ref="typeInput" type="text" label="Type"
           labelClassName="editorFormLabel" wrapperClassName={inputClasses}
