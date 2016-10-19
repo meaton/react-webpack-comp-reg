@@ -172,6 +172,11 @@ var DocumentationLanguageModal = React.createClass({
     this.props.onClose();
   },
 
+  onUnset: function() {
+    this.props.onChange(null);
+    this.props.onClose();
+  },
+
   render: function() {
 
     return (
@@ -192,6 +197,7 @@ var DocumentationLanguageModal = React.createClass({
         <Modal.Footer>
           <Button onClick={this.onChange}>Ok</Button>
           <Button onClick={this.props.onClose}>Cancel</Button>
+          <Button bsStyle="danger" onClick={this.onUnset}><Glyphicon glyph="remove" />Unset language code</Button>
         </Modal.Footer>
 
       </Modal.Dialog>
