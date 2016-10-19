@@ -342,8 +342,16 @@ normaliseValueScheme: function(valueScheme) {
 
 normaliseDocumentation: function(documentation) {
   log.trace("Documentation: ", documentation);
-  if(documentation == null || $.isArray(documentation)) {
+  if(documentation == null) {
     return documentation;
+  } else if($.isArray(documentation)) {
+    return documentation.map(function(doc) {
+      if(!$.isPlainObject(doc)) {
+        return {'$': doc};
+      } else {
+        return doc;
+      }
+    });
   } else {
     log.trace("Turned into array", documentation);
     return [{'$': documentation}];

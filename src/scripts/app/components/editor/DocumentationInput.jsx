@@ -37,6 +37,7 @@ var DocumentationInput = React.createClass({
 
     var doc = this.props.value;
     if(doc == null || !$.isArray(doc) || doc.length == 0) {
+      //no documentation set yet - make a new array
       this.props.onChange([{'$': newValue}]);
     } else if($.isArray(doc)) {
       var currentDoc = doc[index];
@@ -44,8 +45,22 @@ var DocumentationInput = React.createClass({
       if(currentDoc != null) {
         var newDoc = update(currentDoc, {$merge: newDoc});
       }
-      log.debug("New doc:", newDoc);
       this.props.onChange(update(doc, {$splice: [[index, 1, newDoc]]}));
+    }
+  },
+
+  addValue: function() {
+    var doc = this.props.value;
+    if(doc == null || !$.isArray(doc) || doc.length == 0) {
+      if(doc != null && !$.isArray(doc)) {
+        var firstValue = doc;
+      } else {
+        var firstValue = '';
+      }
+      this.props.onChange([{'$': firstValue},{'$': ''}]);
+    } else {
+      //add new item to array
+      this.props.onChange(update(doc, {$push: [{'$': ''}]}));
     }
   },
 
@@ -79,6 +94,7 @@ var DocumentationInput = React.createClass({
           /* todo: addonAfter: remove */
         }.bind(this))
       }
+      <a onClick={this.addValue}><Glyphicon glyph="plus"/></a>
       </div>
     );
   },
