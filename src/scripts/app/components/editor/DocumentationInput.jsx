@@ -4,9 +4,12 @@ var log = require('loglevel');
 var React = require('react');
 var update = require('react-addons-update');
 
+//components
+var ModalTrigger = require('../ModalTrigger');
+
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
-
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 /**
 * ConceptLinkInput - Text input with button to trigger CCR search
@@ -28,7 +31,21 @@ var ConceptLinkInput = React.createClass({
       <div>
       {
         docs.map(function(doc,index) {
-          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.onChange.bind(this, index)} />
+          var language = doc != null && doc['@lang'];
+          var languageInput = <ModalTrigger
+            ref="modalTrigger"
+            modalTarget="documentationLanguageModalContainer"
+            label={language || <Glyphicon glyph="comment"/>}
+            onOpen={this.props.loadValueSchemeData}
+            useLink={true}
+            modal={
+              <DocumentationLanguageModal
+                language={language}
+                onClose={function(){log.debug("close");}}
+                onChange={function(){log.debug("change");}}
+                />
+            } />
+          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.onChange.bind(this, index)} addonAfter={languageInput} />
         }.bind(this))
       }
       </div>
@@ -60,5 +77,18 @@ var ConceptLinkInput = React.createClass({
     this.props.onChange(newDocs);
   }
 });
+
+var DocumentationLanguageModal = React.createClass({
+  propTypes: {
+    language: React.PropTypes.string,
+    onChange: React.PropTypes.func.isRequired,
+    onClose: React.PropTypes.func.isRequired
+  },
+
+  render: function() {
+    return <div>bla</div>;
+  }
+});
+
 
 module.exports = ConceptLinkInput;

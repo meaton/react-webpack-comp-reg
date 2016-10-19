@@ -19,7 +19,10 @@ var ReactAlert = require('../util/ReactAlert');
 var ModalTrigger = React.createClass({
   propTypes: {
     modal: React.PropTypes.object.isRequired,
-    label: React.PropTypes.string.isRequired,
+    label: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.object
+    ]).isRequired,
     useLink: React.PropTypes.bool,
     modalTarget: React.PropTypes.string,
     onOpen: React.PropTypes.func,
