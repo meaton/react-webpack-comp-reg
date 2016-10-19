@@ -16,11 +16,7 @@ var Modal = require('react-bootstrap/lib/Modal');
 //utils
 var update = require('react-addons-update');
 
-var languageCodes = {
-  eng: "English",
-  deu: "German",
-  nld: "Dutch"
-};
+var languageCodes = require('../../../languageCodes');
 
 /**
 * ConceptLinkInput - Text input with button to trigger CCR search
@@ -194,18 +190,24 @@ var DocumentationLanguageModal = React.createClass({
 
   render: function() {
     return (
-      <Modal.Dialog ref="modal" id="typeModal" key="typeModal" className="type-dialog" enforceFocus={true} backdrop={false}>
+      <Modal.Dialog ref="modal" id="documentation-language-dialogue" className="type-dialog" enforceFocus={true} backdrop={false}>
 
         <Modal.Header closeButton={true} onHide={this.props.onClose}>
-          <Modal.Title>Documentation</Modal.Title>
+          <Modal.Title>Documentation: language code</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <Input type="select" value={this.state.languageCode} onChange={this.setLanguageCode} label="Select a language:">
+          <p>
+            Language codes for documentation items should be compliant with the requirements for XML language tags.
+            For more information, see W3C's article <a target="_blank" href="https://www.w3.org/International/articles/language-tags/">Language tags in HTML and XML</a>.
+          </p>
+          <Input type="select" value={this.state.languageCode} onChange={this.setLanguageCode} label="Select a language (incomplete list):">
             <option value="">...</option>
             {
+              //generate languages options list
+              //TODO(?): use https://github.com/mattcg/language-tags instead
               Object.keys(languageCodes).map(function(code){
-                return <option key={code} value={code}>{languageCodes[code]}</option>;
+                return <option key={code} value={code}>{languageCodes[code].name}</option>;
               })
             }
           </Input>
