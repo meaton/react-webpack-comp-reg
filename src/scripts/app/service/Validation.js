@@ -200,6 +200,11 @@ var Validation = {
     return true;
   },
 
+  validateDocumentation: function(documentation, feedback) {
+    feedback("Testing validation");
+    return false;
+  },
+
   validateVocabularyValueScheme: function(vocab, feedback) {
     //check if we have anything to work with...
     if(vocab == null) {

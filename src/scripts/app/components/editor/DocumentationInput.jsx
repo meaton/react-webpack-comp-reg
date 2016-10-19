@@ -12,8 +12,10 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
+var Alert = require('react-bootstrap/lib/Alert');
 
 //utils
+var Validation = require('../../service/Validation')
 var update = require('react-addons-update');
 
 var languageCodes = require('../../../languageCodes');
@@ -27,6 +29,14 @@ var DocumentationInput = React.createClass({
   propTypes: {
     value: React.PropTypes.array.isRequired,
     onChange: React.PropTypes.func.isRequired
+  },
+
+  getInitialState: function() {
+    return {
+      validated: false,
+      valid: true,
+      validationMessage: null
+    };
   },
 
   updateValue: function(index, evt) {
@@ -88,9 +98,29 @@ var DocumentationInput = React.createClass({
     this.refs[modalRef].toggleModal(evt);
   },
 
+  doValidate: function(evt) {
+    var msgContainer = {message: null};
+    var handleFeedback = function(msg) {
+      msgContainer.message = msg;
+    };
+    var valid = Validation.validateDocumentation(this.props.value, handleFeedback);
+
+    if(!valid) {
+      log.debug("Invalid documentation:", msgContainer.message);
+    }
+
+    this.setState({
+      validated: true,
+      valid: valid,
+      validationMessage : msgContainer.message
+    });
+  },
+
   render: function() {
-    var {value, onChange, ...other} = this.props;
+    var {value, onChange, name, ...other} = this.props;
     var docs = ($.isArray(value) && value.length > 0) ? value : [null];
+
+    var isInvalid = this.state.validated && !this.state.valid;
 
     return (
       <div>
@@ -114,14 +144,20 @@ var DocumentationInput = React.createClass({
                 onChange={this.updateLanguageCode.bind(this, index)}
                 />
             } />
-          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)}
+          return <Input key={index} name={name + "-" + index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)}
             addonBefore={languageInput}
             addonAfter={index > 0 &&
               <a className="delete" onClick={this.deleteDoc.bind(this, index)}  title="Remove documentation item"><Glyphicon glyph="trash" /></a>
-            }/>
+            }
+            onBlur={this.doValidate}
+            bsStyle={isInvalid ? "error":"default"}
+            />
         }.bind(this))
       }
       <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
+      {isInvalid &&
+        <Alert bsStyle="danger">{this.state.validationMessage || "Invalid documentation (reason unknown)"}</Alert>
+      }
       </div>
     );
   }
