@@ -27,14 +27,8 @@ var DocumentationInput = React.createClass({
     onChange: React.PropTypes.func.isRequired
   },
 
-  updateLanguageCode: function(index, value) {
-    log.debug("Update language code", index, value);
-  },
-
   updateValue: function(index, evt) {
-    log.debug("Update documentation", index, evt);
     var newValue = evt.target.value;
-
     var doc = this.props.value;
     if(doc == null || !$.isArray(doc) || doc.length == 0) {
       //no documentation set yet - make a new array
@@ -44,6 +38,23 @@ var DocumentationInput = React.createClass({
       var newDoc = {'$': newValue};
       if(currentDoc != null) {
         var newDoc = update(currentDoc, {$merge: newDoc});
+      }
+      this.props.onChange(update(doc, {$splice: [[index, 1, newDoc]]}));
+    }
+  },
+
+  updateLanguageCode: function(index, languageCode) {
+    log.debug("Update language code", index, languageCode);
+    var doc = this.props.value;
+    if(doc == null || !$.isArray(doc) || doc.length == 0) {
+      //no documentation set yet - make a new array
+      this.props.onChange([{'$': '', '@lang': languageCode}]);
+    } else {
+      var currentDoc = doc[index];
+      if(currentDoc == null) {
+        var newDoc = {'$': '', '@lang': languageCode};
+      } else {
+        var newDoc = update(currentDoc, {$merge: {'@lang': languageCode}});
       }
       this.props.onChange(update(doc, {$splice: [[index, 1, newDoc]]}));
     }
@@ -104,7 +115,7 @@ var DocumentationInput = React.createClass({
             }/>
         }.bind(this))
       }
-      <a className="add-documentation-item" onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a>
+      <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
       </div>
     );
   },
