@@ -39,6 +39,22 @@ var DocumentationInput = React.createClass({
     };
   },
 
+  contextTypes: {
+      validationListener: React.PropTypes.object // provided by EditorForm
+  },
+
+  componentDidMount: function() {
+    if(this.context.validationListener != null) {
+      this.context.validationListener.add(this);
+    }
+  },
+
+  componentWillUnmount: function() {
+    if(this.context.validationListener != null) {
+      this.context.validationListener.remove(this);
+    }
+  },
+
   updateValue: function(index, evt) {
     var newValue = evt.target.value;
     var doc = this.props.value;
@@ -98,7 +114,7 @@ var DocumentationInput = React.createClass({
     this.refs[modalRef].toggleModal(evt);
   },
 
-  doValidate: function(evt) {
+  doValidate: function() {
     var msgContainer = {message: null};
     var handleFeedback = function(msg) {
       msgContainer.message = msg;
@@ -150,7 +166,7 @@ var DocumentationInput = React.createClass({
               <a className="delete" onClick={this.deleteDoc.bind(this, index)}  title="Remove documentation item"><Glyphicon glyph="trash" /></a>
             }
             onBlur={this.doValidate}
-            bsStyle={isInvalid ? "error":"default"}
+            bsStyle={isInvalid ? "error":null}
             />
         }.bind(this))
       }
