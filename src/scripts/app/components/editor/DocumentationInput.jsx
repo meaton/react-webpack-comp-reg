@@ -39,7 +39,7 @@ var DocumentationInput = React.createClass({
     if(doc == null || !$.isArray(doc) || doc.length == 0) {
       //no documentation set yet - make a new array
       this.props.onChange([{'$': newValue}]);
-    } else if($.isArray(doc)) {
+    } else {
       var currentDoc = doc[index];
       var newDoc = {'$': newValue};
       if(currentDoc != null) {
@@ -49,7 +49,7 @@ var DocumentationInput = React.createClass({
     }
   },
 
-  addValue: function() {
+  addDoc: function() {
     var doc = this.props.value;
     if(doc == null || !$.isArray(doc) || doc.length == 0) {
       if(doc != null && !$.isArray(doc)) {
@@ -61,6 +61,13 @@ var DocumentationInput = React.createClass({
     } else {
       //add new item to array
       this.props.onChange(update(doc, {$push: [{'$': ''}]}));
+    }
+  },
+
+  deleteDoc: function(index) {
+    var doc = this.props.value;
+    if($.isArray(doc) && doc.length > index) {
+      this.props.onChange(update(doc, {$splice: [[index, 1]]}));
     }
   },
 
@@ -90,11 +97,14 @@ var DocumentationInput = React.createClass({
                 onChange={this.updateLanguageCode.bind(this, index)}
                 />
             } />
-          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)} addonBefore={languageInput} />
-          /* todo: addonAfter: remove */
+          return <Input key={index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)}
+            addonBefore={languageInput}
+            addonAfter={index > 0 &&
+              <a className="delete" onClick={this.deleteDoc.bind(this, index)}  title="Remove documentation item"><Glyphicon glyph="trash" /></a>
+            }/>
         }.bind(this))
       }
-      <a onClick={this.addValue}><Glyphicon glyph="plus"/></a>
+      <a className="add-documentation-item" onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a>
       </div>
     );
   },

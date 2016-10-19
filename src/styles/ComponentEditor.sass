@@ -141,14 +141,6 @@
         .form-group {
           .editorFormField {
             width: 100%;
-
-            a.delete {
-              color: #000;
-
-              &:hover, &:active {
-                color: #d9534f
-              }
-            }
           }
         }
       }
@@ -216,8 +208,21 @@
   }
 }
 
-
 div.processing {
   cursor: wait;
   background-color: #f9feff;
+}
+
+a.delete {
+  color: #000;
+
+  &:hover, &:active {
+    color: #d9534f
+  }
+}
+
+a.add-documentation-item {
+  display: block;
+  width: 90%;
+  text-align: right;
 }
