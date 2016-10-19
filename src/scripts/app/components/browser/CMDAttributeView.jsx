@@ -57,7 +57,7 @@ var CMDAttributeView = React.createClass({
                 <span className="attrValue"><a href={conceptLink} target="_blank">{conceptLink}</a></span>
               </li>
             )}
-            {(documentation != null && documentation.length > 0) && (
+            {$.isArray(documentation) && documentation.length > 0 && documentation[0]['$'] != null && documentation[0]['$'] != '' && (
               <li className="attrElem"><span className="attrLabel">Documentation:</span>
               {
                 <DocumentationView value={documentation} />

@@ -81,15 +81,19 @@
       &.attrValue {
         display: inline-block;
         width: 60%;
-
-        .subValue {
-          display: block;
-          border-top: 1px solid #ccc;
-
-            &:first-of-type {
-              border-top: none;
-          }
-        }
       }
     }
+}
+
+.subValue {
+  display: block;
+  border-top: 1px solid #ccc;
+
+    &:first-of-type {
+      border-top: none;
+  }
+}
+
+.componentProps .subValue {
+  margin-left: 1em;
 }
