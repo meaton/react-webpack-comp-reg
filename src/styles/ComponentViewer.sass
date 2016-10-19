@@ -68,18 +68,28 @@
 
 .valueScheme, .elemAttrs li, .attrAttrs li {
     span {
-      display: inline-block;
 
       vertical-align: top;
 
       &.attrLabel {
+        display: inline-block;
         width: 40%;
         text-align: right;
         padding-right: 1em;
       }
 
       &.attrValue {
+        display: inline-block;
         width: 60%;
+
+        .subValue {
+          display: block;
+          border-top: 1px solid #ccc;
+
+            &:first-of-type {
+              border-top: none;
+          }
+        }
       }
     }
 }

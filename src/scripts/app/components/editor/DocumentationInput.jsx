@@ -19,7 +19,7 @@ var update = require('react-addons-update');
 var languageCodes = require('../../../languageCodes');
 
 /**
-* ConceptLinkInput - Text input with button to trigger CCR search
+* DocumentationInput - one text input per documentation element and controls to add/remove elements as well as set content language codes for each element (see DocumentationLanguageModal below)
 *
 * @constructor
 */
@@ -84,6 +84,10 @@ var DocumentationInput = React.createClass({
     }
   },
 
+  closeDialogue: function(modalRef, evt) {
+    this.refs[modalRef].toggleModal(evt);
+  },
+
   render: function() {
     var {value, onChange, ...other} = this.props;
     var docs = ($.isArray(value) && value.length > 0) ? value : [null];
@@ -120,35 +124,6 @@ var DocumentationInput = React.createClass({
       <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
       </div>
     );
-  },
-
-  closeDialogue: function(modalRef, evt) {
-    this.refs[modalRef].toggleModal(evt);
-  },
-
-  onChange: function(index, e) {
-    var newValue;
-    if(e.target.value === "") {
-      newValue = null;
-    } else {
-      newValue = {$: e.target.value}; //TODO: documentation language
-    }
-
-    var currentDocs = this.props.value;
-    if(currentDocs == null) {
-      currentDocs = [];
-    }
-
-    log.trace("New value for", currentDocs, "at", index, "=", newValue);
-
-    var newDocs;
-    if(index >= currentDocs.length) {
-      newDocs = update(currentDocs, {$push: [newValue]});
-    } else {
-      newDocs = update(currentDocs, {0: {$set: newValue}});
-    }
-
-    this.props.onChange(newDocs);
   }
 });
 

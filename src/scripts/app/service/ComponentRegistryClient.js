@@ -352,9 +352,11 @@ normaliseDocumentation: function(documentation) {
         return doc;
       }
     });
-  } else {
+  } else if(typeof documentation == 'string') {
     log.trace("Turned into array", documentation);
     return [{'$': documentation}];
+  } else {
+    return [documentation];
   }
 },
 

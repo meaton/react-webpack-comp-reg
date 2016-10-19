@@ -81,7 +81,7 @@ var CMDElementView = React.createClass({
                 </li>
               )}
 
-              {elem["Documentation"] != null && elem["Documentation"].length > 0 && (
+              {$.isArray(elem.Documentation) && elem.Documentation.length > 0 && elem.Documentation[0]['$'] != null && elem.Documentation[0]['$'] != '' && (
                 <li className="attrElem"><span className="attrLabel">Documentation:</span>
                 {
                   <DocumentationView value={elem["Documentation"]} />
