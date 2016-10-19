@@ -163,18 +163,27 @@ var DocumentationLanguageModal = React.createClass({
 
   getInitialState: function() {
     return {
-      languageCode: this.props.languageCode || ""
+      languageCode: this.props.languageCode
     }
   },
 
   onChange: function() {
-    this.props.onChange(this.state.languageCode);
+    var code = this.state.languageCode;
+    if(code != null && code.trim() == '') {
+      this.props.onChange(null);
+    } else {
+      this.props.onChange(code);
+    }
     this.props.onClose();
   },
 
   onUnset: function() {
     this.props.onChange(null);
     this.props.onClose();
+  },
+
+  setLanguageCode: function(evt) {
+    this.setState({languageCode: evt.target.value});
   },
 
   render: function() {
@@ -187,17 +196,25 @@ var DocumentationLanguageModal = React.createClass({
         </Modal.Header>
 
         <Modal.Body>
-          <Input type="text" ref="languageCodeInput" value={this.state.languageCode} label="Language code" labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-            onChange={function(evt) {
-              this.setState({languageCode: evt.target.value});
-            }.bind(this)}
-            />
+          <Input type="select" value={this.state.languageCode} onChange={this.setLanguageCode} label="Select a language:">
+            <option value="">...</option>
+            <option value="eng">English</option>
+            <option value="de">German</option>
+          </Input>
+          <Input type="text" ref="languageCodeInput" value={this.state.languageCode || ""} label="or enter a language code:" labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+            onChange={this.setLanguageCode} buttonAfter={
+              <Button onClick={this.onChange}>Ok</Button>
+            } />
+          {this.props.languageCode &&
+            <div>
+              <label>or to remove the language code for this documenation element:</label>
+              <div><Button bsStyle="danger" onClick={this.onUnset}><Glyphicon glyph="remove" />Unset language code</Button></div>
+            </div>
+          }
         </Modal.Body>
 
         <Modal.Footer>
-          <Button onClick={this.onChange}>Ok</Button>
           <Button onClick={this.props.onClose}>Cancel</Button>
-          <Button bsStyle="danger" onClick={this.onUnset}><Glyphicon glyph="remove" />Unset language code</Button>
         </Modal.Footer>
 
       </Modal.Dialog>
