@@ -201,8 +201,18 @@ var Validation = {
   },
 
   validateDocumentation: function(documentation, feedback) {
-    feedback("Testing validation");
-    return false;
+    if($.isArray(documentation)) {
+      // Only one documentation entry per language code, and not more than one without language specified.
+      // get @lang values, length should be equal to unique length
+      // count where @lang == null || === '', length should be <=1
+      if (_.size(_.filter(documentation, function(d){ return !d['@lang'] || d['@lang'].trim() == '';})) > 1) {
+        feedback("Only one documentation element can have no language specified. Please specify the languages for the documentation elements.");
+        return false;
+      }
+      // Only one documenation element can be empty
+      // get from array where $.trim()==='', length should be <= 1
+    }
+    return true;
   },
 
   validateVocabularyValueScheme: function(vocab, feedback) {
