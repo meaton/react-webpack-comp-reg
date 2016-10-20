@@ -203,14 +203,14 @@ var Validation = {
   validateDocumentation: function(documentation, feedback) {
     if($.isArray(documentation)) {
       // Only one documentation entry per language code, and not more than one without language specified.
-      // get @lang values, length should be equal to unique length
-      // count where @lang == null || === '', length should be <=1
-      if (_.size(_.filter(documentation, function(d){ return !d['@lang'] || d['@lang'].trim() == '';})) > 1) {
-        feedback("Only one documentation element can have no language specified. Please specify the languages for the documentation elements.");
+      // and only one documenation element can be not set
+      // -> get count for appearing @lang values, all should be equal to 1 (also covers empty cases (as 'undefined'))
+      if(!_.chain(documentation).countBy('@lang').values().every(function(v){return v==1}).value()) {
+        feedback("Documentation languages must be unique and at most one documentation element can have no language specified.");
         return false;
       }
       // Only one documenation element can be empty
-      // get from array where $.trim()==='', length should be <= 1
+      // -> get from array where $.trim()==='', length should be <= 1
     }
     return true;
   },
