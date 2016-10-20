@@ -129,6 +129,11 @@ var testCardinalitySettings = function(minValue, maxValue) {
   return true;
 };
 
+var isEmptyDocumentationValue = function(doc) {
+  var docVal = doc['$'];
+  return docVal == null || (typeof docVal === 'string') && docVal.trim() === '';
+};
+
 /**
 * Validation - client-side validation checks before saving a CMDI Profile or Component item.
 */
@@ -202,6 +207,12 @@ var Validation = {
 
   validateDocumentation: function(documentation, feedback) {
     if($.isArray(documentation)) {
+      // Only one documenation element can be empty
+      // -> get from array where $.trim()==='', length should be <= 1
+      if(_.chain(documentation).filter(isEmptyDocumentationValue).size().value() > 1) {
+        feedback("Multiple empty documentation elements are not allowed.");
+        return false;
+      }      
       // Only one documentation entry per language code, and not more than one without language specified.
       // and only one documenation element can be not set
       // -> get count for appearing @lang values, all should be equal to 1 (also covers empty cases (as 'undefined'))
@@ -209,8 +220,6 @@ var Validation = {
         feedback("Documentation languages must be unique and at most one documentation element can have no language specified.");
         return false;
       }
-      // Only one documenation element can be empty
-      // -> get from array where $.trim()==='', length should be <= 1
     }
     return true;
   },
