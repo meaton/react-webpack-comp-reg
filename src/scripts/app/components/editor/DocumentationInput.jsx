@@ -55,6 +55,13 @@ var DocumentationInput = React.createClass({
     }
   },
 
+  componentDidUpdate: function(prevProps) {
+    if(!this.state.valid && this.state.validated && this.props.value !== prevProps.value) {
+      //currently invalid and value has changed (text value or language code modified) - revalidate
+      this.doValidate();
+    }
+  },
+
   updateValue: function(index, evt) {
     var newValue = evt.target.value;
     var doc = this.props.value;
@@ -160,7 +167,7 @@ var DocumentationInput = React.createClass({
                 onChange={this.updateLanguageCode.bind(this, index)}
                 />
             } />
-          return <Input key={index} name={name + "-" + index} type="text" value={doc == null ? "" : doc['$']} {...other} onChange={this.updateValue.bind(this, index)}
+          return <Input key={index} name={name + "-" + index} type="text" value={doc == null ? "" : doc['$']} {...other} onFocus={this.doValidate} onChange={this.updateValue.bind(this, index)}
             addonBefore={languageInput}
             addonAfter={index > 0 &&
               <a className="delete" onClick={this.deleteDoc.bind(this, index)}  title="Remove documentation item"><Glyphicon glyph="trash" /></a>
