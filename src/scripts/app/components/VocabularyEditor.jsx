@@ -189,11 +189,14 @@ var VocabularyEditor = React.createClass({
         modalRef.toggleModal();
       }
 
+      var isOpen = (vocabType === OPEN_VOCAB);
+      var isClosed = (vocabType === CLOSED_VOCAB);
+
       return (
         <div className="external-vocab-editor">
-          {!vocabUri && vocabType === OPEN_VOCAB &&
+          {!vocabUri && isOpen &&
             <div className="error">Please select or define an external vocabulary for this open vocabulary!</div>}
-          {vocabType === CLOSED_VOCAB &&
+          {isClosed &&
             <div><strong>Optionally</strong> select or define an external vocabulary for this closed vocabulary. You can choose to import the items of the selected external vocabulary into the current vocabulary.</div>}
           <div>
             External vocabulary: {vocabUri &&
@@ -308,7 +311,7 @@ var VocabularyEditor = React.createClass({
                        modalRef = modal;
                      }}
                     modalTarget="ccrModalContainer"
-                    label="add link"
+                    label="add concept link"
                     modal={
                       <ConceptRegistryModal
                         onClose={closeHandler}
