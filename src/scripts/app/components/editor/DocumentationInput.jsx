@@ -137,6 +137,8 @@ var DocumentationInput = React.createClass({
       valid: valid,
       validationMessage : msgContainer.message
     });
+    
+    return valid;
   },
 
   render: function() {
