@@ -1,5 +1,6 @@
 'use strict';
 
+var React = require('react');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
