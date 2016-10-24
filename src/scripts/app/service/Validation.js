@@ -68,9 +68,10 @@ var testConceptLink = function(fieldValue) {
 
 var testAttribute = function(attr, cb) {
   var errReturned = false;
-  if(!testAttributeName(attr)) errReturned = !cb(err.IllegalAttributeName + ": " + attr['@name']);
-  if(!testValueScheme(attr)) errReturned = !cb(err.IllegalValueScheme);
-  if(!testConceptLink(attr['@ConceptLink'])) errReturned = !cb(err.IllegalConceptLink);
+  if(!testAttributeName(attr)) errReturned = cb(err.IllegalAttributeName + ": " + attr['@name']);
+  if(!testValueScheme(attr)) errReturned = cb(err.IllegalValueScheme);
+  if(!testConceptLink(attr['@ConceptLink'])) errReturned = cb(err.IllegalConceptLink);
+  if(!testValueScheme(attr)) errReturned = cb(err.ReqValueScheme);
 
   if(!errReturned) log.debug('Tests Passed: Attribute (' + attr.attrId + ')');
   return !errReturned;
@@ -94,22 +95,35 @@ var testAttributeList = function(attrList, cb) {
 };
 
 var testValueScheme = function(item) {
-  if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) {
-    log.warn("Empty value scheme set on item", item);
+  if(item['@ValueScheme'] != null) {
+    if( item['@ValueScheme'].length <= 0) {
+      log.warn("Empty value scheme set on item", item);
+      return false;
+    }
+    return true;
+  } else if(item.ValueScheme == null) {
+    log.warn("No value scheme specified for item", item);
     return false;
-  } else if(item.ValueScheme != null) {
+  } else {
     var fieldValue = item['ValueScheme'];
     var vocabulary = fieldValue.Vocabulary;
     var pattern = fieldValue.pattern;
     if((vocabulary != null &&
           (vocabulary.enumeration != null && vocabulary.enumeration.item != null
             || vocabulary['@URI'] != null && vocabulary['@ValueProperty'] != null))
-          || (pattern != null && pattern.length > 0))
-      return true;
-    else
+          || (pattern != null && pattern.length > 0)) {
+        return true;
+      }
+    else {
       return false;
+    }
   }
-  return true;
+};
+
+var testMandatoryElementFields = function(componentDesc, cb) {
+  if(!testValueScheme(componentDesc)) {
+    cb(err.ReqValueScheme);
+  }
 };
 
 var testMandatoryFields = function(header, componentDesc, cb) {
@@ -121,7 +135,6 @@ var testMandatoryFields = function(header, componentDesc, cb) {
   }
   if(componentDesc != null) {
     if(componentDesc['@name'] != null && (componentDesc['@name'].length <= 0 || !regExpName.test(componentDesc['name']))) errReturned = cb(err.ReqName);
-    if(!testValueScheme(componentDesc)) errReturned = cb(err.ReqValueScheme);
   }
   return !errReturned;
 };
@@ -339,6 +352,7 @@ var Validation = {
       for(var i=0; i < elems.length; i++) {
         if(elems[i].AttributeList != undefined) testAttributeList(elems[i].AttributeList, addError);
         testMandatoryFields(null, elems[i], addError);
+        testMandatoryElementFields(elems[i], addError);
       }
     }
 
