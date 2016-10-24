@@ -94,8 +94,10 @@ var testAttributeList = function(attrList, cb) {
 };
 
 var testValueScheme = function(item) {
-  if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) return false;
-  else if(item.ValueScheme != null) {
+  if(item['@ValueScheme'] != null && item['@ValueScheme'].length <= 0) {
+    log.warn("Empty value scheme set on item", item);
+    return false;
+  } else if(item.ValueScheme != null) {
     var fieldValue = item['ValueScheme'];
     var vocabulary = fieldValue.Vocabulary;
     var pattern = fieldValue.pattern;
@@ -212,7 +214,7 @@ var Validation = {
       if(_.chain(documentation).filter(isEmptyDocumentationValue).size().value() > 1) {
         feedback("Multiple empty documentation elements are not allowed.");
         return false;
-      }      
+      }
       // Only one documentation entry per language code, and not more than one without language specified.
       // and only one documenation element can be not set
       // -> get count for appearing @lang values, all should be equal to 1 (also covers empty cases (as 'undefined'))

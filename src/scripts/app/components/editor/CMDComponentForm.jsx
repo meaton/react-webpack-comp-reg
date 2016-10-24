@@ -377,7 +377,7 @@ var CMDComponentForm = React.createClass({
     if($.isArray(elements)) {
       // at least one element with non-zero display priority?
       return _.some(elements, function(element) {
-        log.debug('checking element', element);
+        log.trace('checking element', element);
         return element['@DisplayPriority'] != null && element['@DisplayPriority'] !== '0';
       });
     } else {

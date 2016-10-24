@@ -257,8 +257,9 @@ var EditorForm = React.createClass({
     if(validationItems != null) {
       for(var i=0;i<(validationItems.length);i++) {
         var item = validationItems[i];
-        log.debug("Validating", item);
+        log.trace("Validating", item);
         if(!item.doValidate()) {
+          log.warn("Validation failed for item with value", item.value, item);
           result = false;
         }
       }
