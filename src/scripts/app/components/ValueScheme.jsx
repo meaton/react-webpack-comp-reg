@@ -52,6 +52,8 @@ var ValueScheme = React.createClass({
       var vocabulary = (valueSchemeElem != null) ? valueSchemeElem.Vocabulary : null;
       var pattern = (valueSchemeElem != null) ? valueSchemeElem.pattern : null;
       var enumeration = (vocabulary != null) ? vocabulary.enumeration : null;
+      var inputStyle = null;
+      var inputMessage = null;
 
       var typeTrigger = (
         <ModalTrigger
@@ -70,9 +72,12 @@ var ValueScheme = React.createClass({
 
       if(typeof valueScheme != "string") {
         valueScheme = valueSchemeElem;
-
         if(valueScheme == null) {
           valueScheme = "Undefined";
+          if(enabled) {
+            inputStyle = "error";
+            inputMessage = "Select a value type";
+          }
         } else {
           if(pattern != null) {
             valueScheme = pattern;
@@ -126,6 +131,8 @@ var ValueScheme = React.createClass({
         <Input ref="typeInput" type="text" label="Type"
           labelClassName="editorFormLabel" wrapperClassName={inputClasses}
           value={valueScheme} buttonAfter={typeTrigger}
+          bsStyle={inputStyle}
+          addonAfter={inputMessage}
           readOnly />;
     },
 
