@@ -152,24 +152,33 @@ var VocabularyEditor = React.createClass({
     },
 
     processRetrievedVocabItems: function(uri, valueProp, language, data) {
-      this.setState({
-        vocabImport: {
-          itemsDownloaded: true,
-          itemsCount: data.length,
-          done: false
-        }
-      });
-      var items = data.map(function(item, idx) {
-        return {
-          '$': item[valueProp + '@' + language],
-          'conceptLink': item.uri
-        }
+      log.debug("Retrieved vocabulary item", data);
+
+      //async state update, processing of retrieved items
+      var defer = $.Deferred(function(def) {
+        this.setState({
+          vocabImport: {
+            itemsDownloaded: true,
+            itemsCount: data.length,
+            done: false
+          }
+        });
+        def.resolve();
       }.bind(this));
 
-      log.debug("Items", items);
+      defer.done(function() {
+        var items = data.map(function(item, idx) {
+          return {
+            '$': item[valueProp + '@' + language],
+            'conceptLink': item.uri
+          }
+        }.bind(this));
 
-      var importState = update(this.state.vocabImport, {$merge: {done: true}});
-      this.setState({vocabImport: importState});
+        log.debug("Items", items);
+
+        var importState = update(this.state.vocabImport, {$merge: {done: true}});
+        this.setState({vocabImport: importState});
+      }.bind(this));
     },
 
     render: function() {
