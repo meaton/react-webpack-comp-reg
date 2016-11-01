@@ -154,8 +154,11 @@ var VocabularyEditor = React.createClass({
     processRetrievedVocabItems: function(uri, valueProp, language, data) {
       log.debug("Retrieved vocabulary item", data);
 
-      //async state update, processing of retrieved items
-      var defer = $.Deferred(function(def) {
+      //async state update and processing of retrieved items
+      var deferProgress = $.Deferred();
+      var deferItems = $.Deferred();
+
+      deferProgress.then(function() {
         this.setState({
           vocabImport: {
             itemsDownloaded: true,
@@ -163,10 +166,9 @@ var VocabularyEditor = React.createClass({
             done: false
           }
         });
-        def.resolve();
       }.bind(this));
 
-      defer.done(function() {
+      deferProgress.then(function() {
         var items = data.map(function(item, idx) {
           return {
             '$': item[valueProp + '@' + language],
@@ -174,11 +176,17 @@ var VocabularyEditor = React.createClass({
           }
         }.bind(this));
 
-        log.debug("Items", items);
+        deferItems.resolve(items);
+      }.bind(this));
 
-        var importState = update(this.state.vocabImport, {$merge: {done: true}});
+      deferItems.then(function(items) {
+        log.debug("Items", items);
+        var importState = update(this.state.vocabImport, {$merge: {done: true, items: items}});
         this.setState({vocabImport: importState});
       }.bind(this));
+
+      //trigger processing
+      deferProgress.resolve();
     },
 
     render: function() {
