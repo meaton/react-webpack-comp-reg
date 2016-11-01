@@ -129,6 +129,10 @@ var VocabularyEditor = React.createClass({
       });
     },
 
+    retrieveVocabItems: function(uri, valueProp) {
+      log.debug("Retrieving vocabulary items for", uri, valueProp);
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
@@ -171,7 +175,11 @@ var VocabularyEditor = React.createClass({
                 <Table.Header />
                 <Table.Body rows={vocabData} rowKey="rowIdx" />
               </Table.Provider>
-              <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a></div>
+              <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>
+              {vocabUri &&
+                <span>&nbsp;<a onClick={this.retrieveVocabItems.bind(this, vocabUri, vocabValueProp)}><Glyphicon glyph="import" />Import/update from the selected external vocabulary</a></span>
+              }
+              </div>
               {vocabData == null || vocabData.length == 0 &&
                 <div className="error">Add one or more items to this vocabulary to make it valid!</div>
               }
