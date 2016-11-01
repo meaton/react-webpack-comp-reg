@@ -41,6 +41,7 @@ var VocabularyEditor = React.createClass({
       onVocabularyPropertyChange: React.PropTypes.func.isRequired,
       onRemoveVocabularyItem: React.PropTypes.func.isRequired,
       onAddVocabularyItem: React.PropTypes.func.isRequired,
+      onSetVocabularyItems: React.PropTypes.func.isRequired,
       onChangeExternalVocab:  React.PropTypes.func.isRequired,
       onOk: React.PropTypes.func.isRequired
     },
@@ -191,6 +192,12 @@ var VocabularyEditor = React.createClass({
       deferProgress.resolve();
     },
 
+    applyVocabularyImport: function() {
+      var items = this.state.vocabImport.items;
+      this.props.onSetVocabularyItems(items);
+      this.setState({vocabImport: null});
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
@@ -280,6 +287,9 @@ var VocabularyEditor = React.createClass({
         <div className="vocabulary-import">
           {active ? <ProgressBar active bsStyle={style} label={label} now={Math.floor(progress)} /> : <ProgressBar bsStyle={style} label={label} now={Math.floor(progress)} /> }
           {vocabImport.error && <div className="error">{vocabImport.error}</div>}
+          {!vocabImport.error && vocabImport.done &&
+            <div><Button onClick={this.applyVocabularyImport}>Ok, import {vocabImport.itemsCount} items (replace existing items)</Button></div>
+          }
         </div>
       );
     },

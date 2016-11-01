@@ -139,6 +139,10 @@ var TypeModal = React.createClass({
     this.getFlux().actions.addVocabularyItem(this.state.valueScheme.vocabulary);
   },
 
+  handleSetVocabularyItems: function(items) {
+    this.getFlux().actions.setVocabularyItems(this.state.valueScheme.vocabulary, items);
+  },
+
   handleChangeVocabularyType: function(type) {
     if(type === 'open') {
       this.getFlux().actions.setVocabularyTypeOpen(this.state.valueScheme.vocabulary);
@@ -184,6 +188,7 @@ var TypeModal = React.createClass({
                 vocabulary={this.state.valueScheme.vocabulary}
                 onVocabularyPropertyChange={this.handleVocabularyPropertyChange}
                 onAddVocabularyItem={this.handleAddVocabularyItem}
+                onSetVocabularyItems={this.handleSetVocabularyItems}
                 onRemoveVocabularyItem={this.handleRemoveVocabularyItem}
                 onChangeVocabularyType={this.handleChangeVocabularyType}
                 onChangeExternalVocab={this.handleChangeExternalVocabulary}

@@ -88,6 +88,19 @@ var ValueSchemeActions = {
     });
   },
 
+  setVocabularyItems: function(oldVocabulary, newItems) {
+    var updatedVocab = update(oldVocabulary,
+      {enumeration:
+        {item:
+          {$set: newItems}
+        }
+      });
+
+    this.dispatch(Constants.UPDATE_VALUE_SCHEME, {
+      vocabulary: updatedVocab
+    });
+  },
+
   addVocabularyItem: function(oldVocabulary) {
     log.debug("Add new item to vocabulary", oldVocabulary);
 
