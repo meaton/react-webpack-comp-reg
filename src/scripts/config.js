@@ -32,6 +32,7 @@ module.exports = {
   Config: Config,
   ccrUrl: getUrl() + "/ccr",
   vocabulariesUrl: getUrl() + "/vocabulary/conceptscheme",
+  vocabularyItemsUrl: getUrl() + "/vocabulary/items",
   restUrl: getUrl() + "/rest",
   adminUrl: getUrl() + "/admin",
   webappUrl: getUrl()

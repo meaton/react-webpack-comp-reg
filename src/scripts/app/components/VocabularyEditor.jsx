@@ -15,6 +15,7 @@ var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Input = require('react-bootstrap/lib/Input');
+var ProgressBar = require('react-bootstrap/lib/ProgressBar');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -24,15 +25,15 @@ var classNames = require('classnames');
 var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
+var update = require('react-addons-update');
+
+//services
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
 
 var OPEN_VOCAB = "open";
 var CLOSED_VOCAB = "closed";
 
 var VocabularyEditor = React.createClass({
-    //TODO: add support for open vocabularies (without enum but with @URI and @ValueProperty)
-    //        (NB: also support @URI and @ValueProperty for closed vocabularies)
-
     mixins: [ImmutableRenderMixin],
 
     propTypes: {
@@ -49,7 +50,8 @@ var VocabularyEditor = React.createClass({
         editedRow: -1,
         editedColumn: -1,
         externalVocabDetailsShown: false,
-        selectExternalVocabularyMode: false
+        selectExternalVocabularyMode: false,
+        vocabImport: null
       }
     },
 
@@ -129,8 +131,45 @@ var VocabularyEditor = React.createClass({
       });
     },
 
-    retrieveVocabItems: function(uri, valueProp) {
+    retrieveVocabItems: function(uri, valueProp, language) {
       log.debug("Retrieving vocabulary items for", uri, valueProp);
+      this.setState({
+        vocabImport: {
+          itemsDownloaded: false,
+          itemsCount: -1,
+          itemsProcessed: 0
+        }
+      });
+      ComponentRegistryClient.queryVocabularyItems(uri, valueProp, this.processRetrievedVocabItems.bind(this, uri, valueProp, language),
+        function(error) {
+          this.setState({
+            vocabImport: {
+              error: error
+            }
+          });
+        }
+      );
+    },
+
+    processRetrievedVocabItems: function(uri, valueProp, language, data) {
+      this.setState({
+        vocabImport: {
+          itemsDownloaded: true,
+          itemsCount: data.length,
+          done: false
+        }
+      });
+      var items = data.map(function(item, idx) {
+        return {
+          '$': item[valueProp + '@' + language],
+          'conceptLink': item.uri
+        }
+      }.bind(this));
+
+      log.debug("Items", items);
+
+      var importState = update(this.state.vocabImport, {$merge: {done: true}});
+      this.setState({vocabImport: importState});
     },
 
     render: function() {
@@ -177,7 +216,10 @@ var VocabularyEditor = React.createClass({
               </Table.Provider>
               <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>
               {vocabUri &&
-                <span>&nbsp;<a onClick={this.retrieveVocabItems.bind(this, vocabUri, vocabValueProp)}><Glyphicon glyph="import" />Import/update from the selected external vocabulary</a></span>
+                <span>&nbsp;<a onClick={this.retrieveVocabItems.bind(this, vocabUri, vocabValueProp, 'en')}><Glyphicon glyph="import" />Import/update from the selected external vocabulary</a></span>
+              }
+              {
+                this.state.vocabImport && this.renderVocabularyImport()
               }
               </div>
               {vocabData == null || vocabData.length == 0 &&
@@ -187,6 +229,38 @@ var VocabularyEditor = React.createClass({
           }
           {this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp)}
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
+        </div>
+      );
+    },
+
+    renderVocabularyImport: function() {
+      var vocabImport = this.state.vocabImport;
+      log.trace("Import state", vocabImport);
+
+      var active = !vocabImport.done && !vocabImport.error;
+
+      if(vocabImport.error) {
+        var progress = 75;
+        var style = "danger";
+        var label = "Import failed";
+      } else if(vocabImport.done) {
+        var progress = 100;
+        var style = "success"
+        var label = "Done";
+      } else if(vocabImport.itemsDownloaded) {
+        var progress = 50;
+        var style = "info";
+        var label = "Processing items..."
+      } else {
+        var progress = 25;
+        var style = null;
+        var label ="Getting items..."
+      }
+
+      return (
+        <div className="vocabulary-import">
+          {active ? <ProgressBar active bsStyle={style} label={label} now={Math.floor(progress)} /> : <ProgressBar bsStyle={style} label={label} now={Math.floor(progress)} /> }
+          {vocabImport.error && <div className="error">{vocabImport.error}</div>}
         </div>
       );
     },
