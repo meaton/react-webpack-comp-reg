@@ -169,9 +169,11 @@ var VocabularyEditor = React.createClass({
       }.bind(this));
 
       deferProgress.then(function() {
+        var valueProperty = valueProp + '@' + language;
+        log.debug("Map item data with", 'uri', valueProperty)
         var items = data.map(function(item, idx) {
           return {
-            '$': item[valueProp + '@' + language],
+            '$': item[valueProperty],
             'conceptLink': item.uri
           }
         }.bind(this));
