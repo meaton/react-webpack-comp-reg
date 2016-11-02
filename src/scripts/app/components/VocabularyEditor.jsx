@@ -26,6 +26,7 @@ var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
 var update = require('react-addons-update');
+var _ = require('lodash');
 
 //services
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
@@ -172,13 +173,46 @@ var VocabularyEditor = React.createClass({
       deferProgress.then(function() {
         var valueProperty = valueProp + '@' + language;
         log.debug("Map item data with", 'uri', valueProperty)
-        var items = data.map(function(item, idx) {
-          return {
-            '$': item[valueProperty],
-            'conceptLink': item.uri
-          }
-        }.bind(this));
 
+        var items = data.map(function(item, idx) {
+          var conceptLink = item.uri;
+          var value = item[valueProperty];
+          if(value == null) {
+            //try english if not preferred language
+            if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
+              value = item[valueProp + '@en'];
+              log.info("Fallback to english {", valueProp, "} value", value);
+            } else {
+              log.debug("Looking for other versions of property {", valueProp, "} in", item);
+              //see if any other language...
+              var otherLanguageKey = _.chain(item).keys().find(function(k) {
+                log.debug("Comparing", k, "with", valueProp + '@');
+                return _.startsWith(k, valueProp + '@')
+              }).value();
+              if(otherLanguageKey != null) {
+                value = item[otherLanguageKey];
+                log.info("Fallback to key", otherLanguageKey, "value", value);
+              }
+            }
+          }
+          if(value == null) {
+            //no value or fallback value is present, return null for the entire item
+            log.warn("No value or fallback value for property {", valueProperty, "} in item", item);
+            return null;
+          }
+
+          return {
+            '$': value,
+            'conceptLink': conceptLink
+          }
+        });
+
+        //strip out null values from items list!
+        var rawLength = items.length;
+        items = _.without(items, null);
+        if(rawLength != items.length) {
+          log.warn(rawLength - items.length, "items were omitted because no value was found!");
+        }
         deferItems.resolve(items);
       }.bind(this));
 
@@ -235,7 +269,7 @@ var VocabularyEditor = React.createClass({
           </Input>
           {vocabType === CLOSED_VOCAB &&
             <div className="vocabulary-items">
-              Closed vocabulary items:
+              Closed vocabulary {vocabData.length > 3 ? '(' + vocabData.length + ' items)' : 'items'}:
               <Table.Provider id="typeTable" ref="table" className={tableClasses} columns={this.getColumns()}>
                 <Table.Header />
                 <Table.Body rows={vocabData} rowKey="rowIdx" />
