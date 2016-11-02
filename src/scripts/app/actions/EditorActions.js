@@ -190,6 +190,10 @@ var EditorActions = {
 
   toggleGridStatusFilter: function(status) {
     this.dispatch(Constants.SET_EDITOR_STATUS_FILTER, status);
+  },
+
+  setCmdiVersionMode: function(version) {
+    this.dispatch(Constants.SET_CMDI_VERSION_MODE, version);
   }
 
 };

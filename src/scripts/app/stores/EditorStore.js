@@ -17,6 +17,7 @@ var EditorStore = Fluxxor.createStore({
     this.processing = false;
     this.componentLinkingMode = false;
     this.selectedComponentId = null; //selected for linking
+    this.cmdiVersionMode = Constants.CMD_VERSION_1_2;
 
     this.gridSpace = Constants.SPACE_PUBLISHED;
     this.gridTeam = null;
@@ -46,7 +47,8 @@ var EditorStore = Fluxxor.createStore({
       Constants.START_COMPONENT_LINK, this.handleStartComponentLink,
       Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink,
       Constants.RESET_EDITOR_STATUS_FILTER, this.handleResetStatusFilter,
-      Constants.SET_EDITOR_STATUS_FILTER, this.handleSetStatusFilter
+      Constants.SET_EDITOR_STATUS_FILTER, this.handleSetStatusFilter,
+      Constants.SET_CMDI_VERSION_MODE, this.handleSetCmdiVersionMode
     );
   },
 
@@ -62,6 +64,7 @@ var EditorStore = Fluxxor.createStore({
       componentLinkingMode: this.componentLinkingMode,
       selectedComponentId: this.selectedComponentId,
       processing: this.processing,
+      cmdiVersionMode: this.cmdiVersionMode,
       grid: {
         space: this.gridSpace,
         team: this.gridTeam,
@@ -170,6 +173,11 @@ var EditorStore = Fluxxor.createStore({
 
   handleResetStatusFilter: function() {
     this.gridStatusFilter = null;
+    this.emit("change");
+  },
+
+  handleSetCmdiVersionMode: function(cmdiVersion) {
+    this.cmdiVersionMode = cmdiVersion;
     this.emit("change");
   }
 
