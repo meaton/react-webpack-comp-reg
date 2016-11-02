@@ -12,6 +12,7 @@ var CMDComponentMixin = require('../../mixins/CMDComponentMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 
 //components
 var CMDElementForm = require('./CMDElementForm');
@@ -49,7 +50,8 @@ var CMDComponentForm = React.createClass({
             CMDComponentMixin,
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
-            ActionButtonsMixin],
+            ActionButtonsMixin,
+            CmdiVersionModeMixin],
 
   propTypes: {
     onComponentChange: React.PropTypes.func.isRequired,
@@ -180,6 +182,7 @@ var CMDComponentForm = React.createClass({
       return (<CMDComponentForm
         {... componentProperties}
         {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+        {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
         selectedComponentId={this.props.selectedComponentId}
         onComponentChange={this.handleComponentChange.bind(this, index)}
         onStartComponentLink={this.props.onStartComponentLink}
@@ -203,6 +206,7 @@ var CMDComponentForm = React.createClass({
               isLast={index == this.props.spec.Element.length - 1}
               checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.Element)}
               {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+              {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
               checkDisplayPriorities={this.checkDisplayPriorities}
               />;
   },
@@ -217,6 +221,7 @@ var CMDComponentForm = React.createClass({
               isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
               checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
               {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+              {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
        />;
   },
 

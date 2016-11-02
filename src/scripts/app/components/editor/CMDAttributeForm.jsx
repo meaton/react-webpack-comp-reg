@@ -12,6 +12,7 @@ var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -45,7 +46,8 @@ var CMDAttributeForm = React.createClass({
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin,
-            MoreLessComponentMixin],
+            MoreLessComponentMixin,
+            CmdiVersionModeMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,

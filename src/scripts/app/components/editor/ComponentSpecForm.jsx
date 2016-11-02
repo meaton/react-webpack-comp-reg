@@ -16,6 +16,9 @@ var ValidatingTextInput = require('./ValidatingTextInput');
 var ConceptLinkInput = require('./ConceptLinkInput');
 var CMDComponentView = require('../browser/CMDComponentView');
 
+//mixins
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
+
 //utils
 var ComponentSpec = require('../../service/ComponentSpec');
 var Validation = require('../../service/Validation');
@@ -33,7 +36,7 @@ require('../../../../styles/ComponentViewer.sass');
 * @mixes ImmutableRenderMixin
 */
 var ComponentSpecForm = React.createClass({
-  mixins: [ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, CmdiVersionModeMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -144,6 +147,7 @@ var ComponentSpecForm = React.createClass({
               selectedComponentId={this.props.selectedComponentId}
               componentLinkingMode={this.props.componentLinkingMode}
               loadLinkedComponents={this.props.loadLinkedComponents}
+              {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
               />
           )}
           </form>

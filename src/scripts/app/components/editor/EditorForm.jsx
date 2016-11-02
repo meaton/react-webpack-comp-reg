@@ -18,6 +18,7 @@ var ComponentSpecForm = require("./ComponentSpecForm"),
 
 //mixins
 var ComponentUsageMixin = require('../../mixins/ComponentUsageMixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 var History = require("react-router").History;
 
 //utils
@@ -32,7 +33,7 @@ var ComponentSpec = require('../../service/ComponentSpec');
 * @constructor
 */
 var EditorForm = React.createClass({
-  mixins: [FluxMixin, History, ComponentUsageMixin],
+  mixins: [FluxMixin, History, ComponentUsageMixin, CmdiVersionModeMixin],
 
   propTypes: {
     item: React.PropTypes.object, /* can be null while loading */
@@ -40,7 +41,6 @@ var EditorForm = React.createClass({
     type: React.PropTypes.string.isRequired,
     loading: React.PropTypes.bool.isRequired,
     processing: React.PropTypes.bool.isRequired,
-    cmdiVersionMode: React.PropTypes.string.isRequired,
     onCmdiVersionModeChange: React.PropTypes.func.isRequired,
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
@@ -88,10 +88,10 @@ var EditorForm = React.createClass({
               :(this.props.isNew||saveDisallowed?"New component":"Edit component")}
           </h3>
 
-          <Input type="select" value={this.props.cmdiVersionMode} onChange={this.handleCmdiVersionModeChange}
+          <Input type="select" value={this.getCmdiVersionMode()} onChange={this.handleCmdiVersionModeChange}
             className={classNames("cmdi-version-mode-selector",{
-              "cmdi11": this.props.cmdiVersionMode === Constants.CMD_VERSION_1_1,
-              "cmdi12": this.props.cmdiVersionMode === Constants.CMD_VERSION_1_2
+              "cmdi11": this.getCmdiVersionMode() === Constants.CMD_VERSION_1_1,
+              "cmdi12": this.getCmdiVersionMode() === Constants.CMD_VERSION_1_2
             })}
             >
             <option value={Constants.CMD_VERSION_1_1}>CMDI 1.1 mode</option>
@@ -124,6 +124,7 @@ var EditorForm = React.createClass({
             onExpandAll={this.expandAll}
             onCollapseAll={this.collapseAll}
             loadLinkedComponents={this.handleLoadLinkedComponents}
+            {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
             />
         </div>
       );

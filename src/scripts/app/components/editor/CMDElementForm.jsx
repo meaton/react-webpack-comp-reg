@@ -13,6 +13,7 @@ var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 var MoreLessComponentMixin = require('../../mixins/MoreLessComponentMixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
@@ -46,7 +47,8 @@ var CMDElementForm = React.createClass({
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin,
-            MoreLessComponentMixin],
+            MoreLessComponentMixin,
+            CmdiVersionModeMixin],
 
   propTypes: {
     spec: React.PropTypes.object.isRequired,
@@ -158,6 +160,7 @@ var CMDElementForm = React.createClass({
                       isLast={index == this.props.spec.AttributeList.Attribute.length - 1}
                       checkUniqueName={Validation.checkUniqueSiblingName.bind(this, this.props.spec.AttributeList.Attribute)}
                       {... this.getExpansionProps() /* from ToggleExpansionMixin*/}
+                      {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
                       />
                   }.bind(this))
         }
