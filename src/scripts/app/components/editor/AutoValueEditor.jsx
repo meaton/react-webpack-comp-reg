@@ -12,6 +12,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 
 //utils
 var update = require('react-addons-update');
@@ -21,7 +22,7 @@ var update = require('react-addons-update');
  * @type {[type]}
  */
 var AutoValueEditor = React.createClass({
-  mixins: [ImmutableRenderMixin],
+  mixins: [ImmutableRenderMixin, CmdiVersionModeMixin],
 
   propTypes: {
     autoValue: React.PropTypes.array,
@@ -57,13 +58,19 @@ var AutoValueEditor = React.createClass({
               this.props.autoValue.map(function(value, idx) {
                 return (
                   <ValidatingTextInput key={idx} name="AutoValue" type="text" value={value}
+                    disabled={!this.isCmdi12Mode()}
                   wrapperClassName="editorFormField" onChange={this.updateAutoValueExpression.bind(this, idx)} validate={this.props.validate}
                   addonAfter={<a className="delete" onClick={this.removeAutoValueExpression.bind(this, idx)}><Glyphicon glyph="trash"/></a>}
                   />
                 );
               }.bind(this))
             }
-            <div><a onClick={this.addAutoValueExpression}><Glyphicon glyph="plus" />Add automatic value expression</a></div>
+            <div>
+              {this.isCmdi12Mode() ?
+                <a onClick={this.addAutoValueExpression}><Glyphicon glyph="plus" />Add automatic value expression</a>
+                : <strong>Automatic value expressions are not supported in CMDI 1.1. Switch to CMDI 1.2 mode to edit.</strong>
+              }
+            </div>
           </div>
       </div>
     );

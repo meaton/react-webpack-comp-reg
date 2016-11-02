@@ -126,7 +126,8 @@ var CMDElementForm = React.createClass({
                 <CardinalityInput min={elem['@CardinalityMin']} max={multilingual ? "unbounded" : elem['@CardinalityMax']} onValueChange={this.updateElementValue} maxOccurrencesAllowed={!multilingual} />
                 {this.isMoreShown() && /* MoreLessComponentMixin */
                   <div className="more">
-                    <AutoValueEditor autoValue={elem.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}/>
+                    <AutoValueEditor autoValue={elem.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}
+                      {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
                   </div>
                 }
                 {this.renderMoreLessToggler({
