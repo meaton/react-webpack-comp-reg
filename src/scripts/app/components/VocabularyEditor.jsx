@@ -522,7 +522,7 @@ function transformVocabItems(data, valueProp, language, cb) {
 
     return {
       '$': value,
-      'conceptLink': conceptLink
+      '@ConceptLink': conceptLink
     }
   });
 
