@@ -148,7 +148,7 @@ var ValueSchemeActions = {
     this.dispatch(Constants.SET_VALUE_SCHEME_VALIDATION_ERROR, null);
   },
 
-  setVocabularyUri: function(oldVocabulary, uri, valueProperty) {
+  setVocabularyUri: function(oldVocabulary, uri, valueProperty, valueLanguage) {
     if(uri == null || uri.trim() === '') {
       var newUri = null;
     } else {
@@ -161,9 +161,16 @@ var ValueSchemeActions = {
       var newValueProperty = valueProperty;
     }
 
+    if(valueLanguage == null || valueLanguage.trim() === '') {
+      var newValueLanguage = null;
+    } else {
+      var newValueLanguage = valueLanguage;
+    }
+
     var newValues = {
       '@URI': newUri,
-      '@ValueProperty': newValueProperty
+      '@ValueProperty': newValueProperty,
+      '@ValueLanguage': newValueLanguage
     };
 
     if(oldVocabulary == null) {

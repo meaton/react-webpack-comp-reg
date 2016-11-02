@@ -107,9 +107,20 @@ var VocabularyEditor = React.createClass({
     onChangeExternalVocab: function(evt) {
       var target = evt.target;
       if(target.id === 'external-vocab-uri') {
-        this.props.onChangeExternalVocab(target.value, this.props.vocabulary && this.props.vocabulary['@ValueProperty'] || null);
+        this.props.onChangeExternalVocab(
+          target.value,
+          this.props.vocabulary && this.props.vocabulary['@ValueProperty'] || null,
+          this.props.vocabulary && this.props.vocabulary['@ValueLanguage'] || null);
       } else if(target.id === 'external-vocab-property') {
-        this.props.onChangeExternalVocab(this.props.vocabulary && this.props.vocabulary['@URI'] || null, target.value);
+        this.props.onChangeExternalVocab(
+          this.props.vocabulary && this.props.vocabulary['@URI'] || null,
+          target.value,
+          this.props.vocabulary && this.props.vocabulary['@ValueLanguage'] || null);
+      } else if(target.id === 'external-vocab-language') {
+        this.props.onChangeExternalVocab(
+          this.props.vocabulary && this.props.vocabulary['@URI'] || null,
+          this.props.vocabulary && this.props.vocabulary['@ValueProperty'] || null,
+          target.value);
       }
     },
 
@@ -193,6 +204,7 @@ var VocabularyEditor = React.createClass({
       var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
       var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
       var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
+      var vocabValueLang = this.props.vocabulary && this.props.vocabulary['@ValueLanguage'];
 
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
       if(!$.isArray(vocabData)) {
@@ -243,7 +255,7 @@ var VocabularyEditor = React.createClass({
               }
             </div>
           }
-          {this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp)}
+          {this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp, vocabValueLang)}
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
         </div>
       );
@@ -284,7 +296,7 @@ var VocabularyEditor = React.createClass({
       );
     },
 
-    renderExternalVocabularyEditor: function(vocabType, vocabUri, vocabValueProp) {
+    renderExternalVocabularyEditor: function(vocabType, vocabUri, vocabValueProp, vocabValueLang) {
       var modalRef;
       var closeHandler = function(evt) {
         modalRef.toggleModal();
@@ -328,6 +340,11 @@ var VocabularyEditor = React.createClass({
                   type="text"
                   label="Value property:"
                   value={vocabValueProp || ""}
+                  onChange={this.onChangeExternalVocab} />
+                <Input id="external-vocab-language"
+                  type="text"
+                  label="Value language:"
+                  value={vocabValueLang || ""}
                   onChange={this.onChangeExternalVocab} />
               </div>
             }

@@ -153,9 +153,9 @@ var TypeModal = React.createClass({
     }
   },
 
-  handleChangeExternalVocabulary: function(uri, valueProperty) {
+  handleChangeExternalVocabulary: function(uri, valueProperty, valueLanguage) {
     log.debug("Change external vocab", uri, valueProperty);
-    this.getFlux().actions.setVocabularyUri(this.state.valueScheme.vocabulary, uri, valueProperty);
+    this.getFlux().actions.setVocabularyUri(this.state.valueScheme.vocabulary, uri, valueProperty, valueLanguage);
   },
 
   resetValidationError: function() {
