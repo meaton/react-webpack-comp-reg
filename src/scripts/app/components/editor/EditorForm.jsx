@@ -11,6 +11,7 @@ var React = require("react"),
 var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
 var Input = require('react-bootstrap/lib/Input');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //components
 var ComponentSpecForm = require("./ComponentSpecForm"),
@@ -88,15 +89,31 @@ var EditorForm = React.createClass({
               :(this.props.isNew||saveDisallowed?"New component":"Edit component")}
           </h3>
 
-          <Input type="select" value={this.getCmdiVersionMode()} onChange={this.handleCmdiVersionModeChange}
-            className={classNames("cmdi-version-mode-selector",{
+          <div className={classNames("cmdi-version-mode-selector",{
               "cmdi11": this.getCmdiVersionMode() === Constants.CMD_VERSION_1_1,
               "cmdi12": this.getCmdiVersionMode() === Constants.CMD_VERSION_1_2
-            })}
-            >
-            <option value={Constants.CMD_VERSION_1_1}>CMDI 1.1 mode</option>
-            <option value={Constants.CMD_VERSION_1_2}>CMDI 1.2 mode</option>
-          </Input>
+            })}>
+            <Input type="select" value={this.getCmdiVersionMode()} onChange={this.handleCmdiVersionModeChange}>
+              <option value={Constants.CMD_VERSION_1_1}>CMDI 1.1 mode</option>
+              <option value={Constants.CMD_VERSION_1_2}>CMDI 1.2 mode</option>
+            </Input>
+            {this.isCmdi11Mode() &&
+              <div>
+                <p><Glyphicon glyph="warning-sign"/> In the current mode, certain parts of the editor (including external vocabularies, optional attributes and multilingual documentation) are hidden or deactivated so that <em>new</em> features that are not available in CMDI 1.1 can not be added.
+                However, be aware that <em>existing usages</em> of such features in the edited item are not effected by the editing mode.</p>
+                <p>The editing mode also does not affect the availability of a component or profile as either CMDI 1.1 or CMDI 1.2 from the registry.</p>
+                <p>For more information, visit <a href="https://www.clarin.eu/cmdi1.2" target="_blank">clarin.eu/cmdi1.2</a>.</p>
+              </div>
+            }
+            {this.isCmdi12Mode() &&
+              <div>
+                <p><Glyphicon glyph="info-sign"/> All CMDI 1.2 features are available.
+                  Be aware that this component or profile will also be available as a CMDI 1.1 version, in which such features (including external vocabularies, optional attributes and multilingual documentation) will not be represented.</p>
+                <p>Switch to CMDI 1.1 mode to disable all features that are only available in CMDI 1.2 and higher.</p>
+                <p>For more information, visit <a href="https://www.clarin.eu/cmdi1.2" target="_blank">clarin.eu/cmdi1.2</a>.</p>
+              </div>
+            }
+          </div>
 
           <EditorMenuGroup
             isNew={this.props.isNew || saveDisallowed}
