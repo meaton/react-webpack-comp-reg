@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Constants = require('../constants');
 
 /**
 * CmdiVersionModeMixin

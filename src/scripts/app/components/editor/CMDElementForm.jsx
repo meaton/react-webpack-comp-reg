@@ -106,7 +106,10 @@ var CMDElementForm = React.createClass({
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"
                   onChange={this.updateElementValueWithDefault.bind(this, "")} validate={this.validate}
                   updateConceptLink={this.updateConceptLink} />
-                <DocumentationInput name="Documentation" label="Documentation" value={elem['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+                <DocumentationInput
+                  name="Documentation" label="Documentation" value={elem['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+                  {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
+                   />
                 <ValidatingTextInput type="number" name="@DisplayPriority" label="DisplayPriority"
                   value={(elem['@DisplayPriority'] != null) ? elem['@DisplayPriority'] : 0}
                   labelClassName="editorFormLabel" wrapperClassName="editorFormField"

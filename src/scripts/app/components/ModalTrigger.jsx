@@ -11,6 +11,7 @@ var Button = require('react-bootstrap/lib/Button');
 //utils
 var update = require('react-addons-update');
 var ReactAlert = require('../util/ReactAlert');
+var classNames = require('classnames');
 
 /**
 * ModalTrigger - Bootstrap custom ModalTrigger utilising react-bootstrap Overlay. Manages dialog display for two components implementing Bootstrap Modal, TypeModal and ConceptRegistryModal.
@@ -26,11 +27,13 @@ var ModalTrigger = React.createClass({
     useLink: React.PropTypes.bool,
     modalTarget: React.PropTypes.string,
     onOpen: React.PropTypes.func,
-    onClose: React.PropTypes.func
+    onClose: React.PropTypes.func,
+    disabled: React.PropTypes.bool
   },
   getDefaultProps: function() {
     return {
       useLink: false,
+      disabled: false,
       modalTarget: ReactAlert.defaultContainer
     }
   },
@@ -73,11 +76,11 @@ var ModalTrigger = React.createClass({
   render: function() {
     if(this.props.useLink)
       return (
-        <a onClick={this.toggleModal}>{this.props.label}</a>
+        <a onClick={!this.props.disabled && this.toggleModal} className={classNames({disabled: this.props.disabled})}>{this.props.label}</a>
       )
     else
       return (
-        <Button onClick={this.toggleModal}>
+        <Button onClick={this.toggleModal} disabled={this.props.disabled}>
           {this.props.label}
         </Button>
       );

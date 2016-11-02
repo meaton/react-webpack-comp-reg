@@ -81,7 +81,9 @@ var CMDAttributeForm = React.createClass({
           labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           onChange={this.updateAttributeValue} validate={this.validate}
           updateConceptLink={this.propagateValue.bind(this, "@ConceptLink")} />
-        <DocumentationInput name="Documentation" label="Documentation" value={attr['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <DocumentationInput
+          name="Documentation" label="Documentation" value={attr['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
         <ValueScheme obj={attr} enabled={true}
           onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
           loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(attr);}.bind(this)} />

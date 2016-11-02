@@ -14,6 +14,9 @@ var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
 var Alert = require('react-bootstrap/lib/Alert');
 
+//mixins
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
+
 //utils
 var Validation = require('../../service/Validation')
 var update = require('react-addons-update');
@@ -26,8 +29,10 @@ var languageCodes = require('../../../languageCodes');
 * @constructor
 */
 var DocumentationInput = React.createClass({
+  mixins: [CmdiVersionModeMixin],
+
   propTypes: {
-    value: React.PropTypes.array.isRequired,
+    value: React.PropTypes.array,
     onChange: React.PropTypes.func.isRequired
   },
 
@@ -137,7 +142,7 @@ var DocumentationInput = React.createClass({
       valid: valid,
       validationMessage : msgContainer.message
     });
-    
+
     return valid;
   },
 
@@ -162,6 +167,7 @@ var DocumentationInput = React.createClass({
             label={languageCode || <Glyphicon glyph="comment"/>}
             onOpen={this.props.loadValueSchemeData}
             useLink={true}
+            disabled={!this.isCmdi12Mode()}
             modal={
               <DocumentationLanguageModal
                 languageCode={languageCode}
@@ -179,7 +185,9 @@ var DocumentationInput = React.createClass({
             />
         }.bind(this))
       }
-      <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
+      {this.isCmdi12Mode() &&
+        <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
+      }
       {isInvalid &&
         <Alert bsStyle="danger">{this.state.validationMessage || "Invalid documentation (reason unknown)"}</Alert>
       }
