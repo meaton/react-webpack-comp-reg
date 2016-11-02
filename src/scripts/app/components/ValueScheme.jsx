@@ -5,6 +5,7 @@ var React = require('react');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var CmdiVersionModeMixin = require('../mixins/CmdiVersionModeMixin');
 
 //components
 var ModalTrigger = require('./ModalTrigger');
@@ -24,6 +25,7 @@ var classnames = require('classnames');
 * ValueScheme selection component
 */
 var ValueScheme = React.createClass({
+  mixins: [ImmutableRenderMixin, CmdiVersionModeMixin],
 
   propTypes: {
     obj: React.PropTypes.object.isRequired,
@@ -66,7 +68,7 @@ var ValueScheme = React.createClass({
               onClose={this.closeDialogue}
               onChange={this.props.onChange}
               flux={this.context.flux /* need to pass flux because modal is rendered outside tree - details at http://stackoverflow.com/a/30372606 */}
-              />
+              {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
           } />
       );
 

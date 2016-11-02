@@ -11,6 +11,7 @@ var Fluxxor = require("fluxxor"),
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var CmdiVersionModeMixin = require('../mixins/CmdiVersionModeMixin');
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
@@ -39,7 +40,10 @@ require('../../../styles/EditorDialog.sass');
 * @constructor
 */
 var TypeModal = React.createClass({
-  mixins: [ImmutableRenderMixin, FluxMixin, StoreWatchMixin("ValueSchemeStore")],
+  mixins: [
+    FluxMixin, StoreWatchMixin("ValueSchemeStore"),
+    ImmutableRenderMixin, CmdiVersionModeMixin
+  ],
 
   // Required by StoreWatchMixin
   getStateFromFlux: function() {
@@ -193,6 +197,7 @@ var TypeModal = React.createClass({
                 onChangeVocabularyType={this.handleChangeVocabularyType}
                 onChangeExternalVocab={this.handleChangeExternalVocabulary}
                 onOk={this.setControlVocab}
+                {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}
                 />
             </Tab>
             <Tab eventKey={Constants.VALUE_SCHEME_TAB_PATTERN} title="Pattern">

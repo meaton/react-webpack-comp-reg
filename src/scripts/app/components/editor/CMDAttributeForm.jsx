@@ -84,9 +84,11 @@ var CMDAttributeForm = React.createClass({
         <DocumentationInput
           name="Documentation" label="Documentation" value={attr['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField"
           {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
-        <ValueScheme obj={attr} enabled={true}
+        <ValueScheme
+          obj={attr} enabled={true}
           onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
-          loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(attr);}.bind(this)} />
+          loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(attr);}.bind(this)}
+          {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
         <Input
           type="checkbox" name="@Required"
           label={this.isCmdi12Mode() ? "Required" : "Required (CMDI 1.2 only!)"}

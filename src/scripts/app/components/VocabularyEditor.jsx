@@ -19,6 +19,7 @@ var ProgressBar = require('react-bootstrap/lib/ProgressBar');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
+var CmdiVersionModeMixin = require('../mixins/CmdiVersionModeMixin');
 
 //utils
 var classNames = require('classnames');
@@ -35,7 +36,7 @@ var OPEN_VOCAB = "open";
 var CLOSED_VOCAB = "closed";
 
 var VocabularyEditor = React.createClass({
-    mixins: [ImmutableRenderMixin],
+    mixins: [ImmutableRenderMixin, CmdiVersionModeMixin],
 
     propTypes: {
       vocabulary: React.PropTypes.object,
@@ -221,7 +222,7 @@ var VocabularyEditor = React.createClass({
         var allowSubmit = vocabData && vocabData.length > 0;
         var allowSubmitMessage = allowSubmit ? "Use the defined closed vocabulary" : "A closed vocabulary should contain at least one item!";
       } else if(vocabType === OPEN_VOCAB) {
-        var allowSubmit = vocabUri != null && vocabUri.trim() != '';
+        var allowSubmit = this.isCmdi12Mode() && vocabUri != null && vocabUri.trim() != '';
         var allowSubmitMessage = allowSubmit ? "Use with the selected external vocabulary " + vocabUri : "An open vocabulary should be linked to an external vocabulary!";
       } else {
         var allowSubmit = false;
@@ -232,9 +233,14 @@ var VocabularyEditor = React.createClass({
       return (
         <div className="vocabulary-editor">
           <Input type="select" label="Vocabulary type:" value={vocabType} onChange={this.onChangeVocabType}>
-            <option value={OPEN_VOCAB}>Open</option>
+            <option value={OPEN_VOCAB} disabled={!this.isCmdi12Mode()}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
+          {vocabType === OPEN_VOCAB && !this.isCmdi12Mode() &&
+            <div className="error">
+              <Glyphicon glyph="warning-sign"/>Open vocabularies are not supported in CMDI 1.1. Switch to CMDI 1.2 mode in the editor to set or modify an open vocabulary.
+            </div>
+          }
           {vocabType === CLOSED_VOCAB &&
             <div className="vocabulary-items">
               Closed vocabulary {vocabData.length > 3 ? '(' + vocabData.length + ' items)' : 'items'}:
@@ -255,7 +261,7 @@ var VocabularyEditor = React.createClass({
               }
             </div>
           }
-          {this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp, vocabValueLang)}
+          {(this.isCmdi12Mode() || vocabUri || vocabValueProp || vocabValueLang) && this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp, vocabValueLang)}
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
         </div>
       );
@@ -309,8 +315,10 @@ var VocabularyEditor = React.createClass({
         <div className="external-vocab-editor">
           {!vocabUri && isOpen &&
             <div className="error">Please select or define an external vocabulary for this open vocabulary!</div>}
-          {isClosed &&
+          {isClosed && this.isCmdi12Mode() &&
             <div><strong>Optionally</strong> select or define an external vocabulary for this closed vocabulary. You can choose to import the items of the selected external vocabulary into the current vocabulary.</div>}
+          {vocabUri && isClosed && !this.isCmdi12Mode() &&
+            <div className="error">An external vocabulary is defined for the present vocabulary. While in CMDI 1.1 editing mode, you can remove the link but not edit it or any of the related properties.</div>}
           <div>
             External vocabulary: {vocabUri &&
               <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
@@ -321,6 +329,7 @@ var VocabularyEditor = React.createClass({
                }}
               modalTarget="externalVocabModalContainer"
               label="Search"
+              disabled={!this.isCmdi12Mode()}
               modal={
                   <ExternalVocabularySelector
                     initialSelectionUri={vocabUri}
@@ -335,16 +344,20 @@ var VocabularyEditor = React.createClass({
                    type="text"
                    label="URI:"
                   value={vocabUri || ""}
-                  onChange={this.onChangeExternalVocab} />
+                  disabled={!this.isCmdi12Mode()}
+                  onChange={this.onChangeExternalVocab}
+                  />
                 <Input id="external-vocab-property"
                   type="text"
                   label="Value property:"
                   value={vocabValueProp || ""}
+                  disabled={!this.isCmdi12Mode()}
                   onChange={this.onChangeExternalVocab} />
                 <Input id="external-vocab-language"
                   type="text"
                   label="Value language:"
                   value={vocabValueLang || ""}
+                  disabled={!this.isCmdi12Mode()}
                   onChange={this.onChangeExternalVocab} />
               </div>
             }
