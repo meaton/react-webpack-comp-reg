@@ -158,7 +158,6 @@ var VocabularyEditor = React.createClass({
 
       //async state update and processing of retrieved items
       var deferProgress = $.Deferred();
-      var deferItems = $.Deferred();
 
       deferProgress.then(function() {
         this.setState({
@@ -170,60 +169,8 @@ var VocabularyEditor = React.createClass({
         });
       }.bind(this));
 
-      deferProgress.then(function() {
-        if(language == null || language === '') {
-          valueProperty = valueProp;
-        } else {
-          var valueProperty = valueProp + '@' + language;
-        }
-        log.debug("Map item data with", 'uri', valueProperty)
-
-        var items = data.map(function(item, idx) {
-          var conceptLink = item.uri;
-          var value = item[valueProperty];
-          if(value == null) {
-            //try without language if not already tried
-            if(language != null && item.hasOwnProperty(valueProp)) {
-              value = item[valueProp];
-              log.info("Fallback to {", valueProp, "}, value", value);
-            }
-            //try english if not preferred language
-            else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
-              value = item[valueProp + '@en'];
-              log.info("Fallback to english {", valueProp, "}, value", value);
-            }
-            //try any other language
-            else {
-              log.debug("Looking for other versions of property {", valueProp, "} in", item);
-              var otherLanguageKey = _.chain(item).keys().find(function(k) {
-                return _.startsWith(k, valueProp + '@')
-              }).value();
-              if(otherLanguageKey != null) {
-                value = item[otherLanguageKey];
-                log.info("Fallback to key", otherLanguageKey, "value", value);
-              }
-            }
-          }
-          if(value == null) {
-            //no value or fallback value is present, return null for the entire item
-            log.warn("No value or fallback value for property {", valueProperty, "} in item", item);
-            return null;
-          }
-
-          return {
-            '$': value,
-            'conceptLink': conceptLink
-          }
-        });
-
-        //strip out null values from items list!
-        var rawLength = items.length;
-        items = _.without(items, null);
-        if(rawLength != items.length) {
-          log.warn(rawLength - items.length, "items were omitted because no value was found!");
-        }
-        deferItems.resolve(items);
-      }.bind(this));
+      var deferItems = $.Deferred();
+      deferProgress.then(transformVocabItems.bind(this, data, valueProp, language, deferItems.resolve));
 
       deferItems.then(function(items) {
         log.debug("Items", items);
@@ -522,5 +469,73 @@ function fixVocabTableColumnSizes() {
     $table.find('thead tr').children().each(function(i, v) {
         $(v).width(colWidth[i]);
     });
+  }
+}
+
+/**
+ * Transforms the results of the vocabulary service into an array of CMD vocabulary items
+ * @param  {array}   data      array of items each assumed to have an 'uri' property and a property matching the provided value property
+ * @param  {string}   valueProp property to map the value to
+ * @param  {string}   language  preferred language variant of the property (can be null)
+ * @param  {Function} cb        optional callback, will be called with transformed items
+ * @return {array}             Array of transformed items if no callback provided
+ */
+function transformVocabItems(data, valueProp, language, cb) {
+  if(language == null || language === '') {
+    valueProperty = valueProp;
+  } else {
+    var valueProperty = valueProp + '@' + language;
+  }
+  log.debug("Map item data with", 'uri', valueProperty)
+
+  var items = data.map(function(item, idx) {
+    var conceptLink = item.uri;
+    var value = item[valueProperty];
+    if(value == null) {
+      //try without language if not already tried
+      if(language != null && item.hasOwnProperty(valueProp)) {
+        value = item[valueProp];
+        log.info("Fallback to {", valueProp, "}, value", value);
+      }
+      //try english if not preferred language
+      else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
+        value = item[valueProp + '@en'];
+        log.info("Fallback to english {", valueProp, "}, value", value);
+      }
+      //try any other language
+      else {
+        log.debug("Looking for other versions of property {", valueProp, "} in", item);
+        var otherLanguageKey = _.chain(item).keys().find(function(k) {
+          return _.startsWith(k, valueProp + '@')
+        }).value();
+        if(otherLanguageKey != null) {
+          value = item[otherLanguageKey];
+          log.info("Fallback to key", otherLanguageKey, "value", value);
+        }
+      }
+    }
+    if(value == null) {
+      //no value or fallback value is present, return null for the entire item
+      log.warn("No value or fallback value for property {", valueProperty, "} in item", item);
+      return null;
+    }
+
+    return {
+      '$': value,
+      'conceptLink': conceptLink
+    }
+  });
+
+  //strip out null values from items list!
+  var rawLength = items.length;
+  items = _.without(items, null);
+  if(rawLength != items.length) {
+    log.warn(rawLength - items.length, "items were omitted because no value was found!");
+  }
+
+  if(cb) {
+    cb(items);
+  } else {
+    return items;
   }
 }
