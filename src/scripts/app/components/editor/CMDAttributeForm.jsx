@@ -87,7 +87,11 @@ var CMDAttributeForm = React.createClass({
         <ValueScheme obj={attr} enabled={true}
           onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
           loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(attr);}.bind(this)} />
-        <Input type="checkbox" name="@Required" label="Required" checked={required} onChange={this.updateAttributeSelectValue.bind(this, "false")} wrapperClassName="editorFormField" disabled={!required && !this.isCmdi12Mode()} />
+        <Input
+          type="checkbox" name="@Required"
+          label={this.isCmdi12Mode() ? "Required" : "Required (CMDI 1.2 only!)"}
+          checked={required} onChange={this.updateAttributeSelectValue.bind(this, "false")} wrapperClassName="editorFormField"
+          disabled={!required && !this.isCmdi12Mode()} />
         {this.isMoreShown() && /* MoreLessComponentMixin */
           <div className="more">
             <AutoValueEditor autoValue={attr.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}/>
