@@ -103,6 +103,8 @@ var Editor = React.createClass({
                 componentLinkingMode={this.state.editor.componentLinkingMode}
                 onComponentToggle={this.doToggle /* from ComponentViewMixin */}
                 derivedFromId={this.state.editor.item == null ? null : this.state.editor.item.id}
+                cmdiVersionMode={this.state.editor.cmdiVersionMode}
+                onCmdiVersionModeChange={this.handleCmdiVersionModeChange}
               />
             <div className={"browserGroup space-" + this.state.editor.grid.space}>
               {gridExpanded && (
@@ -204,6 +206,10 @@ var Editor = React.createClass({
 
   toggleGridExpansion: function() {
     this.setState({expandedGrid: !this.state.expandedGrid});
+  },
+
+  handleCmdiVersionModeChange: function(version) {
+    this.getFlux().actions.setCmdiVersionMode(version);
   },
 
   isAuthenticated: function() {

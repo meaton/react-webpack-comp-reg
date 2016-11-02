@@ -10,6 +10,7 @@ var React = require("react"),
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var Modal = require('react-bootstrap/lib/Modal');
+var Input = require('react-bootstrap/lib/Input');
 
 //components
 var ComponentSpecForm = require("./ComponentSpecForm"),
@@ -39,6 +40,8 @@ var EditorForm = React.createClass({
     type: React.PropTypes.string.isRequired,
     loading: React.PropTypes.bool.isRequired,
     processing: React.PropTypes.bool.isRequired,
+    cmdiVersionMode: React.PropTypes.string.isRequired,
+    onCmdiVersionModeChange: React.PropTypes.func.isRequired,
     expansionState: React.PropTypes.object.isRequired,
     linkedComponents: React.PropTypes.object.isRequired,
     selectedComponentId: React.PropTypes.string,
@@ -84,6 +87,16 @@ var EditorForm = React.createClass({
               ? (this.props.isNew||saveDisallowed?"New profile":"Edit profile")
               :(this.props.isNew||saveDisallowed?"New component":"Edit component")}
           </h3>
+
+          <Input type="select" value={this.props.cmdiVersionMode} onChange={this.handleCmdiVersionModeChange}
+            className={classNames("cmdi-version-mode-selector",{
+              "cmdi11": this.props.cmdiVersionMode === Constants.CMD_VERSION_1_1,
+              "cmdi12": this.props.cmdiVersionMode === Constants.CMD_VERSION_1_2
+            })}
+            >
+            <option value={Constants.CMD_VERSION_1_1}>CMDI 1.1 mode</option>
+            <option value={Constants.CMD_VERSION_1_2}>CMDI 1.2 mode</option>
+          </Input>
 
           <EditorMenuGroup
             isNew={this.props.isNew || saveDisallowed}
@@ -191,6 +204,10 @@ var EditorForm = React.createClass({
   handleLoadLinkedComponents: function(ids) {
     log.debug("Loading linked child components", ids);
     this.getFlux().actions.loadLinkedComponentSpecsById(ids);
+  },
+
+  handleCmdiVersionModeChange: function(evt) {
+    this.props.onCmdiVersionModeChange(evt.target.value);
   },
 
   afterSuccess: function() {
