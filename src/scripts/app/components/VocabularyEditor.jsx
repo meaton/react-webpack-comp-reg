@@ -171,22 +171,31 @@ var VocabularyEditor = React.createClass({
       }.bind(this));
 
       deferProgress.then(function() {
-        var valueProperty = valueProp + '@' + language;
+        if(language == null || language === '') {
+          valueProperty = valueProp;
+        } else {
+          var valueProperty = valueProp + '@' + language;
+        }
         log.debug("Map item data with", 'uri', valueProperty)
 
         var items = data.map(function(item, idx) {
           var conceptLink = item.uri;
           var value = item[valueProperty];
           if(value == null) {
+            //try without language if not already tried
+            if(language != null && item.hasOwnProperty(valueProp)) {
+              value = item[valueProp];
+              log.info("Fallback to {", valueProp, "}, value", value);
+            }
             //try english if not preferred language
-            if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
+            else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
               value = item[valueProp + '@en'];
-              log.info("Fallback to english {", valueProp, "} value", value);
-            } else {
+              log.info("Fallback to english {", valueProp, "}, value", value);
+            }
+            //try any other language
+            else {
               log.debug("Looking for other versions of property {", valueProp, "} in", item);
-              //see if any other language...
               var otherLanguageKey = _.chain(item).keys().find(function(k) {
-                log.debug("Comparing", k, "with", valueProp + '@');
                 return _.startsWith(k, valueProp + '@')
               }).value();
               if(otherLanguageKey != null) {
