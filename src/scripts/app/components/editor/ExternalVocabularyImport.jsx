@@ -255,7 +255,9 @@ var ExternalVocabularyImport = React.createClass({
           {this.state.preview &&
             <div>
               <a onClick={this.togglePreview}><Glyphicon glyph="eye-close"/> Hide preview</a>
-              <VocabularyTable items={importState.items} readOnly />
+              <div>{importState.items.length > 100 && <span>Showing first 100 items (omitted {importState.items.length - 100} items):</span>}
+              <VocabularyTable items={_.slice(importState.items, 0, 100)} readOnly />
+              </div>
             </div>
           }
         </div>
