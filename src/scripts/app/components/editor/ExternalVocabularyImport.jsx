@@ -151,6 +151,13 @@ var ExternalVocabularyImport = React.createClass({
       }
     },
 
+    /**
+     * Tries to find a value for the specified value property, first trying to match the language; if not, without; if that fails, try any other languages, English first
+     * @param  {[type]} item      property haystack
+     * @param  {[type]} valueProp property needly
+     * @param  {[type]} language  optional preferred language
+     * @return {[type]}           value if found, otherwise null
+     */
     attemptGetPropertyValue: function(item, valueProp, language) {
       if(language == null || language === '') {
         var valueProperty = valueProp;
@@ -159,18 +166,16 @@ var ExternalVocabularyImport = React.createClass({
       }
 
       var value = item[valueProperty];
-      if(value != null) {
-        return value;
-      } else {
+      if(value == null) {
         //try without language if not already tried
         if(language != null && item.hasOwnProperty(valueProp)) {
+          value = item[valueProp];
           log.info("Fallback to {", valueProp, "}, value", value);
-          return item[valueProp];
         }
         //try english if not preferred language
         else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
+          value = item[valueProp + '@en'];
           log.info("Fallback to english {", valueProp, "}, value", value);
-          return item[valueProp + '@en'];
         }
         //try any other language
         else {
@@ -179,13 +184,12 @@ var ExternalVocabularyImport = React.createClass({
             return _.startsWith(k, valueProp + '@')
           }).value();
           if(otherLanguageKey != null) {
+            value = item[otherLanguageKey];
             log.info("Fallback to key", otherLanguageKey, "value", value);
-            return item[otherLanguageKey];
           }
         }
-        return null;
       }
-
+      return value;
     },
 
     applyVocabularyImport: function() {
