@@ -16,7 +16,6 @@ var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Input = require('react-bootstrap/lib/Input');
-var ProgressBar = require('react-bootstrap/lib/ProgressBar');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -27,8 +26,6 @@ var classNames = require('classnames');
 var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
-var update = require('react-addons-update');
-var _ = require('lodash');
 
 //services
 var ComponentRegistryClient = require('../service/ComponentRegistryClient');
@@ -54,8 +51,7 @@ var VocabularyEditor = React.createClass({
         editedRow: -1,
         editedColumn: -1,
         externalVocabDetailsShown: false,
-        selectExternalVocabularyMode: false,
-        vocabImport: null
+        selectExternalVocabularyMode: false
       }
     },
 
@@ -146,61 +142,6 @@ var VocabularyEditor = React.createClass({
       });
     },
 
-    retrieveVocabItems: function(uri, valueProp, language) {
-      log.debug("Retrieving vocabulary items for", uri, valueProp);
-      this.setState({
-        vocabImport: {
-          itemsDownloaded: false,
-          itemsCount: -1,
-          itemsProcessed: 0
-        }
-      });
-      ComponentRegistryClient.queryVocabularyItems(uri, valueProp, this.processRetrievedVocabItems.bind(this, uri, valueProp, language),
-        function(error) {
-          this.setState({
-            vocabImport: {
-              error: error
-            }
-          });
-        }
-      );
-    },
-
-    processRetrievedVocabItems: function(uri, valueProp, language, data) {
-      log.debug("Retrieved vocabulary item", data);
-
-      //async state update and processing of retrieved items
-      var deferProgress = $.Deferred();
-
-      deferProgress.then(function() {
-        this.setState({
-          vocabImport: {
-            itemsDownloaded: true,
-            itemsCount: data.length,
-            done: false
-          }
-        });
-      }.bind(this));
-
-      var deferItems = $.Deferred();
-      deferProgress.then(transformVocabItems.bind(this, data, valueProp, language, deferItems.resolve));
-
-      deferItems.then(function(items) {
-        log.debug("Items", items);
-        var importState = update(this.state.vocabImport, {$merge: {done: true, items: items}});
-        this.setState({vocabImport: importState});
-      }.bind(this));
-
-      //trigger processing
-      deferProgress.resolve();
-    },
-
-    applyVocabularyImport: function() {
-      var items = this.state.vocabImport.items;
-      this.props.onSetVocabularyItems(items);
-      this.setState({vocabImport: null});
-    },
-
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
@@ -272,9 +213,6 @@ var VocabularyEditor = React.createClass({
                         onClose={vocabImportCloseHandler} />
                   } />
               }
-              {
-                this.state.vocabImport && this.renderVocabularyImport()
-              }
               </div>
               {vocabData == null || vocabData.length == 0 &&
                 <div className="error">Add one or more items to this vocabulary to make it valid!</div>
@@ -283,41 +221,6 @@ var VocabularyEditor = React.createClass({
           }
           {(this.isCmdi12Mode() || vocabUri || vocabValueProp || vocabValueLang) && this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp, vocabValueLang)}
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
-        </div>
-      );
-    },
-
-    renderVocabularyImport: function() {
-      var vocabImport = this.state.vocabImport;
-      log.trace("Import state", vocabImport);
-
-      var active = !vocabImport.done && !vocabImport.error;
-
-      if(vocabImport.error) {
-        var progress = 75;
-        var style = "danger";
-        var label = "Import failed";
-      } else if(vocabImport.done) {
-        var progress = 100;
-        var style = "success"
-        var label = "Done";
-      } else if(vocabImport.itemsDownloaded) {
-        var progress = 50;
-        var style = "info";
-        var label = "Processing items..."
-      } else {
-        var progress = 25;
-        var style = null;
-        var label ="Getting items..."
-      }
-
-      return (
-        <div className="vocabulary-import">
-          {active ? <ProgressBar active bsStyle={style} label={label} now={Math.floor(progress)} /> : <ProgressBar bsStyle={style} label={label} now={Math.floor(progress)} /> }
-          {vocabImport.error && <div className="error">{vocabImport.error}</div>}
-          {!vocabImport.error && vocabImport.done &&
-            <div><Button onClick={this.applyVocabularyImport}>Ok, import {vocabImport.itemsCount} items (replace existing items)</Button></div>
-          }
         </div>
       );
     },
@@ -519,73 +422,5 @@ function fixVocabTableColumnSizes() {
     $table.find('thead tr').children().each(function(i, v) {
         $(v).width(colWidth[i]);
     });
-  }
-}
-
-/**
- * Transforms the results of the vocabulary service into an array of CMD vocabulary items
- * @param  {array}   data      array of items each assumed to have an 'uri' property and a property matching the provided value property
- * @param  {string}   valueProp property to map the value to
- * @param  {string}   language  preferred language variant of the property (can be null)
- * @param  {Function} cb        optional callback, will be called with transformed items
- * @return {array}             Array of transformed items if no callback provided
- */
-function transformVocabItems(data, valueProp, language, cb) {
-  if(language == null || language === '') {
-    valueProperty = valueProp;
-  } else {
-    var valueProperty = valueProp + '@' + language;
-  }
-  log.debug("Map item data with", 'uri', valueProperty)
-
-  var items = data.map(function(item, idx) {
-    var conceptLink = item.uri;
-    var value = item[valueProperty];
-    if(value == null) {
-      //try without language if not already tried
-      if(language != null && item.hasOwnProperty(valueProp)) {
-        value = item[valueProp];
-        log.info("Fallback to {", valueProp, "}, value", value);
-      }
-      //try english if not preferred language
-      else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
-        value = item[valueProp + '@en'];
-        log.info("Fallback to english {", valueProp, "}, value", value);
-      }
-      //try any other language
-      else {
-        log.debug("Looking for other versions of property {", valueProp, "} in", item);
-        var otherLanguageKey = _.chain(item).keys().find(function(k) {
-          return _.startsWith(k, valueProp + '@')
-        }).value();
-        if(otherLanguageKey != null) {
-          value = item[otherLanguageKey];
-          log.info("Fallback to key", otherLanguageKey, "value", value);
-        }
-      }
-    }
-    if(value == null) {
-      //no value or fallback value is present, return null for the entire item
-      log.warn("No value or fallback value for property {", valueProperty, "} in item", item);
-      return null;
-    }
-
-    return {
-      '$': value,
-      '@ConceptLink': conceptLink
-    }
-  });
-
-  //strip out null values from items list!
-  var rawLength = items.length;
-  items = _.without(items, null);
-  if(rawLength != items.length) {
-    log.warn(rawLength - items.length, "items were omitted because no value was found!");
-  }
-
-  if(cb) {
-    cb(items);
-  } else {
-    return items;
   }
 }
