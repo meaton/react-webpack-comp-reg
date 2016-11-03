@@ -210,6 +210,7 @@ var VocabularyEditor = React.createClass({
                         vocabularyUri={vocabUri}
                         valueProperty={vocabValueProp}
                         language={vocabValueLang}
+                        onSetVocabularyItems={this.props.onSetVocabularyItems}
                         onClose={vocabImportCloseHandler} />
                   } />
               }

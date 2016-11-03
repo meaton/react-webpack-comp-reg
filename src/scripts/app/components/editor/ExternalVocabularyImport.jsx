@@ -25,7 +25,8 @@ var ExternalVocabularyImport = React.createClass({
       vocabularyUri: React.PropTypes.string.isRequired,
       valueProperty: React.PropTypes.string.isRequired,
       language: React.PropTypes.string,
-      onClose: React.PropTypes.func.isRequired,
+      onSetVocabularyItems: React.PropTypes.func.isRequired,
+      onClose: React.PropTypes.func.isRequired
     },
 
     getInitialState: function() {
@@ -43,7 +44,7 @@ var ExternalVocabularyImport = React.createClass({
           language=this.state.language;
       log.debug("Retrieving vocabulary items for", uri, valueProp, language);
       this.setState({
-        vocabImport: {
+        progress: {
           started: true,
           itemsDownloaded: false,
           itemsCount: -1,
@@ -53,7 +54,7 @@ var ExternalVocabularyImport = React.createClass({
       ComponentRegistryClient.queryVocabularyItems(uri, valueProp, this.processRetrievedVocabItems.bind(this, uri, valueProp, language),
         function(error) {
           this.setState({
-            vocabImport: {
+            progress: {
               error: error
             }
           });
@@ -69,7 +70,7 @@ var ExternalVocabularyImport = React.createClass({
 
       deferProgress.then(function() {
         this.setState({
-          vocabImport: {
+          progress: {
             itemsDownloaded: true,
             itemsCount: data.length,
             done: false
@@ -83,7 +84,7 @@ var ExternalVocabularyImport = React.createClass({
       deferItems.then(function(items) {
         log.debug("Items", items);
         var importState = update(this.state.progress, {$merge: {done: true, items: items}});
-        this.setState({vocabImport: importState});
+        this.setState({progress: importState});
       }.bind(this));
 
       //trigger processing
@@ -162,33 +163,33 @@ var ExternalVocabularyImport = React.createClass({
     applyVocabularyImport: function() {
       var items = this.state.progress.items;
       this.props.onSetVocabularyItems(items);
-      this.setState({vocabImport: null});
+      this.props.onClose();
     },
 
     render: function() {
-      var vocabImport = this.state.progress;
-      log.trace("Import state", vocabImport);
+      var importState = this.state.progress;
+      log.trace("Import state", importState);
 
-      var active = !vocabImport.done && !vocabImport.error;
+      var active = !importState.done && !importState.error;
 
-      if(vocabImport.error) {
-        var progress = 75;
+      if(importState.error) {
+        var progressCount = 75;
         var style = "danger";
         var label = "Import failed";
-      } else if(vocabImport.done) {
-        var progress = 100;
+      } else if(importState.done) {
+        var progressCount = 100;
         var style = "success"
         var label = "Done";
-      } else if(vocabImport.itemsDownloaded) {
-        var progress = 50;
+      } else if(importState.itemsDownloaded) {
+        var progressCount = 50;
         var style = "info";
         var label = "Processing items..."
-      } else if(vocabImport.started) {
-        var progress = 25;
+      } else if(importState.started) {
+        var progressCount = 25;
         var style = null;
         var label ="Getting items...";
       } else {
-        var progress = 0;
+        var progressCount = 0;
         var style = null;
         var label = null;
       }
@@ -204,8 +205,10 @@ var ExternalVocabularyImport = React.createClass({
           <Modal.Body>
             <div className={classes}>
               <div>Vocabulary to import: {this.props.vocabularyUri}</div>
-              <ProgressBar active={active} bsStyle={style} label={label} now={Math.floor(progress)} />
-              {vocabImport.error && <div className="error">{vocabImport.error}</div>}
+              <ProgressBar active={active} bsStyle={style} label={label} now={Math.floor(progressCount)} />
+              {importState.error && <div className="error">{importState.error}</div>}
+
+              <hr />
 
               <div className="external-vocabulary-import-properties">
                 <Input type="text" label="Vocabulary:" value={this.state.vocabularyUri} onChange={function(e){this.setState({vocabularyUri: e.target.value})}.bind(this)} />
@@ -213,7 +216,7 @@ var ExternalVocabularyImport = React.createClass({
                 <Input type="text" label="Value language:" value={this.state.language} onChange={function(e){this.setState({language: e.target.value})}.bind(this)} />
               </div>
 
-              <Button onClick={this.retrieveVocabItems}>Start</Button>
+              <Button onClick={this.retrieveVocabItems}>Load vocabulary</Button>
             </div>
           </Modal.Body>
 
@@ -221,7 +224,7 @@ var ExternalVocabularyImport = React.createClass({
             <div className="external-vocabulary-search-buttons modal-inline">
               {/*<Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;*/}
               <Button onClick={this.props.onClose}>Cancel</Button>
-              <Button onClick={this.applyVocabularyImport} disabled={vocabImport.error || !vocabImport.done}>Import items</Button>
+              <Button onClick={this.applyVocabularyImport} disabled={importState.error || !importState.done}>Import items</Button>
             </div>
           </Modal.Footer>
         </Modal.Dialog>
