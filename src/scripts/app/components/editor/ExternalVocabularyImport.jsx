@@ -248,6 +248,7 @@ var ExternalVocabularyImport = React.createClass({
       return (
         <div>
           Items loaded: {resultCount}
+          {resultCount != importState.itemsCount && <div className="error"><Glyphicon glyph="warning-sign"/> {importState.itemsCount - resultCount} items were omitted because no matching value could be found for the specified property/properties!</div>}
           {resultCount > 0 && !this.state.preview &&
             <div>
               <a onClick={this.togglePreview}><Glyphicon glyph="eye-open"/> Show preview</a>
@@ -256,7 +257,7 @@ var ExternalVocabularyImport = React.createClass({
           {resultCount > 0 && this.state.preview &&
             <div>
               <a onClick={this.togglePreview}><Glyphicon glyph="eye-close"/> Hide preview</a>
-              <div>{importState.items.length > 100 && <span>Showing first 100 items (omitted {importState.items.length - 100} items):</span>}
+              <div>{importState.items.length > 100 && <span>Showing first 100 items (not showing {importState.items.length - 100} additional items):</span>}
               <VocabularyTable items={_.slice(importState.items, 0, 100)} readOnly />
               </div>
             </div>
