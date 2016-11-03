@@ -7,10 +7,10 @@ var React = require('react');
 var Table = require('reactabular').Table;
 var sortColumn = require('reactabular').sortColumn;
 
-var ModalTrigger = require('./ModalTrigger');
-var ExternalVocabularySelector = require('./ExternalVocabularySelector');
-var ExternalVocabularyImport = require('./editor/ExternalVocabularyImport');
-var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
+var ModalTrigger = require('../ModalTrigger');
+var ExternalVocabularySelector = require('../ExternalVocabularySelector');
+var ExternalVocabularyImport = require('./ExternalVocabularyImport');
+var ConceptRegistryModal = require('./ConceptRegistryModal');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -19,7 +19,7 @@ var Input = require('react-bootstrap/lib/Input');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var CmdiVersionModeMixin = require('../mixins/CmdiVersionModeMixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 
 //utils
 var classNames = require('classnames');
@@ -28,7 +28,7 @@ var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
 
 //services
-var ComponentRegistryClient = require('../service/ComponentRegistryClient');
+var ComponentRegistryClient = require('../../service/ComponentRegistryClient');
 
 var OPEN_VOCAB = "open";
 var CLOSED_VOCAB = "closed";

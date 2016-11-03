@@ -9,7 +9,7 @@ var CmdiVersionModeMixin = require('../mixins/CmdiVersionModeMixin');
 
 //components
 var ModalTrigger = require('./ModalTrigger');
-var TypeModal = require('./TypeModal');
+var TypeModal = require('./editor/TypeModal');
 
 //boostrap
 var Button = require('react-bootstrap/lib/Button');

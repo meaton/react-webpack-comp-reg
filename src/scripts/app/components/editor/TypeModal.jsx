@@ -3,7 +3,7 @@ var log = require('loglevel');
 
 var React = require('react');
 
-var Constants = require('../constants');
+var Constants = require('../../constants');
 
 var Fluxxor = require("fluxxor"),
     FluxMixin = Fluxxor.FluxMixin(React),
@@ -11,7 +11,7 @@ var Fluxxor = require("fluxxor"),
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
-var CmdiVersionModeMixin = require('../mixins/CmdiVersionModeMixin');
+var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 
 //bootstrap
 var Modal = require('react-bootstrap/lib/Modal');
@@ -26,14 +26,14 @@ var Alert = require('react-bootstrap/lib/Alert');
 var VocabularyEditor = require('./VocabularyEditor');
 
 //service
-var Validation = require('../service/Validation');
+var Validation = require('../../service/Validation');
 
 //utils
 var update = require('react-addons-update');
 var classNames = require('classnames');
-var ReactAlert = require('../util/ReactAlert');
+var ReactAlert = require('../../util/ReactAlert');
 
-require('../../../styles/EditorDialog.sass');
+require('../../../../styles/EditorDialog.sass');
 
 /**
 * TypeModal - Bootstrap Modal dialog used for setting the defined Type value, Pattern value or a custom-defined Vocabulary enum.
