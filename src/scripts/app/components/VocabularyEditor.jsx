@@ -9,6 +9,7 @@ var sortColumn = require('reactabular').sortColumn;
 
 var ModalTrigger = require('./ModalTrigger');
 var ExternalVocabularySelector = require('./ExternalVocabularySelector');
+var ExternalVocabularyImport = require('./editor/ExternalVocabularyImport');
 var ConceptRegistryModal = require('./editor/ConceptRegistryModal');
 
 //bootstrap
@@ -230,6 +231,12 @@ var VocabularyEditor = React.createClass({
       }
 
       var tableClasses = classNames('table','table-condensed');
+
+      var vocabImportModalRef;
+      var vocabImportCloseHandler = function(evt) {
+        vocabImportModalRef.toggleModal();
+      }
+
       return (
         <div className="vocabulary-editor">
           <Input type="select" label="Vocabulary type:" value={vocabType} onChange={this.onChangeVocabType}>
@@ -248,9 +255,22 @@ var VocabularyEditor = React.createClass({
                 <Table.Header />
                 <Table.Body rows={vocabData} rowKey="rowIdx" />
               </Table.Provider>
-              <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>
+              <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>&nbsp;
               {vocabUri &&
-                <span>&nbsp;<a onClick={this.retrieveVocabItems.bind(this, vocabUri, vocabValueProp, 'en')}><Glyphicon glyph="import" />Import/update from the selected external vocabulary</a></span>
+                <ModalTrigger
+                  ref={function(modal) {
+                     vocabImportModalRef = modal;
+                   }}
+                  modalTarget="externalVocabImportModalContainer"
+                  label={<span><Glyphicon glyph="import" />Import/update from the selected external vocabulary</span>}
+                  useLink
+                  modal={
+                      <ExternalVocabularyImport
+                        vocabularyUri={vocabUri}
+                        valueProperty={vocabValueProp}
+                        language={vocabValueLang}
+                        onClose={vocabImportCloseHandler} />
+                  } />
               }
               {
                 this.state.vocabImport && this.renderVocabularyImport()
