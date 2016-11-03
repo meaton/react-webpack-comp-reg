@@ -83,7 +83,7 @@ var ExternalVocabularySelector = React.createClass({
     },
 
     submitSelection: function(item) {
-      this.props.onSelect(this.state.selected['uri'], 'prefLabel');
+      this.props.onSelect(this.state.selected['uri'], 'prefLabel', 'en');
       this.props.onClose();
     },
 
