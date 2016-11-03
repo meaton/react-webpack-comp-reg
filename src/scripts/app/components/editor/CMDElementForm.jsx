@@ -82,8 +82,7 @@ var CMDElementForm = React.createClass({
     var cardOpt = !open && ( <span>&nbsp;[{minC + " - " + maxC}]</span> );
     var type = !open && (
       <ValueScheme
-        obj={elem} enabled={false}
-        {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />)
+        obj={elem} enabled={false} />)
     // classNames
     var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
     var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
@@ -122,7 +121,7 @@ var CMDElementForm = React.createClass({
                 <ValueScheme obj={elem} enabled={true}
                   onChange={this.updateValueScheme.bind(this, this.handleUpdateValueScheme)}
                   loadValueSchemeData={function(){this.getFlux().actions.loadValueScheme(elem);}.bind(this)}
-                  />
+                  {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
                 {(elem['@ValueScheme'] == "string" || elem['@Multilingual'] == "true") && //hide multilingual for non-string elements (or if it happens to have been set to true)
                   <Input type="checkbox" name="@Multilingual" label="Multilingual" checked={multilingual} onChange={this.updateElementSelectValue.bind(this, "false")} wrapperClassName="editorFormField" />
                 }
