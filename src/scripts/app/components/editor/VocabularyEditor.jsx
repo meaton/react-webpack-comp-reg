@@ -50,7 +50,10 @@ var VocabularyEditor = React.createClass({
     getInitialState: function() {
       return {
         externalVocabDetailsShown: false,
-        selectExternalVocabularyMode: false
+        selectExternalVocabularyMode: false,
+        checkingExternalVocab: false,
+        externalVocabCheckResult: null,
+        externalVocabCheckMessage: null
       }
     },
 
@@ -95,6 +98,11 @@ var VocabularyEditor = React.createClass({
           this.props.vocabulary && this.props.vocabulary['@ValueProperty'] || null,
           target.value);
       }
+
+      this.setState({
+        checkingExternalVocab: false,
+        externalVocabCheckResult: null
+      })
     },
 
     unsetExternalVocab: function() {
@@ -196,6 +204,39 @@ var VocabularyEditor = React.createClass({
       );
     },
 
+    checkExternalVocab: function(vocabUri, vocabValueProp) {
+      if(vocabUri == null || vocabValueProp == null) {
+        //nothing to check
+        return;
+      }
+      this.setState({
+        checkingExternalVocab: true,
+        externalVocabCheckResult: null,
+        externalVocabCheckMessage: null
+      });
+
+      var onSuccess = function(data) {
+        var validResult = $.isArray(data) && data.length > 0;
+        log.debug("Vocabulary service response ok. Data validity:", validResult);
+        this.setState({
+          checkingExternalVocab: false,
+          externalVocabCheckResult: validResult,
+          externalVocabCheckMessage: validResult ? null : "No items in vocabulary or vocabulary does not exist."
+        });
+      }.bind(this);
+
+      var onFailure = function(err) {
+        log.warn("Vocabulary service responded with error:", err);
+        this.setState({
+          checkingExternalVocab: false,
+          externalVocabCheckResult: false,
+          externalVocabCheckMessage: "Service error: " + err
+        });
+      }.bind(this);
+
+      ComponentRegistryClient.queryVocabularyItems(vocabUri, [vocabValueProp], onSuccess, onFailure, 1);
+    },
+
     renderExternalVocabularyEditor: function(vocabType, vocabUri, vocabValueProp, vocabValueLang) {
       var modalRef;
       var closeHandler = function(evt) {
@@ -240,19 +281,29 @@ var VocabularyEditor = React.createClass({
                   value={vocabUri || ""}
                   disabled={!this.isCmdi12Mode()}
                   onChange={this.onChangeExternalVocab}
+                  onBlur={this.checkExternalVocab.bind(this, vocabUri, vocabValueProp)}
                   />
                 <Input id="external-vocab-property"
                   type="text"
                   label="Value property:"
                   value={vocabValueProp || ""}
                   disabled={!this.isCmdi12Mode()}
-                  onChange={this.onChangeExternalVocab} />
+                  onChange={this.onChangeExternalVocab}
+                  onBlur={this.checkExternalVocab.bind(this, vocabUri, vocabValueProp)}
+                  />
                 <Input id="external-vocab-language"
                   type="text"
                   label="Value language:"
                   value={vocabValueLang || ""}
                   disabled={!this.isCmdi12Mode()}
                   onChange={this.onChangeExternalVocab} />
+                <Button
+                  onClick={this.checkExternalVocab.bind(this, vocabUri, vocabValueProp)}
+                  disabled={vocabUri == null || vocabValueProp == null || this.state.checkingExternalVocab}>Check</Button>&nbsp;
+                {this.state.checkingExternalVocab && "Please wait..."}
+                {this.state.externalVocabCheckResult != null && (this.state.externalVocabCheckResult ?
+                  <span><Glyphicon glyph="ok"/> Checked, vocabulary ok! {this.state.externalVocabCheckMessage}</span>
+                  : <span className="error"><Glyphicon glyph="warning-sign"/> Failed! {this.state.externalVocabCheckMessage}</span>)}
               </div>
             }
           </div>
