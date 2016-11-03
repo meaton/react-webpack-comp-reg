@@ -28,6 +28,7 @@ var ExternalVocabularyImport = React.createClass({
     propTypes: {
       vocabularyUri: React.PropTypes.string.isRequired,
       valueProperty: React.PropTypes.string.isRequired,
+      displayValueProperty: React.PropTypes.string,
       language: React.PropTypes.string,
       onSetVocabularyItems: React.PropTypes.func.isRequired,
       onClose: React.PropTypes.func.isRequired
@@ -37,6 +38,7 @@ var ExternalVocabularyImport = React.createClass({
       return {
         vocabularyUri: this.props.vocabularyUri,
         valueProperty: this.props.valueProperty,
+        displayValueProperty: this.props.displayValueProperty,
         language: this.props.language,
         preview: false,
         progress: {}
@@ -46,28 +48,37 @@ var ExternalVocabularyImport = React.createClass({
     retrieveVocabItems: function() {
       var uri=this.state.vocabularyUri,
           valueProp=this.state.valueProperty,
-          language=this.state.language;
-      log.debug("Retrieving vocabulary items for", uri, valueProp, language);
-      this.setState({
-        progress: {
-          started: true,
-          itemsDownloaded: false,
-          itemsCount: -1,
-          itemsProcessed: 0
-        }
-      });
-      ComponentRegistryClient.queryVocabularyItems(uri, valueProp, this.processRetrievedVocabItems.bind(this, uri, valueProp, language),
-        function(error) {
-          this.setState({
-            progress: {
-              error: error
-            }
-          });
-        }.bind(this)
-      );
+          language=this.state.language,
+          displayProp=this.state.displayValueProperty;
+      if(!uri || !valueProp || uri === "" || valueProp === "") {
+        this.setState({
+          progress: {
+            error: "Please specify a URI and value property"
+          }
+        });
+      } else {
+        log.debug("Retrieving vocabulary items for", uri, valueProp, language, displayProp);
+        this.setState({
+          progress: {
+            started: true,
+            itemsDownloaded: false,
+            itemsCount: -1,
+            itemsProcessed: 0
+          }
+        });
+        ComponentRegistryClient.queryVocabularyItems(uri, [valueProp, displayProp], this.processRetrievedVocabItems.bind(this, uri, valueProp, language, displayProp),
+          function(error) {
+            this.setState({
+              progress: {
+                error: error
+              }
+            });
+          }.bind(this)
+        );
+      }
     },
 
-    processRetrievedVocabItems: function(uri, valueProp, language, data) {
+    processRetrievedVocabItems: function(uri, valueProp, language, displayProp, data) {
       log.debug("Retrieved vocabulary item", data);
 
       //async state update and processing of retrieved items
@@ -84,7 +95,7 @@ var ExternalVocabularyImport = React.createClass({
       }.bind(this));
 
       var deferItems = $.Deferred();
-      deferProgress.then(this.transformVocabItems.bind(this, data, valueProp, language, deferItems.resolve));
+      deferProgress.then(this.transformVocabItems.bind(this, data, valueProp, language, displayProp, deferItems.resolve));
 
       deferItems.then(function(items) {
         log.debug("Items", items);
@@ -105,7 +116,7 @@ var ExternalVocabularyImport = React.createClass({
      * @param  {Function} cb        optional callback, will be called with transformed items
      * @return {array}             Array of transformed items if no callback provided
      */
-    transformVocabItems: function(data, valueProp, language, cb) {
+    transformVocabItems: function(data, valueProp, language, displayProp, cb) {
       if(language == null || language === '') {
         valueProperty = valueProp;
       } else {
@@ -224,6 +235,7 @@ var ExternalVocabularyImport = React.createClass({
                 <Input type="text" label="Vocabulary:" value={this.state.vocabularyUri} onChange={function(e){this.setState({vocabularyUri: e.target.value})}.bind(this)} />
                 <Input type="text" label="Value property:" value={this.state.valueProperty} onChange={function(e){this.setState({valueProperty: e.target.value})}.bind(this)} />
                 <Input type="text" label="Value language:" value={this.state.language} onChange={function(e){this.setState({language: e.target.value})}.bind(this)} />
+                <Input type="text" label="Display value property:" value={this.state.displayValueProperty} onChange={function(e){this.setState({displayValueProperty: e.target.value})}.bind(this)} />
               </div>
 
               <Button onClick={this.retrieveVocabItems}>(Re)load vocabulary</Button>

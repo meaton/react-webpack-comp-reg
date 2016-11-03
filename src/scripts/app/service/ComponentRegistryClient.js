@@ -1,6 +1,7 @@
 var clone = require('clone');
 
 var log = require('loglevel');
+var _ = require('lodash');
 
 //JSONIX
 var Jsonix = require('jsonix').Jsonix;
@@ -646,11 +647,11 @@ queryVocabularies: function(cb) {
   }, corsRequestParams));
 },
 
-queryVocabularyItems: function(scheme, property, success, failure) {
+queryVocabularyItems: function(scheme, properties, success, failure) {
   $.ajax($.extend({
     type: 'GET',
     url: vocabularyItemsUrl,
-    data: {scheme: scheme, fields: 'uri,' + property},
+    data: {scheme: scheme, fields: 'uri,' + _.compact(properties).join()},
     contentType: false,
     dataType: "json",
     success: function(data) {
