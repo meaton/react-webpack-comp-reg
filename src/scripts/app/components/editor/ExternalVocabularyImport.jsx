@@ -234,7 +234,7 @@ var ExternalVocabularyImport = React.createClass({
             <div className="modal-inline">
               <div className="external-vocabulary-search-buttons">
                 <Button onClick={this.props.onClose}>Cancel</Button>
-                <Button onClick={this.applyVocabularyImport} disabled={importState.error || !importState.done || importState.itemsCount === 0}>Import loaded items</Button>
+                <Button onClick={this.applyVocabularyImport} disabled={importState.error || !importState.done || importState.items.length === 0}>Import loaded items</Button>
               </div>
             </div>
 
@@ -244,15 +244,16 @@ var ExternalVocabularyImport = React.createClass({
     },
 
     renderResultDetails: function(importState) {
+      var resultCount = importState.items.length;
       return (
         <div>
-          Items loaded: {importState.itemsCount}
-          {!this.state.preview &&
+          Items loaded: {resultCount}
+          {resultCount > 0 && !this.state.preview &&
             <div>
               <a onClick={this.togglePreview}><Glyphicon glyph="eye-open"/> Show preview</a>
             </div>
           }
-          {this.state.preview &&
+          {resultCount > 0 && this.state.preview &&
             <div>
               <a onClick={this.togglePreview}><Glyphicon glyph="eye-close"/> Hide preview</a>
               <div>{importState.items.length > 100 && <span>Showing first 100 items (omitted {importState.items.length - 100} items):</span>}
