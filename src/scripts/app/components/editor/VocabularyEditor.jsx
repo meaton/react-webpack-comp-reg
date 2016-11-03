@@ -164,6 +164,7 @@ var VocabularyEditor = React.createClass({
                 removeConceptLink={this.removeConceptLink}
                 onRemoveVocabularyItem={this.props.onRemoveVocabularyItem}
                 onVocabularyPropertyChange={this.props.onVocabularyPropertyChange}
+                readOnly={false}
                 />
               <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>&nbsp;
               {vocabUri &&

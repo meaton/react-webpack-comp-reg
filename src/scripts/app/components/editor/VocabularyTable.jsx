@@ -29,7 +29,14 @@ var VocabularyTable = React.createClass({
       addConceptLink: React.PropTypes.func,
       removeConceptLink: React.PropTypes.func,
       onRemoveVocabularyItem: React.PropTypes.func,
-      onVocabularyPropertyChange: React.PropTypes.func
+      onVocabularyPropertyChange: React.PropTypes.func,
+      readOnly: React.PropTypes.bool
+    },
+
+    getDefaultProps: function() {
+      return {
+        readOnly: false
+      };
     },
 
     getInitialState: function() {
@@ -133,14 +140,14 @@ var VocabularyTable = React.createClass({
         {
           property: '$',
           header: {label: 'Value'},
-          cell: {
+          cell: this.props.readOnly ? {} : {
             transforms: [editable(edit.input()), highlightEdited]
           }
         }, {
           /* Description column */
           property: '@AppInfo',
           header: {label: 'Description'},
-          cell: {
+          cell: this.props.readOnly ? {} : {
             transforms: [editable(edit.input()), highlightEdited]
           }
         }, {
@@ -153,26 +160,29 @@ var VocabularyTable = React.createClass({
                 var closeHandler = function(evt) {
                   modalRef.toggleModal();
                 }
-                var modal = (
-                  <ModalTrigger
-                    ref={function(modal) {
-                       modalRef = modal;
-                     }}
-                    modalTarget="ccrModalContainer"
-                    label="add concept link"
-                    modal={
-                      <ConceptRegistryModal
-                        onClose={closeHandler}
-                        onSelect={self.props.addConceptLink.bind(null, extra.rowIndex)}
-                        container={self} />
-                    } />
-                );
+                if(!self.props.readOnly && self.props.addConceptLink) {
+                  var modal = (
+                    <ModalTrigger
+                      ref={function(modal) {
+                         modalRef = modal;
+                       }}
+                      modalTarget="ccrModalContainer"
+                      label="add concept link"
+                      modal={
+                        <ConceptRegistryModal
+                          onClose={closeHandler}
+                          onSelect={self.props.addConceptLink.bind(null, extra.rowIndex)}
+                          container={self} />
+                      } />
+                  );
+                }
 
                 if(value && value != "") {
                   return (
                     <span>
                       <a href={value} target="_blank">{value}</a> &nbsp;
-                      <a onClick={self.props.removeConceptLink.bind(null, extra.rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>
+                      {!self.props.readOnly && self.props.removeConceptLink &&
+                        <a onClick={self.props.removeConceptLink.bind(null, extra.rowIndex)} style={{cursor: 'pointer'}}>&#10007;</a>}
                     </span>);
                 } else {
                   return (<span>{modal}</span>);
@@ -185,11 +195,15 @@ var VocabularyTable = React.createClass({
           /* nameless column with a delete button for each row */
           cell: {
             format: function(value, extra){
-              return (<Glyphicon
-                        glyph="trash"
-                        style={{cursor: 'pointer'}}
-                        title="Remove item"
-                        onClick={self.props.onRemoveVocabularyItem.bind(null, extra.rowIndex)} />);
+              if(!self.props.readOnly && self.props.onRemoveVocabularyItem) {
+                return (<Glyphicon
+                          glyph="trash"
+                          style={{cursor: 'pointer'}}
+                          title="Remove item"
+                          onClick={self.props.onRemoveVocabularyItem.bind(null, extra.rowIndex)} />);
+              } else {
+                return "";
+              }
             }
           }
         }

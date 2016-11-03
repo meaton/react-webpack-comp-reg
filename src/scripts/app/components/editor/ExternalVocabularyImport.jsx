@@ -2,6 +2,9 @@
 var log = require('loglevel');
 var React = require('react');
 
+//components
+var VocabularyTable = require('./VocabularyTable');
+
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 var Modal = require('react-bootstrap/lib/Modal');
@@ -252,6 +255,7 @@ var ExternalVocabularyImport = React.createClass({
           {this.state.preview &&
             <div>
               <a onClick={this.togglePreview}><Glyphicon glyph="eye-close"/> Hide preview</a>
+              <VocabularyTable items={importState.items} readOnly />
             </div>
           }
         </div>
