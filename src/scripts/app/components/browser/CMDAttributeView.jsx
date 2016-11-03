@@ -71,8 +71,8 @@ var CMDAttributeView = React.createClass({
             {$.isArray(attr.AutoValue) && (
               <li className="attrElem">
                 <span className="attrLabel">Automatic value expression(s):</span>
-                <span className="attrValue">{attr.AutoValue.map(function(value){
-                    return <div>{value}</div>;
+                <span className="attrValue">{attr.AutoValue.map(function(value, idx){
+                    return <div key={"autoValue-"+idx}>{value}</div>;
                   })}</span>
               </li>
             )}

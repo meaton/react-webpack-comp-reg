@@ -123,7 +123,7 @@ var BrowserMenuGroup = React.createClass({
         );
       }
     } else {
-      return (<Button bsStyle="primary" disabled="true">Edit</Button>);
+      return (<Button bsStyle="primary" disabled>Edit</Button>);
     }
   },
 

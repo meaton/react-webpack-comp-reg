@@ -108,8 +108,8 @@ var CMDElementView = React.createClass({
               {$.isArray(elem.AutoValue) && (
                 <li className="attrElem">
                   <span className="attrLabel">Automatic value expression(s):</span>
-                  <span className="attrValue">{elem.AutoValue.map(function(value){
-                      return <div>{value}</div>;
+                  <span className="attrValue">{elem.AutoValue.map(function(value, idx){
+                      return <div key={"autoValue-"+idx}>{value}</div>;
                     })}</span>
                 </li>
               )}

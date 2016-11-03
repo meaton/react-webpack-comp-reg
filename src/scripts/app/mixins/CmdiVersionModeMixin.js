@@ -10,7 +10,7 @@ var Constants = require('../constants');
 var CmdiVersionModeMixin = {
 
   propTypes: {
-    cmdiVersionMode: React.PropTypes.string.isRequired
+    cmdiVersionMode: React.PropTypes.string
   },
 
   getCmdiVersionModeProps: function() {
