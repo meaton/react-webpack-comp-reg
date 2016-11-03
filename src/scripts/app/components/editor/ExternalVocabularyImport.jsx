@@ -117,50 +117,25 @@ var ExternalVocabularyImport = React.createClass({
      * @return {array}             Array of transformed items if no callback provided
      */
     transformVocabItems: function(data, valueProp, language, displayProp, cb) {
-      if(language == null || language === '') {
-        valueProperty = valueProp;
-      } else {
-        var valueProperty = valueProp + '@' + language;
-      }
-      log.debug("Map item data with", 'uri', valueProperty)
+      log.debug("Map item data with", 'uri', valueProp, language, displayProp);
 
       var items = data.map(function(item, idx) {
         var conceptLink = item.uri;
-        var value = item[valueProperty];
-        if(value == null) {
-          //try without language if not already tried
-          if(language != null && item.hasOwnProperty(valueProp)) {
-            value = item[valueProp];
-            log.info("Fallback to {", valueProp, "}, value", value);
-          }
-          //try english if not preferred language
-          else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
-            value = item[valueProp + '@en'];
-            log.info("Fallback to english {", valueProp, "}, value", value);
-          }
-          //try any other language
-          else {
-            log.debug("Looking for other versions of property {", valueProp, "} in", item);
-            var otherLanguageKey = _.chain(item).keys().find(function(k) {
-              return _.startsWith(k, valueProp + '@')
-            }).value();
-            if(otherLanguageKey != null) {
-              value = item[otherLanguageKey];
-              log.info("Fallback to key", otherLanguageKey, "value", value);
-            }
-          }
-        }
+        var value = this.attemptGetPropertyValue(item, valueProp, language);
         if(value == null) {
           //no value or fallback value is present, return null for the entire item
-          log.warn("No value or fallback value for property {", valueProperty, "} in item", item);
+          log.warn("No value or fallback value for property {", valueProp, "} in item", item);
           return null;
         }
 
+        var displayValue = displayProp != null && displayProp != '' && this.attemptGetPropertyValue(item, displayProp, language) || null;
+
         return {
           '$': value,
-          '@ConceptLink': conceptLink
+          '@ConceptLink': conceptLink,
+          '@AppInfo': displayValue
         }
-      });
+      }.bind(this));
 
       //strip out null values from items list!
       var rawLength = items.length;
@@ -174,6 +149,43 @@ var ExternalVocabularyImport = React.createClass({
       } else {
         return items;
       }
+    },
+
+    attemptGetPropertyValue: function(item, valueProp, language) {
+      if(language == null || language === '') {
+        var valueProperty = valueProp;
+      } else {
+        var valueProperty = valueProp + '@' + language;
+      }
+
+      var value = item[valueProperty];
+      if(value != null) {
+        return value;
+      } else {
+        //try without language if not already tried
+        if(language != null && item.hasOwnProperty(valueProp)) {
+          log.info("Fallback to {", valueProp, "}, value", value);
+          return item[valueProp];
+        }
+        //try english if not preferred language
+        else if(language != 'en' && item.hasOwnProperty(valueProp + '@en')) {
+          log.info("Fallback to english {", valueProp, "}, value", value);
+          return item[valueProp + '@en'];
+        }
+        //try any other language
+        else {
+          log.debug("Looking for other versions of property {", valueProp, "} in", item);
+          var otherLanguageKey = _.chain(item).keys().find(function(k) {
+            return _.startsWith(k, valueProp + '@')
+          }).value();
+          if(otherLanguageKey != null) {
+            log.info("Fallback to key", otherLanguageKey, "value", value);
+            return item[otherLanguageKey];
+          }
+        }
+        return null;
+      }
+
     },
 
     applyVocabularyImport: function() {
