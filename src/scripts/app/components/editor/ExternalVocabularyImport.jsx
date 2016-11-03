@@ -7,6 +7,7 @@ var Input = require('react-bootstrap/lib/Input');
 var Modal = require('react-bootstrap/lib/Modal');
 var Button = require('react-bootstrap/lib/Button');
 var ProgressBar = require('react-bootstrap/lib/ProgressBar');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //mixins
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
@@ -34,6 +35,7 @@ var ExternalVocabularyImport = React.createClass({
         vocabularyUri: this.props.vocabularyUri,
         valueProperty: this.props.valueProperty,
         language: this.props.language,
+        preview: false,
         progress: {}
       }
     },
@@ -166,6 +168,10 @@ var ExternalVocabularyImport = React.createClass({
       this.props.onClose();
     },
 
+    togglePreview: function() {
+      this.setState({preview: !this.state.preview});
+    },
+
     render: function() {
       var importState = this.state.progress;
       log.trace("Import state", importState);
@@ -173,7 +179,7 @@ var ExternalVocabularyImport = React.createClass({
       var active = !importState.done && !importState.error;
 
       if(importState.error) {
-        var progressCount = 75;
+        var progressCount = 100;
         var style = "danger";
         var label = "Import failed";
       } else if(importState.done) {
@@ -204,9 +210,10 @@ var ExternalVocabularyImport = React.createClass({
 
           <Modal.Body>
             <div className={classes}>
-              <div>Vocabulary to import: {this.props.vocabularyUri}</div>
+
               <ProgressBar active={active} bsStyle={style} label={label} now={Math.floor(progressCount)} />
               {importState.error && <div className="error">{importState.error}</div>}
+              {importState.done && this.renderResultDetails(importState)}
 
               <hr />
 
@@ -216,18 +223,38 @@ var ExternalVocabularyImport = React.createClass({
                 <Input type="text" label="Value language:" value={this.state.language} onChange={function(e){this.setState({language: e.target.value})}.bind(this)} />
               </div>
 
-              <Button onClick={this.retrieveVocabItems}>Load vocabulary</Button>
+              <Button onClick={this.retrieveVocabItems}>(Re)load vocabulary</Button>
             </div>
           </Modal.Body>
 
           <Modal.Footer>
-            <div className="external-vocabulary-search-buttons modal-inline">
-              {/*<Button onClick={this.submitSelection} disabled={this.state.selected == null}>Select</Button>&nbsp;*/}
-              <Button onClick={this.props.onClose}>Cancel</Button>
-              <Button onClick={this.applyVocabularyImport} disabled={importState.error || !importState.done}>Import items</Button>
+            <div className="modal-inline">
+              <div className="external-vocabulary-search-buttons">
+                <Button onClick={this.props.onClose}>Cancel</Button>
+                <Button onClick={this.applyVocabularyImport} disabled={importState.error || !importState.done || importState.itemsCount === 0}>Import loaded items</Button>
+              </div>
             </div>
+
           </Modal.Footer>
         </Modal.Dialog>
+      );
+    },
+
+    renderResultDetails: function(importState) {
+      return (
+        <div>
+          Items loaded: {importState.itemsCount}
+          {!this.state.preview &&
+            <div>
+              <a onClick={this.togglePreview}><Glyphicon glyph="eye-open"/> Show preview</a>
+            </div>
+          }
+          {this.state.preview &&
+            <div>
+              <a onClick={this.togglePreview}><Glyphicon glyph="eye-close"/> Hide preview</a>
+            </div>
+          }
+        </div>
       );
     }
 
