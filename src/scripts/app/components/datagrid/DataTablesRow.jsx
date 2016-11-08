@@ -54,7 +54,7 @@ var DataTablesRow = React.createClass({
 
     return (
       <tr
-        id={"item-" + this.props.data.id}
+        data-compid={this.props.data.id}
         onClick={this.props.buttonBefore ? null : this.rowClick.bind(this, this.props.data)}
         key={this.props.data.id}
         className={classnames(this.props.className + " status-" + data.status, {

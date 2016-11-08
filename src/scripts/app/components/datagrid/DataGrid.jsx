@@ -37,10 +37,8 @@ var DataGrid = React.createClass({
     itemOptionsDropdownCreator: React.PropTypes.func
   },
 
-  componentDidUpdate: function(prevProps) {
-    if(prevProps.selectedItems !== this.props.selectedItems) {
+  componentDidUpdate: function() {
       scrollToSelection(this.props.selectedItems);
-    }
   },
 
   getDefaultProps: function() {
@@ -130,7 +128,6 @@ var DataGrid = React.createClass({
 module.exports = DataGrid;
 
 var scrollToSelection = function(itemsObject) {
-  log.trace("Ensuring selected item(s) are in view", itemsObject);
   if(itemsObject != null) {
     var itemIds = Object.keys(itemsObject);
     if($.isArray(itemIds) && itemIds.length > 0) {
@@ -141,13 +138,24 @@ var scrollToSelection = function(itemsObject) {
       }
 
       if(itemId != null) {
-        var item = $('tr#item-' + itemId);
-        log.debug("Scroll to item", itemId, "(if not in view)", item);
-        //TODO: check if in view
-        //TODO: if not in view, scroll to item
+        var item = $('#grid tr[data-compid="' + itemId + '"]');
+        var itemPos = item.position();
+        log.trace("Scroll to item (if not in view)", itemId, " - Position", itemPos);
+
+        if(itemPos) {
+          var tbody = $('#grid tbody');
+          var itemTop = itemPos.top;
+          if(itemTop < 0 || itemTop > tbody.height()) { //TODO: item bottom < 0
+            var scrollTargetPos = tbody.scrollTop() + itemTop - 2 * item.height();
+            log.debug("Selected item out of view! Scroll to", scrollTargetPos);
+            tbody.scrollTop(scrollTargetPos);
+          } else {
+            log.trace("Selected item in view");
+          }
+        }
       }
     } else {
-      log.warn("No keys (item ids) in items object");
+      log.warn("No keys (item ids) in items object", itemsObject);
     }
   }
 }
