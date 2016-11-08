@@ -37,11 +37,8 @@ module.exports = {
   jumpToItem: function(type, itemId) {
     this.dispatch(Constants.JUMP_TO_ITEM);
 
-    //deferred: item lookup -> (team lookup) -> space lookup
-
     //final goal is to look up the space
-    var spaceLookup = $.Deferred();
-    spaceLookup
+    lookupSpace(type, itemId)
       .done(
         function(item, space, team) {
           this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team || null});
@@ -51,33 +48,6 @@ module.exports = {
       .fail(
         this.dispatch.bind(this, Constants.JUMP_TO_ITEM_FAILURE)
       );
-
-    //look up item details, space lookup may not require further requests
-    var itemLookup = $.Deferred();
-    itemLookup.done(function(item) {
-      log.debug("Target item data:", item);
-      if(item.isPublic === 'true') {
-        //implies null team, space lookup also done
-        spaceLookup.resolve(item, Constants.SPACE_PUBLISHED);
-      } else {
-        //space lookup requires a lookup of teams
-        lookupTeam(type, itemId)
-          .done(
-            function(teamId) {
-              if(teamId == null) {
-                spaceLookup.resolve(item, Constants.SPACE_PRIVATE);
-              } else {
-                spaceLookup.resolve(item, Constants.SPACE_TEAM, teamId);
-              }
-            }
-          ).fail(
-            spaceLookup.reject
-          );
-      }
-    }.bind(this));
-    itemLookup.fail(spaceLookup.reject);
-
-    ComponentRegistryClient.loadItem(itemId, itemLookup.resolve, itemLookup.reject);
   },
 
   editItem: function(item) {
@@ -102,8 +72,53 @@ module.exports = {
 
 };
 
+/**
+ * Asynchronous item lookup
+ * @param  {[type]} type   type of item to look up (TYPE_PROFILE or TYPE_COMPONENT)
+ * @param  {[type]} itemId id of item to lookup
+ * @return {Promise}        promise to look up item space and other details, if succesful resolves with {item object, space, [team]}
+ */
+var lookupSpace = function(type, itemId) {
+  var spaceLookup = $.Deferred();
+
+  //look up item details, space lookup may not require further requests
+  var handleSuccess = function(item) {
+    log.debug("Target item data:", item);
+    if(item.isPublic === 'true') {
+      //public implies null team, space lookup also done
+      spaceLookup.resolve(item, Constants.SPACE_PUBLISHED);
+    } else {
+      //a lookup of teams is required to distinguish between private and team
+      lookupTeam(type, itemId)
+        .done(
+          //succesful team lookup
+          function(teamId) {
+            if(teamId == null) {
+              spaceLookup.resolve(item, Constants.SPACE_PRIVATE);
+            } else {
+              spaceLookup.resolve(item, Constants.SPACE_TEAM, teamId);
+            }
+          }
+        ).fail(
+          //team lookup failed
+          spaceLookup.reject
+        );
+    }
+  }.bind(this);
+
+  ComponentRegistryClient.loadItem(itemId, handleSuccess, spaceLookup.reject);
+  return spaceLookup.promise();
+}
+
+/**
+ * Asynchronous team ID lookup for an item
+ * @param  {[type]} type   type of item to look up for (TYPE_PROFILE or TYPE_COMPONENT)
+ * @param  {[type]} itemId id of item to lookup for
+ * @return {[type]}        promise to look up item space and other details, if succesful resolves with team id (or null if not in any team)
+ */
 var lookupTeam = function(type, itemId) {
   var teamLookup = $.Deferred();
+  
   var handleSuccess = function(teamData) {
     log.debug("Target item team data:", teamData);
     //we have the team information...
