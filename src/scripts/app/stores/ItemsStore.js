@@ -93,10 +93,13 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   handleSwitchSpace: function(spaceType) {
-    this.type = spaceType.type;
-    this.space = spaceType.space;
-    this.team = spaceType.team;
-    this.emit("change");
+    //any changes? if not, a forced reload may be prevented
+    if(spaceType.type !== this.type || spaceType.space !== this.space || spaceType.team != this.team) {
+      this.type = spaceType.type;
+      this.space = spaceType.space;
+      this.team = spaceType.team;
+      this.emit("change");
+    }
   },
 
   handleDeleteOrMove: function(ids) {
