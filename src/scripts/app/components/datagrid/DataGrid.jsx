@@ -37,6 +37,12 @@ var DataGrid = React.createClass({
     itemOptionsDropdownCreator: React.PropTypes.func
   },
 
+  componentDidUpdate: function(prevProps) {
+    if(prevProps.selectedItems !== this.props.selectedItems) {
+      scrollToSelection(this.props.selectedItems);
+    }
+  },
+
   getDefaultProps: function() {
     return {
       selectedItems: {},
@@ -122,3 +128,26 @@ var DataGrid = React.createClass({
 });
 
 module.exports = DataGrid;
+
+var scrollToSelection = function(itemsObject) {
+  log.trace("Ensuring selected item(s) are in view", itemsObject);
+  if(itemsObject != null) {
+    var itemIds = Object.keys(itemsObject);
+    if($.isArray(itemIds) && itemIds.length > 0) {
+      if(itemIds.length > 1) {
+        var itemId = null; //TODO: implement solution for multiple selection
+      } else {
+        var itemId = itemIds[0];
+      }
+
+      if(itemId != null) {
+        var item = $('tr#item-' + itemId);
+        log.debug("Scroll to item", itemId, "(if not in view)", item);
+        //TODO: check if in view
+        //TODO: if not in view, scroll to item
+      }
+    } else {
+      log.warn("No keys (item ids) in items object");
+    }
+  }
+}
