@@ -41,13 +41,16 @@ module.exports = {
 
     //final goal is to look up the space
     var spaceLookup = $.Deferred();
-    spaceLookup.done(function(item, space, team){
-      this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team});
-      this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
-      this.dispatch(Constants.JUMP_TO_ITEM_SUCCESS);
-    }.bind(this));
-
-    spaceLookup.fail(this.dispatch.bind(this, Constants.JUMP_TO_ITEM_FAILURE));
+    spaceLookup
+      .done(
+        function(item, space, team) {
+          this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team || null});
+          this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
+          this.dispatch(Constants.JUMP_TO_ITEM_SUCCESS);
+        }.bind(this))
+      .fail(
+        this.dispatch.bind(this, Constants.JUMP_TO_ITEM_FAILURE)
+      );
 
     //look up item details, space lookup may not require further requests
     var itemLookup = $.Deferred();
@@ -55,32 +58,21 @@ module.exports = {
       log.debug("Target item data:", item);
       if(item.isPublic === 'true') {
         //implies null team, space lookup also done
-        spaceLookup.resolve(item, Constants.SPACE_PUBLISHED, null);
+        spaceLookup.resolve(item, Constants.SPACE_PUBLISHED);
       } else {
         //space lookup requires a lookup of teams
-        var teamLookup = $.Deferred();
-        ComponentRegistryClient.loadItemGroups(itemId, teamLookup.resolve, teamLookup.reject);
-        teamLookup.done(function(teamData) {
-          log.debug("Target item team data:", teamData);
-          //we have the team information...
-          if(teamData == null || $.isArray(teamData) && teamData.length == 0) {
-            //no data? item not in team,  so
-            spaceLookup.resolve(item, Constants.SPACE_PRIVATE, null);
-          } else {
-            if($.isArray(teamData)) {
-              var team = teamData[0];
-            } else {
-              var team = teamData;
+        lookupTeam(type, itemId)
+          .done(
+            function(teamId) {
+              if(teamId == null) {
+                spaceLookup.resolve(item, Constants.SPACE_PRIVATE);
+              } else {
+                spaceLookup.resolve(item, Constants.SPACE_TEAM, teamId);
+              }
             }
-            if(team != null && team.id != null) {
-              spaceLookup.resolve(item, Constants.SPACE_TEAM, team.id);
-            } else {
-              spaceLookup.reject("Invalid team information, could not jump to item");
-            }
-          }
-        }.bind(this));
-        teamLookup.fail(spaceLookup.reject);
-        var space = Constants.SPACE_PRIVATE;
+          ).fail(
+            spaceLookup.reject
+          );
       }
     }.bind(this));
     itemLookup.fail(spaceLookup.reject);
@@ -109,3 +101,29 @@ module.exports = {
   }
 
 };
+
+var lookupTeam = function(type, itemId) {
+  var teamLookup = $.Deferred();
+  var handleSuccess = function(teamData) {
+    log.debug("Target item team data:", teamData);
+    //we have the team information...
+    if(teamData == null || $.isArray(teamData) && teamData.length == 0) {
+      //no data? item not in team, so
+      teamLookup.resolve(null);
+    } else {
+      if($.isArray(teamData)) {
+        var team = teamData[0];
+      } else {
+        var team = teamData;
+      }
+      if(team != null && team.id != null) {
+        teamLookup.resolve(team.id);
+      } else {
+        teamLookup.reject("Invalid team information, could not jump to item");
+      }
+    }
+  }.bind(this);
+
+  ComponentRegistryClient.loadItemGroups(itemId, handleSuccess, teamLookup.reject);
+  return teamLookup.promise();
+}
