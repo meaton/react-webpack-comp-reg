@@ -127,7 +127,7 @@ var VocabularyEditor = React.createClass({
 
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
-      var vocabType = (this.props.vocabulary == null || this.isClosedVocabulary()) ? CLOSED_VOCAB : OPEN_VOCAB;
+      var vocabType = (this.isClosedVocabulary() || this.props.vocabulary == null && !this.isCmdi12Mode()) ? CLOSED_VOCAB : OPEN_VOCAB;
       var vocabUri = this.props.vocabulary && this.props.vocabulary['@URI'];
       var vocabValueProp = this.props.vocabulary && this.props.vocabulary['@ValueProperty'];
       var vocabValueLang = this.props.vocabulary && this.props.vocabulary['@ValueLanguage'];
@@ -198,6 +198,14 @@ var VocabularyEditor = React.createClass({
               }
             </div>
           }
+          {vocabType === OPEN_VOCAB &&
+            <div>
+              <Glyphicon glyph="info-sign"/> An open vocabulary is linked to an external vocabulary and cannot contain custom items.
+              Metadata creators will be allowed to select a value from the external vocabulary OR enter their own (arbitrary) value.
+              To define your own (restrictive) set of vocabulary items, select the <em>closed</em> vocabulary type.
+              You can also import an external vocabulary into a closed vocabulary.
+            </div>
+          }
           {(this.isCmdi12Mode() || vocabUri || vocabValueProp || vocabValueLang) && this.renderExternalVocabularyEditor(vocabType, vocabUri, vocabValueProp, vocabValueLang)}
           <div className="modal-inline"><Button onClick={this.props.onOk} disabled={!allowSubmit} title={allowSubmitMessage}>Use Controlled Vocabulary</Button></div>
         </div>
@@ -251,7 +259,7 @@ var VocabularyEditor = React.createClass({
       return (
         <div className="external-vocab-editor">
           {!vocabUri && isOpen &&
-            <div className="error">Please select or define an external vocabulary for this open vocabulary!</div>}
+            <div className="error">Please select or define an external vocabulary for this open vocabulary (or change type to <em>closed</em>)</div>}
           {isClosed && this.isCmdi12Mode() &&
             <div><strong>Optionally</strong> select or define an <em>external vocabulary</em> for this closed vocabulary. You can choose to import the items of the selected external vocabulary into the current vocabulary.</div>}
           {vocabUri && isClosed && !this.isCmdi12Mode() &&
@@ -274,7 +282,7 @@ var VocabularyEditor = React.createClass({
               } />
           </div>
           <div>
-            <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show details"}</a>
+            <a onClick={this.toggleExternalVocabDetails}>{this.state.externalVocabDetailsShown ? "Hide details":"Show/edit details"}</a>
             {this.state.externalVocabDetailsShown && /* show external vocab details */
               <div className="external-vocab-editor-details">
                 <Input id="external-vocab-uri"
