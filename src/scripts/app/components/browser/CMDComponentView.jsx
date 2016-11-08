@@ -124,7 +124,9 @@ var CMDComponentView = React.createClass({
         {status && status.toLowerCase() === Constants.STATUS_DEPRECATED.toLowerCase() &&
           <span title="Status: deprecated"> <Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED} /> </span>
         }
-          Component: <span className="componentName"><ItemLink className="jump-to-component" itemId={this.props.compId}>{compName}</ItemLink></span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
+          Component: <span className="componentName">
+            {this.props.isLinked ? <ItemLink className="jump-to-component" itemId={this.props.compId}>{compName}</ItemLink> : compName}
+          </span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
       </span>);
     var title = this.props.isLinked?
       this.createActionButtons({title: titleText}) // add expansion controls
