@@ -34,6 +34,14 @@ module.exports = {
     this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team||null});
   },
 
+  jumpToItem: function(itemId, type, currentSpace, currentTeam) {
+    //todo: look up item. search order depends on current space/team (if provided, should be optional)
+    //determine space
+    //  report error if target space unreachable
+    //switch space (if needed and possible)
+    //select item (if possible)
+  },
+
   editItem: function(item) {
     this.dispatch(Constants.EDIT_ITEM);
   },
