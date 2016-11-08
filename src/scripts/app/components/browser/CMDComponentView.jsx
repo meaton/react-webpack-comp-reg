@@ -104,6 +104,8 @@ var CMDComponentView = React.createClass({
     else if(comp.hasOwnProperty("@name"))
       compName = comp['@name'];
 
+    var conceptLink = comp['@ConceptLink'];
+
     var minC = this.props.link != null ? this.props.link['@CardinalityMin'] : comp['@CardinalityMin'];
     if(minC == null) minC = 1;
 
@@ -136,6 +138,10 @@ var CMDComponentView = React.createClass({
             <div>
               Number of occurrences: {cardinality}
             </div>
+            {conceptLink && conceptLink != '' && (
+              <div>ConceptLink: <a href={conceptLink} target="_blank">{conceptLink}</a>
+              </div>
+            )}
             <div>
               {$.isArray(documentation) && documentation.length > 0 && documentation[0]['$'] != null && documentation[0]['$'] != '' && (
                 <div>Documentation:
