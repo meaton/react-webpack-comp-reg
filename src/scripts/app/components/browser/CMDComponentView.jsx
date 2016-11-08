@@ -125,7 +125,7 @@ var CMDComponentView = React.createClass({
           <span title="Status: deprecated"> <Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED} /> </span>
         }
           Component: <span className="componentName">
-            {this.props.isLinked ? <ItemLink className="jump-to-component" itemId={this.props.compId}>{compName}</ItemLink> : compName}
+            {this.props.isLinked ? <ItemLink className="jump-to-component" itemId={this.props.compId} type={Constants.TYPE_COMPONENT}>{compName}</ItemLink> : compName}
           </span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
       </span>);
     var title = this.props.isLinked?
