@@ -15,9 +15,7 @@ var ItemLink = React.createClass({
 
   propTypes: {
     itemId: React.PropTypes.string.isRequired,
-    type: React.PropTypes.string.isRequired,
-    currentSpace: React.PropTypes.string,
-    currentTeam: React.PropTypes.string
+    type: React.PropTypes.string.isRequired
   },
 
   handleClick: function() {
@@ -26,7 +24,7 @@ var ItemLink = React.createClass({
 
     log.debug("Jumping to", type, this.props.itemId);
 
-    this.getFlux().actions.jumpToItem(type, id, this.props.currentSpace, this.props.currentTeam);
+    this.getFlux().actions.jumpToItem(type, id);
     this.getFlux().actions.loadItem(type, id);
     this.getFlux().actions.loadComponentSpec(type, id);
   },

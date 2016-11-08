@@ -34,11 +34,14 @@ module.exports = {
     this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team||null});
   },
 
-  jumpToItem: function(type, itemId, currentSpace, currentTeam) {
+  jumpToItem: function(type, itemId) {
     this.dispatch(Constants.JUMP_TO_ITEM);
+
     var itemLookup = $.Deferred();
     ComponentRegistryClient.loadItem(itemId, itemLookup.resolve, itemLookup.reject);
+
     itemLookup.fail(this.dispatch.bind(this, Constants.JUMP_TO_ITEM_FAILURE));
+
     itemLookup.done(function(item){
       if(item.isPublic === 'true') {
         var space = Constants.SPACE_PUBLISHED;
@@ -46,6 +49,7 @@ module.exports = {
         var space = //TODO: team!
           Constants.SPACE_PRIVATE;
       }
+
       this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: null});
       this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
       this.dispatch(Constants.JUMP_TO_ITEM_SUCCESS);
