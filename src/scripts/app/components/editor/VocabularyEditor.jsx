@@ -246,19 +246,21 @@ var VocabularyEditor = React.createClass({
       var isOpen = (vocabType === OPEN_VOCAB);
       var isClosed = (vocabType === CLOSED_VOCAB);
 
+      var checkDisabled = vocabUri == null || vocabValueProp == null || this.state.checkingExternalVocab;
+
       return (
         <div className="external-vocab-editor">
           {!vocabUri && isOpen &&
             <div className="error">Please select or define an external vocabulary for this open vocabulary!</div>}
           {isClosed && this.isCmdi12Mode() &&
-            <div><strong>Optionally</strong> select or define an external vocabulary for this closed vocabulary. You can choose to import the items of the selected external vocabulary into the current vocabulary.</div>}
+            <div><strong>Optionally</strong> select or define an <em>external vocabulary</em> for this closed vocabulary. You can choose to import the items of the selected external vocabulary into the current vocabulary.</div>}
           {vocabUri && isClosed && !this.isCmdi12Mode() &&
-            <div className="error">An external vocabulary is defined for the present vocabulary. While in CMDI 1.1 editing mode, you can remove the link but not edit it or any of the related properties.</div>}
+            <div className="error">An <em>external vocabulary</em> is defined for the present vocabulary. While in CMDI 1.1 editing mode, you can remove the link but not edit it or any of the related properties.</div>}
           <div>
             External vocabulary: {vocabUri &&
               <span><a href="">{vocabUri}</a> <a className="remove" onClick={this.unsetExternalVocab} style={{cursor: 'pointer'}}>&#10007;</a></span>
             } {!vocabUri && "none"} &nbsp;
-            <ModalTrigger
+            <ModalTrigger bsSize="small"
               ref={function(modal) {
                  modalRef = modal;
                }}
@@ -297,11 +299,11 @@ var VocabularyEditor = React.createClass({
                   value={vocabValueLang || ""}
                   disabled={!this.isCmdi12Mode()}
                   onChange={this.onChangeExternalVocab} />
-                <Button
+                <Button bsSize="small"
                   onClick={this.checkExternalVocab.bind(this, vocabUri, vocabValueProp)}
-                  disabled={vocabUri == null || vocabValueProp == null || this.state.checkingExternalVocab}>Check</Button>&nbsp;
+                  disabled={checkDisabled}>Check</Button>&nbsp;
                 {this.state.checkingExternalVocab && "Please wait..."}
-                {this.state.externalVocabCheckResult != null && (this.state.externalVocabCheckResult ?
+                {!checkDisabled && this.state.externalVocabCheckResult != null && (this.state.externalVocabCheckResult ?
                   <span><Glyphicon glyph="ok"/> Checked, vocabulary ok! {this.state.externalVocabCheckMessage}</span>
                   : <span className="error"><Glyphicon glyph="warning-sign"/> Failed! {this.state.externalVocabCheckMessage}</span>)}
               </div>

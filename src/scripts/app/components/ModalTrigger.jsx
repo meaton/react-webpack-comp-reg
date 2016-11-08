@@ -28,13 +28,15 @@ var ModalTrigger = React.createClass({
     modalTarget: React.PropTypes.string,
     onOpen: React.PropTypes.func,
     onClose: React.PropTypes.func,
-    disabled: React.PropTypes.bool
+    disabled: React.PropTypes.bool,
+    bsSize: React.PropTypes.string
   },
   getDefaultProps: function() {
     return {
       useLink: false,
       disabled: false,
-      modalTarget: ReactAlert.defaultContainer
+      modalTarget: ReactAlert.defaultContainer,
+      bsSize: null
     }
   },
   getInitialState: function() {
@@ -80,7 +82,7 @@ var ModalTrigger = React.createClass({
       )
     else
       return (
-        <Button onClick={this.toggleModal} disabled={this.props.disabled}>
+        <Button onClick={this.toggleModal} disabled={this.props.disabled} bsSize={this.props.bsSize}>
           {this.props.label}
         </Button>
       );
