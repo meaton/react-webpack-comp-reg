@@ -21,8 +21,14 @@ var ItemLink = React.createClass({
   },
 
   handleClick: function() {
-    log.debug("Jumping to", this.props.itemId);
-    this.getFlux().actions.jumpToItem(this.props.itemId, this.props.type, this.props.currentSpace, this.props.currentTeam);
+    var type = this.props.type;
+    var id = this.props.itemId;
+
+    log.debug("Jumping to", type, this.props.itemId);
+
+    this.getFlux().actions.jumpToItem(type, id, this.props.currentSpace, this.props.currentTeam);
+    this.getFlux().actions.loadItem(type, id);
+    this.getFlux().actions.loadComponentSpec(type, id);
   },
 
   render: function() {

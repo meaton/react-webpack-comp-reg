@@ -33,7 +33,7 @@ var ItemsStore = Fluxxor.createStore({
       Constants.LOAD_ITEMS_SUCCESS, this.handleLoadItemsSuccess,
       Constants.LOAD_ITEMS_FAILURE, this.handleLoadItemsFailure,
       Constants.SWITCH_SPACE, this.handleSwitchSpace,
-      Constants.JUMP_TO_ITEM_SUCCESS, this.handleJumpToItem,
+      Constants.JUMP_TO_ITEM, this.handleJumpToItem,
       Constants.JUMP_TO_ITEM_SUCCESS, this.handleJumpToItemSuccess,
       Constants.JUMP_TO_ITEM_FAILURE, this.handleJumpToItemFailure,
       Constants.DELETE_COMPONENTS, this.handleDeleteOrMove,

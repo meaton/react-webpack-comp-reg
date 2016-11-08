@@ -34,14 +34,22 @@ module.exports = {
     this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team||null});
   },
 
-  jumpToItem: function(itemId, type, currentSpace, currentTeam) {
+  jumpToItem: function(type, itemId, currentSpace, currentTeam) {
     this.dispatch(Constants.JUMP_TO_ITEM);
-    //todo: look up item. search order depends on current space/team (if provided, should be optional)
-    //determine space
-    //  report error if target space unreachable
-    //switch space (if needed and possible)
-    //select item (if possible)
-    this.dispatch(Constants.JUMP_TO_ITEM_FAILURE, "Not implemented");
+    var itemLookup = $.Deferred();
+    ComponentRegistryClient.loadItem(itemId, itemLookup.resolve, itemLookup.reject);
+    itemLookup.fail(this.dispatch.bind(this, Constants.JUMP_TO_ITEM_FAILURE));
+    itemLookup.done(function(item){
+      if(item.isPublic === 'true') {
+        var space = Constants.SPACE_PUBLISHED;
+      } else {
+        var space = //TODO: team!
+          Constants.SPACE_PRIVATE;
+      }
+      this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: null});
+      this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
+      this.dispatch(Constants.JUMP_TO_ITEM_SUCCESS);
+    }.bind(this));
   },
 
   editItem: function(item) {
