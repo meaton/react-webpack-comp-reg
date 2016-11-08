@@ -30,7 +30,8 @@ var MessageStore = Fluxxor.createStore({
       Constants.SELECT_BROWSER_ITEM_FAILED, this.handleError,
       Constants.SET_STATUS_FAILTURE, this.handleError,
       Constants.SET_SUCCESSOR_FAILTURE, this.handleError,
-      Constants.LOAD_ALLOWED_TYPES_FAILURE, this.handleError
+      Constants.LOAD_ALLOWED_TYPES_FAILURE, this.handleError,
+      Constants.JUMP_TO_ITEM_FAILURE, this.handleError
     );
   },
 

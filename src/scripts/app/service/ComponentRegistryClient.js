@@ -149,7 +149,7 @@ loadItem: function(id, handleSuccess, handleFailure) {
       handleSuccess(data);
     }.bind(this),
     error: function(xhr, status, err) {
-      handleFailure("Error loading spec for " + id + ": " + err);
+      handleFailure("Error loading item information for " + id + ": " + err);
     }.bind(this)
   }, corsRequestParams));
 },

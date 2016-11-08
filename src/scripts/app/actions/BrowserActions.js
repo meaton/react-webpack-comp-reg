@@ -35,11 +35,13 @@ module.exports = {
   },
 
   jumpToItem: function(itemId, type, currentSpace, currentTeam) {
+    this.dispatch(Constants.JUMP_TO_ITEM);
     //todo: look up item. search order depends on current space/team (if provided, should be optional)
     //determine space
     //  report error if target space unreachable
     //switch space (if needed and possible)
     //select item (if possible)
+    this.dispatch(Constants.JUMP_TO_ITEM_FAILURE, "Not implemented");
   },
 
   editItem: function(item) {
