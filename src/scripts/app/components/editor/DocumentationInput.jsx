@@ -15,7 +15,9 @@ var Modal = require('react-bootstrap/lib/Modal');
 var Alert = require('react-bootstrap/lib/Alert');
 
 //mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
+var ValidatingComponentMixin = require('../../mixins/ValidatingComponentMixin');
 
 //utils
 var Validation = require('../../service/Validation')
@@ -29,39 +31,15 @@ var languageCodes = require('../../../languageCodes');
 * @constructor
 */
 var DocumentationInput = React.createClass({
-  mixins: [CmdiVersionModeMixin],
+  mixins: [ImmutableRenderMixin, CmdiVersionModeMixin, ValidatingComponentMixin],
 
   propTypes: {
     value: React.PropTypes.array,
     onChange: React.PropTypes.func.isRequired
   },
 
-  getInitialState: function() {
-    return {
-      validated: false,
-      valid: true,
-      validationMessage: null
-    };
-  },
-
-  contextTypes: {
-      validationListener: React.PropTypes.object // provided by EditorForm
-  },
-
-  componentDidMount: function() {
-    if(this.context.validationListener != null) {
-      this.context.validationListener.add(this);
-    }
-  },
-
-  componentWillUnmount: function() {
-    if(this.context.validationListener != null) {
-      this.context.validationListener.remove(this);
-    }
-  },
-
   componentDidUpdate: function(prevProps) {
-    if(!this.state.valid && this.state.validated && this.props.value !== prevProps.value) {
+    if(!this.isValid() && this.isValidated() && this.props.value !== prevProps.value) {
       //currently invalid and value has changed (text value or language code modified) - revalidate
       this.doValidate();
     }
@@ -137,11 +115,7 @@ var DocumentationInput = React.createClass({
       log.debug("Invalid documentation:", msgContainer.message);
     }
 
-    this.setState({
-      validated: true,
-      valid: valid,
-      validationMessage : msgContainer.message
-    });
+    this.setValidation(valid, msgContainer.message);
 
     return valid;
   },
@@ -150,7 +124,7 @@ var DocumentationInput = React.createClass({
     var {value, onChange, name, ...other} = this.props;
     var docs = ($.isArray(value) && value.length > 0) ? value : [null];
 
-    var isInvalid = this.state.validated && !this.state.valid;
+    var isInvalid = this.isValidated() && !this.isValid();
 
     return (
       <div>
@@ -189,7 +163,7 @@ var DocumentationInput = React.createClass({
         <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
       }
       {isInvalid &&
-        <Alert bsStyle="danger">{this.state.validationMessage || "Invalid documentation (reason unknown)"}</Alert>
+        <Alert bsStyle="danger">{this.getValidationMessage() || "Invalid documentation (reason unknown)"}</Alert>
       }
       </div>
     );
