@@ -70,8 +70,15 @@ var CMDComponentForm = React.createClass({
     };
   },
 
-  componentDidUpdate: function() {
-    this.doValidate();
+  componentDidUpdate: function(prevProps) {
+    //trigger validation (only) on structural changes (content changes should be covered by individual form components)
+    var spec = this.props.spec;
+    var prevSpec = prevProps.spec;
+    if(prevSpec.Component != spec.Component
+      || prevSpec.Element != spec.Element
+      || prevSpec.AttributeList != spec.AttributeList) {
+      this.doValidate();
+    }
   },
 
   /**
