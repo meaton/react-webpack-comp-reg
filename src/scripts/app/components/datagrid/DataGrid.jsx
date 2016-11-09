@@ -38,7 +38,9 @@ var DataGrid = React.createClass({
   },
 
   componentDidUpdate: function() {
-      scrollToSelection(this.props.selectedItems);
+    if(!this.props.loading) {
+    scrollToSelection(this.props.selectedItems);
+    }
   },
 
   getDefaultProps: function() {
