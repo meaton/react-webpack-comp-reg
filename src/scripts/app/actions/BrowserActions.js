@@ -40,8 +40,9 @@ module.exports = {
     //final goal is to look up the space
     lookupSpace(type, itemId)
       .done(
-        function(item, space, team) {
+        function(item, space, team, statusFilter) {
           this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team || null});
+          this.dispatch(Constants.SET_STATUS_FILTER, statusFilter);
           this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
           this.dispatch(Constants.JUMP_TO_ITEM_SUCCESS);
         }.bind(this))
@@ -84,9 +85,21 @@ var lookupSpace = function(type, itemId) {
   //look up item details, space lookup may not require further requests
   var handleSuccess = function(item) {
     log.debug("Target item data:", item);
+
+    var status = Constants.STATUS_WILDCARD;
+    if(item.status != null) {
+      var statusString = item.status.toLowerCase();
+      if(statusString === Constants.STATUS_DEVELOPMENT)
+        status = Constants.STATUS_DEVELOPMENT;
+      else if(statusString === Constants.STATUS_DEPRECATED)
+        status = Constants.STATUS_DEPRECATED;
+      else if(statusString === Constants.STATUS_PRODUCTION)
+        status = Constants.STATUS_PRODUCTION;
+    }
+
     if(item.isPublic === 'true') {
       //public implies null team, space lookup also done
-      spaceLookup.resolve(item, Constants.SPACE_PUBLISHED);
+      spaceLookup.resolve(item, Constants.SPACE_PUBLISHED, null /*no team*/, status);
     } else {
       //a lookup of teams is required to distinguish between private and team
       lookupTeam(type, itemId)
@@ -94,9 +107,9 @@ var lookupSpace = function(type, itemId) {
           //succesful team lookup
           function(teamId) {
             if(teamId == null) {
-              spaceLookup.resolve(item, Constants.SPACE_PRIVATE);
+              spaceLookup.resolve(item, Constants.SPACE_PRIVATE, null /*no team*/, status);
             } else {
-              spaceLookup.resolve(item, Constants.SPACE_TEAM, teamId);
+              spaceLookup.resolve(item, Constants.SPACE_TEAM, teamId, status);
             }
           }
         ).fail(
@@ -118,7 +131,7 @@ var lookupSpace = function(type, itemId) {
  */
 var lookupTeam = function(type, itemId) {
   var teamLookup = $.Deferred();
-  
+
   var handleSuccess = function(teamData) {
     log.debug("Target item team data:", teamData);
     //we have the team information...
