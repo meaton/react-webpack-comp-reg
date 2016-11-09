@@ -38,8 +38,8 @@ var DataGrid = React.createClass({
   },
 
   componentDidUpdate: function() {
-    if(!this.props.loading) {
-    scrollToSelection(this.props.selectedItems);
+    if(!this.props.loading && !_.isEmpty(this.props.selectedItems)) {
+      scrollToSelection(this.props.selectedItems);
     }
   },
 
@@ -132,34 +132,32 @@ module.exports = DataGrid;
 var scrollToSelection = function(itemsObject) {
   if(itemsObject != null) {
     var itemIds = Object.keys(itemsObject);
-    if($.isArray(itemIds) && itemIds.length > 0) {
-      if(itemIds.length > 1) {
-        var itemId = null; //TODO: implement solution for multiple selection
-      } else {
-        var itemId = itemIds[0];
-      }
+    if(itemIds.length != 1) {
+      var itemId = null; //TODO: implement solution for multiple selection
+    } else {
+      var itemId = itemIds[0];
+    }
 
-      if(itemId != null) {
-        var item = $('#grid tr[data-compid="' + itemId + '"]');
-        var itemPos = item.position();
-        log.trace("Scroll to item (if not in view)", itemId, " - Position", itemPos);
+    if(itemId != null) {
+      var item = $('#grid tr[data-compid="' + itemId + '"]');
+      var itemPos = item.position();
+      log.trace("Scroll to item (if not in view)", itemId, " - Position", itemPos);
 
-        if(itemPos) {
-          var tbody = $('#grid tbody');
-          var itemHeight = item.height();
-          var itemTop = itemPos.top;
-          var itemBottom = itemTop + itemHeight;
-          if(itemBottom < 0 || itemTop > tbody.height()) {
-            var scrollTargetPos = tbody.scrollTop() + itemTop - 2 * itemHeight;
-            log.debug("Selected item out of view! Scroll to", scrollTargetPos);
-            tbody.scrollTop(scrollTargetPos);
-          } else {
-            log.trace("Selected item in view");
-          }
+      if(itemPos) {
+        var tbody = $('#grid tbody');
+        var itemHeight = item.height();
+        var itemTop = itemPos.top;
+        var itemBottom = itemTop + itemHeight;
+        if(itemBottom < 0 || itemTop > tbody.height()) {
+          var scrollTargetPos = tbody.scrollTop() + itemTop - 2 * itemHeight;
+          log.debug("Selected item out of view! Scroll to", scrollTargetPos);
+          tbody.scrollTop(scrollTargetPos);
+        } else {
+          log.trace("Selected item in view");
         }
       }
     } else {
-      log.warn("No keys (item ids) in items object", itemsObject);
+      log.warn("Item from selection not found in DOM");
     }
   }
 }
