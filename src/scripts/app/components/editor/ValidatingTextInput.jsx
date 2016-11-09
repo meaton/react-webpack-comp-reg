@@ -7,6 +7,9 @@ var React = require('react');
 //bootstrap
 var Input = require('react-bootstrap/lib/Input');
 
+//mixins
+var ValidatingComponentMixin = require('../../mixins/ValidatingComponentMixin');
+
 /**
 * ValidatingTextInput - bootstrap text input with added dynamic validation capacity
 * by means of a validation function that is passed as a required property that
@@ -16,6 +19,8 @@ var Input = require('react-bootstrap/lib/Input');
 * @constructor
 */
 var ValidatingTextInput = React.createClass({
+  mixins: [ValidatingComponentMixin],
+
   propTypes: {
     validate: React.PropTypes.func.isRequired,
     name: React.PropTypes.string.isRequired,
@@ -26,26 +31,10 @@ var ValidatingTextInput = React.createClass({
       validationListener: React.PropTypes.object // provided by EditorForm
   },
 
-  getInitialState: function() {
-    return {valid: true, validated: false, message: null};
-  },
-
-  componentDidMount: function() {
-    if(this.context.validationListener != null) {
-      this.context.validationListener.add(this);
-    }
-  },
-
-  componentWillUnmount: function() {
-    if(this.context.validationListener != null) {
-      this.context.validationListener.remove(this);
-    }
-  },
-
   render: function() {
     var {validate, bsStyle, addonAfter, ...other} = this.props;
-    var bsStyleOverride = (this.state.validated && !this.state.valid)?"error":bsStyle;
-    return <Input ref="input" bsStyle={bsStyleOverride} hasFeedback={true} addonAfter={this.state.message || addonAfter} onBlur={this.onBlur} {...other} />;
+    var bsStyleOverride = (this.isValidated() && !this.isValid())?"error":bsStyle;
+    return <Input ref="input" bsStyle={bsStyleOverride} hasFeedback={true} addonAfter={this.getValidationMessage() || addonAfter} onBlur={this.onBlur} {...other} />;
   },
 
   onBlur: function(evt) {
@@ -63,7 +52,7 @@ var ValidatingTextInput = React.createClass({
     var valid = this.props.validate(val, this.props.name, setMsg);
 
     log.trace("Validated",val,":",valid);
-    this.setState({valid: valid, validated: true, message: msgContainer.message});
+    this.setValidation(valid, msgContainer.message);
 
     return valid;
   }
