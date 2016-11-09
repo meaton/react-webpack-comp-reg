@@ -146,9 +146,11 @@ var scrollToSelection = function(itemsObject) {
 
         if(itemPos) {
           var tbody = $('#grid tbody');
+          var itemHeight = item.height();
           var itemTop = itemPos.top;
-          if(itemTop < 0 || itemTop > tbody.height()) { //TODO: item bottom < 0
-            var scrollTargetPos = tbody.scrollTop() + itemTop - 2 * item.height();
+          var itemBottom = itemTop + itemHeight;
+          if(itemBottom < 0 || itemTop > tbody.height()) {
+            var scrollTargetPos = tbody.scrollTop() + itemTop - 2 * itemHeight;
             log.debug("Selected item out of view! Scroll to", scrollTargetPos);
             tbody.scrollTop(scrollTargetPos);
           } else {
