@@ -116,7 +116,11 @@ var CMDComponentForm = React.createClass({
           labelClassName="editorFormLabel" wrapperClassName="editorFormField" ref="conceptRegInput"
           onChange={this.updateComponentValue} validate={this.validate}
           updateConceptLink={this.updateConceptLink} />
-        <DocumentationInput name="Documentation" label="Documentation" value={comp['Documentation']} onChange={this.updateDocumentation}  labelClassName="editorFormLabel" wrapperClassName="editorFormField" />
+        <DocumentationInput
+          name="Documentation" label="Documentation" value={comp['Documentation']}
+          labelClassName="editorFormLabel" wrapperClassName="editorFormField"
+          onChange={this.updateDocumentation}
+          {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/}/>
         <CardinalityInput min={comp['@CardinalityMin']} max={comp['@CardinalityMax']} onValueChange={this.updateComponentValue} />
       </div>
     ) : null;
