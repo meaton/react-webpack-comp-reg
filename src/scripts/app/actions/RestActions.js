@@ -265,7 +265,7 @@ var RestActions = {
       onDisallowed();
     }.bind(this);
 
-    if(authState.userId === item.userId) {
+    if(authState.userId === item.userId || authState.isAdmin) {
       //current user is owner
       handleAllowed();
     } else {
