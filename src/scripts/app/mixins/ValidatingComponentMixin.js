@@ -15,6 +15,10 @@ var ValidatingComponentMixin = {
     return {valid: true, validated: false, validationMessage: null};
   },
 
+  contextTypes: {
+      validationListener: React.PropTypes.object // provided by EditorForm
+  },
+
   componentDidMount: function() {
     if(this.context.validationListener != null) {
       this.context.validationListener.add(this);

@@ -8,6 +8,7 @@ var React = require('react');
 var Input = require('react-bootstrap/lib/Input');
 
 //mixins
+var ImmutableRenderMixin = require('react-immutable-render-mixin');
 var ValidatingComponentMixin = require('../../mixins/ValidatingComponentMixin');
 
 /**
@@ -19,16 +20,12 @@ var ValidatingComponentMixin = require('../../mixins/ValidatingComponentMixin');
 * @constructor
 */
 var ValidatingTextInput = React.createClass({
-  mixins: [ValidatingComponentMixin],
+  mixins: [ImmutableRenderMixin, ValidatingComponentMixin],
 
   propTypes: {
     validate: React.PropTypes.func.isRequired,
     name: React.PropTypes.string.isRequired,
     //value (any type)
-  },
-
-  contextTypes: {
-      validationListener: React.PropTypes.object // provided by EditorForm
   },
 
   render: function() {
