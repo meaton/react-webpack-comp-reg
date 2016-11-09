@@ -13,6 +13,7 @@ var ToggleExpansionMixin = require('../../mixins/ToggleExpansionMixin');
 var SpecFormUpdateMixin = require('../../mixins/SpecFormUpdateMixin');
 var ActionButtonsMixin = require('../../mixins/ActionButtonsMixin');
 var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
+var ValidatingComponentMixin = require('../../mixins/ValidatingComponentMixin');
 
 //components
 var CMDElementForm = require('./CMDElementForm');
@@ -51,6 +52,7 @@ var CMDComponentForm = React.createClass({
             ToggleExpansionMixin,
             SpecFormUpdateMixin,
             ActionButtonsMixin,
+            ValidatingComponentMixin,
             CmdiVersionModeMixin],
 
   propTypes: {
@@ -66,6 +68,10 @@ var CMDComponentForm = React.createClass({
     return {
       renderChildrenWhenCollapsed: true
     };
+  },
+
+  componentDidUpdate: function() {
+    this.doValidate();
   },
 
   /**
@@ -124,18 +130,19 @@ var CMDComponentForm = React.createClass({
   },
 
   renderBeforeChildren: function() {
-    var spec = this.props.spec;
-    var hasChildren =
-      ($.isArray(spec.Element) && spec.Element.length > 0)
-        || ($.isArray(spec.Component) && spec.Component.length > 0)
-        || (spec.AttributeList && $.isArray(spec.AttributeList.Attribute) && spec.AttributeList.Attribute.length > 0)
-    if(!hasChildren) {
-      return (
-        <div><strong>A component cannot be empty! Add a child component, element or attribute to make this specification valid.</strong></div>
-        );
+    var validationMessage = this.getValidationMessage();
+    if(validationMessage) {
+      return <div className="error">{validationMessage}</div>
     } else {
       return null;
     }
+  },
+
+  hasChildren: function() {
+    var spec = this.props.spec;
+    return ($.isArray(spec.Element) && spec.Element.length > 0)
+      || ($.isArray(spec.Component) && spec.Component.length > 0)
+      || (spec.AttributeList && $.isArray(spec.AttributeList.Attribute) && spec.AttributeList.Attribute.length > 0);
   },
 
   renderNestedComponent: function(spec, header, compId, isLinked, linkedSpecAvailable, index) {
@@ -403,6 +410,14 @@ var CMDComponentForm = React.createClass({
     } else {
       //no elements, so ok
       return true;
+    }
+  },
+
+  doValidate: function() {
+    if(this.hasChildren()) {
+      return this.setValidation(true);
+    } else {
+      return this.setValidation(false, "A component cannot be empty! Add a child component, element or attribute to make this specification valid.");
     }
   }
 });

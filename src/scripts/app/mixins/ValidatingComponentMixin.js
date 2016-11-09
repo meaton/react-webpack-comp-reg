@@ -33,6 +33,7 @@ var ValidatingComponentMixin = {
 
   setValidation: function(valid, message) {
     this.setState({validated: true, valid: valid, validationMessage: message});
+    return valid;
   },
 
   resetValidation: function() {
