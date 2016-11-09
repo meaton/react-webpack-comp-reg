@@ -8,6 +8,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //components
 var CMDComponentView = require('./CMDComponentView');
+var ItemLink = require('./ItemLink');
 
 //boostrap
 var Alert = require('react-bootstrap/lib/Alert');
@@ -55,6 +56,7 @@ var ComponentSpec = React.createClass({
 
   render: function() {
     var spec = this.props.spec;
+    var type = (spec['@isProfile'] == "true") ? Constants.TYPE_PROFILE : Constants.TYPE_COMPONENT;
 
     if(spec == null)
       return (
@@ -91,7 +93,10 @@ var ComponentSpec = React.createClass({
                 <li><span>Description:</span> {spec.Header.Description}</li>
                 {conceptLink}
                 {spec.Header && spec.Header.DerivedFrom &&
-                  <li><span>Derived from: {spec.Header.DerivedFrom}</span></li>
+                  <li><span>Derived from: <ItemLink itemId={spec.Header.DerivedFrom} type={type}>{spec.Header.DerivedFrom}</ItemLink></span></li>
+                }
+                {spec.Header && spec.Header.Successor &&
+                  <li><span>Successor: <ItemLink itemId={spec.Header.Successor} type={type}>{spec.Header.Successor}</ItemLink></span></li>
                 }
               </ul>
             </div>
@@ -113,23 +118,29 @@ var ComponentSpec = React.createClass({
     }
   },
 
-  renderStatusWarning: function(spec) {
+  renderStatusWarning: function(spec, typeConst) {
     var status = spec.Header.Status;
-    var type = (spec['@isProfile'] == "true") ? "profile":"component";
     if(status != null) {
       status = status.toLowerCase()
+      var typeName = (typeConst == Constants.TYPE_PROFILE) ? "profile":"component";
+
       if(this.props.warnForDevelopment && status === Constants.STATUS_DEVELOPMENT.toLowerCase()) {
         return (
           <Alert bsStyle="warning">
             <Glyphicon glyph={Constants.STATUS_ICON_DEVELOPMENT} /><span> </span>
-            This {spec['@isProfile'] == "true" ? "profile":"component"} has the <strong>development status</strong>. This means that it should be considered a draft that may be subject to change. It is advised to <em>not use this {type}</em> until it has been given the production status.
+            This {typeName} has the <strong>development status</strong>. This means that it should be considered a draft that may be subject to change. It is advised to <em>not use this {typeName}</em> until it has been given the production status.
           </Alert>
         );
       } else if(this.props.warnForDeprecated && status === Constants.STATUS_DEPRECATED.toLowerCase()) {
+        var successor = spec.Header.Successor;
         return (
           <Alert bsStyle="danger">
             <Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED} /><span> </span>
-            This {type} has been given the <strong>deprecated status</strong> and its usage is <em>not recommended</em>. Please check whether a <strong>successor {type}</strong> has been assigned, and if so consider using that instead.
+            This {typeName} has been given the <strong>deprecated status</strong> and its usage is <em>not recommended</em>.<span> </span>
+            {(successor && successor != '') ?
+              <span>Please consider using the assigned <ItemLink itemId={successor} type={typeConst}>successor {typeName}</ItemLink> instead!</span>
+              :<span>No successor has been assigned for this {typeName}.</span>
+            }
           </Alert>
         );
       }
