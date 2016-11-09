@@ -51,8 +51,16 @@ var CMDComponentMixin = {
     var componentClasses = classNames('CMDComponent ' + 'status-' + status,
       { 'open': open, 'selected': (this.isSelected && this.isSelected()), 'linked': this.props.isLinked });
 
+    var beforeChildren;
+    if(typeof this.renderBeforeChildren == "function") {
+      beforeChildren = this.renderBeforeChildren();
+    } else {
+      beforeChildren = null;
+    }
+
     var children = (open || this.props.renderChildrenWhenCollapsed)?(
       <div className={viewClasses}>
+          {beforeChildren}
           <div>{this.renderAttributes(comp)}</div>
           <div className="childElements">{this.renderElements(comp)}</div>
           <div ref="components" className="childComponents">{this.renderNestedComponents(comp)}</div>

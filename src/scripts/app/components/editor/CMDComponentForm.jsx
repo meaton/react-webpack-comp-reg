@@ -123,6 +123,21 @@ var CMDComponentForm = React.createClass({
     );
   },
 
+  renderBeforeChildren: function() {
+    var spec = this.props.spec;
+    var hasChildren =
+      ($.isArray(spec.Element) && spec.Element.length > 0)
+        || ($.isArray(spec.Component) && spec.Component.length > 0)
+        || (spec.AttributeList && $.isArray(spec.AttributeList.Attribute) && spec.AttributeList.Attribute.length > 0)
+    if(!hasChildren) {
+      return (
+        <div><strong>A component cannot be empty! Add a child component, element or attribute to make this specification valid.</strong></div>
+        );
+    } else {
+      return null;
+    }
+  },
+
   renderNestedComponent: function(spec, header, compId, isLinked, linkedSpecAvailable, index) {
     // component to render depends on whether it is linked (view) or inline (form)
 
@@ -226,11 +241,6 @@ var CMDComponentForm = React.createClass({
   },
 
   renderAfterComponents: function() {
-    var spec = this.props.spec;
-    var hasChildren =
-      ($.isArray(spec.Element) && spec.Element.length > 0)
-        || ($.isArray(spec.Component) && spec.Component.length > 0)
-        || (spec.AttributeList && $.isArray(spec.AttributeList.Attribute) && spec.AttributeList.Attribute.length > 0)
     return (
       <div>
         {this.isSelected() &&
@@ -240,13 +250,13 @@ var CMDComponentForm = React.createClass({
           </div>}
         {this.isOpen() &&
           <div className="addComponent">
-            <Dropdown id={"componentAddMenu-"+spec._appId}>
+            <Dropdown id={"componentAddMenu-"+this.props.spec._appId}>
               <a href="#" title="Options" bsRole="toggle" onClick={function(e){e.preventDefault();}}>
                 +Component
               </a>
               <Dropdown.Menu>
                 {!this.isSelected() &&
-                  <MenuItem onClick={this.props.onStartComponentLink.bind(null, spec._appId)}
+                  <MenuItem onClick={this.props.onStartComponentLink.bind(null, this.props.spec._appId)}
                     title="Link an existing component by selecting an item from the components table">
                     Link existing component
                   </MenuItem>
@@ -259,7 +269,6 @@ var CMDComponentForm = React.createClass({
             </Dropdown>
           </div>
         }
-        {!hasChildren && <div className="error">A component cannot be empty! Add a child component, element or attribute to make this specification valid.</div>}
       </div>
     );
   },
