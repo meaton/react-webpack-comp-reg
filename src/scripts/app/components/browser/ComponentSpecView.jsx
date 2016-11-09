@@ -86,7 +86,7 @@ var ComponentSpec = React.createClass({
 
       return (
           <div className={rootClasses}>
-            {this.renderStatusWarning(spec)}
+            {this.renderStatusWarning(spec, type)}
             <div className="rootProperties">
               <ul>
                 <li><span>Name:</span> <b>{spec.Header.Name}</b></li>
