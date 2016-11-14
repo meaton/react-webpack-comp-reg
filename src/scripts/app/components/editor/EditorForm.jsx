@@ -23,6 +23,7 @@ var CmdiVersionModeMixin = require('../../mixins/CmdiVersionModeMixin');
 var History = require("react-router").History;
 
 //utils
+var _ = require('lodash');
 var update = require('react-addons-update');
 var classNames = require('classnames');
 var ReactAlert = require('../../util/ReactAlert');
@@ -194,6 +195,10 @@ var EditorForm = React.createClass({
         spec = update(spec, {Header: {$merge: {
           DerivedFrom: this.props.derivedFromId
         }}});
+      }
+      if(!_.isEmpty(spec.Header.Successor && spec.Header.Successor.trim())) {
+        log.debug("Removing successor header:", spec.Header.Successor);
+        spec = update(spec, {Header: {Successor: {$set: null}}});
       }
       this.getFlux().actions.saveNewComponentSpec(spec, this.props.item, this.afterSuccess);
     }
