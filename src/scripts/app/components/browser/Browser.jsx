@@ -263,7 +263,6 @@ var Browser = React.createClass({
       var item = this.state.selection.selectedItems[ids[0]];
 
       if(this.state.items.space === Constants.SPACE_PRIVATE || this.state.items.space === Constants.SPACE_TEAM) { /* skip check for private or team space */
-        //TODO: || this.state.auth.authState.isAdmin /* skip check for admin */
         this.handleAllowedStatusChange(status);
       } else {
         //For status change in public space, we need to check whether the permissions are ok
@@ -336,13 +335,29 @@ var Browser = React.createClass({
             "mailto:cmdi@clarin.eu?subject=" + "[Component Registry] Request: change status of " + type + " '" + item.name + "' (" + item.id + ") to " + statusName
           }>message to cmdi@clarin.eu</a>.</p>
         {errorMessage &&
-          <p>Additional information: {errorMessage}</p>
+          <p>Reason/Additional information: {errorMessage}</p>
         }
       </div>
     );
   },
 
   handleSetSuccessor: function() {
+    var ids = Object.keys(this.state.selection.selectedItems);
+    if(ids.length == 1) {
+      var item = this.state.selection.selectedItems[ids[0]];
+
+      if(this.state.items.space === Constants.SPACE_PRIVATE || this.state.items.space === Constants.SPACE_TEAM) { /* skip check for private or team space */
+        this.handleAllowedSetSuccessor();
+      } else {
+        //For status change in public space, we need to check whether the permissions are ok
+        this.getFlux().actions.checkStatusUpdateRights(item, this.state.auth.authState,
+          this.handleAllowedSetSuccessor.bind(this),
+          this.handleDisallowedSetSuccessor.bind(this));
+      }
+    }
+  },
+
+  handleAllowedSetSuccessor: function() {
     var ids = Object.keys(this.state.selection.selectedItems);
     if(ids.length == 1) {
       var item = this.state.selection.selectedItems[ids[0]];
@@ -380,6 +395,28 @@ var Browser = React.createClass({
         selectedCandidate={selectedSuccessor}
         onSelect={onSelect} />,
       onOk, onCancel, 'Ok', 'Cancel'
+    );
+  },
+
+  handleDisallowedSetSuccessor: function(errorMessage) {
+    var item;
+    var ids = Object.keys(this.state.selection.selectedItems);
+    if(ids.length == 1) {
+      item = this.state.selection.selectedItems[ids[0]];
+    } else {
+      item = {name: "UNKNOWN", id: "-1"};
+    }
+
+    ReactAlert.showMessage('Cannot set item successor',
+      <div>
+        <p>A successor for '{item.name}' <strong>cannot</strong> be set because you are not its owner or belong to the team that owns it.</p>
+        <p>You can propose a successor for '{item.name}' by sending a <a href={
+            "mailto:cmdi@clarin.eu?subject=" + "[Component Registry] Request: successor for '" + item.name + "' (" + item.id + ")"
+          }>message to cmdi@clarin.eu</a>.</p>
+        {errorMessage &&
+          <p>Reason/additional information: {errorMessage}</p>
+        }
+      </div>
     );
   },
 
