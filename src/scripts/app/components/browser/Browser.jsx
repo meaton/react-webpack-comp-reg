@@ -266,7 +266,7 @@ var Browser = React.createClass({
         this.handleAllowedStatusChange(status);
       } else {
         //For status change in public space, we need to check whether the permissions are ok
-        this.getFlux().actions.checkStatusUpdateRights(item, this.state.auth.authState,
+        this.getFlux().actions.checkUpdateRights(item, this.state.auth.authState,
           this.handleAllowedStatusChange.bind(this, status),
           this.handleDisallowedStatusChange.bind(this, status));
       }
@@ -350,7 +350,7 @@ var Browser = React.createClass({
         this.handleAllowedSetSuccessor();
       } else {
         //For status change in public space, we need to check whether the permissions are ok
-        this.getFlux().actions.checkStatusUpdateRights(item, this.state.auth.authState,
+        this.getFlux().actions.checkUpdateRights(item, this.state.auth.authState,
           this.handleAllowedSetSuccessor.bind(this),
           this.handleDisallowedSetSuccessor.bind(this));
       }

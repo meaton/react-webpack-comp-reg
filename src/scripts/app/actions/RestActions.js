@@ -251,7 +251,7 @@ var RestActions = {
     });
   },
 
-  checkStatusUpdateRights: function(item, authState, onAllowed, onDisallowed) {
+  checkUpdateRights: function(item, authState, onAllowed, onDisallowed) {
     log.info("Checking wether user is allowed to change status of item", item);
     this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK, item);
 
