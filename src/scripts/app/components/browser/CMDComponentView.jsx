@@ -138,6 +138,9 @@ var CMDComponentView = React.createClass({
         <div className="panel-heading">{title}</div>
         {open && !this.props.hideCardinality &&
           <div className="panel-body componentProps">
+            {this.props.header && this.props.header.Description &&
+              <div className="component-description">{this.props.header.Description}</div>
+            }
             <div>
               Number of occurrences: {cardinality}
             </div>
