@@ -41,8 +41,11 @@ module.exports = {
     lookupSpace(type, itemId)
       .done(
         function(item, space, team, statusFilter) {
-          this.dispatch(Constants.SWITCH_SPACE, {type: type, space: space, team: team || null});
-          this.dispatch(Constants.SET_STATUS_FILTER, statusFilter);
+          this.dispatch(Constants.SWITCH_SPACE, {
+            type: type,
+            space: space,
+            team: team || null,
+            statusFilter: statusFilter});
           this.dispatch(Constants.SELECT_BROWSER_ITEM, {item: item});
           this.dispatch(Constants.JUMP_TO_ITEM_SUCCESS);
         }.bind(this))
