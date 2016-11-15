@@ -32,9 +32,14 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+         NODE_ENV: JSON.stringify("production")  // see http://stackoverflow.com/a/36285479
+      }
+    })
   ],
-  
+
   resolve: {
     alias: {
       'lodash/cloneDeep$': 'lodash/lang/cloneDeep',
