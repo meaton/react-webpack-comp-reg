@@ -112,15 +112,30 @@ var RestActions = {
 
   saveComponentSpec: function(spec, item, successCb, componentInUsageCb) {
     // do update, don't publish
-    saveSpec.apply(this, [spec, item, true, false, successCb, componentInUsageCb])
+    var update = true;
+    var publish = false;
+
+    var onSuccess = dispatchSaveSpec.bind(this, this.dispatch, update, publish, successCb);
+    saveSpec.apply(this, [spec, item, update, publish, onSuccess, componentInUsageCb])
   },
 
   saveNewComponentSpec: function(spec, item, successCb) {
     // new, don't update or publish
-    saveSpec.apply(this, [spec, item, false, false, successCb])
+    var update = false;
+    var publish = false;
+
+    var onSuccess = dispatchSaveSpec.bind(this, this.dispatch, update, publish, successCb);
+    saveSpec.apply(this, [spec, item, update, publish, onSuccess])
   },
 
   publishItems: function(type, items, status, successCb) {
+    //publish
+    var update = true;
+    var publish = true;
+
+    //success callback *overrides* default callback for publish action (can happen outside the editor)
+    var onSuccess = successCb || dispatchSaveSpec.bind(this, this.dispatch, update, publish, successCb);
+
     log.debug("Publish items of type", type, items, status, successCb);
     var ids = Object.keys(items);
     if(ids.length > 0) {
@@ -138,9 +153,7 @@ var RestActions = {
             // do update and publish
             saveSpec.apply(this, [specWithStatus, item, true, true, function() {
                 //TODO: if items left, publish next - else, call success cb
-                if(successCb) {
-                  successCb();
-                }
+                onSuccess();
             }]);
           }
         }.bind(this)
@@ -149,12 +162,17 @@ var RestActions = {
   },
 
   publishComponentSpec: function(spec, status, item, successCb) {
+    var update = true;
+    var publish = true;
+
+    var onSuccess = dispatchSaveSpec.bind(this, this.dispatch, update, publish, successCb);
+
     // get updated version of spec with requested target status
     var specWithStatus = updateSpecStatus(spec, status);
     if(specWithStatus) {
       // do update and publish
       log.debug("Publishing item", item, spec);
-      saveSpec.apply(this, [specWithStatus, item, true, true, successCb])
+      saveSpec.apply(this, [specWithStatus, item, update, publish, successCb])
       return true;
     } else {
       return false;
@@ -451,15 +469,9 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
   var save = function() {
     ComponentRegistryClient.saveComponent(spec, item, item.id, update, publish, function(result){
         // success
-        var type = (result["@isProfile"] === "true")?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENT;
-        this.dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, {
-          item: result.description,
-          type: type,
-          update: update,
-          publish: publish
-        });
         if(successCb) {
-          successCb(spec);
+          var type = (result["@isProfile"] === "true")?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENT;
+          successCb(spec, result.description, type);
         }
       }.bind(this),
       function(message, data) {
@@ -498,6 +510,18 @@ function saveSpec(spec, item, update, publish, successCb, componentInUsageCb) {
           componentInUsageCb(resultObj, save, abort);
         }
       });
+  }
+}
+
+function dispatchSaveSpec(dispatch, update, publish, successCb, spec, item, type) {
+  dispatch(Constants.SAVE_COMPONENT_SPEC_SUCCESS, {
+    item: item,
+    type: type,
+    update: update,
+    publish: publish
+  });
+  if(successCb) {
+     successCb();
   }
 }
 
