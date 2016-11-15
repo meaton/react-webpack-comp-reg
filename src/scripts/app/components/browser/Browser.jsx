@@ -182,6 +182,7 @@ var Browser = React.createClass({
   },
 
   loadItems: function() {
+    log.debug("load items", this.state.items.type, this.state.items.space, this.state.items.team, this.state.items.statusFilter);
     this.getFlux().actions.loadItems(this.state.items.type, this.state.items.space, this.state.items.team, this.state.items.statusFilter);
   },
 
@@ -237,18 +238,25 @@ var Browser = React.createClass({
   handlePublish: function(status) {
     var selection = this.state.selection.selectedItems;
     var onSuccess = function() {
+      //jump to published item
+      var ids = Object.keys(selection);
+      if(ids.length > 0) {
+        this.getFlux().actions.jumpToItem(this.state.items.type, ids[0]);
+      }
+
+      //show confirmation
       ReactAlert.showMessage('Item(s) published',
       <div><p>The following items have been published with {status} status:</p>
       <ul>
         {
-          Object.keys(selection).map(function(id){
+          ids.map(function(id){
             return (<li key={id}>{selection[id].name}</li>);
           })
         }
       </ul>
       </div>
       );
-    };
+    }.bind(this);
     this.getFlux().actions.publishItems(this.state.items.type, selection, status, onSuccess);
   },
 

@@ -42,6 +42,7 @@ var Main = React.createClass({
   },
 
   componentWillMount: function() {
+    log.debug("Application main will mount");
     // select space and item according to params
     log.trace("Location", this.props.location);
 
@@ -79,6 +80,8 @@ var Main = React.createClass({
   },
 
   componentDidMount: function() {
+    log.debug("Application main did mount");
+    
     this.checkBrowserVersion();
     this.checkAuthState();
 
