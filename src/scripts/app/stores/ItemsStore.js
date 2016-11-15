@@ -99,7 +99,11 @@ var ItemsStore = Fluxxor.createStore({
       this.space = spaceType.space;
       this.team = spaceType.team;
       if(spaceType.statusFilter != undefined) {
-        this.statusFilter = spaceType.statusFilter;
+        if(statusFilter != null && !_.isArray(statusFilter)) {
+          this.statusFilter = [spaceType.statusFilter];
+        } else {
+          this.statusFilter = spaceType.statusFilter;
+        }
       }
       this.emit("change");
     }
