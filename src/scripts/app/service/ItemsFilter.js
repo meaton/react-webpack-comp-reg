@@ -43,11 +43,11 @@ var ItemsFilter = {
    * @return {Array}           array of items sorted according to sort state
    */
   sort: function(items, sortState) {
-    log.debug("items", items);
+    log.trace("Items to sort", items);
     if(sortState == null || sortState.column == null) {
       return items.value();
     } else {
-      log.debug("Sort by", sortState.column, sortState.order);
+      log.trace("Sort by", sortState.column, sortState.order);
       var order = (sortState.order === Constants.SORT_ORDER_DESC) ? 'desc':'asc';
       return items.sortByOrder([sortState.column], [order]).value();
     }
