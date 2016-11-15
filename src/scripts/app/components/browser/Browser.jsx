@@ -88,6 +88,7 @@ var Browser = React.createClass({
       "detailsCollapsed": this.state.detailsCollapsed,
       "detailsMaximised": this.state.detailsMaximised
     });
+    var selectedTeam = (this.state.items.space === Constants.SPACE_TEAM) ? this.state.items.team : null;
     return (
         <section id="browser" className={classes}>
           <div className="browser row">
@@ -123,7 +124,7 @@ var Browser = React.createClass({
                 type={this.state.items.type}
                 space={this.state.items.space}
                 teams={this.state.team.teams}
-                selectedTeam={this.state.items.team}
+                selectedTeam={selectedTeam}
                 validUserSession={this.state.auth.authState.uid != null}
                 onSpaceSelect={this.handleSpaceSelect}
                 statusFilter={this.state.items.statusFilter}
@@ -135,7 +136,7 @@ var Browser = React.createClass({
                   space={this.state.items.space}
                   items={this.state.selection.selectedItems}
                   teams={this.state.team.teams}
-                  selectedTeam={this.state.items.team}
+                  selectedTeam={selectedTeam}
                   loggedIn={this.state.auth.authState.uid != null}
                   moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
                   moveToTeam={this.handleMoveToTeam}
