@@ -25,7 +25,8 @@ var MoveToTeamDropdown = React.createClass({
       space: React.PropTypes.string.isRequired,
       teams: React.PropTypes.array,
       disabled: React.PropTypes.bool,
-      moveToTeam: React.PropTypes.func
+      moveToTeam: React.PropTypes.func,
+      selectedTeam: React.PropTypes.string,
     },
 
     confirmMoveToTeam: function(teamId) {
@@ -41,6 +42,7 @@ var MoveToTeamDropdown = React.createClass({
 
     render: function() {
         if($.isArray(this.props.teams) && this.props.teams.length > 0) {
+          log.trace("Move to team dropdown", this.props.teams, "current team", this.props.selectedTeam);
           return (
             <DropdownButton id="moveToTeam" title="Move to team" disabled={this.props.disabled}>
                 {this.props.teams.map(function(team) {

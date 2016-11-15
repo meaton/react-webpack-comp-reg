@@ -137,9 +137,11 @@ var ItemsStore = Fluxxor.createStore({
     if(result.publish) {
       //switch to public space
       this.space = Constants.SPACE_PUBLISHED;
+      this.team = null;
     } else if(!result.update) {
       //new item, saved to private space
       this.space = Constants.SPACE_PRIVATE;
+      this.team = null;
     }
     this.type = result.type;
     this.emit("change");
