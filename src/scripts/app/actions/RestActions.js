@@ -185,11 +185,14 @@ var RestActions = {
     );
   },
 
-  moveComponentsToTeam: function(ids, teamId) {
+  moveComponentsToTeam: function(ids, teamId, successCb) {
     log.info("Requesting moving of", ids);
     this.dispatch(Constants.MOVE_TO_TEAM, ids);
     moveComponentsToTeam(ids, teamId, function(movedIds){
       this.dispatch(Constants.MOVE_TO_TEAM_SUCCESS, movedIds);
+      if(successCb) {
+        successCb(ids);
+      }
     }.bind(this), function(result) {
       if(result.message != null) {
         log.error(result.message);
@@ -619,10 +622,12 @@ function moveComponentsToTeam(ids, teamId, success, failure, remainder) {
       handleSuccess, //success
       function(msg) { //failure
         remainder.push(id);
-        failure({
-          message: msg,
-          ids: remainder
-        });
+        if(failure) {
+          failure({
+            message: msg,
+            ids: remainder
+          });
+        }
       });
   }
 }

@@ -255,7 +255,11 @@ var Browser = React.createClass({
   handleMoveToTeam: function(teamId) {
     var ids = Object.keys(this.state.selection.selectedItems);
     log.debug("Move to team", ids, teamId);
-    this.getFlux().actions.moveComponentsToTeam(ids, teamId);
+    this.getFlux().actions.moveComponentsToTeam(ids, teamId, function() {
+      if(ids.length > 0) {
+        this.getFlux().actions.jumpToItem(this.state.items.type, ids[0]);
+      }
+    }.bind(this));
   },
 
   handleStatusChange: function(status) {
