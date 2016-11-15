@@ -43,7 +43,7 @@ var ItemsStore = Fluxxor.createStore({
       Constants.MOVE_TO_TEAM_SUCCESS, this.handleDeleteOrMoveSuccess,
       Constants.MOVE_TO_TEAM_FAILURE, this.handleDeleteOrMoveFailure,
       Constants.FILTER_TEXT_CHANGE, this.handleFilterTextChange,
-      // Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved,
+      Constants.SAVE_COMPONENT_SPEC_SUCCESS, this.handleComponentSaved,
       Constants.TOGGLE_SORT_STATE, this.toggleSortState,
       Constants.SET_STATUS_PERMISSION_CHECK, this.handleStatusPermissionCheck,
       Constants.SET_STATUS_PERMISSION_CHECK_DONE, this.handleStatusPermissionCheckDone,
@@ -136,19 +136,19 @@ var ItemsStore = Fluxxor.createStore({
     this.emit("change");
   },
 
-  // handleComponentSaved: function(result) {
-  //   if(result.publish) {
-  //     //switch to public space
-  //     this.space = Constants.SPACE_PUBLISHED;
-  //     this.team = null;
-  //   } else if(!result.update) {
-  //     //new item, saved to private space
-  //     this.space = Constants.SPACE_PRIVATE;
-  //     this.team = null;
-  //   }
-  //   this.type = result.type;
-  //   this.emit("change");
-  // },
+  handleComponentSaved: function(result) {
+    if(result.publish) {
+      //switch to public space
+      this.space = Constants.SPACE_PUBLISHED;
+      this.team = null;
+    } else if(!result.update) {
+      //new item, saved to private space
+      this.space = Constants.SPACE_PRIVATE;
+      this.team = null;
+    }
+    this.type = result.type;
+    this.emit("change");
+  },
 
   toggleSortState: function(column) {
     var currentColumn = (this.sortState != null)?this.sortState.column : null;
