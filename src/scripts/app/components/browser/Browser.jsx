@@ -291,7 +291,7 @@ var Browser = React.createClass({
 
   performStatusChange: function(status, item, type) {
     this.getFlux().actions.updateComponentStatus(item, type, status, function() {
-      this.loadItems();
+      this.getFlux().actions.jumpToItem(type, item.id);
       var statusName = getStatusName(status);
       var message = (
         <div>
