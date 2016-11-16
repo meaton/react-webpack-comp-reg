@@ -110,6 +110,7 @@ var ComponentSpec = React.createClass({
                 onToggle={this.props.onComponentToggle}
                 expansionState={this.props.expansionState}
                 linkedComponents={this.props.linkedComponents}
+                titleComponentLink={true}
                 />
             )}
             <div className="end">&nbsp;</div>

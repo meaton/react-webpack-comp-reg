@@ -33,6 +33,7 @@ var CMDComponentView = React.createClass({
   /* other props defined in CMDComponentMixin, ToggleExpansionMixin and ActionButtonsMixin */
   propTypes: {
     link: React.PropTypes.object /* if linked, this is the Component element defined in the parent */,
+    titleComponentLink: React.PropTypes.bool,
     componentLinks: React.PropTypes.bool,
     compId: React.PropTypes.string,
     onReplaceWithSuccessor: React.PropTypes.func
@@ -40,7 +41,8 @@ var CMDComponentView = React.createClass({
 
   getDefaultProps: function() {
     return {
-      componentLinks: true
+      componentLinks: true,
+      titleComponentLink: false
     };
   },
   /**
@@ -68,6 +70,7 @@ var CMDComponentView = React.createClass({
         parent={this.props.spec}
         expansionState={this.props.expansionState}
         linkedComponents={this.props.linkedComponents}
+        titleComponentLink={this.props.titleComponentLink}
         onToggle={this.props.onToggle}
         isLinked={isLinked}
         isFirst={index == 0}
@@ -125,7 +128,7 @@ var CMDComponentView = React.createClass({
           <span title="Status: deprecated"> <Glyphicon glyph={Constants.STATUS_ICON_DEPRECATED} /> </span>
         }
           Component: <span className="componentName">
-            {this.props.isLinked ? <ItemLink className="jump-to-component" itemId={this.props.compId} type={Constants.TYPE_COMPONENT}>{compName}</ItemLink> : compName}
+            {this.props.isLinked && this.props.titleComponentLink ? <ItemLink className="jump-to-component" itemId={this.props.compId} type={Constants.TYPE_COMPONENT}>{compName}</ItemLink> : compName}
           </span> {!open && (<span>&nbsp;[{cardinality}]</span>)}
       </span>);
     var title = this.props.isLinked?
