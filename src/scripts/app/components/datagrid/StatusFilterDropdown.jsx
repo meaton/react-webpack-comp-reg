@@ -42,7 +42,11 @@ var StatusFilterDropdown = React.createClass({
     var statusFilter = this.props.statusFilter;
     return (
       <Dropdown id="statusFilter" onSelect={this.handleStatusFilter}>
-        <Dropdown.Toggle bsStyle={statusFilter == null ? "default" : "warning"}><Glyphicon glyph="filter" /></Dropdown.Toggle>
+        <Dropdown.Toggle
+          bsStyle={statusFilter == null ? "default" : "warning"}
+          title={statusFilter == null ? "Select a status to filter by" : "Change the active status filter"}>
+          <Glyphicon glyph="filter" />
+        </Dropdown.Toggle>
         <Dropdown.Menu>
           <MenuItem eventKey={null}>Default</MenuItem>
           <MenuItem divider />

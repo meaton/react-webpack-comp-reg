@@ -48,7 +48,7 @@ var MoveToTeamDropdown = React.createClass({
           log.trace("Move to team dropdown", this.props.teams, "current team", this.props.selectedTeam);
           return (
             <Dropdown id="moveToTeam">
-              <Dropdown.Toggle disabled={this.props.disabled}>
+              <Dropdown.Toggle disabled={this.props.disabled} title="Move the selected item(s) to a team">
                 {this.props.glyph && <Glyphicon glyph={this.props.glyph}/>} {this.props.title}
               </Dropdown.Toggle>
               <Dropdown.Menu>

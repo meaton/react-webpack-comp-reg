@@ -64,7 +64,7 @@ var BrowserMenuGroup = React.createClass({
 
           <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
             disabled={!this.props.loggedIn}>
-            <Button><Glyphicon glyph="plus" /> New</Button>
+            <Button title="Create a new component or profile"><Glyphicon glyph="plus" /> New</Button>
           </LinkContainer>
 
           {this.renderEditorLink(singleItem)}
@@ -88,7 +88,7 @@ var BrowserMenuGroup = React.createClass({
                 onPublish={this.props.onPublish} />)}
 
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
-            btnLabel={<span><Glyphicon glyph="trash" /> Delete</span>}
+            btnLabel={<span title="Delete selected item(s)"><Glyphicon glyph="trash" /> Delete</span>}
             title="Delete items"
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
 
@@ -119,8 +119,7 @@ var BrowserMenuGroup = React.createClass({
       if(editorRoute != null) {
         return (
           <LinkContainer to={editorRoute} disabled={!this.props.loggedIn}>
-            <Button
-              bsStyle="primary">
+            <Button title="Edit selected (as new)" bsStyle="primary">
                 <Glyphicon glyph="pencil" /> {editBtnLabel}
             </Button>
           </LinkContainer>
