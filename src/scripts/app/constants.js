@@ -140,10 +140,17 @@ module.exports = {
   TYPE_PROFILE: "profile",
   TYPE_COMPONENT: "component",
 
+  TYPE_ICON_PROFILE: "file",
+  TYPE_ICON_COMPONENT: "th",
+
   /* ITEM SPACES */
   SPACE_PUBLISHED: "public",
   SPACE_PRIVATE: "private",
   SPACE_TEAM: "team",
+
+  SPACE_ICON_PUBLISHED: "globe",
+  SPACE_ICON_PRIVATE: "user",
+  SPACE_ICON_TEAM: "cloud",
 
   /*STATUS*/
   STATUS_WILDCARD: "*",
