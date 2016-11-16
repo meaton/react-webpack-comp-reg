@@ -1,10 +1,12 @@
 'use strict';
+var Constants = require('../constants');
 
 var React = require('react');
 
 //bootstrap
-var DropDownButton = require('react-bootstrap/lib/DropdownButton');
+var Dropdown = require('react-bootstrap/lib/Dropdown');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //util
 var Constants = require('../constants');
@@ -19,7 +21,8 @@ var PublishDropDown = React.createClass({
     id:  React.PropTypes.string,
     title:  React.PropTypes.string,
     disabled: React.PropTypes.bool,
-    onPublish: React.PropTypes.func
+    onPublish: React.PropTypes.func,
+    glyph: React.PropTypes.string
   },
 
   onPublishProduction: function() {
@@ -47,10 +50,15 @@ var PublishDropDown = React.createClass({
 
   render: function() {
     return (
-      <DropDownButton {...this.props}>
-        <MenuItem eventKey="1" onClick={this.onPublishProduction}>Publish</MenuItem>
-        <MenuItem eventKey="2" onClick={this.onPublishDevelopment}>Publish as draft</MenuItem>
-      </DropDownButton>
+      <Dropdown>
+        <Dropdown.Toggle disabled={this.props.disabled}>
+          {this.props.glyph && <Glyphicon glyph={this.props.glyph}/>} {this.props.title}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <MenuItem eventKey="1" onClick={this.onPublishProduction}>{this.props.glyph && <Glyphicon glyph={this.props.glyph}/>} Publish</MenuItem>
+          <MenuItem eventKey="2" onClick={this.onPublishDevelopment}><Glyphicon glyph={Constants.STATUS_ICON_DEVELOPMENT}/> Publish as draft</MenuItem>
+        </Dropdown.Menu>
+      </Dropdown>
     );
   }
 });
