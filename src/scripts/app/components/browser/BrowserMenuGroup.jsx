@@ -11,6 +11,7 @@ var LinkContainer = require('react-router-bootstrap').LinkContainer;
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 var Modal = require('react-bootstrap/lib/Modal');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 var MoveToTeamDropdown = require('./MoveToTeamDropdown');
 var ComponentStatusSelector = require('./ComponentStatusSelector');
@@ -63,13 +64,15 @@ var BrowserMenuGroup = React.createClass({
 
           <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
             disabled={!this.props.loggedIn}>
-            <Button>Create new</Button>
+            <Button><Glyphicon glyph="plus" /> Create new</Button>
           </LinkContainer>
 
           {this.renderEditorLink(singleItem)}
 
           {this.props.moveToTeamEnabled
             && <MoveToTeamDropdown
+            title="Move to team"
+            glyph="cloud-upload"
             space={this.props.space}
             teams={this.props.teams}
             selectedTeam={this.props.selectedTeam}
@@ -80,11 +83,12 @@ var BrowserMenuGroup = React.createClass({
               <PublishDropDown
                 id="publishActions"
                 title="Publish"
+                glyph="upload"
                 disabled={selectionCount != 1}
                 onPublish={this.props.onPublish} />)}
 
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
-            btnLabel="Delete"
+            btnLabel={<span><Glyphicon glyph="trash" /> Delete</span>}
             title="Delete items"
             desc={selectionCount == 0 ? null : this.renderDeleteModal()} />
 
@@ -117,13 +121,13 @@ var BrowserMenuGroup = React.createClass({
           <LinkContainer to={editorRoute} disabled={!this.props.loggedIn}>
             <Button
               bsStyle="primary">
-                {editBtnLabel}
+                <Glyphicon glyph="pencil" /> {editBtnLabel}
             </Button>
           </LinkContainer>
         );
       }
     } else {
-      return (<Button bsStyle="primary" disabled>Edit</Button>);
+      return (<Button bsStyle="primary" disabled><Glyphicon glyph="pencil" /> Edit</Button>);
     }
   },
 

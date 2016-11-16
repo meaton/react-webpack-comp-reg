@@ -5,8 +5,9 @@ var React = require('react');
 var Constants = require("../../constants");
 
 //bootstrap
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
+var Dropdown = require('react-bootstrap/lib/Dropdown');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 //utils
 var ReactAlert = require('../../util/ReactAlert');
@@ -27,6 +28,8 @@ var MoveToTeamDropdown = React.createClass({
       disabled: React.PropTypes.bool,
       moveToTeam: React.PropTypes.func,
       selectedTeam: React.PropTypes.string,
+      title: React.PropTypes.string,
+      glyph: React.PropTypes.string
     },
 
     confirmMoveToTeam: function(teamId) {
@@ -44,7 +47,11 @@ var MoveToTeamDropdown = React.createClass({
         if($.isArray(this.props.teams) && this.props.teams.length > 0) {
           log.trace("Move to team dropdown", this.props.teams, "current team", this.props.selectedTeam);
           return (
-            <DropdownButton id="moveToTeam" title="Move to team" disabled={this.props.disabled}>
+            <Dropdown id="moveToTeam">
+              <Dropdown.Toggle disabled={this.props.disabled}>
+                {this.props.glyph && <Glyphicon glyph={this.props.glyph}/>} {this.props.title}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
                 {this.props.teams.map(function(team) {
                     return (team.id === this.props.selectedTeam) ? null : (
                       <MenuItem
@@ -56,7 +63,8 @@ var MoveToTeamDropdown = React.createClass({
                     )
                   }.bind(this)
                 )}
-            </DropdownButton>
+              </Dropdown.Menu>
+            </Dropdown>
           );
         } else {
           return null;
