@@ -58,7 +58,7 @@ var MoveToTeamDropdown = React.createClass({
                         key={team.id}
                         onSelect={this.confirmMoveToTeam.bind(this, team.id)}
                         >
-                          <Glyphicon glyph={Constants.SPACE_ICON_TEAM} /> {team.name}
+                          <Glyphicon glyph={Constants.SPACE_ICONS[Constants.SPACE_TEAM]} /> {team.name}
                       </MenuItem>
                     )
                   }.bind(this)

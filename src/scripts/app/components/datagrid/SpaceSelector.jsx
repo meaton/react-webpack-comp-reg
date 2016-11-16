@@ -11,7 +11,7 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup =  require('react-bootstrap/lib/ButtonGroup');
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
+var Dropdown = require('react-bootstrap/lib/Dropdown');
 var MenuItem = require('react-bootstrap/lib/MenuItem');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
@@ -81,10 +81,12 @@ var SpaceSelector = React.createClass({
   getTypes: function() {
     var types = {};
     types[PROFILES] = {
-      label: "Profiles"
+      label: "Profiles",
+      icon: Constants.TYPE_ICON_PROFILE
     };
     types[COMPONENTS] = {
-      label: "Components"
+      label: "Components",
+      icon: Constants.TYPE_ICON_COMPONENT
     };
     return types;
   },
@@ -96,11 +98,13 @@ var SpaceSelector = React.createClass({
     var spaces = {}
     spaces[PUBLIC] = {
       label: Constants.SPACE_NAMES[PUBLIC],
+      icon: Constants.SPACE_ICONS[PUBLIC],
       loginRequired: false,
       enabled: true
     };
     spaces[PRIVATE] = {
       label: Constants.SPACE_NAMES[PRIVATE],
+      icon: Constants.SPACE_ICONS[PRIVATE],
       loginRequired: true,
       enabled: this.props.privateAllowed !== false
     };
@@ -113,6 +117,7 @@ var SpaceSelector = React.createClass({
         var teamId = TEAM_PREFIX + teams[i].id;
         spaces[teamId] = {
           label: teams[i].name,
+          icon: Constants.SPACE_ICONS[TEAM],
           loginRequired: true,
           enabled: this.props.allowedTeamIds === null || ($.inArray(teams[i].id, this.props.allowedTeamIds) >= 0)
         }
@@ -147,8 +152,10 @@ var SpaceSelector = React.createClass({
     var space = spaces[currentSpace];
     if(space == null) {
       var spaceLabel = currentSpace;
+      var spaceIcon = null;
     } else {
       var spaceLabel = space.label;
+      var spaceIcon = space.icon;
     }
 
     return (
@@ -156,7 +163,11 @@ var SpaceSelector = React.createClass({
         <ButtonGroup className="space_selector">
 
           {/* Public, private, teams */}
-          <DropdownButton id="spaceDropDown" title={spaceLabel}>
+          <Dropdown id="spaceDropDown">
+            <Dropdown.Toggle>
+              {spaceIcon && <Glyphicon glyph={spaceIcon}/>} {spaceLabel}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
               {(this.props.validUserSession || currentSpace != PUBLIC)?(
                   Object.keys(spaces).map(function(spaceKey) {
                     var space = spaces[spaceKey];
@@ -167,7 +178,7 @@ var SpaceSelector = React.createClass({
                         onSelect={this.selectSpace.bind(this, spaceKey)}
                         disabled={!space.enabled}
                         >
-                          {space.label}
+                          <Glyphicon glyph={space.icon}/> {space.label}
                       </MenuItem>
                   )}.bind(this)
                 )
@@ -175,22 +186,27 @@ var SpaceSelector = React.createClass({
                 <MenuItem onSelect={AuthUtil.triggerLogin}>Login to acces other workspaces</MenuItem>
               )
             }
-          </DropdownButton>
+          </Dropdown.Menu>
+        </Dropdown>
 
           {/* Components, profiles */}
           {!this.props.componentsOnly && (
-            <DropdownButton id="typeDropDown" title={types[currentType].label}
-              disabled={(!this.props.validUserSession && currentSpace != PUBLIC)}>
+            <Dropdown id="typeDropDown">
+              <Dropdown.Toggle disabled={(!this.props.validUserSession && currentSpace !== PUBLIC)}>
+                <Glyphicon glyph={types[currentType].icon} /> {types[currentType].label}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
                 {Object.keys(types).map(function(typeKey) {return(
                     <MenuItem
                       key={typeKey}
                       className={classNames({ selected: (typeKey === currentType) })}
                       onSelect={this.selectType.bind(this, typeKey)}>
-                        {types[typeKey].label}
+                        <Glyphicon glyph={types[typeKey].icon} /> {types[typeKey].label}
                     </MenuItem>
                   )}.bind(this)
                 )}
-            </DropdownButton>
+              </Dropdown.Menu>
+            </Dropdown>
           )}
 
           <StatusFilterDropdown

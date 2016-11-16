@@ -148,9 +148,17 @@ module.exports = {
   SPACE_PRIVATE: "private",
   SPACE_TEAM: "team",
 
-  SPACE_ICON_PUBLISHED: "globe",
-  SPACE_ICON_PRIVATE: "user",
-  SPACE_ICON_TEAM: "cloud",
+  SPACE_NAMES: {
+    public: "Public space",
+    private: "Private space",
+    team: "Team space"
+  },
+
+  SPACE_ICONS: {
+    public: "globe",
+    private: "user",
+    team: "cloud"
+  },
 
   /*STATUS*/
   STATUS_WILDCARD: "*",
@@ -161,12 +169,6 @@ module.exports = {
   STATUS_ICON_DEVELOPMENT: "wrench",
   STATUS_ICON_PRODUCTION: "ok-circle",
   STATUS_ICON_DEPRECATED: "ban-circle",
-
-  SPACE_NAMES: {
-    public: "Public space",
-    private: "Private space",
-    team: "Team space"
-  },
 
   /* INFO VIEWS */
   INFO_VIEW_SPEC: "INFO_VIEW_SPEC",
