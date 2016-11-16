@@ -26,6 +26,7 @@ var EditorStore = Fluxxor.createStore({
     this.gridLoading = false;
     this.gridFilterText = null;
     this.gridStatusFilter = null;
+    this.gridSortState = null;
 
     // component spec itself is stored in the component details store for the editor
 
@@ -44,6 +45,7 @@ var EditorStore = Fluxxor.createStore({
       Constants.LOAD_EDITOR_ITEMS_FAILURE, this.handleLoadGridItemsFailure,
       Constants.SWITCH_EDITOR_GRID_SPACE, this.handleSwitchGridSpace,
       Constants.GRID_FILTER_TEXT_CHANGE, this.handleFilterTextChange,
+      Constants.GRID_TOGGLE_SORT_STATE, this.toggleSortState,
       Constants.START_COMPONENT_LINK, this.handleStartComponentLink,
       Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink,
       Constants.RESET_EDITOR_STATUS_FILTER, this.handleResetStatusFilter,
@@ -71,7 +73,8 @@ var EditorStore = Fluxxor.createStore({
         items: this.filteredGridItems,
         loading: this.gridLoading,
         filterText: this.gridFilterText,
-        statusFilter: this.gridStatusFilter
+        statusFilter: this.gridStatusFilter,
+        sortState: this.gridSortState
       }
     };
   },
@@ -151,14 +154,31 @@ var EditorStore = Fluxxor.createStore({
 
   handleLoadGridItemsSuccess: function(items) {
     this.gridItems = items;
-    this.filteredGridItems = ItemsFilter.filter(this.gridItems, this.gridFilterText);
+    this.filteredGridItems = ItemsFilter.filter(this.gridItems, this.gridFilterText, this.gridSortState);
     this.gridLoading = false;
     this.emit("change");
   },
 
   handleFilterTextChange: function(text) {
-    this.filteredGridItems = ItemsFilter.updateItems(this.gridItems, text, this.filteredGridItems, this.gridFilterText);
+    this.filteredGridItems = ItemsFilter.updateItems(this.gridItems, text, this.filteredGridItems, this.gridFilterText, this.gridSortState);
     this.gridFilterText = ItemsFilter.updateFilterText(text);
+    this.emit("change");
+  },
+
+  toggleSortState: function(column) {
+    //TODO: move out logic, it is duplicated from ItemsStore
+    var currentColumn = (this.gridSortState != null)?this.gridSortState.column : null;
+    var currentOrder= (this.gridSortState != null)?this.gridSortState.order : null;
+    this.gridSortState = {
+      column: (currentColumn === column && currentOrder === Constants.SORT_ORDER_DESC) ? null : column,
+      order: (currentColumn === column && Constants.SORT_ORDER_ASC) ? Constants.SORT_ORDER_DESC : Constants.SORT_ORDER_ASC
+    };
+    if(this.gridSortState.column == null) {
+      // refilter from items
+      this.filteredGridItems = ItemsFilter.filter(this.gridItems, this.gridFilterText);
+    } else {
+      this.filteredGridItems = ItemsFilter.updateItems(this.gridItems, this.gridFilterText, this.filteredGridItems, this.gridFilterText, this.gridSortState);
+    }
     this.emit("change");
   },
 

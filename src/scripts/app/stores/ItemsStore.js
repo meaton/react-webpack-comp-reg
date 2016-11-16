@@ -155,6 +155,7 @@ var ItemsStore = Fluxxor.createStore({
   },
 
   toggleSortState: function(column) {
+    //TODO: move out logic, it is duplicated in EditorStore
     var currentColumn = (this.sortState != null)?this.sortState.column : null;
     var currentOrder= (this.sortState != null)?this.sortState.order : null;
     this.sortState = {

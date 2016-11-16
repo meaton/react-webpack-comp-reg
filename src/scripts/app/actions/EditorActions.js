@@ -166,6 +166,10 @@ var EditorActions = {
     this.dispatch(Constants.GRID_FILTER_TEXT_CHANGE, value);
   },
 
+  toggleGridSortState: function(column) {
+    this.dispatch(Constants.GRID_TOGGLE_SORT_STATE, column);
+  },
+
   startComponentLink: function(id) {
     this.dispatch(Constants.START_COMPONENT_LINK, id);
   },

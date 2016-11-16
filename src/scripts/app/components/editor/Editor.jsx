@@ -114,6 +114,8 @@ var Editor = React.createClass({
                   items={this.state.editor.grid.items}
                   loading={this.state.editor.grid.loading}
                   onRowSelect={this.handleGridRowSelect}
+                  sortState={this.state.editor.grid.sortState}
+                  onToggleSort={this.toggleGridSort}
                   disabled={gridDisabled}
                   />
               )}
@@ -176,6 +178,10 @@ var Editor = React.createClass({
 
   handleGridFilterTextChange: function(evt) {
     this.getFlux().actions.setGridFilterText(evt.target.value);
+  },
+
+  toggleGridSort: function(column) {
+    this.getFlux().actions.toggleGridSortState(column);
   },
 
   handleGridRowSelect: function(itemId) {

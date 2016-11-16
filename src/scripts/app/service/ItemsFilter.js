@@ -22,6 +22,8 @@ var ItemsFilter = {
   },
 
   filter: function(items, filter, sortState) {
+    log.trace("Filter items", filter, "sort state", sortState);
+
     if(filter == null) {
       return this.sort(_(items), sortState);
     } else {
