@@ -49,10 +49,24 @@
 }
 
 .component-description {
+    margin-left: -1em;
+    padding-left: 1em;
+    margin-right: -1em;
+    padding-right: 1em;
     margin-bottom: .5em;
-    font-style: italic;
     padding-bottom: .2em;
     border-bottom: 1px solid #ccc;
+    font-style: italic;
+
+    quotes: '\201c' '\201d';
+    &:before {
+      content: open-quote;
+      font-size: larger;
+    }
+    &:after {
+      content: close-quote;
+      font-size: larger;
+    }
 }
 
 /* The animation code */
