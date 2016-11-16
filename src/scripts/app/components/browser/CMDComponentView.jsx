@@ -114,8 +114,8 @@ var CMDComponentView = React.createClass({
     if(maxC == null) maxC = 1;
 
     var cardinality = (<span>{minC + " - " + maxC}</span>);
+    var description = this.props.header && this.props.header.Description;
     var status = this.props.header && this.props.header.Status;
-    //TODO: make title link to component in browser https://github.com/clarin-eric/component-registry-front-end/issues/27
     var titleText = (
       <span  title={this.props.isLinked && this.props.compId ? this.props.compId : compName}>
         {status && status.toLowerCase() === Constants.STATUS_DEVELOPMENT.toLowerCase() &&
@@ -136,26 +136,31 @@ var CMDComponentView = React.createClass({
     return (
       <div className="panel panel-info">
         <div className="panel-heading">{title}</div>
-        {open && !this.props.hideCardinality &&
+        {open && (!this.props.hideCardinality || description) &&
           <div className="panel-body componentProps">
-            {this.props.header && this.props.header.Description &&
-              <div className="component-description">{this.props.header.Description}</div>
+            {description &&
+              <div className="component-description">{description}</div>
             }
-            <div>
-              Number of occurrences: {cardinality}
-            </div>
-            {conceptLink && conceptLink != '' && (
-              <div>ConceptLink: <a href={conceptLink} target="_blank">{conceptLink}</a>
-              </div>
-            )}
-            <div>
-              {$.isArray(documentation) && documentation.length > 0 && documentation[0]['$'] != null && documentation[0]['$'] != '' && (
-                <div>Documentation:
-                  <div>{<DocumentationView value={documentation} />}</div>
+            {!this.props.hideCardinality &&
+              <div>
+                <div>
+                  Number of occurrences: {cardinality}
                 </div>
-              )}
-            </div>
-          </div>}
+                {conceptLink && conceptLink != '' && (
+                  <div>ConceptLink: <a href={conceptLink} target="_blank">{conceptLink}</a>
+                  </div>
+                )}
+                <div>
+                  {$.isArray(documentation) && documentation.length > 0 && documentation[0]['$'] != null && documentation[0]['$'] != '' && (
+                    <div>Documentation:
+                      <div>{<DocumentationView value={documentation} />}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            }
+          </div>
+        }
 
         {this.props.onReplaceWithSuccessor &&
         <div className="successor-available"><Glyphicon glyph="info-sign" /> A successor is available for this component. <a onClick={this.props.onReplaceWithSuccessor}>Replace with successor?</a></div>}
