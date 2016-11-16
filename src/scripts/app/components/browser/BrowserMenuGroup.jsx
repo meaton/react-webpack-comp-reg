@@ -64,7 +64,7 @@ var BrowserMenuGroup = React.createClass({
 
           <LinkContainer to={"/editor/new/"+this.props.space+"/"+this.props.type}
             disabled={!this.props.loggedIn}>
-            <Button><Glyphicon glyph="plus" /> Create new</Button>
+            <Button><Glyphicon glyph="plus" /> New</Button>
           </LinkContainer>
 
           {this.renderEditorLink(singleItem)}
@@ -84,7 +84,7 @@ var BrowserMenuGroup = React.createClass({
                 id="publishActions"
                 title="Publish"
                 glyph="upload"
-                disabled={selectionCount != 1}
+                disabled={selectionCount != 1 || !this.props.loggedIn}
                 onPublish={this.props.onPublish} />)}
 
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
@@ -149,7 +149,11 @@ var BrowserMenuGroup = React.createClass({
   renderSuccessorButton: function(item) {
     if(item.status.toLowerCase() == Constants.STATUS_DEPRECATED.toLowerCase()) {
       return (
-        <Button onClick={this.props.onSetSuccessor} disabled={!this.props.loggedIn || item.successor != null && item.successor != ""}>Set successor</Button>
+        <Button
+          onClick={this.props.onSetSuccessor}
+          disabled={!this.props.loggedIn || item.successor != null && item.successor != ""}>
+          Set successor
+        </Button>
       );
     } else {
       return null;

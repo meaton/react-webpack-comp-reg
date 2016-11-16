@@ -28,7 +28,8 @@ var ComponentStatusSelector = React.createClass({
       developmentAllowed: React.PropTypes.bool,
       productionAllowed: React.PropTypes.bool,
       deprecatedAllowed: React.PropTypes.bool,
-      onStatusChange: React.PropTypes.func
+      onStatusChange: React.PropTypes.func,
+      bsSize: React.PropTypes.string
     },
 
     getDefaultProps: function() {
@@ -85,7 +86,7 @@ var ComponentStatusSelector = React.createClass({
 
     render: function() {
       return (
-        <DropdownButton id="componentStatus" title="Status" disabled={this.props.disabled}>
+        <DropdownButton id="componentStatus" title="Status" disabled={this.props.disabled} bsSize={this.props.bsSize}>
           {!this.props.disabled && [
           this.createMenuItem(Constants.STATUS_DEVELOPMENT, Constants.STATUS_ICON_DEVELOPMENT),
           this.createMenuItem(Constants.STATUS_PRODUCTION, Constants.STATUS_ICON_PRODUCTION),
