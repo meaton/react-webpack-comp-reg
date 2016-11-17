@@ -92,26 +92,30 @@ var Browser = React.createClass({
     return (
         <section id="browser" className={classes}>
           <div className="browser row">
-            <DataGrid
-              items={this.state.items.items}
-              deletedItems={this.state.items.deleted}
-              selectedItems={this.state.selection.selectedItems}
-              loading={this.state.items.loading}
-              editMode={false}
-              onRowSelect={this.handleRowSelect}
-              sortState={this.state.items.sortState}
-              onToggleSort={this.toggleSort}
-              multiSelect={this.state.selection.allowMultiple}
-              itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
-              {!this.state.items.loading  /* show a message in the table if all results are excluded by filter */
-                && this.state.items.filteredSize == 0
-                && this.state.items.unfilteredSize != 0 && (
-                  <tr><td className="hiddenByFilterMessage">
-                    {this.state.items.unfilteredSize} item(s) hidden by filter
-                    (<a onClick={this.clearFilter}>clear</a>).
-                  </td></tr>
-              )}
-            </DataGrid>
+            {this.state.auth.authState.uid != null || this.state.items.space === Constants.SPACE_PUBLISHED
+              ? (
+                  <DataGrid
+                    items={this.state.items.items}
+                    deletedItems={this.state.items.deleted}
+                    selectedItems={this.state.selection.selectedItems}
+                    loading={this.state.items.loading}
+                    editMode={false}
+                    onRowSelect={this.handleRowSelect}
+                    sortState={this.state.items.sortState}
+                    onToggleSort={this.toggleSort}
+                    multiSelect={this.state.selection.allowMultiple}
+                    itemOptionsDropdownCreator={this.createItemOptionsDropdown}>
+                    {!this.state.items.loading  /* show a message in the table if all results are excluded by filter */
+                      && this.state.items.filteredSize == 0
+                      && this.state.items.unfilteredSize != 0 && (
+                        <tr><td className="hiddenByFilterMessage">
+                          {this.state.items.unfilteredSize} item(s) hidden by filter
+                          (<a onClick={this.clearFilter}>clear</a>).
+                        </td></tr>
+                    )}
+                  </DataGrid>
+                ) : (<div className="error">Selected space not accessible. Please login or switch to the public space.</div>)
+              }
             <div className="gridControls">
               <RssLink link={this.getRssLink()}/>
               <DataGridFilter
