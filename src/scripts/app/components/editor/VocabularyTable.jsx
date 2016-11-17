@@ -101,44 +101,25 @@ var VocabularyTable = React.createClass({
 
     handleTab: function(evt) {
       evt.preventDefault();
-      var col = this.state.editedColumn;
-      var row = this.state.editedRow;
-      if(col === 0) {
-        if(evt.shiftKey) {
-          if(row > 0) {
-            //go to previous row
-            evt.target.blur();
-            this.setState({
-              editedRow: row - 1,
-              editedColumn: 1
-            });
-          }
-        } else {
-          //go to next column
-          evt.target.blur();
-          this.setState({
-            editedRow: row,
-            editedColumn: 1
-          });
-        }
-      } else if(col === 1) {
-        if(evt.shiftKey) {
-          //go to first column
-          evt.target.blur();
-          this.setState({
-            editedRow: row,
-            editedColumn: 0
-          });
-        } else {
-          if((row + 1) < this.props.items.length) {
-            //go to next row
-            evt.target.blur();
-            this.setState({
-              editedRow: row + 1,
-              editedColumn: 0
-            });
-          }
-        }
+      var shift = evt.shiftKey;
+
+      var rows = this.props.items.length, columns = 2;
+      var row = this.state.editedRow, col = this.state.editedColumn;
+
+      if(col == 0) {
+        var targetCol = 1;
+        var targetRow = shift ? row - 1 : row;
+      } else if(col == 1) {
+        var targetCol = 0;
+        var targetRow = shift ? row : row + 1;
+      }
+
+      if(targetRow >=0 && targetRow < rows && targetCol >= 0 && targetCol < columns ) {
+        evt.target.blur();
+        this.setState({
+          editedRow: targetRow,
+          editedColumn: targetCol
+        });
       }
     },
 
