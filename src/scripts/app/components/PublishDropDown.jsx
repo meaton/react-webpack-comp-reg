@@ -50,7 +50,7 @@ var PublishDropDown = React.createClass({
 
   render: function() {
     return (
-      <Dropdown>
+      <Dropdown id="publish-dropdown">
         <Dropdown.Toggle disabled={this.props.disabled} title="Push item to public space">
           {this.props.glyph && <Glyphicon glyph={this.props.glyph}/>} {this.props.title}
         </Dropdown.Toggle>
