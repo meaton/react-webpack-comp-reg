@@ -123,6 +123,30 @@ var VocabularyTable = React.createClass({
       }
     },
 
+    handleEnter: function(evt) {
+      var rows = this.props.items.length, columns = 2;
+      var row = this.state.editedRow, col = this.state.editedColumn;
+
+      if(col === 1 && !evt.shiftKey) {
+        //if in the last row...
+        if(row === rows - 1) {
+          if(this.props.addRow) {
+            //add a row
+            evt.preventDefault();
+            $(evt.target).blur(function(){
+              this.props.addRow();
+            }.bind(this));
+          }
+        } else {
+          //go to next row
+          var targetRow = this.state.editedRow + 1;
+          $(evt.target).blur(function() {
+            this.setState({editedRow: targetRow, editedColumn: 0 });
+          }.bind(this));
+        }
+      }
+    },
+
     getColumns: function() {
       var self = this;
       var editable = edit.edit({
@@ -191,25 +215,7 @@ var VocabularyTable = React.createClass({
               props: {
                 onKeyDown: handleKeyCodes({
                   /*TAB*/ 9: self.handleTab,
-                  /*ENTER*/ 13:
-                    function(evt) {
-                      //if in the last row...
-                      if(self.state.editedRow === self.props.items.length - 1) {
-                        if(self.props.addRow) {
-                          //add a row
-                          evt.preventDefault();
-                          $(evt.target).blur(function(){
-                            self.props.addRow();
-                          });
-                        }
-                      } else {
-                        //go to next row
-                        var targetRow = self.state.editedRow + 1;
-                        $(evt.target).blur(function() {
-                          self.setState({editedRow: targetRow, editedColumn: 0 });
-                        });
-                      }
-                    }
+                  /*ENTER*/ 13: self.handleEnter
                 })
               }
             })), highlightEdited]
