@@ -99,6 +99,49 @@ var VocabularyTable = React.createClass({
       );
     },
 
+    handleTab: function(evt) {
+      evt.preventDefault();
+      var col = this.state.editedColumn;
+      var row = this.state.editedRow;
+      if(col === 0) {
+        if(evt.shiftKey) {
+          if(row > 0) {
+            //go to previous row
+            evt.target.blur();
+            this.setState({
+              editedRow: row - 1,
+              editedColumn: 1
+            });
+          }
+        } else {
+          //go to next column
+          evt.target.blur();
+          this.setState({
+            editedRow: row,
+            editedColumn: 1
+          });
+        }
+      } else if(col === 1) {
+        if(evt.shiftKey) {
+          //go to first column
+          evt.target.blur();
+          this.setState({
+            editedRow: row,
+            editedColumn: 0
+          });
+        } else {
+          if((row + 1) < this.props.items.length) {
+            //go to next row
+            evt.target.blur();
+            this.setState({
+              editedRow: row + 1,
+              editedColumn: 0
+            });
+          }
+        }
+      }
+    },
+
     getColumns: function() {
       var self = this;
       var editable = edit.edit({
@@ -153,21 +196,7 @@ var VocabularyTable = React.createClass({
             transforms: [editable(edit.input({
               props: {
                 onKeyDown: handleKeyCodes({
-                  /*TAB*/ 9:
-                    function(evt) {
-                      evt.preventDefault();
-                      if(evt.shiftKey) {
-                        if(self.state.editedRow > 0) {
-                          //go to previous row
-                          evt.target.blur();
-                          self.setState({editedRow: self.state.editedRow - 1, editedColumn: 1 });
-                        }
-                      } else {
-                        //go to next column
-                        evt.target.blur();
-                        self.setState({editedRow: self.state.editedRow, editedColumn: 1 });
-                      }
-                    }
+                  /*TAB*/ 9: self.handleTab
                 })
               }
             })), highlightEdited]
@@ -180,21 +209,7 @@ var VocabularyTable = React.createClass({
             transforms: [editable(edit.input({
               props: {
                 onKeyDown: handleKeyCodes({
-                  /*TAB*/ 9:
-                    function(evt) {
-                      evt.preventDefault();
-                      if(evt.shiftKey) {
-                        //go to first column
-                        evt.target.blur();
-                        self.setState({editedRow: self.state.editedRow, editedColumn: 0 });
-                      } else {
-                        if((self.state.editedRow + 1) < self.props.items.length) {
-                          //go to next row
-                          evt.target.blur();
-                          self.setState({editedRow: self.state.editedRow + 1, editedColumn: 0 });
-                        }
-                      }
-                    },
+                  /*TAB*/ 9: self.handleTab,
                   /*ENTER*/ 13:
                     function(evt) {
                       //if in the last row...
@@ -305,11 +320,11 @@ function fixVocabTableColumnSizes() {
 function handleKeyCodes(codeHandlers) {
   return function(evt) {
     _.forIn(codeHandlers, function(value, key) {
-      log.debug("Check",evt.keyCode,"against",key);
+      log.trace("Check",evt.keyCode,"against",key);
       //key = keycode
       //value = handler
       if(evt.keyCode == key) {
-        log.debug("Matching handler found for", key, value);
+        log.trace("Matching handler found for", key, value);
         value(evt);
       }
     });
