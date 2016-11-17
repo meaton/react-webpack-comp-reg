@@ -200,8 +200,9 @@ var VocabularyTable = React.createClass({
                       if(self.props.addRow) {
                         //add a row
                         evt.preventDefault();
-                        evt.target.blur();
-                        self.props.addRow();
+                        $(evt.target).blur(function(){
+                          self.props.addRow();
+                        });
                       }
                     }
                 })
