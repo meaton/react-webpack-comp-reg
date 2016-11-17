@@ -197,11 +197,20 @@ var VocabularyTable = React.createClass({
                     },
                   /*ENTER*/ 13:
                     function(evt) {
-                      if(self.props.addRow) {
-                        //add a row
-                        evt.preventDefault();
-                        $(evt.target).blur(function(){
-                          self.props.addRow();
+                      //if in the last row...
+                      if(self.state.editedRow === self.props.items.length - 1) {
+                        if(self.props.addRow) {
+                          //add a row
+                          evt.preventDefault();
+                          $(evt.target).blur(function(){
+                            self.props.addRow();
+                          });
+                        }
+                      } else {
+                        //go to next row
+                        var targetRow = self.state.editedRow + 1;
+                        $(evt.target).blur(function() {
+                          self.setState({editedRow: targetRow, editedColumn: 0 });
                         });
                       }
                     }
