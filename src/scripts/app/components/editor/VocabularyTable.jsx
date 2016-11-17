@@ -16,6 +16,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var ImmutableRenderMixin = require('react-immutable-render-mixin');
 
 //utils
+var _ = require('lodash');
 var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
@@ -32,6 +33,7 @@ var VocabularyTable = React.createClass({
       removeConceptLink: React.PropTypes.func,
       onRemoveVocabularyItem: React.PropTypes.func,
       onVocabularyPropertyChange: React.PropTypes.func,
+      addRow: React.PropTypes.func,
       readOnly: React.PropTypes.bool
     },
 
@@ -60,13 +62,18 @@ var VocabularyTable = React.createClass({
         //in case number of items affect scrollbar visibility
         fixVocabTableColumnSizes();
 
-        if(vocab != null && vocab.enumeration !=null && $.isArray(vocab.enumeration.item)) {
-          if(prevVocab == null || prevVocab.enumeration == null || vocab.enumeration.item.length > prevVocab.enumeration.item.length) {
+        if($.isArray(vocab)) {
+          if(prevVocab == null || vocab.length > prevVocab.length) {
             //scroll to bottom
             var tableBody = $('table#typeTable tbody');
             var height = tableBody.prop("scrollHeight");
             log.debug("table height",  height);
             tableBody.animate({scrollTop: height}, "slow");
+
+            this.setState({
+              editedRow: vocab.length - 1,
+              editedColumn: 0
+            });
           }
         }
       }
@@ -145,11 +152,23 @@ var VocabularyTable = React.createClass({
           cell: this.props.readOnly ? {} : {
             transforms: [editable(edit.input({
               props: {
-                onKeyDown: handleKeyCode(TABKEY, function(evt) {
-                  evt.target.blur();
-                  self.setState({editedRow: self.state.editedRow, editedColumn: 1 });
-                  evt.preventDefault();
-                }.bind(this))
+                onKeyDown: handleKeyCodes({
+                  /*TAB*/ 9:
+                    function(evt) {
+                      evt.preventDefault();
+                      if(evt.shiftKey) {
+                        if(self.state.editedRow > 0) {
+                          //go to previous row
+                          evt.target.blur();
+                          self.setState({editedRow: self.state.editedRow - 1, editedColumn: 1 });
+                        }
+                      } else {
+                        //go to next column
+                        evt.target.blur();
+                        self.setState({editedRow: self.state.editedRow, editedColumn: 1 });
+                      }
+                    }
+                })
               }
             })), highlightEdited]
           }
@@ -158,7 +177,36 @@ var VocabularyTable = React.createClass({
           property: '@AppInfo',
           header: {label: 'Description'},
           cell: this.props.readOnly ? {} : {
-            transforms: [editable(edit.input()), highlightEdited]
+            transforms: [editable(edit.input({
+              props: {
+                onKeyDown: handleKeyCodes({
+                  /*TAB*/ 9:
+                    function(evt) {
+                      evt.preventDefault();
+                      if(evt.shiftKey) {
+                        //go to first column
+                        evt.target.blur();
+                        self.setState({editedRow: self.state.editedRow, editedColumn: 0 });
+                      } else {
+                        if((self.state.editedRow + 1) < self.props.items.length) {
+                          //go to next row
+                          evt.target.blur();
+                          self.setState({editedRow: self.state.editedRow + 1, editedColumn: 0 });
+                        }
+                      }
+                    },
+                  /*ENTER*/ 13:
+                    function(evt) {
+                      if(self.props.addRow) {
+                        //add a row
+                        evt.preventDefault();
+                        evt.target.blur();
+                        self.props.addRow();
+                      }
+                    }
+                })
+              }
+            })), highlightEdited]
           }
         }, {
           /* Concept link column */
@@ -244,10 +292,16 @@ function fixVocabTableColumnSizes() {
 }
 
 //creates a function that handles a keydown effect for a specific key code
-function handleKeyCode(keyCode, handler) {
+function handleKeyCodes(codeHandlers) {
   return function(evt) {
-    if(evt.keyCode == keyCode) {
-      handler(evt);
-    }
+    _.forIn(codeHandlers, function(value, key) {
+      log.debug("Check",evt.keyCode,"against",key);
+      //key = keycode
+      //value = handler
+      if(evt.keyCode == key) {
+        log.debug("Matching handler found for", key, value);
+        value(evt);
+      }
+    });
   };
 };
