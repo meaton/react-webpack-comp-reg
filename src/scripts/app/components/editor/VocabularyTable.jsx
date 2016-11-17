@@ -20,6 +20,8 @@ var edit = require('react-edit');
 var cloneDeep = require('lodash/lang/cloneDeep');
 var findIndex = require('lodash/array/findIndex');
 
+var TABKEY = 9;
+
 
 var VocabularyTable = React.createClass({
     mixins: [ImmutableRenderMixin],
@@ -141,7 +143,15 @@ var VocabularyTable = React.createClass({
           property: '$',
           header: {label: 'Value'},
           cell: this.props.readOnly ? {} : {
-            transforms: [editable(edit.input()), highlightEdited]
+            transforms: [editable(edit.input({
+              props: {
+                onKeyDown: handleKeyCode(TABKEY, function(evt) {
+                  evt.target.blur();
+                  self.setState({editedRow: self.state.editedRow, editedColumn: 1 });
+                  evt.preventDefault();
+                }.bind(this))
+              }
+            })), highlightEdited]
           }
         }, {
           /* Description column */
@@ -232,3 +242,12 @@ function fixVocabTableColumnSizes() {
     });
   }
 }
+
+//creates a function that handles a keydown effect for a specific key code
+function handleKeyCode(keyCode, handler) {
+  return function(evt) {
+    if(evt.keyCode == keyCode) {
+      handler(evt);
+    }
+  };
+};
