@@ -7,10 +7,20 @@ var VocabularyCsvService = {
   serializeItems: function(items) {
     log.debug("Serializing items to csv", items);
 
-    var data = papaparse.unparse({
-      fields: ['$', '@AppInfo', '@ConceptLink'],
-      data: items
-    });
+    var data = papaparse.unparse(
+      {
+        fields: ['$', '@AppInfo', '@ConceptLink'],
+        data: items
+      }, {
+        newline: "\r\n"
+      }
+    );
+
+    //remove first line (header)
+    data = _(data)
+        .split("\r\n")
+        .rest()
+        .join("\r\n");
 
     log.debug("Serialized items:", data);
     return data;
