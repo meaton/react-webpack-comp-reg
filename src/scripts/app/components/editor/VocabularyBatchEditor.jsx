@@ -24,7 +24,7 @@ var VocabularyBatchEditor = React.createClass({
     getInitialState: function() {
       return {
         data: "",
-        errors: []
+        errors: null
       }
     },
 
@@ -55,16 +55,16 @@ var VocabularyBatchEditor = React.createClass({
      },
 
     onChange: function(evt) {
-      this.setState({data: evt.target.value});
+      this.setState({errors: null, data: evt.target.value});
     },
 
     render: function() {
       return (
         <div className="vocabulary-batch-editing">
           <strong>Batch editing mode</strong>
-          {this.state.errors && this.state.errors.length > 0} {
-            this.state.errors.map(function(err) {
-              return <div className="error">{err.message} (row {err.row})</div>
+          {this.state.errors != null && this.state.errors.length > 0 &&
+            this.state.errors.map(function(err, idx) {
+              return <div key={idx} className="error">{err.message}{err.row && <span> (row {err.row})</span>}</div>
             })
           }
           <div>
