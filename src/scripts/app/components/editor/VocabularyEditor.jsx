@@ -135,7 +135,11 @@ var VocabularyEditor = React.createClass({
 
       var vocabData = (enumeration != null && enumeration.item != undefined) ? enumeration.item : [];
 
-      if(vocabType === CLOSED_VOCAB ) {
+      if(this.state.batchEditingMode) {
+        var allowSubmit = false;
+        var allowSubmitMessage = "Close batch editing mode before submiting";
+      }
+      else if(vocabType === CLOSED_VOCAB ) {
         var allowSubmit = vocabData && vocabData.length > 0;
         var allowSubmitMessage = allowSubmit ? "Use the defined closed vocabulary" : "A closed vocabulary should contain at least one item!";
       } else if(vocabType === OPEN_VOCAB) {
@@ -187,27 +191,29 @@ var VocabularyEditor = React.createClass({
                   readOnly={false}
                   />
               }
-              <div className="add-new-vocab">
-                <a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>&nbsp;
-                {!this.state.batchEditingMode && <a onClick={this.toggleBatchEditingMode}><Glyphicon glyph="pencil" />Batch editing mode</a>}
-              {vocabUri &&
-                <ModalTrigger
-                  ref={function(modal) {
-                     vocabImportModalRef = modal;
-                   }}
-                  modalTarget="externalVocabImportModalContainer"
-                  label={<span><Glyphicon glyph="import" />Import/update from the selected external vocabulary</span>}
-                  useLink
-                  modal={
-                      <ExternalVocabularyImport
-                        vocabularyUri={vocabUri}
-                        valueProperty={vocabValueProp}
-                        language={vocabValueLang}
-                        onSetVocabularyItems={this.props.onSetVocabularyItems}
-                        onClose={vocabImportCloseHandler} />
-                  } />
+              {!this.state.batchEditingMode &&
+                <div className="add-new-vocab">
+                  <a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" /> Add an item</a>&nbsp;
+                  <span><a onClick={this.toggleBatchEditingMode}><Glyphicon glyph="pencil" /> Batch editing mode</a>&nbsp;</span>
+                  {vocabUri &&
+                    <ModalTrigger
+                      ref={function(modal) {
+                         vocabImportModalRef = modal;
+                       }}
+                      modalTarget="externalVocabImportModalContainer"
+                      label={<span><Glyphicon glyph="import" /> Import/update from the selected external vocabulary</span>}
+                      useLink
+                      modal={
+                          <ExternalVocabularyImport
+                            vocabularyUri={vocabUri}
+                            valueProperty={vocabValueProp}
+                            language={vocabValueLang}
+                            onSetVocabularyItems={this.props.onSetVocabularyItems}
+                            onClose={vocabImportCloseHandler} />
+                      } />
+                  }
+                </div>
               }
-              </div>
               {vocabData == null || vocabData.length == 0 &&
                 <div className="error">Add one or more items to this vocabulary to make it valid!</div>
               }
