@@ -9,8 +9,8 @@ var ImmutableRenderMixin = require('react-immutable-render-mixin');
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
 
-//utils
-var _ = require('lodash');
+//service
+var VocabularyCsvService = require('../../service/VocabularyCsvService');
 
 var VocabularyBatchEditor = React.createClass({
     mixins: [ImmutableRenderMixin],
@@ -39,12 +39,12 @@ var VocabularyBatchEditor = React.createClass({
 
     createCsvFromItems: function() {
       this.setState({
-        data: serializeItems(this.props.items)
+        data: VocabularyCsvService.serializeItems(this.props.items)
       });
     },
 
     submit: function() {
-      var items = deserializeItems(this.refs.dataField);
+      var items = VocabularyCsvService.deserializeItems(this.refs.dataField.value);
       this.props.onClose(items);
     },
 
@@ -70,16 +70,3 @@ var VocabularyBatchEditor = React.createClass({
 });
 
 module.exports = VocabularyBatchEditor;
-
-
-function serializeItems(items) {
-  log.debug("Serializing items to csv", items);
-  //TODO
-  return "items";
-}
-
-function deserializeItems(data) {
-  log.debug("Deserializing items from csv", data);
-  //TODO
-  return [{'$': 'test'}];
-}
