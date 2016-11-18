@@ -6,7 +6,12 @@ var VocabularyCsvService = {
 
   serializeItems: function(items) {
     log.debug("Serializing items to csv", items);
-    var data = papaparse.unparse(items);
+
+    var data = papaparse.unparse({
+      fields: ['$', '@AppInfo', '@ConceptLink'],
+      data: items
+    });
+
     log.debug("Serialized items:", data);
     return data;
   },
