@@ -3,15 +3,18 @@ var log = require('loglevel');
 var papaparse = require('papaparse');
 
 var NEWLINE = "\r\n";
+var DELIMITER = ',';
 
 var VocabularyCsvService = {
 
   parseOptions: {
+    delimiter: DELIMITER,
     skipEmptyLines: true
   },
 
   unparseOptions: {
-    newline: NEWLINE
+    newline: NEWLINE,
+    delimiter: DELIMITER
   },
 
   serializeItems: function(items) {
