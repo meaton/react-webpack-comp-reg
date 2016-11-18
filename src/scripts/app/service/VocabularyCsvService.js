@@ -2,7 +2,17 @@
 var log = require('loglevel');
 var papaparse = require('papaparse');
 
+var NEWLINE = "\r\n";
+
 var VocabularyCsvService = {
+
+  parseOptions: {
+    skipEmptyLines: true
+  },
+
+  unparseOptions: {
+    newline: NEWLINE
+  },
 
   serializeItems: function(items) {
     log.debug("Serializing items to csv", items);
@@ -11,16 +21,14 @@ var VocabularyCsvService = {
       {
         fields: ['$', '@AppInfo', '@ConceptLink'],
         data: items
-      }, {
-        newline: "\r\n"
-      }
+      }, this.unparseOptions
     );
 
     //remove first line (header)
     data = _(data)
-        .split("\r\n")
+        .split(NEWLINE)
         .rest()
-        .join("\r\n");
+        .join(NEWLINE);
 
     log.debug("Serialized items:", data);
     return data;
@@ -28,13 +36,13 @@ var VocabularyCsvService = {
 
   deserializeItems: function(csvData) {
     log.debug("Deserializing items from csv: ", csvData);
-    var result = papaparse.parse(csvData, {
-      skipEmptyLines: true
-    });
+    var result = papaparse.parse(csvData, this.parseOptions);
+    log.debug("Parse result", result);
 
     if(result.errors.length > 0) {
       throw result.errors;
     } else {
+      //map results (array of arrays) to desired array of item objects
       var items = result.data.map(function (item) {
         return {
           '$': item[0],
