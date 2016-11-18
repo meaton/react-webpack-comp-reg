@@ -96,7 +96,8 @@ var CMDAttributeForm = React.createClass({
           disabled={!required && !this.isCmdi12Mode()} />
         {this.isMoreShown() && /* MoreLessComponentMixin */
           <div className="more">
-            <AutoValueEditor autoValue={attr.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}/>
+            <AutoValueEditor autoValue={attr.AutoValue} onChange={this.propagateValue.bind(this, "AutoValue")} validate={this.validate}
+              {... this.getCmdiVersionModeProps() /* from CmdiVersionModeMixin*/} />
           </div>
         }
         {this.renderMoreLessToggler({
