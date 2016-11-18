@@ -50,7 +50,6 @@ var VocabularyEditor = React.createClass({
     getInitialState: function() {
       return {
         externalVocabDetailsShown: false,
-        selectExternalVocabularyMode: false,
         checkingExternalVocab: false,
         externalVocabCheckResult: null,
         externalVocabCheckMessage: null
@@ -117,12 +116,6 @@ var VocabularyEditor = React.createClass({
       this.setState({
         externalVocabDetailsShown: !this.state.externalVocabDetailsShown
       })
-    },
-
-    doSearchVocabularies: function() {
-      this.setState({
-        selectExternalVocabularyMode: true
-      });
     },
 
     render: function() {
