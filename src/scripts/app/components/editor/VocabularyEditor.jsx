@@ -126,6 +126,11 @@ var VocabularyEditor = React.createClass({
       });
     },
 
+    handleCloseBatchEditor: function(items) {
+      this.props.onSetVocabularyItems(items);
+      this.toggleBatchEditingMode();
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.isClosedVocabulary() || this.props.vocabulary == null && !this.isCmdi12Mode()) ? CLOSED_VOCAB : OPEN_VOCAB;
@@ -174,10 +179,7 @@ var VocabularyEditor = React.createClass({
               {this.state.batchEditingMode ?
                 <VocabularyBatchEditor
                   items={vocabData}
-                  onClose={function(items) {
-                    this.props.onSetVocabularyItems(items);
-                    this.toggleBatchEditingMode();
-                  }}
+                  onClose={this.handleCloseBatchEditor}
                   onCancel={this.toggleBatchEditingMode}
                   />
                 :

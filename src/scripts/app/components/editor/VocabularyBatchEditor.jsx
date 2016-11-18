@@ -43,7 +43,7 @@ var VocabularyBatchEditor = React.createClass({
       });
     },
 
-    sumbit: function() {
+    submit: function() {
       var items = deserializeItems(this.refs.dataField);
       this.props.onClose(items);
     },
