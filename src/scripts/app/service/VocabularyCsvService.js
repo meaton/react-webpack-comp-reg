@@ -26,11 +26,25 @@ var VocabularyCsvService = {
     return data;
   },
 
-  deserializeItems: function(data) {
-    log.debug("Deserializing items from csv: ", data);
-    var items = papaparse.parse(data);
-    log.debug("Deserialized items", items);
-    return items;
+  deserializeItems: function(csvData) {
+    log.debug("Deserializing items from csv: ", csvData);
+    var result = papaparse.parse(csvData, {
+      skipEmptyLines: true
+    });
+
+    if(result.errors.length > 0) {
+      throw result.errors;
+    } else {
+      var items = result.data.map(function (item) {
+        return {
+          '$': item[0],
+          '@AppInfo': item[1],
+          '@ConceptLink': item[2]
+        };
+      });
+      log.debug("Deserialized items", items);
+      return items;
+    }
   }
 }
 

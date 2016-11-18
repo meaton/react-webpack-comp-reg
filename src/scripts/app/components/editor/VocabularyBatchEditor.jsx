@@ -23,7 +23,8 @@ var VocabularyBatchEditor = React.createClass({
 
     getInitialState: function() {
       return {
-        data: ""
+        data: "",
+        errors: []
       }
     },
 
@@ -44,9 +45,14 @@ var VocabularyBatchEditor = React.createClass({
     },
 
     submit: function() {
-      var items = VocabularyCsvService.deserializeItems(this.refs.dataField.value);
-      this.props.onClose(items);
-    },
+      try {
+        var items = VocabularyCsvService.deserializeItems(this.state.data);
+        this.props.onClose(items);
+      } catch(errors) {
+        log.warn("Errors while deserializing vocabulary items from csv", errors, this.state.data);
+        this.setState({errors: errors});
+      }
+     },
 
     onChange: function(evt) {
       this.setState({data: evt.target.value});
@@ -56,8 +62,13 @@ var VocabularyBatchEditor = React.createClass({
       return (
         <div className="vocabulary-batch-editing">
           <strong>Batch editing mode</strong>
+          {this.state.errors && this.state.errors.length > 0} {
+            this.state.errors.map(function(err) {
+              return <div className="error">{err.message} (row {err.row})</div>
+            })
+          }
           <div>
-            <textarea ref="dataField" value={this.state.data} onChange={this.onChange} />
+            <textarea value={this.state.data} onChange={this.onChange} />
           </div>
           <div>
             <Button onClick={this.submit}>Ok</Button>
