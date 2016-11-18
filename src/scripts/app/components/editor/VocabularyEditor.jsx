@@ -12,6 +12,7 @@ var ExternalVocabularySelector = require('../ExternalVocabularySelector');
 var ExternalVocabularyImport = require('./ExternalVocabularyImport');
 var ConceptRegistryModal = require('./ConceptRegistryModal');
 var VocabularyTable = require('./VocabularyTable');
+var VocabularyBatchEditor = require('./VocabularyBatchEditor');
 
 //bootstrap
 var Button = require('react-bootstrap/lib/Button');
@@ -51,6 +52,7 @@ var VocabularyEditor = React.createClass({
       return {
         externalVocabDetailsShown: false,
         checkingExternalVocab: false,
+        batchEditingMode: false,
         externalVocabCheckResult: null,
         externalVocabCheckMessage: null
       }
@@ -118,6 +120,12 @@ var VocabularyEditor = React.createClass({
       })
     },
 
+    toggleBatchEditingMode: function() {
+      this.setState({
+        batchEditingMode: !this.state.batchEditingMode
+      });
+    },
+
     render: function() {
       var enumeration = this.props.vocabulary && this.props.vocabulary.enumeration;
       var vocabType = (this.isClosedVocabulary() || this.props.vocabulary == null && !this.isCmdi12Mode()) ? CLOSED_VOCAB : OPEN_VOCAB;
@@ -159,16 +167,29 @@ var VocabularyEditor = React.createClass({
           {vocabType === CLOSED_VOCAB &&
             <div className="vocabulary-items">
               Closed vocabulary {vocabData.length > 3 ? '(' + vocabData.length + ' items)' : 'items'}:
-              <VocabularyTable
-                items={vocabData}
-                addConceptLink={this.addConceptLink}
-                removeConceptLink={this.removeConceptLink}
-                onRemoveVocabularyItem={this.props.onRemoveVocabularyItem}
-                onVocabularyPropertyChange={this.props.onVocabularyPropertyChange}
-                addRow={this.props.onAddVocabularyItem}
-                readOnly={false}
-                />
-              <div className="add-new-vocab"><a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>&nbsp;
+              {this.state.batchEditingMode ?
+                <VocabularyBatchEditor
+                  items={vocabData}
+                  onClose={function(items) {
+                    this.props.onSetVocabularyItems(items);
+                    this.toggleBatchEditingMode();
+                  }}
+                  onCancel={this.toggleBatchEditingMode}
+                  />
+                :
+                <VocabularyTable
+                  items={vocabData}
+                  addConceptLink={this.addConceptLink}
+                  removeConceptLink={this.removeConceptLink}
+                  onRemoveVocabularyItem={this.props.onRemoveVocabularyItem}
+                  onVocabularyPropertyChange={this.props.onVocabularyPropertyChange}
+                  addRow={this.props.onAddVocabularyItem}
+                  readOnly={false}
+                  />
+              }
+              <div className="add-new-vocab">
+                <a onClick={this.props.onAddVocabularyItem}><Glyphicon glyph="plus-sign" />Add an item</a>&nbsp;
+                {!this.state.batchEditingMode && <a onClick={this.toggleBatchEditingMode}><Glyphicon glyph="pencil" />Batch editing mode</a>}
               {vocabUri &&
                 <ModalTrigger
                   ref={function(modal) {
