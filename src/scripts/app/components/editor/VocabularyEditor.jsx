@@ -164,7 +164,7 @@ var VocabularyEditor = React.createClass({
 
       return (
         <div className="vocabulary-editor">
-          <Input type="select" label="Vocabulary type:" value={vocabType} onChange={this.onChangeVocabType}>
+          <Input type="select" label="Vocabulary type:" value={vocabType} onChange={this.onChangeVocabType} disabled={this.state.batchEditingMode}>
             <option value={OPEN_VOCAB} disabled={!this.isCmdi12Mode()}>Open</option>
             <option value={CLOSED_VOCAB}>Closed</option>
           </Input>
