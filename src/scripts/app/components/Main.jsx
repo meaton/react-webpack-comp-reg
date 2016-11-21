@@ -61,15 +61,10 @@ var Main = React.createClass({
       //switch to correct space and type
       type = type || itemId.indexOf("clarin.eu:cr1:p_") >= 0?Constants.TYPE_PROFILE:Constants.TYPE_COMPONENT;
 
-      // select a specific item. If no space specified, assume public
-      var itemSpace =  space || Constants.SPACE_PUBLISHED;
-      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId, "- space:", itemSpace, "- teamId:", team);
-      this.getFlux().actions.switchSpace(type, itemSpace, team);
-      this.getFlux().actions.loadItems(type, itemSpace, team);
-      this.getFlux().actions.selectBrowserItemId(type, itemId, itemSpace, team);
-
-      //TODO support alternatively selecting xml/comments ('browserview' parameter)?
+      log.debug("Selecting item from parameter. Type:",type, "- id:", itemId);
+      this.getFlux().actions.jumpToItem(type, itemId);
       this.getFlux().actions.loadComponentSpec(type, itemId);
+      //TODO (?) also support selecting view/xml/comments ('browserview' parameter)
     } else if(space != null || type != null) {
       // space specified (but not item). If no type specified, assume profile.
       type = type || Constants.TYPE_PROFILE;
@@ -81,7 +76,7 @@ var Main = React.createClass({
 
   componentDidMount: function() {
     log.debug("Application main did mount");
-    
+
     this.checkBrowserVersion();
     this.checkAuthState();
 
