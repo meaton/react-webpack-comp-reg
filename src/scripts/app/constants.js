@@ -166,6 +166,7 @@ module.exports = {
   STATUS_DEVELOPMENT: "development",
   STATUS_PRODUCTION: "production",
   STATUS_DEPRECATED: "deprecated",
+  STATUS_DEFAULT: "SPACE_DEFAULT", //special status value that represents the default status for a space
 
   STATUS_ICON_DEVELOPMENT: "wrench",
   STATUS_ICON_PRODUCTION: "ok-circle",
