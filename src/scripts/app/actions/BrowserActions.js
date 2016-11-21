@@ -41,6 +41,11 @@ module.exports = {
     lookupSpace(type, itemId)
       .done(
         function(item, space, team, statusFilter) {
+          //do not set status filter if it matches the default status for that space
+          if(space === Constants.SPACE_PUBLISHED && statusFilter === Constants.STATUS_PRODUCTION
+            || (space === Constants.SPACE_PRIVATE || space === Constants.SPACE_TEAM) && statusFilter === Constants.STATUS_DEVELOPMENT) {
+            statusFilter = null;
+          }
           this.dispatch(Constants.SWITCH_SPACE, {
             type: type,
             space: space,
