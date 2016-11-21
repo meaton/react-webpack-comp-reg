@@ -44,7 +44,7 @@ module.exports = {
           //do not set status filter if it matches the default status for that space
           if(space === Constants.SPACE_PUBLISHED && statusFilter === Constants.STATUS_PRODUCTION
             || (space === Constants.SPACE_PRIVATE || space === Constants.SPACE_TEAM) && statusFilter === Constants.STATUS_DEVELOPMENT) {
-            statusFilter = null;
+            statusFilter = Constants.STATUS_DEFAULT;
           }
           this.dispatch(Constants.SWITCH_SPACE, {
             type: type,
