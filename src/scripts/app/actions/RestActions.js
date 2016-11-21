@@ -273,48 +273,25 @@ var RestActions = {
   },
 
   checkUpdateRights: function(item, authState, onAllowed, onDisallowed) {
-    log.info("Checking wether user is allowed to change status of item", item);
-    this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK, item);
+    checkUpdateRights(this.dispatch, item, authState, onAllowed, onDisallowed);
+  },
 
-    handleAllowed = function() {
-      this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK_DONE, item);
-      onAllowed();
-    }.bind(this);
-
-    handleDisallowed = function() {
-      this.dispatch(Constants.SET_STATUS_PERMISSION_CHECK_DONE, item);
-      onDisallowed();
-    }.bind(this);
-
-    if(authState.userId === item.userId || authState.isAdmin) {
-      //current user is owner
-      handleAllowed();
+  checkUserItemOwnership: function(item, authState) {
+    var dispatch = this.dispatch;
+    if(item == null) {
+      log.debug("No item, cannot be owned");
+      dispatch(Constants.CHECK_USER_ITEM_OWNSERSHIP_SUCCESS, false);
     } else {
-      log.info("User (", authState.userId, ") is not owner (", item.userId, "), checking whether teams overlap");
-      //check if item is in any teams
-      ComponentRegistryClient.loadItemGroups(item.id, function(itemTeams) {
-        //make array if singleton
-        itemTeams = ensureArray(itemTeams);
-        if(itemTeams.length > 0) {
-          log.debug("Item is in teams", itemTeams);
-          //TODO: check if user is member of any of those teams -> /rest/groups/usermembership
-          ComponentRegistryClient.loadTeams(function(userTeams){
-            log.debug("User is in teams", userTeams);
-            //make array if singleton
-            userTeams = ensureArray(userTeams);
-            if(userTeams != null && _.intersection(_.map(itemTeams,'id'), _.map(userTeams,'id')).length > 0) {
-              log.info("Team ids overlap, user can update status");
-              handleAllowed();
-            } else {
-              log.info("No overlap between item teams and user teams");
-              handleDisallowed();
-            }
-          }, handleDisallowed);
-        } else {
-          //no groups or no overlap with user groups
-          handleDisallowed();
+      checkUpdateRights(dispatch, item, authState,
+        function() {
+          log.debug("User has update rights");
+          dispatch(Constants.CHECK_USER_ITEM_OWNSERSHIP_SUCCESS, true);
+        },
+        function() {
+          log.debug("User does NOT have update rights");
+          dispatch(Constants.CHECK_USER_ITEM_OWNSERSHIP_SUCCESS, false);
         }
-      }, handleDisallowed);
+      )
     }
   },
 
@@ -674,4 +651,50 @@ function updateSpecStatus(spec, status) {
       }
     }
   });
+}
+
+function checkUpdateRights (dispatch, item, authState, onAllowed, onDisallowed) {
+  log.info("Checking wether user is allowed to change status of item", item);
+  dispatch(Constants.SET_STATUS_PERMISSION_CHECK, item);
+
+  handleAllowed = function() {
+    dispatch(Constants.SET_STATUS_PERMISSION_CHECK_DONE, item);
+    onAllowed();
+  }
+
+  handleDisallowed = function() {
+    dispatch(Constants.SET_STATUS_PERMISSION_CHECK_DONE, item);
+    onDisallowed();
+  }
+
+  if(authState.userId === item.userId || authState.isAdmin) {
+    //current user is owner
+    handleAllowed();
+  } else {
+    log.info("User (", authState.userId, ") is not owner (", item.userId, "), checking whether teams overlap");
+    //check if item is in any teams
+    ComponentRegistryClient.loadItemGroups(item.id, function(itemTeams) {
+      //make array if singleton
+      itemTeams = ensureArray(itemTeams);
+      if(itemTeams.length > 0) {
+        log.debug("Item is in teams", itemTeams);
+        //TODO: check if user is member of any of those teams -> /rest/groups/usermembership
+        ComponentRegistryClient.loadTeams(function(userTeams){
+          log.debug("User is in teams", userTeams);
+          //make array if singleton
+          userTeams = ensureArray(userTeams);
+          if(userTeams != null && _.intersection(_.map(itemTeams,'id'), _.map(userTeams,'id')).length > 0) {
+            log.info("Team ids overlap, user can update status");
+            handleAllowed();
+          } else {
+            log.info("No overlap between item teams and user teams");
+            handleDisallowed();
+          }
+        }, handleDisallowed);
+      } else {
+        //no groups or no overlap with user groups
+        handleDisallowed();
+      }
+    }, handleDisallowed);
+  }
 }

@@ -18,6 +18,7 @@ var EditorStore = Fluxxor.createStore({
     this.componentLinkingMode = false;
     this.selectedComponentId = null; //selected for linking
     this.cmdiVersionMode = Constants.CMD_VERSION_1_2;
+    this.userOwnsItem = false;
 
     this.gridSpace = Constants.SPACE_PUBLISHED;
     this.gridTeam = null;
@@ -50,7 +51,8 @@ var EditorStore = Fluxxor.createStore({
       Constants.COMPLETE_COMPONENT_LINK, this.handleCompleteComponentLink,
       Constants.RESET_EDITOR_STATUS_FILTER, this.handleResetStatusFilter,
       Constants.SET_EDITOR_STATUS_FILTER, this.handleSetStatusFilter,
-      Constants.SET_CMDI_VERSION_MODE, this.handleSetCmdiVersionMode
+      Constants.SET_CMDI_VERSION_MODE, this.handleSetCmdiVersionMode,
+      Constants.CHECK_USER_ITEM_OWNSERSHIP_SUCCESS, this.handleCheckUserItemOwnership
     );
   },
 
@@ -67,6 +69,7 @@ var EditorStore = Fluxxor.createStore({
       selectedComponentId: this.selectedComponentId,
       processing: this.processing,
       cmdiVersionMode: this.cmdiVersionMode,
+      userOwnsItem: this.userOwnsItem,
       grid: {
         space: this.gridSpace,
         team: this.gridTeam,
@@ -85,6 +88,7 @@ var EditorStore = Fluxxor.createStore({
     // reset component linking/selection state
     this.selectedComponentId = null;
     this.componentLinkingMode = false;
+    this.userOwnsItem = false; //default, should be checked explicitly
 
     // reset grid
     this.gridSpace = Constants.SPACE_PUBLISHED
@@ -198,6 +202,11 @@ var EditorStore = Fluxxor.createStore({
 
   handleSetCmdiVersionMode: function(cmdiVersion) {
     this.cmdiVersionMode = cmdiVersion;
+    this.emit("change");
+  },
+
+  handleCheckUserItemOwnership: function(hasRights) {
+    this.userOwnsItem = hasRights;
     this.emit("change");
   }
 

@@ -63,6 +63,7 @@ var Editor = React.createClass({
     this.initFromParams();
 
     //initialisation for data grid
+    this.getFlux().actions.checkUserItemOwnership(this.state.editor.item, this.state.auth.authState);
     this.getFlux().actions.loadTeams();
     this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team, this.state.editor.grid.statusFilter);
   },
@@ -73,6 +74,9 @@ var Editor = React.createClass({
         || this.state.editor.grid.team != prevState.editor.grid.team
     ) {
       this.getFlux().actions.loadEditorGridItems(this.state.editor.grid.space, this.state.editor.grid.team, this.state.editor.grid.statusFilter);
+    }
+    if(this.state.editor.item != prevState.editor.item) {
+      this.getFlux().actions.checkUserItemOwnership(this.state.editor.item, this.state.auth.authState);
     }
   },
 
@@ -105,7 +109,7 @@ var Editor = React.createClass({
                 derivedFromId={this.state.editor.item == null ? null : this.state.editor.item.id}
                 cmdiVersionMode={this.state.editor.cmdiVersionMode}
                 onCmdiVersionModeChange={this.handleCmdiVersionModeChange}
-                userHasSaveRights={true}
+                userHasSaveRights={this.state.editor.userOwnsItem}
               />
             <div className={"browserGroup space-" + this.state.editor.grid.space}>
               {gridExpanded && (
