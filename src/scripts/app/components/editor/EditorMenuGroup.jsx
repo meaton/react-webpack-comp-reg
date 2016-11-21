@@ -20,7 +20,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 */
 var EditorMenuGroup = React.createClass({
   propTypes: {
-    isNew: React.PropTypes.bool,
+    forceNew: React.PropTypes.bool,
     onSave: React.PropTypes.func,
     onSaveNew: React.PropTypes.func,
     onPublish: React.PropTypes.func,
@@ -37,9 +37,9 @@ var EditorMenuGroup = React.createClass({
   render: function () {
     return (
       <ButtonGroup className="actionMenu">
-        <Button bsStyle={(!this.props.isNew) ? "primary" : "default" } onClick={this.props.onSave} disabled={this.props.disabled || this.props.isNew}><Glyphicon glyph="save"/> Save</Button>
-        <Button bsStyle={(this.props.isNew) ? "primary" : "default" } onClick={this.props.onSaveNew} disabled={this.props.disabled}><Glyphicon glyph="export"/> Save new</Button>
-        <PublishDropDown id="publishActions" title="Publish" disabled={this.props.disabled || this.props.isNew} onPublish={this.props.onPublish} glyph="upload"/>
+        <Button bsStyle={(!this.props.forceNew) ? "primary" : "default" } onClick={this.props.onSave} disabled={this.props.disabled || this.props.forceNew}><Glyphicon glyph="save"/> Save</Button>
+        <Button bsStyle={(this.props.forceNew) ? "primary" : "default" } onClick={this.props.onSaveNew} disabled={this.props.disabled}><Glyphicon glyph="export"/> Save new</Button>
+        <PublishDropDown id="publishActions" title="Publish" disabled={this.props.disabled || this.props.forceNew} onPublish={this.props.onPublish} glyph="upload"/>
         <Button onClick={this.props.onCancel} disabled={this.props.disabled}><Glyphicon glyph="ban-circle"/> Cancel</Button>
       </ButtonGroup>
     );

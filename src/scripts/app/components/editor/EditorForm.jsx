@@ -48,7 +48,14 @@ var EditorForm = React.createClass({
     linkedComponents: React.PropTypes.object.isRequired,
     selectedComponentId: React.PropTypes.string,
     derivedFromId: React.PropTypes.string,
-    isNew: React.PropTypes.bool.isRequired
+    isNew: React.PropTypes.bool.isRequired,
+    userHasSaveRights: React.PropTypes.bool
+  },
+
+  getDefaultProps: function() {
+    return {
+      userHasSaveRights: true
+    };
   },
 
   childContextTypes: {
@@ -118,7 +125,7 @@ var EditorForm = React.createClass({
           </div>
 
           <EditorMenuGroup
-            isNew={this.props.isNew || saveDisallowed}
+            forceNew={this.props.isNew || !this.props.userHasSaveRights || saveDisallowed}
             onSave={this.handleSave}
             onSaveNew={this.handleSaveNew}
             onPublish={this.handlePublish}

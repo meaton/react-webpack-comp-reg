@@ -105,6 +105,7 @@ var Editor = React.createClass({
                 derivedFromId={this.state.editor.item == null ? null : this.state.editor.item.id}
                 cmdiVersionMode={this.state.editor.cmdiVersionMode}
                 onCmdiVersionModeChange={this.handleCmdiVersionModeChange}
+                userHasSaveRights={true}
               />
             <div className={"browserGroup space-" + this.state.editor.grid.space}>
               {gridExpanded && (
