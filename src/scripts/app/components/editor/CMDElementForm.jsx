@@ -79,15 +79,14 @@ var CMDElementForm = React.createClass({
 
     var minC = (elem.hasOwnProperty('@CardinalityMin')) ? elem['@CardinalityMin'] : "1";
     var maxC = (elem.hasOwnProperty('@CardinalityMax')) ? elem['@CardinalityMax'] : "1";
-    var cardOpt = !open && ( <span>&nbsp;[{minC + " - " + maxC}]</span> );
+    var multilingual = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
+    var cardOpt = !open && ( <span>&nbsp;[{minC + " - " + (multilingual? 'unbounded':maxC)}] {multilingual && '[Multilingual]'}</span> );
     var type = !open && (
       <ValueScheme
         obj={elem} enabled={false} />)
     // classNames
     var elementClasses = classNames('CMDElement', { 'edit-mode': true, 'open': true });
     var elemName = (elem['@name'] == "") ? "[New Element]" : elem['@name'];
-
-    var multilingual = (elem.hasOwnProperty('@Multilingual') && elem['@Multilingual'] == "true");//TODO && maxC == "unbounded");
 
     //putting it all together...
     return (
