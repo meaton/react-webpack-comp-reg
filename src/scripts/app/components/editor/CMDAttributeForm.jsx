@@ -107,12 +107,16 @@ var CMDAttributeForm = React.createClass({
     </div>
     ) : null;
 
+    var type = !open && (
+      <ValueScheme
+        obj={attr} enabled={false} />)
+
     return (
       <div className={attrClasses}>
         <div className="panel panel-success">
           <div className="panel-heading">
             {this.createActionButtons({ /* from ActionButtonsMixin */
-              title: <span>Attribute: <span className="attrName">{attrName}</span></span>
+              title: <span>Attribute: <span className="attrName">{attrName}</span> {type} {!open && (required?"[1 - 1]":"[0 - 1]")}</span>
             })}
           </div>
           {open &&
