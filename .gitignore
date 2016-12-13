@@ -33,3 +33,4 @@ dist
 target
 /src/scripts/main.js
 results.txt
+/nbproject/private/
