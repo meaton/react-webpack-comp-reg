@@ -29,7 +29,8 @@ var ModalTrigger = React.createClass({
     onOpen: React.PropTypes.func,
     onClose: React.PropTypes.func,
     disabled: React.PropTypes.bool,
-    bsSize: React.PropTypes.string
+    bsSize: React.PropTypes.string,
+    title: React.PropTypes.string
   },
   getDefaultProps: function() {
     return {
@@ -78,11 +79,11 @@ var ModalTrigger = React.createClass({
   render: function() {
     if(this.props.useLink)
       return (
-        <a onClick={!this.props.disabled && this.toggleModal} className={classNames({disabled: this.props.disabled})}>{this.props.label}</a>
+        <a onClick={!this.props.disabled && this.toggleModal} className={classNames({disabled: this.props.disabled})} title={this.props.title}>{this.props.label}</a>
       )
     else
       return (
-        <Button onClick={this.toggleModal} disabled={this.props.disabled} bsSize={this.props.bsSize}>
+        <Button onClick={this.toggleModal} disabled={this.props.disabled} bsSize={this.props.bsSize} title={this.props.title}>
           {this.props.label}
         </Button>
       );

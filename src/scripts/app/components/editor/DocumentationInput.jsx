@@ -142,6 +142,7 @@ var DocumentationInput = React.createClass({
             onOpen={this.props.loadValueSchemeData}
             useLink={true}
             disabled={!this.isCmdi12Mode()}
+            title={languageCode ? "Content language for this documentation item" : "Click to set the content language"}
             modal={
               <DocumentationLanguageModal
                 languageCode={languageCode}
