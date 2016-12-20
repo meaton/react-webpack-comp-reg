@@ -67,7 +67,11 @@ var AutoValueEditor = React.createClass({
             }
             <div>
               {this.isCmdi12Mode() ?
-                <a onClick={this.addAutoValueExpression}><Glyphicon glyph="plus" />Add automatic value expression</a>
+                <div className="additional-autovalue-expression">
+                    <a onClick={this.addAutoValueExpression}>
+                      {(!this.props.autoValue || this.props.autoValue.length == 0) ? <span>Create an automatic value expression</span> : <span>Add an automatic value expression</span>} <Glyphicon glyph="plus" />
+                    </a>
+                </div>
                 : <strong>Automatic value expressions are not supported in CMDI 1.1. Switch to CMDI 1.2 mode to edit.</strong>
               }
             </div>

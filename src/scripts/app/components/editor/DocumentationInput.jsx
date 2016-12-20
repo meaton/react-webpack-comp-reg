@@ -160,7 +160,7 @@ var DocumentationInput = React.createClass({
         }.bind(this))
       }
       {this.isCmdi12Mode() &&
-        <div className="add-documentation-item" ><a onClick={this.addDoc} title="Add documentation item"><Glyphicon glyph="plus"/></a></div>
+        <div className="add-documentation-item" ><a onClick={this.addDoc} title="Create an additional documentation item">Add documentation <Glyphicon glyph="plus"/></a></div>
       }
       {isInvalid &&
         <Alert bsStyle="danger">{this.getValidationMessage() || "Invalid documentation (reason unknown)"}</Alert>
