@@ -18,6 +18,7 @@ var ItemLink = require('./ItemLink');
 
 //bootstrap
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+var Button = require('react-bootstrap/lib/Button');
 
 require('../../../../styles/CMDComponent.sass');
 
@@ -166,7 +167,10 @@ var CMDComponentView = React.createClass({
         }
 
         {this.props.onReplaceWithSuccessor &&
-        <div className="successor-available"><Glyphicon glyph="info-sign" /> A successor is available for this component. <a onClick={this.props.onReplaceWithSuccessor}>Replace with successor?</a></div>}
+        <div className="successor-available">
+          <Button onClick={this.props.onReplaceWithSuccessor}><Glyphicon glyph="retweet"/> Replace with successor</Button><span> </span>
+          A successor is available for this component! Click the button to use this instead. 
+          </div>}
         {open && this.props.formElements}
       </div>
     );
