@@ -231,19 +231,13 @@ var DocumentationLanguageModal = React.createClass({
             }
           </Input>
           <Input type="text" ref="languageCodeInput" value={this.state.languageCode || ""} label="or enter a language code:" labelClassName="editorFormLabel" wrapperClassName="editorFormField"
-            onChange={this.setLanguageCode} buttonAfter={
-              <Button disabled={this.state.languageCode == null || this.state.languageCode === ''} onClick={this.onChange}>Ok</Button>
-            } />
-          {this.props.languageCode &&
-            <div>
-              <label>or to remove the language code for this documenation element:</label>
-              <div><Button bsStyle="danger" onClick={this.onUnset}><Glyphicon glyph="remove" />Unset language code</Button></div>
-            </div>
-          }
+            onChange={this.setLanguageCode} />
         </Modal.Body>
 
         <Modal.Footer>
+          <Button disabled={this.state.languageCode == null || this.state.languageCode === ''} onClick={this.onChange}>Ok</Button>
           <Button onClick={this.props.onClose}>Cancel</Button>
+            {this.props.languageCode && <Button bsStyle="danger" onClick={this.onUnset}><Glyphicon glyph="remove" />Unset language code</Button>}
         </Modal.Footer>
 
       </Modal.Dialog>
