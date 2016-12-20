@@ -276,11 +276,16 @@ div.component-info {
 }
 
 .grid tr.status-DEVELOPMENT {
+  color: #55b;
+
+  &.selected {
+    color: #44b;
+    .even {
+      color: #33b;
+    }
+  }
+    
   td.name {
     font-style: italic;
   }
-}
-
-.space-public .grid tr.status-DEVELOPMENT {
-  color: #ccc;
 }
