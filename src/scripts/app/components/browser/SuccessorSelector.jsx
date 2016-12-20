@@ -20,7 +20,10 @@ var SuccessorSelector = React.createClass({
   render: function () {
     var options = this.props.candidateItems.map(function(item){
       return (
-        <option key={item.id} value={item.id} onSelect={onItemSelect} >{item.name} {item.groupName && item.groupName != '' && '('+item.groupName+')'}</option>
+        <option key={item.id} value={item.id} onSelect={onItemSelect}
+          title={item.id + " (" + formatDate(item.registrationDate) + ")"}>
+          {item.name} {item.groupName && item.groupName != '' && '('+item.groupName+')'}
+        </option>
       );
     });
 
@@ -50,8 +53,9 @@ var SuccessorSelector = React.createClass({
             <div className="title">{this.state.item.name}</div>
             <div className="description">{this.state.item.description}</div>
             <ul>
+              <li>ID: {this.state.item.id}</li>
               <li>Creator: {this.state.item.creatorName}</li>
-              <li>Registration date: {this.state.item.registrationDate.substr(0,10)}</li>
+              <li>Registration date: {formatDate(this.state.item.registrationDate)}</li>
               <li>Group: {this.state.item.groupName || "-"}</li>
             </ul>
           </div>
@@ -62,5 +66,9 @@ var SuccessorSelector = React.createClass({
     );
   }
 });
+
+function formatDate(date) {
+  return date.substr(0,10);
+}
 
 module.exports = SuccessorSelector;
