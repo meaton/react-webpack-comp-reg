@@ -56,6 +56,8 @@ var BrowserMenuGroup = React.createClass({
   render: function () {
     var isPublished = this.props.space === Constants.SPACE_PUBLISHED;
     var selectionCount = this.props.items == null ? 0 : Object.keys(this.props.items).length;
+
+    //singleItem: false if item count <> 1, otherwise the unique selected item
     var singleItem = selectionCount == 1 && this.props.items[Object.keys(this.props.items)[0]];
 
     return (
@@ -84,7 +86,7 @@ var BrowserMenuGroup = React.createClass({
                 id="publishActions"
                 title="Publish"
                 glyph="upload"
-                disabled={selectionCount != 1 || !this.props.loggedIn}
+                disabled={selectionCount != 1 || !this.props.loggedIn || singleItem.status.toLowerCase() === Constants.STATUS_DEPRECATED.toLowerCase()}
                 onPublish={this.props.onPublish} />)}
 
           <ButtonModal {...this.props} action={this.props.deleteComp.bind(null, this.handleUsageWarning)} disabled={!this.props.loggedIn || selectionCount == 0 }
