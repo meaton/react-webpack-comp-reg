@@ -37,6 +37,7 @@ var BrowserMenuGroup = React.createClass({
     items: React.PropTypes.object,
     teams: React.PropTypes.array,
     loggedIn: React.PropTypes.bool.isRequired,
+    userId:  React.PropTypes.number,
     moveToTeamEnabled: React.PropTypes.bool,
     moveToTeam: React.PropTypes.func,
     deleteComp: React.PropTypes.func,
@@ -106,7 +107,9 @@ var BrowserMenuGroup = React.createClass({
 
   renderEditorLink: function(singleItem) {
     if(singleItem) {
-      var isImmutable = singleItem.status.toLowerCase() !== Constants.STATUS_DEVELOPMENT.toLowerCase();
+      var isImmutable = 
+        (this.props.userId != null && this.props.userId !== singleItem.userId)
+        || singleItem.status.toLowerCase() !== Constants.STATUS_DEVELOPMENT.toLowerCase();
       var editBtnLabel = isImmutable ? "Edit as new" : "Edit";
 
       var editorRoute = null;

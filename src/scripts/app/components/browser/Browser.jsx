@@ -142,6 +142,7 @@ var Browser = React.createClass({
                   teams={this.state.team.teams}
                   selectedTeam={selectedTeam}
                   loggedIn={this.state.auth.authState.uid != null}
+                  userId={this.state.auth.authState.userId}
                   moveToTeamEnabled={this.state.items.space != Constants.SPACE_PUBLISHED}
                   moveToTeam={this.handleMoveToTeam}
                   deleteComp={this.handleDelete}
