@@ -21,6 +21,19 @@ var mountFolder = function (connect, dir) {
 var webpackDistConfig = require('./webpack.dist.config.js'),
     webpackDevConfig = require('./webpack.config.js');
 
+var snapshot = false;
+
+var nexus = {
+  repository: {
+    id: 'CLARIN',
+    url: 'https://nexus.clarin.eu/content/repositories/Clarin'
+  },
+  snapshot: {
+    id: 'CLARIN-Snapshot',
+    url: 'https://nexus.clarin.eu/content/repositories/clarin-snapshot'
+  }
+};
+
 module.exports = function (grunt) {
   // Let *load-grunt-tasks* require everything
   require('load-grunt-tasks')(grunt);
@@ -160,7 +173,7 @@ module.exports = function (grunt) {
       options: {
         groupId: 'eu.clarin.cmdi',
         artifactId: 'component-registry-react-ui',
-        snapshot: false,
+        snapshot: snapshot,
         file: function(options) {
           return 'target/' + options.artifactId + '-' + options.version + '.' + options.packaging;
         }
@@ -169,6 +182,16 @@ module.exports = function (grunt) {
         options: {
           packaging: 'jar',
           goal: 'install', //deploy?
+          injectDestFolder: ''
+        },
+        files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
+      },
+      jar_deploy: {
+        options: {
+          packaging: 'jar',
+          goal: 'deploy',
+          url: (snapshot ? nexus.snapshot.url : nexus.repository.url),
+          repositoryId: (snapshot ? nexus.snapshot.id : nexus.repository.id),
           injectDestFolder: ''
         },
         files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
@@ -209,6 +232,8 @@ module.exports = function (grunt) {
   grunt.registerTask('build', ['clean', 'copy', 'webpack']);
 
   grunt.registerTask('maven-install', ['build:dist', 'maven_deploy:jar']);
+
+  grunt.registerTask('maven-deploy', ['build:dist', 'maven_deploy:jar_deploy']);
 
   grunt.registerTask('default', []);
 };
