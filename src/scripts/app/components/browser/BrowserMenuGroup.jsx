@@ -107,17 +107,18 @@ var BrowserMenuGroup = React.createClass({
 
   renderEditorLink: function(singleItem) {
     if(singleItem) {
-      var isImmutable = 
-        (this.props.userId != null && this.props.userId !== singleItem.userId)
-        || singleItem.status.toLowerCase() !== Constants.STATUS_DEVELOPMENT.toLowerCase();
-      var editBtnLabel = isImmutable ? "Edit as new" : "Edit";
+      var isEditable =
+        (this.props.userId == null || this.props.userId === singleItem.userId || this.props.space == Constants.SPACE_TEAM)
+        && singleItem.status.toLowerCase() == Constants.STATUS_DEVELOPMENT.toLowerCase()
+        
+      var editBtnLabel = isEditable ? "Edit" : "Edit as new";
 
       var editorRoute = null;
       if(this.props.type === Constants.TYPE_PROFILE) {
-        editorRoute = "/editor/" + ((isImmutable) ? "profile/new/" : "/profile/")
+        editorRoute = "/editor/" + ((isEditable) ? "/profile/" : "profile/new/")
           + this.props.space + "/" + singleItem.id;
       } else if(this.props.type === Constants.TYPE_COMPONENT) {
-        editorRoute = "/editor/" + ((isImmutable) ? "component/new/" : "/component/")
+        editorRoute = "/editor/" + ((isEditable) ? "/component/" : "component/new/")
           + this.props.space + "/" + singleItem.id;
       }
 
