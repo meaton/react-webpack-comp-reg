@@ -30,4 +30,7 @@ $RECYCLE.BIN/
 node_modules/
 .tmp
 dist
+target
 /src/scripts/main.js
+results.txt
+/nbproject/private/

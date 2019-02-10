@@ -1,11 +1,38 @@
 'use strict';
 
+// Some common tasks:
+//
+// * serve -> builds the application and starts a webpack dev server
+//
+// * build:dist -> builds the application for distribution (i.e. minifies and
+// performs other optimisations), see webpack.dist.config.js
+//
+// * maven-install -> builds for distribution, then creates and installs (in the
+// local repository) a jar that contains the build output
+//
+// If things are not working as expected, check config.js!
+
+var serverPort = 8000;
+
 var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
 };
 
 var webpackDistConfig = require('./webpack.dist.config.js'),
     webpackDevConfig = require('./webpack.config.js');
+
+var snapshot = false;
+
+var nexus = {
+  repository: {
+    id: 'CLARIN',
+    url: 'https://nexus.clarin.eu/content/repositories/Clarin'
+  },
+  snapshot: {
+    id: 'CLARIN-Snapshot',
+    url: 'https://nexus.clarin.eu/content/repositories/clarin-snapshot'
+  }
+};
 
 module.exports = function (grunt) {
   // Let *load-grunt-tasks* require everything
@@ -28,7 +55,7 @@ module.exports = function (grunt) {
     'webpack-dev-server': {
       options: {
         hot: true,
-        port: 8000,
+        port: serverPort,
         webpack: webpackDevConfig,
         publicPath: '/assets/',
         contentBase: './<%= pkg.src %>/',
@@ -41,7 +68,7 @@ module.exports = function (grunt) {
 
     connect: {
       options: {
-        port: 8000
+        port: serverPort
       },
 
       dist: {
@@ -59,14 +86,12 @@ module.exports = function (grunt) {
     open: {
       dev: {
         path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/',
-        app: 'google-chrome',
         options: {
           delay: 500
         }
       },
       dist: {
         path: 'http://localhost:<%= connect.options.port %>/',
-        app: 'google-chrome',
         options: {
           openOn: 'serverListening'
         }
@@ -76,6 +101,18 @@ module.exports = function (grunt) {
     karma: {
       unit: {
         configFile: 'karma.conf.js'
+      }
+    },
+
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+          captureFile: 'results.txt', // Optionally capture the reporter output to a file
+          quiet: false, // Optionally suppress output to standard out (defaults to false)
+          clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)
+        },
+        src: ['test/spec/jsonix/**/*.js']
       }
     },
 
@@ -95,6 +132,14 @@ module.exports = function (grunt) {
             expand: true,
             src: ['<%= pkg.src %>/images/*'],
             dest: '<%= pkg.dist %>/images/'
+          },
+          {
+            //copy libraries for inclusion via html header
+            cwd: '<%= pkg.src %>',
+            nonull: true,
+            expand: true,
+            src: ['libjs/**'],
+            dest: '<%= pkg.dist %>/'
           },
         ]
       }
@@ -122,10 +167,51 @@ module.exports = function (grunt) {
                 configure : "jsdoc.conf.json"
             }
         }
+    },
+
+    maven_deploy: {
+      options: {
+        groupId: 'eu.clarin.cmdi',
+        artifactId: 'component-registry-react-ui',
+        snapshot: snapshot,
+        file: function(options) {
+          return 'target/' + options.artifactId + '-' + options.version + '.' + options.packaging;
+        }
+      },
+      jar: {
+        options: {
+          packaging: 'jar',
+          goal: 'install', //deploy?
+          injectDestFolder: ''
+        },
+        files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
+      },
+      jar_deploy: {
+        options: {
+          packaging: 'jar',
+          goal: 'deploy',
+          url: (snapshot ? nexus.snapshot.url : nexus.repository.url),
+          repositoryId: (snapshot ? nexus.snapshot.id : nexus.repository.id),
+          injectDestFolder: ''
+        },
+        files: [{expand: true, cwd: 'dist/', src: ['**'], dest: ''/*classes?*/}]
+      },
+      src: {
+        options: {
+          url: 'https://nexus.clarin.eu/content/repositories/Clarin',
+          repositoryId: 'CLARIN',
+          classifier: 'sources',
+          goal: 'install' //deploy
+        },
+        files: [{src: ['**', '!node_modules/**', '!dist/**', '!target/**'], dest: ''}]
+      }
     }
   });
 
+
   grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-maven-deploy');
+  grunt.loadNpmTasks('grunt-mocha-test');
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -139,9 +225,15 @@ module.exports = function (grunt) {
     grunt.task.run(['open:dev', 'webpack-dev-server']);
   });
 
-  grunt.registerTask('test', ['karma']);
+  grunt.registerTask('test', ['mochaTest'
+                              //,'karma'
+                              ]);
 
   grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+
+  grunt.registerTask('maven-install', ['build:dist', 'maven_deploy:jar']);
+
+  grunt.registerTask('maven-deploy', ['build:dist', 'maven_deploy:jar_deploy']);
 
   grunt.registerTask('default', []);
 };

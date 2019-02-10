@@ -1,15 +1,103 @@
-.CMDComponent {
+.CMDComponent, .componentInsertionTarget {
+  display: inline-block;
+  float: left;
+  clear: both;
+
+  width: 50em;
+  margin: .5em 0 0 2em;
+
+  &.open {
+    border-left-width: 4px;
+  }
+  &.linked {
+    .panel {
+      border-width: 1px;
+      border-color: #999;
+      border-style: dashed;
+    }
+  }
+
+  a.componentLink {
+    color: #000099;
+  }
+
+  &.status-development {
+    & > .panel {
+      border-color: #00f;
+      border-style: solid;
+
+      .panel-heading .title {
+        font-style: italic;
+      }
+    }
+  }
+
+  &.status-deprecated {
+    & > .panel {
+      border-color: #f00;
+      border-style: solid;
+
+      .panel-heading .title {
+        text-decoration: line-through;
+      }
+    }
+  }
+}
+
+.componentName, .componentLink {
+  font-weight: bold;
+}
+
+.component-description {
+    margin-left: -1em;
+    padding-left: 1em;
+    margin-bottom: .5em;
+    padding-bottom: .2em;
+    border-bottom: 1px solid #ccc;
+    font-style: italic;
+
+    quotes: '\201c' '\201d';
+    &:before {
+      content: open-quote;
+      font-size: larger;
+    }
+    &:after {
+      content: close-quote;
+      font-size: larger;
+    }
+}
+
+/* The animation code */
+@keyframes pulse {
+    0%   {background-color: inherit;}
+    50%  {background-color: #ccc;}
+    100% {background-color: inherit;}
+}
+
+.componentInsertionTarget {
+  margin-left: 3em;
   padding: .5em;
-  margin: .5em 2em;
-  border: 1px solid blue;
-  background-color: #fff;
+  border: 1px dashed #999;
+  width: auto;
+  //pulse
+  animation-name: pulse;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+
+  .cancelLink {
+    float: right;
+    display: block;
+  }
 }
-.CMDComponent a.componentLink {
-  color: #000099;
-}
-.CMDComponent.open {
-  border: 1px dashed blue;
-}
-.CMDComponent.selected {
-  background-color: #eeffff;
+
+#editor {
+  .CMDComponent.selected {
+    background: #f9f9f9;
+    border-top: #000 solid 2px;
+    padding-top: 2px;
+
+    &, &:hover {
+      border-left: 3px solid #333;
+    }
+  }
 }

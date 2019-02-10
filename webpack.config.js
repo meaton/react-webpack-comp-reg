@@ -19,7 +19,7 @@ var config = {
   entry: [
       'webpack-dev-server/client?http://localhost:8000',
       'webpack/hot/only-dev-server',
-      './src/scripts/components/main.jsx'
+      './src/scripts/app/app.jsx'
   ],
 
   output: {
@@ -29,7 +29,7 @@ var config = {
 
   cache: true,
   debug: true,
-  devtool: false,
+  devtool: "source-map",
 
   stats: {
     colors: true,
@@ -38,7 +38,13 @@ var config = {
   },
 
   resolve: {
-    alias: {},
+    alias: {
+      'lodash/cloneDeep$': 'lodash/lang/cloneDeep',
+      'lodash/get$': 'lodash/object/get',
+      'lodash/has$': 'lodash/object/has',
+      'lodash/isEqual$': 'lodash/lang/isEqual',
+      'lodash/find$': 'lodash/collection/find'
+    },
     extensions: ['', '.js', '.jsx']
   },
 
@@ -50,13 +56,16 @@ var config = {
       loader: 'jshint'
     }],
     loaders: [{
+      test: require.resolve("react"),
+      loader: "expose?React"
+    }, {
       test: /\.jsx$/,
       loader: 'react-hot!jsx-loader?harmony'
     }, {
       test: /\.json/,
       loader: 'json-loader'
     }, {
-      test: /\.sass/,
+      test: /\.(sass|scss)/,
       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
     }, {
       test: /\.css$/,
@@ -64,7 +73,8 @@ var config = {
     }, {
       test: /\.(png|jpg)$/,
       loader: 'url-loader?limit=8192'
-    }]
+    }
+  ]
   },
 
   plugins: [

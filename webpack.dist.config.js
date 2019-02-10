@@ -10,14 +10,14 @@ var webpack = require('webpack');
 
 module.exports = {
 
-  entry: './src/scripts/components/main.jsx',
+  entry: './src/scripts/app/app.jsx',
 
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
     filename: 'main.js'
   },
-  
+
   console: false,
   debug: false,
   devtool: false,
@@ -32,10 +32,22 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+         NODE_ENV: JSON.stringify("production")  // see http://stackoverflow.com/a/36285479
+      }
+    })
   ],
 
   resolve: {
+    alias: {
+      'lodash/cloneDeep$': 'lodash/lang/cloneDeep',
+      'lodash/get$': 'lodash/object/get',
+      'lodash/has$': 'lodash/object/has',
+      'lodash/isEqual$': 'lodash/lang/isEqual',
+      'lodash/find$': 'lodash/collection/find'
+    },
     extensions: ['', '.js', '.jsx']
   },
 
@@ -56,7 +68,7 @@ module.exports = {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
     }, {
-      test: /\.sass/,
+      test: /\.(sass|scss)/,
       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
     }, {
       test: /\.(png|jpg)$/,

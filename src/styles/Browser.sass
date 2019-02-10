@@ -1,0 +1,116 @@
+#browser {
+
+  height: 100%;
+
+  &.detailsCollapsed {
+    .browser { height: 90%; }
+    .viewer { height: 10%; }
+  }
+
+  &.detailsMaximised {
+    .browser { height: 0%; }
+    .viewer { height: 100%; }
+  }
+
+  //default (expanded) state
+  .browser { height: 50%; }
+  .viewer { height: 50%; }
+
+  .browser, .viewer {
+    overflow-y: hidden;
+    transition: height 0.4s;
+  }
+
+  .browser.row {
+    position: relative;
+
+    & > div {
+
+      position: absolute;
+      top: 0px;
+      width: 100%;
+
+      &.gridControls {
+        margin-top: .5em;
+        height: 4em;
+        z-index: 100;
+      }
+
+      &.grid {
+        padding-top: 4em;
+        height: 100%;
+        clear: both;
+        z-index: 0;
+      }
+
+    }
+
+    .rssLink {
+      float: right;
+      clear: right;
+      margin-right: .5em;
+    }
+
+    table td.hiddenByFilterMessage {
+      width: 100%;
+
+      a {
+        color: #f00;
+      }
+    }
+  }
+
+  .viewer.row {
+    padding-top: .5em;
+
+    & > div {
+      height: 80%;
+      height: calc(100% - 40px);
+
+      &.noSelectionMessage {
+        display: flex;
+
+        p {
+          margin: auto;
+          text-align: center;
+          font-size: 200%;
+        }
+      }
+    }
+
+    .panelExpansionToggler {
+      float: right;
+      margin-right: .5em;
+    }
+  }
+
+  &.detailsCollapsed .viewer .panelDescription {
+    width: 100%;
+    text-align: center;
+    padding: 1%;
+  }
+
+}
+
+.selected-successor-candidate {
+  border: 1px solid;
+  margin: 1em 0;
+  padding: .1em .5em;
+
+  .title {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  .description {
+    font-style: italic;
+  }
+
+  ul {
+    padding: 0;
+    margin: 1em 0 0 0;
+    li {
+      list-style: none;
+    }
+  }
+}

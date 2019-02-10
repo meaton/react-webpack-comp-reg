@@ -1,26 +1,39 @@
 /** @module General configuration for Component Registry REST service */
-var Config = {
-  cors: true,
-  REST: {
-    auth: { username: "seaton", password: "compreg" },
-    protocol: "http",
-    host: 'localhost',
-    port: '8080',
-    path: '/ComponentRegistry'
+var Config =
+  (typeof getComponentRegistryConfig == 'function' // function can provide external configuration
+    && getComponentRegistryConfig() != null) ? getComponentRegistryConfig() : {
+  //default config
+  //NOTE: changes here will only have effect if no configuration has been preloaded! (see index.html)
+  "loglevel": "info",
+  "cors": true,
+  "REST": {
+    "url": "http://localhost:8080/ComponentRegistry",
+    "auth": {  //needed in case of CORS
+      "username": "user",
+      "password": "passwd"
+    }
   },
-  deploy: {
-    path: '/'
+  "deploy": {
+    "path": '/'
   }
 }
 
 function getUrl() {
-  var url = (Config.REST.host != undefined && Config.REST.host.length > 0) ? Config.REST.protocol + "://" + Config.REST.host : "";
-  url+= (Config.REST.port != undefined && Config.REST.port.length > 0 && url.length > 0) ? ":" + Config.REST.port + Config.REST.path : Config.REST.path;
-  return url;
+  var trailingSlashPattern = /^(.*)(\/)$/;
+  if(trailingSlashPattern.test(Config.REST.url)) {
+    //remove the trailing slash
+    return Config.REST.url.replace(trailingSlashPattern, "$1");
+  } else {
+    return Config.REST.url;
+  }
 };
 
 module.exports = {
   Config: Config,
+  ccrUrl: getUrl() + "/ccr",
+  vocabulariesUrl: getUrl() + "/vocabulary/conceptscheme",
+  vocabularyItemsUrl: getUrl() + "/vocabulary/items",
   restUrl: getUrl() + "/rest",
-  adminUrl: getUrl() + "/admin"
+  adminUrl: getUrl() + "/admin",
+  webappUrl: getUrl()
 };

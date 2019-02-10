@@ -1,13 +1,17 @@
 .CMDElement {
-  padding: .5em;
-  margin: .5em 2em;
-  border: 1px solid #f00;
+
+  display: inline-block;
+  float: left;
+  clear: both;
+
+  width: 50em;
+  margin: .5em 0 0 2em;
+
+  a.elementLink {
+    color: #000099;
+  }
 }
 
-.CMDElement a.elementLink {
-  color: #000099;
-}
-
-.CMDElement.open {
-  border: 1px dashed #f00;
+.elementName, .elementLink {
+  font-weight: bold;
 }

@@ -1,4 +1,44 @@
-.controlLinks a {
-  padding-right: 4px;
-  line-height: 1.2em;
+.controlLinks {
+
+  .glyphicon {
+    margin: 0 2px;
+  }
+
+  a .glyphicon {
+      color: black;
+      font-size: 120%;
+
+      &:hover {
+        color: #999;
+      }
+
+      &:active {
+        color: #fff;
+      }
+  }
+
+  span.disabled {
+    opacity: .1;
+    font-size: 120%;
+  }
+
+  & div {
+    display: inline-block;
+
+    &.expandCollapse {
+      max-width: 6%;
+    }
+
+    &.select {
+      max-width: 7%;
+    }
+
+    &.title {
+      max-width: 60%;
+    }
+
+    &.moveRemove {
+      max-width: 18%;
+    }
+  }
 }

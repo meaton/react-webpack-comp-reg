@@ -1,24 +1,99 @@
 .ComponentViewer {
-  max-height: 400px;
+
+  .rootProperties {
+    padding: 0;
+    padding-top: .5em;
+
+    & > ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 30px;
+      width: 38%;
+    }
+  }
+
+  .panel {
+    .panel-heading {
+      padding: 0 1em;
+      line-height: 2;
+    }
+    .panel-body {
+      padding: .5em 1em;
+      line-height: 1.2;
+    }
+  }
+
+  .end {
+    display: block;
+    clear: both;
+    height: 1em;
+  }
+
 }
-.ComponentViewer .rootProperties > ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 30px;
-  width: 38%;
-}
-.rootProperties {
-  padding: 5px 0;
-}
+
 .componentBody, .componentProps {
   padding-left: 25px;
 }
-.elemAttrs {
-  padding-left: 25px;
+
+.elemAttrs, .attrAttrs {
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style: none;
+  }
 }
+
+.attrList {
+    margin: .5em 2em;
+    width: 50em;
+}
+
 .controlLinks a, .addComponent a, .addElement a {
   color: blue;
 }
 .edit-mode .hide-field {
   display: none
+}
+
+.valueScheme {
+
+  font-weight: bold;
+  & > .form-group {
+    font-weight: normal;
+    display: inline-block;
+    width: 60%;
+  }
+}
+
+.valueScheme, .elemAttrs li, .attrAttrs li {
+    span {
+
+      vertical-align: top;
+
+      &.attrLabel {
+        display: inline-block;
+        width: 40%;
+        text-align: right;
+        padding-right: 1em;
+      }
+
+      &.attrValue {
+        display: inline-block;
+        width: 60%;
+      }
+    }
+}
+
+.subValue {
+  display: block;
+  border-top: 1px solid #ccc;
+
+    &:first-of-type {
+      border-top: none;
+  }
+}
+
+.componentProps .subValue {
+  margin-left: 1em;
 }
